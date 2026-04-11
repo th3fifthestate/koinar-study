@@ -7,7 +7,11 @@ import { CREATE_INDEXES, CREATE_TABLES, SCHEMA_VERSION, SEED_CATEGORIES } from '
 
 let db: Database.Database | null = null;
 
-/** Run a SQL string that may contain multiple semicolon-separated statements. */
+/**
+ * Run a SQL string that may contain multiple semicolon-separated statements.
+ * NOTE: Uses naive semicolon splitting — do not pass SQL with semicolons inside
+ * quoted string literals (e.g. VALUES ('foo;bar')). Safe for schema constants.
+ */
 function runStatements(database: Database.Database, sql: string): void {
   const statements = sql
     .split(';')
@@ -64,10 +68,16 @@ export function getDb(): Database.Database {
   const dbDir = path.dirname(dbPath);
   fs.mkdirSync(dbDir, { recursive: true });
 
-  db = new Database(dbPath);
-  applyPragmas(db);
-  runMigration(db);
+  const connection = new Database(dbPath);
+  try {
+    applyPragmas(connection);
+    runMigration(connection);
+  } catch (err) {
+    connection.close();
+    throw err;
+  }
 
+  db = connection;
   return db;
 }
 
