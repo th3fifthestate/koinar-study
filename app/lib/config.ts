@@ -1,5 +1,9 @@
-import path from "path";
 import { env } from "./env";
+
+/** Edge-safe path join: strips trailing slash from base and joins with segment */
+function joinPath(base: string, segment: string): string {
+  return base.replace(/\/$/, "") + "/" + segment;
+}
 
 export const config = {
   session: {
@@ -26,16 +30,16 @@ export const config = {
     app: env.DATABASE_PATH,
     bibleDir: env.BIBLE_DB_PATH,
     get bsb() {
-      return path.join(this.bibleDir, "BSB.db");
+      return joinPath(this.bibleDir, "BSB.db");
     },
     get hebrewGreek() {
-      return path.join(this.bibleDir, "bible_hebrew_greek.db");
+      return joinPath(this.bibleDir, "bible_hebrew_greek.db");
     },
     get strongs() {
-      return path.join(this.bibleDir, "strongs.sqlite");
+      return joinPath(this.bibleDir, "strongs.sqlite");
     },
     get crossRefs() {
-      return path.join(this.bibleDir, "cross_references.db");
+      return joinPath(this.bibleDir, "cross_references.db");
     },
   },
   email: {
