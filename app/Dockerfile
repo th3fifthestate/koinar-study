@@ -23,6 +23,10 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Build-time env vars (NEXT_PUBLIC_* are baked into the client bundle)
+ARG NEXT_PUBLIC_APP_URL=https://koinar.app
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+
 # Provide a placeholder key so Next.js doesn't fail env validation at build time
 ENV RESEND_API_KEY=placeholder
 
