@@ -109,23 +109,29 @@ export async function POST(request: Request) {
   // Normalize email to lowercase to prevent case-based duplicates
   const normalizedEmail = email.toLowerCase().trim();
 
-  const { error } = await resend.contacts.create({
-    email: normalizedEmail,
-    audienceId: getAudienceId(),
-    unsubscribed: false,
-  });
+  try {
+    const { error } = await resend.contacts.create({
+      email: normalizedEmail,
+      audienceId: getAudienceId(),
+      unsubscribed: false,
+    });
 
-  if (error) {
-    if (
-      error.name === "validation_error" &&
-      error.message?.toLowerCase().includes("already exists")
-    ) {
-      return Response.json({ error: "Already subscribed" }, { status: 409 });
+    if (error) {
+      if (
+        error.name === "validation_error" &&
+        error.message?.toLowerCase().includes("already exists")
+      ) {
+        return Response.json({ error: "Already subscribed" }, { status: 409 });
+      }
+      // Log error name/message only — never log API keys or full error objects
+      console.error("[waitlist] Resend error:", error.name, error.message);
+      return Response.json({ error: "Failed to subscribe" }, { status: 500 });
     }
-    // Log error name/message only — never log API keys or full error objects
-    console.error("[waitlist] Resend error:", error.name, error.message);
+
+    return Response.json({ success: true }, { status: 201 });
+  } catch (err) {
+    // Catches getAudienceId() throw (missing env var) or unexpected Resend failures
+    console.error("[waitlist] Unexpected error:", err instanceof Error ? err.message : "unknown");
     return Response.json({ error: "Failed to subscribe" }, { status: 500 });
   }
-
-  return Response.json({ success: true }, { status: 201 });
 }
