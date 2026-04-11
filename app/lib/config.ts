@@ -2,7 +2,7 @@ import path from "path";
 
 function env(key: string, fallback?: string): string {
   const value = process.env[key] ?? fallback;
-  if (!value) {
+  if (value === undefined || value === null) {
     throw new Error(`Missing required environment variable: ${key}`);
   }
   return value;
