@@ -2,33 +2,15 @@ import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/middleware";
 import { encryptApiKey } from "@/lib/ai/keys";
 import { getDb } from "@/lib/db/connection";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const setKeySchema = z.object({
   apiKey: z.string().min(1),
 });
 
-// Simple in-memory rate limiter: 5 requests per 60 seconds per user
-const requestCounts = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(userId: string | number): boolean {
-  const userIdStr = String(userId);
-  const now = Date.now();
-  const record = requestCounts.get(userIdStr);
-
-  if (!record || now > record.resetAt) {
-    // Reset window
-    requestCounts.set(userIdStr, { count: 1, resetAt: now + 60000 });
-    return true;
-  }
-
-  if (record.count < 5) {
-    record.count++;
-    return true;
-  }
-
-  return false;
-}
+// Rate limiter: 5 requests per 60 seconds per user
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 });
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +18,7 @@ export async function POST(request: Request) {
     if (auth.response) return auth.response;
 
     // Rate limiting: 5 requests per 60 seconds
-    if (!checkRateLimit(auth.user.userId)) {
+    if (isRateLimited(String(auth.user.userId))) {
       return NextResponse.json(
         { error: "Rate limit exceeded. Maximum 5 requests per 60 seconds." },
         { status: 429 }
@@ -83,7 +65,7 @@ export async function DELETE() {
     if (auth.response) return auth.response;
 
     // Rate limiting: 5 requests per 60 seconds
-    if (!checkRateLimit(auth.user.userId)) {
+    if (isRateLimited(String(auth.user.userId))) {
       return NextResponse.json(
         { error: "Rate limit exceeded. Maximum 5 requests per 60 seconds." },
         { status: 429 }
