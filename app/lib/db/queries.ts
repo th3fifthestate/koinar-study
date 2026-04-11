@@ -436,3 +436,47 @@ export function getPendingWaitlist(): WaitlistEntry[] {
     .prepare("SELECT * FROM waitlist WHERE status = 'pending' ORDER BY created_at ASC")
     .all() as WaitlistEntry[];
 }
+
+export function getWaitlistByEmail(email: string): WaitlistEntry | null {
+  return (
+    (getDb()
+      .prepare("SELECT * FROM waitlist WHERE email = ?")
+      .get(email) as WaitlistEntry | undefined) ?? null
+  );
+}
+
+export function getWaitlistByApprovalToken(token: string): WaitlistEntry | null {
+  return (
+    (getDb()
+      .prepare(
+        `SELECT * FROM waitlist
+         WHERE approval_token = ? AND approval_token_expires_at > datetime('now')`
+      )
+      .get(token) as WaitlistEntry | undefined) ?? null
+  );
+}
+
+export function approveWaitlistEntry(
+  id: number,
+  reviewedBy: number,
+  approvalToken: string,
+  approvalTokenExpiresAt: string
+): void {
+  getDb()
+    .prepare(
+      `UPDATE waitlist
+       SET status = 'approved', reviewed_by = ?, approval_token = ?,
+           approval_token_expires_at = ?, reviewed_at = datetime('now')
+       WHERE id = ?`
+    )
+    .run(reviewedBy, approvalToken, approvalTokenExpiresAt, id);
+}
+
+export function denyWaitlistEntry(id: number, reviewedBy: number): void {
+  getDb()
+    .prepare(
+      `UPDATE waitlist SET status = 'denied', reviewed_by = ?, reviewed_at = datetime('now')
+       WHERE id = ?`
+    )
+    .run(reviewedBy, id);
+}
