@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS invite_codes (
   created_by INTEGER NOT NULL REFERENCES users(id),
   invitee_name TEXT NOT NULL,
   invitee_email TEXT NOT NULL,
-  linked_study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE SET NULL,
+  linked_study_id INTEGER REFERENCES studies(id) ON DELETE SET NULL,
   used_by INTEGER REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   used_at TEXT,
@@ -70,10 +70,10 @@ CREATE TABLE IF NOT EXISTS waitlist (
 CREATE TABLE IF NOT EXISTS study_gift_codes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   code TEXT NOT NULL UNIQUE,
-  user_id INTEGER NOT NULL REFERENCES users(id),
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   format_locked TEXT NOT NULL CHECK (format_locked IN ('simple', 'standard', 'comprehensive')),
   max_uses INTEGER NOT NULL DEFAULT 1,
-  uses_remaining INTEGER NOT NULL,
+  uses_remaining INTEGER NOT NULL CHECK (uses_remaining >= 0),
   created_by INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   expires_at TEXT
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS verse_cache (
 
 CREATE TABLE IF NOT EXISTS admin_actions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  admin_id INTEGER NOT NULL REFERENCES users(id),
+  admin_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
   action_type TEXT NOT NULL,
   target_type TEXT NOT NULL,
   target_id INTEGER,
@@ -206,7 +206,6 @@ CREATE INDEX IF NOT EXISTS idx_annotations_study ON annotations(study_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_user ON annotations(user_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_study_public ON annotations(study_id, is_public);
 CREATE INDEX IF NOT EXISTS idx_study_images_study ON study_images(study_id);
-CREATE INDEX IF NOT EXISTS idx_verse_cache_lookup ON verse_cache(translation, book, chapter, verse_start, verse_end);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_cached_at ON verse_cache(cached_at);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_last_accessed ON verse_cache(last_accessed_at);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON admin_actions(admin_id);
