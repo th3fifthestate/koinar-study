@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS email_verification_codes (
 
 CREATE TABLE IF NOT EXISTS waitlist (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   message TEXT,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'denied')),

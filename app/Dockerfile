@@ -4,7 +4,7 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 make g++
 
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -27,8 +27,11 @@ ENV NODE_ENV=production
 ARG NEXT_PUBLIC_APP_URL=https://koinar.app
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
-# Provide a placeholder key so Next.js doesn't fail env validation at build time
+# Provide placeholder secrets so Next.js doesn't fail env validation at build time
+# These are only used during the build — runtime values come from Railway env vars
 ENV RESEND_API_KEY=placeholder
+ENV SESSION_SECRET=placeholder-build-only-not-used-at-runtime-must-be-64-chars-long!!
+ENV ANTHROPIC_API_KEY=placeholder
 
 RUN npm run build
 

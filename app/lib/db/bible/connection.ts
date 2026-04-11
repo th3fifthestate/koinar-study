@@ -8,7 +8,6 @@ let crossRefsDb: Database.Database | null = null;
 
 function openReadOnly(dbPath: string): Database.Database {
   const db = new Database(dbPath, { readonly: true });
-  db.pragma("journal_mode = WAL");
   db.pragma("cache_size = -10000"); // 10MB cache
   db.pragma("temp_store = MEMORY");
   return db;

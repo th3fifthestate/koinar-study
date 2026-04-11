@@ -117,6 +117,9 @@ export interface Study {
   updated_at: string;
 }
 
+/** Study row without large content fields. Safe for list/card views. */
+export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata'>;
+
 export interface StudyTag {
   id: number;
   study_id: number;

@@ -190,11 +190,12 @@ export function getChapter(book: string, chapter: number): BsbVerse[] {
 
 export function searchVerses(query: string, limit = 20): BsbVerse[] {
   const db = getBsbDb();
+  const escaped = query.replace(/[%_]/g, "\\$&");
   return db
     .prepare(
-      "SELECT b.name as book, v.chapter, v.verse, v.text FROM BSB_verses v JOIN BSB_books b ON v.book_id = b.id WHERE v.text LIKE ? LIMIT ?"
+      "SELECT b.name as book, v.chapter, v.verse, v.text FROM BSB_verses v JOIN BSB_books b ON v.book_id = b.id WHERE v.text LIKE ? ESCAPE '\\' LIMIT ?"
     )
-    .all(`%${query}%`, limit) as BsbVerse[];
+    .all(`%${escaped}%`, limit) as BsbVerse[];
 }
 
 // ============================================
@@ -209,16 +210,7 @@ function getFtsDb(): Database.Database {
   const bsbPath = config.db.bsb;
   const ftsPath = path.join(path.dirname(bsbPath), "bsb_fts.db");
 
-  ftsDb = new Database(ftsPath);
-  ftsDb.pragma("journal_mode = WAL");
-
-  const exists = ftsDb
-    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='bsb_fts'")
-    .get();
-
-  if (!exists) {
-    buildFtsIndex(ftsDb);
-  }
+  ftsDb = new Database(ftsPath, { readonly: true });
 
   return ftsDb;
 }
@@ -259,10 +251,10 @@ export function searchVersesFts(
   const db = getFtsDb();
 
   const sanitized = query
-    .replace(/['"()*:^~]/g, "")
+    .replace(/['"()*:^~\-\\]/g, "")
     .trim();
 
-  if (!sanitized) return { results: [], total: 0 };
+  if (!sanitized || !/[a-zA-Z0-9]/.test(sanitized)) return { results: [], total: 0 };
 
   const total = db
     .prepare("SELECT COUNT(*) as cnt FROM bsb_fts WHERE bsb_fts MATCH ?")

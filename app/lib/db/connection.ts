@@ -5,7 +5,8 @@ import path from 'path';
 import { config } from '../config';
 import { CREATE_INDEXES, CREATE_TABLES, SCHEMA_VERSION, SEED_CATEGORIES } from './schema';
 
-let db: Database.Database | null = null;
+const g = globalThis as typeof globalThis & { __appDb?: Database.Database };
+let db: Database.Database | null = g.__appDb ?? null;
 
 /**
  * Run a SQL string that may contain multiple semicolon-separated statements.
@@ -78,6 +79,7 @@ export function getDb(): Database.Database {
   }
 
   db = connection;
+  g.__appDb = connection;
   return db;
 }
 

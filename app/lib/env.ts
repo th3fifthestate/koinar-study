@@ -25,6 +25,7 @@ const envSchema = z.object({
 
   // Database
   DATABASE_PATH: z.string().default("./data/app.db"),
+  BIBLE_DB_PATH: z.string().default("./data/databases"),
 
   // Auth
   SESSION_SECRET: isProduction
@@ -44,6 +45,9 @@ const envSchema = z.object({
   RESEND_AUDIENCE_ID: isProduction
     ? z.string().min(1, "RESEND_AUDIENCE_ID is required in production")
     : z.string().default(""),
+
+  // Bible APIs
+  ESV_API_KEY: z.string().default(""),
 
   // Image generation
   FLUX_API_KEY: isProduction

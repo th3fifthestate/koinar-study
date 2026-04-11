@@ -5,8 +5,10 @@ import type {
   EmailVerificationCode,
   InviteCode,
   SafeUser,
+  Session,
   Study,
   StudyGiftCode,
+  StudySummary,
   User,
   WaitlistEntry,
 } from './types';
@@ -53,12 +55,11 @@ export function createUser(data: {
   display_name?: string;
   invited_by?: number;
   is_approved?: number;
-  is_admin?: number;
 }): number {
   const result = getDb()
     .prepare(
-      `INSERT INTO users (username, email, password_hash, display_name, invited_by, is_approved, is_admin)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO users (username, email, password_hash, display_name, invited_by, is_approved)
+       VALUES (?, ?, ?, ?, ?, ?)`
     )
     .run(
       data.username,
@@ -66,10 +67,47 @@ export function createUser(data: {
       data.password_hash,
       data.display_name ?? null,
       data.invited_by ?? null,
-      data.is_approved ?? 0,
-      data.is_admin ?? 0
+      data.is_approved ?? 0
     );
   return result.lastInsertRowid as number;
+}
+
+export function setUserAdmin(userId: number, isAdmin: boolean): void {
+  getDb()
+    .prepare('UPDATE users SET is_admin = ? WHERE id = ?')
+    .run(isAdmin ? 1 : 0, userId);
+}
+
+// ─── Session queries ─────────────────────────────────────────────────────────
+
+export function createSession(userId: number, token: string, expiresAt: string): number {
+  const result = getDb()
+    .prepare('INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, ?)')
+    .run(userId, token, expiresAt);
+  return result.lastInsertRowid as number;
+}
+
+export function getSessionByToken(token: string): (Session & { user_id: number }) | null {
+  return (
+    (getDb()
+      .prepare('SELECT * FROM sessions WHERE token = ? AND expires_at > datetime(\'now\')')
+      .get(token) as (Session & { user_id: number }) | undefined) ?? null
+  );
+}
+
+export function deleteSession(token: string): void {
+  getDb().prepare('DELETE FROM sessions WHERE token = ?').run(token);
+}
+
+export function deleteExpiredSessions(): number {
+  const result = getDb()
+    .prepare('DELETE FROM sessions WHERE expires_at <= datetime(\'now\')')
+    .run();
+  return result.changes;
+}
+
+export function deleteUserSessions(userId: number): void {
+  getDb().prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
 }
 
 // ─── Invite code queries ──────────────────────────────────────────────────────
@@ -149,7 +187,8 @@ export function getVerificationCode(
         `SELECT * FROM email_verification_codes
          WHERE invite_code_id = ? AND code = ?
            AND verified = 0
-           AND expires_at > datetime('now')`
+           AND expires_at > datetime('now')
+           AND attempts < 5`
       )
       .get(inviteCodeId, code) as EmailVerificationCode | undefined) ?? null
   );
@@ -193,7 +232,7 @@ export function getActiveGiftCodesForUser(userId: number): StudyGiftCode[] {
  * Combines read + decrement in a single transaction to prevent TOCTOU races.
  */
 export function consumeGiftCode(
-  id: number,
+  code: string,
   format: 'simple' | 'standard' | 'comprehensive'
 ): StudyGiftCode | null {
   const database = getDb();
@@ -203,20 +242,30 @@ export function consumeGiftCode(
       .prepare(
         `UPDATE study_gift_codes
          SET uses_remaining = uses_remaining - 1
-         WHERE id = ? AND format_locked = ? AND uses_remaining > 0
+         WHERE code = ? AND format_locked = ? AND uses_remaining > 0
            AND (expires_at IS NULL OR expires_at > datetime('now'))`
       )
-      .run(id, format);
+      .run(code, format);
     if (result.changes === 1) {
       consumed = database
-        .prepare('SELECT * FROM study_gift_codes WHERE id = ?')
-        .get(id) as StudyGiftCode;
+        .prepare('SELECT * FROM study_gift_codes WHERE code = ?')
+        .get(code) as StudyGiftCode;
     }
   })();
   return consumed;
 }
 
 // ─── Study queries ────────────────────────────────────────────────────────────
+
+const STUDY_SUMMARY_COLUMNS = `id, title, slug, summary, format_type, translation_used, is_public, is_featured, created_by, category_id, created_at, updated_at`;
+
+export function getStudyById(id: number): Study | null {
+  return (
+    (getDb()
+      .prepare('SELECT * FROM studies WHERE id = ?')
+      .get(id) as Study | undefined) ?? null
+  );
+}
 
 export function getStudyBySlug(slug: string): Study | null {
   return (
@@ -226,41 +275,41 @@ export function getStudyBySlug(slug: string): Study | null {
   );
 }
 
-export function getPublicStudies(limit = 20, offset = 0): Study[] {
+export function getPublicStudies(limit = 20, offset = 0): StudySummary[] {
   return getDb()
     .prepare(
-      'SELECT * FROM studies WHERE is_public = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?'
+      `SELECT ${STUDY_SUMMARY_COLUMNS} FROM studies WHERE is_public = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?`
     )
-    .all(limit, offset) as Study[];
+    .all(limit, offset) as StudySummary[];
 }
 
-export function getFeaturedStudies(limit = 6): Study[] {
+export function getFeaturedStudies(limit = 6): StudySummary[] {
   return getDb()
     .prepare(
-      'SELECT * FROM studies WHERE is_public = 1 AND is_featured = 1 ORDER BY created_at DESC LIMIT ?'
+      `SELECT ${STUDY_SUMMARY_COLUMNS} FROM studies WHERE is_public = 1 AND is_featured = 1 ORDER BY created_at DESC LIMIT ?`
     )
-    .all(limit) as Study[];
+    .all(limit) as StudySummary[];
 }
 
 export function getStudiesByCategory(
   categoryId: number,
   limit = 20,
   offset = 0
-): Study[] {
+): StudySummary[] {
   return getDb()
     .prepare(
-      `SELECT * FROM studies
+      `SELECT ${STUDY_SUMMARY_COLUMNS} FROM studies
        WHERE is_public = 1 AND category_id = ?
        ORDER BY created_at DESC LIMIT ? OFFSET ?`
     )
-    .all(categoryId, limit, offset) as Study[];
+    .all(categoryId, limit, offset) as StudySummary[];
 }
 
 /** Returns ALL studies for the user including private/draft ones. Only call with a userId from the authenticated session. */
-export function getUserStudies(userId: number): Study[] {
+export function getUserStudies(userId: number): StudySummary[] {
   return getDb()
-    .prepare('SELECT * FROM studies WHERE created_by = ? ORDER BY created_at DESC')
-    .all(userId) as Study[];
+    .prepare(`SELECT ${STUDY_SUMMARY_COLUMNS} FROM studies WHERE created_by = ? ORDER BY created_at DESC`)
+    .all(userId) as StudySummary[];
 }
 
 export function createStudy(data: {
