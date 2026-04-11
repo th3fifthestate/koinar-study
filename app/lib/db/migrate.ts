@@ -30,4 +30,10 @@ function main() {
   console.log('\nDone.');
 }
 
-main();
+try {
+  main();
+} catch (err) {
+  console.error('Migration failed:', err);
+  closeDb();
+  process.exit(1);
+}
