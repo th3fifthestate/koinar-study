@@ -15,6 +15,12 @@ export async function requireAuth(): Promise<
       response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
     };
   }
+  if (!session.isApproved) {
+    return {
+      user: null,
+      response: NextResponse.json({ error: "Account pending approval" }, { status: 403 }),
+    };
+  }
   return {
     user: {
       userId: session.userId,

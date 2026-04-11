@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getUserForAuth } from "@/lib/db/queries";
-import { verifyPassword, isAccountLocked, recordFailedLogin, resetFailedLogins, getLockoutMinutesRemaining } from "@/lib/auth/password";
+import { verifyPassword, isAccountLocked, recordFailedLogin, resetFailedLogins, getLockoutMinutesRemaining, hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
 
@@ -10,6 +10,16 @@ const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
 });
+
+// Pre-computed valid argon2id hash for timing-safe non-existent user path.
+// Initialized at module load time so it's ready on first request.
+let DUMMY_HASH: string | null = null;
+async function getDummyHash(): Promise<string> {
+  if (!DUMMY_HASH) {
+    DUMMY_HASH = await hashPassword("__koinar_dummy_password__");
+  }
+  return DUMMY_HASH;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,8 +35,9 @@ export async function POST(request: NextRequest) {
 
     const user = getUserForAuth(email);
     if (!user) {
-      // Constant-time response to prevent user enumeration
-      await verifyPassword("$argon2id$v=19$m=65536,t=3,p=4$dummy", password).catch(() => {});
+      // Constant-time response to prevent user enumeration via timing
+      const dummyHash = await getDummyHash();
+      await verifyPassword(dummyHash, password);
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 

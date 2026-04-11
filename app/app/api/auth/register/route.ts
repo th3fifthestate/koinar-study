@@ -35,6 +35,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
     }
 
+    if (invite.invitee_email.toLowerCase() !== email.toLowerCase()) {
+      return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
+    }
+
     // Check email verification completed
     const verified = getDb()
       .prepare(
@@ -44,10 +48,6 @@ export async function POST(request: NextRequest) {
       .get(invite.id);
     if (!verified) {
       return NextResponse.json({ error: "Email verification not completed" }, { status: 400 });
-    }
-
-    if (invite.invitee_email.toLowerCase() !== email.toLowerCase()) {
-      return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
     }
 
     const existing = getUserByEmail(email);

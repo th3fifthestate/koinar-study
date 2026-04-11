@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getWaitlistByApprovalToken, getUserByEmail, getUserByUsername, createUser } from "@/lib/db/queries";
+import { getUserByEmail, getUserByUsername, createUser } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
@@ -30,12 +30,24 @@ export async function POST(request: NextRequest) {
     }
     const { name, email, password, welcomeToken } = parsed.data;
 
-    const entry = getWaitlistByApprovalToken(welcomeToken);
-    if (!entry) {
+    // Atomically claim the approval token before creating the user.
+    // If two requests race, only one will see changes === 1.
+    const claimed = getDb()
+      .prepare(
+        "UPDATE waitlist SET approval_token = NULL WHERE id = (SELECT id FROM waitlist WHERE approval_token = ? AND approval_token_expires_at > datetime('now'))"
+      )
+      .run(welcomeToken);
+
+    if (claimed.changes === 0) {
       return NextResponse.json({ error: "Invalid or expired approval link" }, { status: 400 });
     }
 
-    if (entry.email.toLowerCase() !== email.toLowerCase()) {
+    // Re-fetch the entry by email since approval_token is now NULL
+    const entry = getDb()
+      .prepare("SELECT * FROM waitlist WHERE email = ? AND status = 'approved'")
+      .get(email) as import("@/lib/db/types").WaitlistEntry | undefined;
+
+    if (!entry) {
       return NextResponse.json({ error: "Invalid or expired approval link" }, { status: 400 });
     }
 
@@ -58,11 +70,6 @@ export async function POST(request: NextRequest) {
       display_name: entry.name,
       is_approved: 1,
     });
-
-    // Invalidate the approval token to prevent reuse
-    getDb()
-      .prepare("UPDATE waitlist SET approval_token = NULL WHERE id = ?")
-      .run(entry.id);
 
     const session = await getSession();
     session.userId = userId;
