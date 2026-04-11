@@ -12,6 +12,7 @@ import type {
 
 // ─── User queries ────────────────────────────────────────────────────────────
 
+/** Returns the full User row including password_hash and api_key_encrypted. Strip sensitive fields before including in any API response. */
 export function getUserById(id: number): User | null {
   return (
     (getDb().prepare('SELECT * FROM users WHERE id = ?').get(id) as User | undefined) ?? null
@@ -95,12 +96,13 @@ export function markInviteCodeUsed(code: string, usedBy: number): void {
 }
 
 export function getInviteCountForUser(userId: number, days: number): number {
+  const modifier = `-${Math.floor(days)} days`;
   const row = getDb()
     .prepare(
       `SELECT COUNT(*) as count FROM invite_codes
-       WHERE created_by = ? AND created_at >= datetime('now', '-' || ? || ' days')`
+       WHERE created_by = ? AND created_at >= datetime('now', ?)`
     )
-    .get(userId, days) as { count: number };
+    .get(userId, modifier) as { count: number };
   return row.count;
 }
 
@@ -168,7 +170,9 @@ export function getActiveGiftCodesForUser(userId: number): StudyGiftCode[] {
 
 export function decrementGiftCodeUse(id: number): void {
   getDb()
-    .prepare('UPDATE study_gift_codes SET uses_remaining = uses_remaining - 1 WHERE id = ?')
+    .prepare(
+      'UPDATE study_gift_codes SET uses_remaining = uses_remaining - 1 WHERE id = ? AND uses_remaining > 0'
+    )
     .run(id);
 }
 
@@ -212,6 +216,7 @@ export function getStudiesByCategory(
     .all(categoryId, limit, offset) as Study[];
 }
 
+/** Returns ALL studies for the user including private/draft ones. Only call with a userId from the authenticated session. */
 export function getUserStudies(userId: number): Study[] {
   return getDb()
     .prepare('SELECT * FROM studies WHERE created_by = ? ORDER BY created_at DESC')
@@ -270,21 +275,25 @@ export function getCategoryBySlug(slug: string): Category | null {
 
 export function toggleFavorite(userId: number, studyId: number): boolean {
   const database = getDb();
-  const existing = database
-    .prepare('SELECT id FROM favorites WHERE user_id = ? AND study_id = ?')
-    .get(userId, studyId);
+  let favorited = false;
+  database.transaction(() => {
+    const existing = database
+      .prepare('SELECT id FROM favorites WHERE user_id = ? AND study_id = ?')
+      .get(userId, studyId);
 
-  if (existing) {
-    database
-      .prepare('DELETE FROM favorites WHERE user_id = ? AND study_id = ?')
-      .run(userId, studyId);
-    return false;
-  }
-
-  database
-    .prepare('INSERT INTO favorites (user_id, study_id) VALUES (?, ?)')
-    .run(userId, studyId);
-  return true;
+    if (existing) {
+      database
+        .prepare('DELETE FROM favorites WHERE user_id = ? AND study_id = ?')
+        .run(userId, studyId);
+      favorited = false;
+    } else {
+      database
+        .prepare('INSERT INTO favorites (user_id, study_id) VALUES (?, ?)')
+        .run(userId, studyId);
+      favorited = true;
+    }
+  })();
+  return favorited;
 }
 
 export function getUserFavorites(userId: number): Study[] {
