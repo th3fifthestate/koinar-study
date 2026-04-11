@@ -30,24 +30,32 @@ export async function POST(request: NextRequest) {
     }
     const { name, email, password, welcomeToken } = parsed.data;
 
-    // Atomically claim the approval token before creating the user.
-    // If two requests race, only one will see changes === 1.
-    const claimed = getDb()
+    // Look up the waitlist entry by token first to validate email BEFORE burning the token
+    const entry = getDb()
       .prepare(
-        "UPDATE waitlist SET approval_token = NULL WHERE id = (SELECT id FROM waitlist WHERE approval_token = ? AND approval_token_expires_at > datetime('now'))"
+        `SELECT * FROM waitlist
+         WHERE approval_token = ? AND approval_token_expires_at > datetime('now') AND status = 'approved'`
       )
-      .run(welcomeToken);
+      .get(welcomeToken) as import("@/lib/db/types").WaitlistEntry | undefined;
 
-    if (claimed.changes === 0) {
+    if (!entry) {
       return NextResponse.json({ error: "Invalid or expired approval link" }, { status: 400 });
     }
 
-    // Re-fetch the entry by email since approval_token is now NULL
-    const entry = getDb()
-      .prepare("SELECT * FROM waitlist WHERE email = ? AND status = 'approved'")
-      .get(email) as import("@/lib/db/types").WaitlistEntry | undefined;
+    // Validate email matches the approved entry before consuming the token
+    if (entry.email.toLowerCase() !== email.toLowerCase()) {
+      return NextResponse.json({ error: "Invalid or expired approval link" }, { status: 400 });
+    }
 
-    if (!entry) {
+    // Atomically claim the approval token. If two requests race, only one sees changes === 1.
+    const claimed = getDb()
+      .prepare(
+        `UPDATE waitlist SET approval_token = NULL
+         WHERE id = ? AND approval_token = ?`
+      )
+      .run(entry.id, welcomeToken);
+
+    if (claimed.changes === 0) {
       return NextResponse.json({ error: "Invalid or expired approval link" }, { status: 400 });
     }
 

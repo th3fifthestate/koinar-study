@@ -95,13 +95,10 @@ export function LoginForm() {
         {loading ? "Signing in…" : "Sign in"}
       </button>
 
-      <div className="text-center space-y-1.5">
+      <div className="text-center">
         <p className="text-sm text-stone-500">
           Need an account?{" "}
-          <span className="text-stone-600 font-medium">You'll need an invite link.</span>
-        </p>
-        <p className="text-sm text-stone-400">
-          <Link href="/#request-access" className="underline underline-offset-2 hover:text-stone-600">
+          <Link href="/" className="text-stone-600 font-medium underline underline-offset-2 hover:text-stone-800">
             Request access
           </Link>
         </p>

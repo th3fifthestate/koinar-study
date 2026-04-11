@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { getInviteCode, createVerificationCode } from "@/lib/db/queries";
 import { sendVerificationCode } from "@/lib/email/resend";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// 3 verification emails per IP per minute
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 3 });
 
 function generateVerificationCode(): string {
   const bytes = randomBytes(3);
@@ -19,10 +23,18 @@ function redactEmail(email: string): string {
 }
 
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
     const { token } = await params;
     const invite = getInviteCode(token);
     if (!invite || !invite.is_active || invite.used_by !== null) {
@@ -31,6 +43,7 @@ export async function POST(
 
     const code = generateVerificationCode();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+    // createVerificationCode now invalidates prior codes in a transaction
     createVerificationCode(invite.id, invite.invitee_email, code, expiresAt);
 
     await sendVerificationCode({ to: invite.invitee_email, code });

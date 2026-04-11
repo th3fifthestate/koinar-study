@@ -162,19 +162,32 @@ export function getInviteCountForUser(userId: number, days: number): number {
 
 // ─── Email verification queries ───────────────────────────────────────────────
 
+/** Invalidate all prior unverified codes for this invite, then insert a new one. */
 export function createVerificationCode(
   inviteCodeId: number,
   email: string,
   code: string,
   expiresAt: string
 ): number {
-  const result = getDb()
-    .prepare(
-      `INSERT INTO email_verification_codes (invite_code_id, email, code, expires_at)
-       VALUES (?, ?, ?, ?)`
-    )
-    .run(inviteCodeId, email, code, expiresAt);
-  return result.lastInsertRowid as number;
+  const db = getDb();
+  let id: number;
+  db.transaction(() => {
+    // Expire any outstanding codes for this invite to prevent code accumulation
+    db.prepare(
+      `UPDATE email_verification_codes
+       SET expires_at = datetime('now', '-1 second')
+       WHERE invite_code_id = ? AND verified = 0 AND expires_at > datetime('now')`
+    ).run(inviteCodeId);
+
+    id = db
+      .prepare(
+        `INSERT INTO email_verification_codes (invite_code_id, email, code, expires_at)
+         VALUES (?, ?, ?, ?)`
+      )
+      .run(inviteCodeId, email, code, expiresAt)
+      .lastInsertRowid as number;
+  })();
+  return id!;
 }
 
 export function getVerificationCode(

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { EmailForm } from "../components/email-form";
+import { AboutAuth } from "../components/about-auth";
+import Link from "next/link";
 import { ScrollHint } from "../components/scroll-hint";
 import { DustMotes, LightShift } from "../components/fx";
 
@@ -40,6 +41,14 @@ export function AboutClient() {
 
   return (
     <div className="bg-stone-50 text-stone-900 overflow-x-hidden font-body">
+      {/* Navigation */}
+      <Link
+        href="/"
+        className="fixed top-6 left-7 md:top-8 md:left-12 xl:left-20 z-[100] font-display text-[0.95rem] font-[800] uppercase tracking-[0.25em] text-[rgba(247,246,243,0.7)] no-underline transition-colors duration-250 ease-out hover:text-[rgba(247,246,243,1)]"
+      >
+        Koinar
+      </Link>
+
       {/* ============================================================
          SECTION 1: Hero — Full viewport archway
          ============================================================ */}
@@ -209,10 +218,7 @@ export function AboutClient() {
             </p>
 
             <div className="reveal--form flex flex-col items-center gap-4 w-full">
-              <p className="font-body text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[rgba(247,246,243,0.4)] mb-5">
-                Coming soon.
-              </p>
-              <EmailForm />
+              <AboutAuth />
               <p className="font-body text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[rgba(247,246,243,0.3)] mt-1">
                 By invitation.
               </p>

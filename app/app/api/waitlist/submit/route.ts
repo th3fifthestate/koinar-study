@@ -2,6 +2,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createWaitlistEntry, getWaitlistByEmail } from "@/lib/db/queries";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// 5 submissions per IP per minute
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 });
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -11,6 +15,14 @@ const schema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {

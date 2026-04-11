@@ -2,7 +2,7 @@
 
 import { useEffect, useSyncExternalStore, useCallback } from "react";
 import Link from "next/link";
-import { EmailForm } from "./components/email-form";
+import { LandingAuth } from "./components/landing-auth";
 import { ScrollHint } from "./components/scroll-hint";
 import {
   DustMotes,
@@ -279,10 +279,7 @@ export function TeaserClient() {
           </p>
 
           <div className="reveal--form reveal-d2 flex flex-col items-center gap-4 w-full">
-            <p className="font-body text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[rgba(247,246,243,0.4)] mb-5">
-              Coming soon.
-            </p>
-            <EmailForm />
+            <LandingAuth />
             <p className="font-body text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[rgba(247,246,243,0.3)] mt-1">
               By invitation.
             </p>

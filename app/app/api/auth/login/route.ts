@@ -12,13 +12,14 @@ const loginSchema = z.object({
 });
 
 // Pre-computed valid argon2id hash for timing-safe non-existent user path.
-// Initialized at module load time so it's ready on first request.
+// Eagerly initialized at module load so no timing difference on first request.
 let DUMMY_HASH: string | null = null;
+const dummyHashReady = hashPassword("__koinar_dummy_password__").then((h) => {
+  DUMMY_HASH = h;
+});
 async function getDummyHash(): Promise<string> {
-  if (!DUMMY_HASH) {
-    DUMMY_HASH = await hashPassword("__koinar_dummy_password__");
-  }
-  return DUMMY_HASH;
+  if (!DUMMY_HASH) await dummyHashReady;
+  return DUMMY_HASH!;
 }
 
 export async function POST(request: NextRequest) {
@@ -42,11 +43,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (isAccountLocked(user.id)) {
-      const minutesRemaining = getLockoutMinutesRemaining(user.id);
-      return NextResponse.json(
-        { error: `Account temporarily locked. Try again in ${minutesRemaining} minute${minutesRemaining !== 1 ? "s" : ""}.` },
-        { status: 423 }
-      );
+      // Return generic 401 to prevent user enumeration via distinct lockout status
+      const dummyHash = await getDummyHash();
+      await verifyPassword(dummyHash, password);
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
     const valid = await verifyPassword(user.password_hash, password);

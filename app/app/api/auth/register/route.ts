@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getInviteCode, getUserByEmail, getUserByUsername, createUser, markInviteCodeUsed } from "@/lib/db/queries";
+import { getInviteCode, getUserByEmail, getUserByUsername, createUser } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
@@ -63,16 +63,39 @@ export async function POST(request: NextRequest) {
     }
 
     const passwordHash = await hashPassword(password);
-    const userId = createUser({
-      username,
-      email,
-      password_hash: passwordHash,
-      display_name: invite.invitee_name,
-      invited_by: invite.created_by,
-      is_approved: 1,
-    });
 
-    markInviteCodeUsed(inviteToken, userId);
+    // Wrap user creation + invite consumption in a transaction to prevent races
+    const db = getDb();
+    let userId: number;
+    try {
+      userId = db.transaction(() => {
+        const uid = db
+          .prepare(
+            `INSERT INTO users (username, email, password_hash, display_name, invited_by, is_approved)
+             VALUES (?, ?, ?, ?, ?, ?)`
+          )
+          .run(username, email, passwordHash, invite.invitee_name, invite.created_by, 1)
+          .lastInsertRowid as number;
+
+        const claimed = db
+          .prepare(
+            `UPDATE invite_codes SET used_by = ?, used_at = datetime('now'), is_active = 0
+             WHERE code = ? AND is_active = 1`
+          )
+          .run(uid, inviteToken);
+
+        if (claimed.changes !== 1) {
+          throw new Error("INVITE_ALREADY_USED");
+        }
+
+        return uid;
+      })();
+    } catch (txErr: unknown) {
+      if (txErr instanceof Error && txErr.message === "INVITE_ALREADY_USED") {
+        return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
+      }
+      throw txErr;
+    }
 
     const session = await getSession();
     session.userId = userId;
