@@ -1,5 +1,9 @@
+// app/app/api/auth/logout/route.ts
 import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
 
 export async function POST() {
-  return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+  const session = await getSession();
+  session.destroy();
+  return NextResponse.json({ success: true });
 }
