@@ -4,34 +4,45 @@ import type {
   Category,
   EmailVerificationCode,
   InviteCode,
+  SafeUser,
   Study,
   StudyGiftCode,
   User,
   WaitlistEntry,
 } from './types';
 
+const SAFE_USER_COLUMNS = `id, username, email, display_name, bio, avatar_url, is_admin, is_approved, invited_by, onboarding_completed, created_at, last_login`;
+
 // ─── User queries ────────────────────────────────────────────────────────────
 
-/** Returns the full User row including password_hash and api_key_encrypted. Strip sensitive fields before including in any API response. */
-export function getUserById(id: number): User | null {
+export function getUserById(id: number): SafeUser | null {
   return (
-    (getDb().prepare('SELECT * FROM users WHERE id = ?').get(id) as User | undefined) ?? null
+    (getDb().prepare(`SELECT ${SAFE_USER_COLUMNS} FROM users WHERE id = ?`).get(id) as SafeUser | undefined) ?? null
   );
 }
 
-export function getUserByEmail(email: string): User | null {
+export function getUserByEmail(email: string): SafeUser | null {
+  return (
+    (getDb()
+      .prepare(`SELECT ${SAFE_USER_COLUMNS} FROM users WHERE email = ?`)
+      .get(email) as SafeUser | undefined) ?? null
+  );
+}
+
+export function getUserByUsername(username: string): SafeUser | null {
+  return (
+    (getDb()
+      .prepare(`SELECT ${SAFE_USER_COLUMNS} FROM users WHERE username = ?`)
+      .get(username) as SafeUser | undefined) ?? null
+  );
+}
+
+/** Returns full User row including password_hash for auth flows ONLY. Never expose to API responses. */
+export function getUserForAuth(email: string): User | null {
   return (
     (getDb()
       .prepare('SELECT * FROM users WHERE email = ?')
       .get(email) as User | undefined) ?? null
-  );
-}
-
-export function getUserByUsername(username: string): User | null {
-  return (
-    (getDb()
-      .prepare('SELECT * FROM users WHERE username = ?')
-      .get(username) as User | undefined) ?? null
   );
 }
 
@@ -87,12 +98,14 @@ export function createInviteCode(data: {
   return result.lastInsertRowid as number;
 }
 
-export function markInviteCodeUsed(code: string, usedBy: number): void {
-  getDb()
+export function markInviteCodeUsed(code: string, usedBy: number): boolean {
+  const result = getDb()
     .prepare(
-      `UPDATE invite_codes SET used_by = ?, used_at = datetime('now'), is_active = 0 WHERE code = ?`
+      `UPDATE invite_codes SET used_by = ?, used_at = datetime('now'), is_active = 0
+       WHERE code = ? AND is_active = 1`
     )
     .run(usedBy, code);
+  return result.changes === 1;
 }
 
 export function getInviteCountForUser(userId: number, days: number): number {
@@ -133,7 +146,10 @@ export function getVerificationCode(
   return (
     (getDb()
       .prepare(
-        'SELECT * FROM email_verification_codes WHERE invite_code_id = ? AND code = ?'
+        `SELECT * FROM email_verification_codes
+         WHERE invite_code_id = ? AND code = ?
+           AND verified = 0
+           AND expires_at > datetime('now')`
       )
       .get(inviteCodeId, code) as EmailVerificationCode | undefined) ?? null
   );
@@ -171,13 +187,33 @@ export function getActiveGiftCodesForUser(userId: number): StudyGiftCode[] {
     .all(userId) as StudyGiftCode[];
 }
 
-export function decrementGiftCodeUse(id: number): boolean {
-  const result = getDb()
-    .prepare(
-      'UPDATE study_gift_codes SET uses_remaining = uses_remaining - 1 WHERE id = ? AND uses_remaining > 0'
-    )
-    .run(id);
-  return result.changes === 1;
+/**
+ * Atomically consume one use of a gift code. Returns the gift code row if
+ * successful, null if the code has no remaining uses or has expired.
+ * Combines read + decrement in a single transaction to prevent TOCTOU races.
+ */
+export function consumeGiftCode(
+  id: number,
+  format: 'simple' | 'standard' | 'comprehensive'
+): StudyGiftCode | null {
+  const database = getDb();
+  let consumed: StudyGiftCode | null = null;
+  database.transaction(() => {
+    const result = database
+      .prepare(
+        `UPDATE study_gift_codes
+         SET uses_remaining = uses_remaining - 1
+         WHERE id = ? AND format_locked = ? AND uses_remaining > 0
+           AND (expires_at IS NULL OR expires_at > datetime('now'))`
+      )
+      .run(id, format);
+    if (result.changes === 1) {
+      consumed = database
+        .prepare('SELECT * FROM study_gift_codes WHERE id = ?')
+        .get(id) as StudyGiftCode;
+    }
+  })();
+  return consumed;
 }
 
 // ─── Study queries ────────────────────────────────────────────────────────────

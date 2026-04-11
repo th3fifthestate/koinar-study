@@ -20,6 +20,9 @@ export interface User {
   last_login: string | null;
 }
 
+/** User row without sensitive fields. Safe to pass to API responses. */
+export type SafeUser = Omit<User, 'password_hash' | 'api_key_encrypted' | 'locked_until' | 'failed_login_attempts'>;
+
 export interface Session {
   id: number;
   user_id: number;
