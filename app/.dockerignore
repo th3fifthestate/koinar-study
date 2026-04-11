@@ -1,0 +1,42 @@
+# Dependencies (rebuilt in Docker)
+node_modules
+npm-debug.log*
+
+# Build output (rebuilt in Docker)
+.next
+out
+dist
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# Database files
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in image)
+README.md
+CLAUDE.md
+AGENTS.md
+LICENSE
+
+# TypeScript build info
+*.tsbuildinfo

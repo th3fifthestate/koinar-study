@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "mockup-server",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "/Users/davidgeorge/Desktop/study-app/app-designs/coming-soon", "--no-clipboard"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "koinar-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/davidgeorge/Desktop/study-app/app",
+      "port": 3001
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+:root {
+  --stone-50: #f7f6f3;
+  --stone-100: #edebe6;
+  --stone-200: #ddd9d0;
+  --stone-300: #c4bfb3;
+  --stone-700: #5c564a;
+  --stone-900: #2c2924;
+  --sage-300: #a8b8a0;
+  --sage-500: #6b8060;
+  --sage-700: #3d4f35;
+  --warmth: #c49a6c;
+
+  --background: var(--stone-50);
+  --foreground: var(--stone-900);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-stone-50: var(--stone-50);
+  --color-stone-100: var(--stone-100);
+  --color-stone-200: var(--stone-200);
+  --color-stone-300: var(--stone-300);
+  --color-stone-700: var(--stone-700);
+  --color-stone-900: var(--stone-900);
+  --color-sage-300: var(--sage-300);
+  --color-sage-500: var(--sage-500);
+  --color-sage-700: var(--sage-700);
+  --color-warmth: var(--warmth);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-sans: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Georgia, serif;
+}
+
+/* ========================================================================
+   KEN BURNS — Alternating directions
+   ======================================================================== */
+@keyframes kenBurns {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  100% { transform: scale(1.08) translate3d(-0.8%, -0.5%, 0); }
+}
+
+@keyframes kenBurnsAlt {
+  0% { transform: scale(1.08) translate3d(-0.8%, -0.5%, 0); }
+  100% { transform: scale(1) translate3d(0, 0, 0); }
+}
+
+/* ========================================================================
+   SCROLL HINT
+   ======================================================================== */
+@keyframes fadeInHint {
+  to { opacity: 1; }
+}
+
+@keyframes bobDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* ========================================================================
+   CINEMAGRAPH FX
+   ======================================================================== */
+@keyframes dustFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate3d(30px, 50vh, 0) scale(1.2); opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translate3d(-20px, 110vh, 0) scale(0.8); opacity: 0; }
+}
+
+@keyframes candleFlicker {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  25% { opacity: 1; transform: scale(1.02); }
+  50% { opacity: 0.5; transform: scale(0.98); }
+  75% { opacity: 0.9; transform: scale(1.01); }
+}
+
+@keyframes steamRise {
+  0% { transform: translate3d(0, 0, 0) scaleX(1); opacity: 0; }
+  15% { opacity: 0.7; }
+  50% { transform: translate3d(8px, -50px, 0) scaleX(1.4); opacity: 0.4; }
+  100% { transform: translate3d(-5px, -120px, 0) scaleX(2); opacity: 0; }
+}
+
+@keyframes lightShift {
+  0%, 100% { opacity: 0.3; transform: scale(1) translate3d(0, 0, 0); }
+  50% { opacity: 1; transform: scale(1.1) translate3d(2%, -1%, 0); }
+}
+
+/* ========================================================================
+   SCROLL REVEAL
+   ======================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 150ms; }
+.reveal-d2 { transition-delay: 300ms; }
+.reveal-d3 { transition-delay: 450ms; }
+.reveal-d4 { transition-delay: 600ms; }
+.reveal-d5 { transition-delay: 800ms; }
+
+.reveal--scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 1000ms ease-out, transform 1000ms ease-out;
+}
+.reveal--scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal--form {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 900ms ease-out 200ms, transform 900ms ease-out 200ms;
+}
+.reveal--form.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal--image {
+  opacity: 0;
+  transition: opacity 1000ms ease-out;
+}
+.reveal--image.visible {
+  opacity: 1;
+}
+
+/* ========================================================================
+   FORM STATES
+   ======================================================================== */
+@keyframes sageGlow {
+  0% { box-shadow: 0 0 0 0 rgba(107, 128, 96, 0.4); }
+  50% { box-shadow: 0 0 16px 4px rgba(107, 128, 96, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(107, 128, 96, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ========================================================================
+   REDUCED MOTION
+   ======================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-snap-type: none !important; scroll-behavior: auto !important; }
+
+  .reveal,
+  .reveal--scale,
+  .reveal--form,
+  .reveal--image {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
