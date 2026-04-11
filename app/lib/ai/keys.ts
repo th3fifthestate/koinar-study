@@ -7,7 +7,7 @@ const ALGORITHM = "aes-256-gcm";
 const SALT = "koinar-api-keys-v1";
 
 function deriveKey(): Buffer {
-  return scryptSync(config.session.secret, SALT, 32);
+  return scryptSync(config.encryption.key, SALT, 32);
 }
 
 export function encryptApiKey(plaintext: string): string {
