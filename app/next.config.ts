@@ -38,6 +38,16 @@ const nextConfig: NextConfig = {
   // Remove the "X-Powered-By: Next.js" header — no need to advertise the framework
   poweredByHeader: false,
 
+  // Native Node modules that cannot be bundled by webpack
+  serverExternalPackages: ["better-sqlite3", "argon2"],
+
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.r2.dev" },
+      { protocol: "https", hostname: "images.koinar.app" },
+    ],
+  },
+
   headers: async () => [
     {
       source: "/(.*)",

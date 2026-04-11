@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Literata } from "next/font/google";
+import { Bodoni_Moda, Literata, Geist } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
 import { PageTransition } from "./components/page-transition";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const bodoniModa = Bodoni_Moda({
   subsets: ["latin"],
@@ -60,11 +65,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bodoniModa.variable} ${literata.variable} antialiased`}
+      className={cn("antialiased", bodoniModa.variable, literata.variable, "font-sans", geist.variable)}
+      suppressHydrationWarning
     >
       <body className="min-h-dvh font-body">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <PageTransition>{children}</PageTransition>
-        </body>
+          <Toaster position="bottom-right" richColors />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
