@@ -70,6 +70,7 @@ export async function POST(request: Request) {
 
   let apiKey: string;
   let isByok = false;
+  let pendingGiftCode: { code: string; format: typeof format } | null = null;
 
   if (userRow.api_key_encrypted) {
     // BYOK user — decrypt and use their key (unlimited generations)
@@ -108,14 +109,8 @@ export async function POST(request: Request) {
         { status: 403 }
       );
     }
-    // Atomically consume one use (TOCTOU-safe transaction)
-    const consumed = consumeGiftCode(validCode.code, format);
-    if (!consumed) {
-      return NextResponse.json(
-        { error: "Gift code expired or depleted" },
-        { status: 403 }
-      );
-    }
+    // Store gift code info — consumption deferred to onFinish after study is saved
+    pendingGiftCode = { code: validCode.code, format };
     const platformKey = config.ai.anthropicApiKey;
     if (!platformKey) {
       return NextResponse.json(
@@ -139,7 +134,7 @@ export async function POST(request: Request) {
     prompt,
     tools: studyTools,
     stopWhen: stepCountIs(30),
-    onFinish: async ({ text, usage, steps }) => {
+    onFinish: async ({ text, totalUsage, steps }) => {
       const duration = Date.now() - startTime;
 
       // Parse json-metadata block
@@ -177,8 +172,9 @@ export async function POST(request: Request) {
       ];
 
       // Estimated cost (Opus 4.6: $5/MTok input, $25/MTok output)
-      const inputTokens = usage?.inputTokens ?? 0;
-      const outputTokens = usage?.outputTokens ?? 0;
+      // totalUsage aggregates across all steps; usage is last step only
+      const inputTokens = totalUsage?.inputTokens ?? 0;
+      const outputTokens = totalUsage?.outputTokens ?? 0;
       const estimatedCost =
         (inputTokens / 1_000_000) * 5 + (outputTokens / 1_000_000) * 25;
 
@@ -205,9 +201,13 @@ export async function POST(request: Request) {
           }),
         });
 
-        // Set tags
-        if (metadata.tags.length > 0) {
-          setStudyTags(studyId, metadata.tags);
+        // Set tags (validate length before storing)
+        const safeTags = metadata.tags
+          .filter((t): t is string => typeof t === "string")
+          .map((t) => t.slice(0, 50))
+          .slice(0, 20);
+        if (safeTags.length > 0) {
+          setStudyTags(studyId, safeTags);
         }
 
         // Set category
@@ -217,6 +217,14 @@ export async function POST(request: Request) {
             getDb()
               .prepare("UPDATE studies SET category_id = ? WHERE id = ?")
               .run(category.id, studyId);
+          }
+        }
+
+        // Consume gift code AFTER study is saved successfully
+        if (pendingGiftCode) {
+          const consumed = consumeGiftCode(pendingGiftCode.code, pendingGiftCode.format);
+          if (!consumed) {
+            console.error("[generate/onFinish] Gift code consumption failed after study saved");
           }
         }
       } catch (error) {

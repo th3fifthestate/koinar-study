@@ -2,10 +2,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getUserByEmail, getUserByUsername, createUser } from "@/lib/db/queries";
+import { getUserByEmail, getUserByUsername } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// 5 registration attempts per IP per 5 minutes
+const isRateLimited = createRateLimiter({ windowMs: 300_000, max: 5 });
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -20,6 +24,14 @@ function generateUsername(name: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "300" } }
+      );
+    }
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
@@ -71,13 +83,18 @@ export async function POST(request: NextRequest) {
     }
 
     const passwordHash = await hashPassword(password);
-    const userId = createUser({
-      username,
-      email,
-      password_hash: passwordHash,
-      display_name: entry.name,
-      is_approved: 1,
-    });
+
+    // Wrap user creation in a transaction to ensure atomicity
+    const db = getDb();
+    const userId = db.transaction(() => {
+      return db
+        .prepare(
+          `INSERT INTO users (username, email, password_hash, display_name, is_approved)
+           VALUES (?, ?, ?, ?, ?)`
+        )
+        .run(username, email, passwordHash, entry.name, 1)
+        .lastInsertRowid as number;
+    })();
 
     const session = await getSession();
     session.userId = userId;
@@ -88,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      user: { id: userId, username, displayName: entry.name },
+      user: { username, displayName: entry.name },
     });
   } catch (err) {
     console.error("[POST /api/auth/register-welcome]", err);

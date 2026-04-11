@@ -14,12 +14,33 @@ let db: Database.Database | null = g.__appDb ?? null;
  * quoted string literals (e.g. VALUES ('foo;bar')). Safe for schema constants.
  */
 function runStatements(database: Database.Database, sql: string): void {
-  const statements = sql
-    .split(';')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+  // Split on semicolons, but respect BEGIN...END blocks (used in triggers).
+  const statements: string[] = [];
+  let current = '';
+  let inBlock = false;
+  for (const line of sql.split('\n')) {
+    const trimmed = line.trim().toUpperCase();
+    current += line + '\n';
+    if (!inBlock && trimmed.endsWith('BEGIN')) {
+      inBlock = true;
+    } else if (inBlock && trimmed === 'END;') {
+      statements.push(current.trim());
+      current = '';
+      inBlock = false;
+    } else if (!inBlock && line.includes(';')) {
+      const parts = current.split(';');
+      for (let i = 0; i < parts.length - 1; i++) {
+        const s = parts[i].trim();
+        if (s.length > 0) statements.push(s);
+      }
+      current = parts[parts.length - 1];
+    }
+  }
+  const last = current.trim();
+  if (last.length > 0) statements.push(last.replace(/;$/, ''));
+
   for (const stmt of statements) {
-    database.prepare(stmt).run();
+    if (stmt.length > 0) database.prepare(stmt).run();
   }
 }
 
@@ -56,6 +77,17 @@ function runMigration(database: Database.Database): void {
       runStatements(database, SEED_CATEGORIES);
     }
 
+    // v1 → v2: Populate FTS5 index from existing studies
+    if (currentVersion >= 1 && currentVersion < 2) {
+      const count = (database.prepare('SELECT COUNT(*) as c FROM studies').get() as { c: number }).c;
+      if (count > 0) {
+        database.prepare(
+          `INSERT INTO studies_fts(rowid, title, summary, content_markdown)
+           SELECT id, title, summary, content_markdown FROM studies`
+        ).run();
+      }
+    }
+
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
       .run(SCHEMA_VERSION);
@@ -87,5 +119,6 @@ export function closeDb(): void {
   if (db) {
     db.close();
     db = null;
+    g.__appDb = undefined;
   }
 }

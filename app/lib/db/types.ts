@@ -120,6 +120,40 @@ export interface Study {
 /** Study row without large content fields. Safe for list/card views. */
 export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata'>;
 
+/** Enriched study for library cards — includes derived fields from JOINs. */
+export interface StudyListItem {
+  id: number;
+  title: string;
+  slug: string;
+  summary: string | null;
+  format_type: 'simple' | 'standard' | 'comprehensive';
+  translation_used: string;
+  is_public: number;
+  is_featured: number;
+  category_name: string | null;
+  category_slug: string | null;
+  author_display_name: string | null;
+  author_username: string;
+  featured_image_url: string | null;
+  favorite_count: number;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+/** Full study with all related data for the reader view. */
+export interface StudyDetail extends Study {
+  category_name: string | null;
+  category_slug: string | null;
+  author_display_name: string | null;
+  author_username: string;
+  featured_image_url: string | null;
+  favorite_count: number;
+  annotation_count: number;
+  tags: string[];
+  images: StudyImage[];
+}
+
 export interface StudyTag {
   id: number;
   study_id: number;

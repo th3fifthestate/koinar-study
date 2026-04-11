@@ -7,7 +7,10 @@ import type {
   SafeUser,
   Session,
   Study,
+  StudyDetail,
   StudyGiftCode,
+  StudyImage,
+  StudyListItem,
   StudySummary,
   User,
   WaitlistEntry,
@@ -336,25 +339,209 @@ export function createStudy(data: {
   category_id?: number;
   generation_metadata?: string;
 }): number {
-  const result = getDb()
-    .prepare(
-      `INSERT INTO studies
-         (title, slug, content_markdown, summary, format_type, translation_used,
-          created_by, category_id, generation_metadata)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    )
-    .run(
-      data.title,
-      data.slug,
-      data.content_markdown,
-      data.summary ?? null,
-      data.format_type,
-      data.translation_used,
-      data.created_by,
-      data.category_id ?? null,
-      data.generation_metadata ?? null
-    );
-  return result.lastInsertRowid as number;
+  const stmt = getDb().prepare(
+    `INSERT INTO studies
+       (title, slug, content_markdown, summary, format_type, translation_used,
+        created_by, category_id, generation_metadata)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  const params = [
+    data.title,
+    data.slug,
+    data.content_markdown,
+    data.summary ?? null,
+    data.format_type,
+    data.translation_used,
+    data.created_by,
+    data.category_id ?? null,
+    data.generation_metadata ?? null,
+  ];
+
+  // Retry with random suffix on UNIQUE constraint violation (slug collision)
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const slug = attempt === 0
+        ? data.slug
+        : `${data.slug.slice(0, 80)}-${Math.random().toString(36).slice(2, 6)}`;
+      params[1] = slug;
+      return stmt.run(...params).lastInsertRowid as number;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('UNIQUE constraint') && msg.includes('slug') && attempt < 2) {
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error('Failed to create study after slug collision retries');
+}
+
+// ─── Library queries (enriched with JOINs) ───────────────────────────────────
+
+export interface GetStudiesOptions {
+  page?: number;
+  limit?: number;
+  category?: string;
+  q?: string;
+  sort?: 'newest' | 'oldest' | 'popular';
+  format_type?: string;
+  userId?: number; // for user-specific studies; omit for public only
+}
+
+export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListItem[]; totalCount: number } {
+  const db = getDb();
+  const page = opts.page ?? 1;
+  const limit = Math.min(opts.limit ?? 20, 50);
+  const offset = (page - 1) * limit;
+
+  const conditions: string[] = [];
+  const params: (string | number)[] = [];
+
+  // Visibility: either public or user's own
+  if (opts.userId) {
+    conditions.push('(s.is_public = 1 OR s.created_by = ?)');
+    params.push(opts.userId);
+  } else {
+    conditions.push('s.is_public = 1');
+  }
+
+  if (opts.category) {
+    conditions.push('c.slug = ?');
+    params.push(opts.category);
+  }
+
+  if (opts.format_type) {
+    conditions.push('s.format_type = ?');
+    params.push(opts.format_type);
+  }
+
+  let ftsJoin = '';
+  if (opts.q && opts.q.trim().length > 0) {
+    ftsJoin = 'INNER JOIN studies_fts ON studies_fts.rowid = s.id';
+    conditions.push('studies_fts MATCH ?');
+    // Escape FTS5 special characters and add prefix matching
+    const safeQuery = opts.q.trim().replace(/['"*(){}[\]^~\\:]/g, '').slice(0, 200);
+    params.push(safeQuery);
+  }
+
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  let orderBy: string;
+  switch (opts.sort) {
+    case 'oldest':
+      orderBy = 'ORDER BY s.created_at ASC';
+      break;
+    case 'popular':
+      orderBy = 'ORDER BY favorite_count DESC, s.created_at DESC';
+      break;
+    default:
+      orderBy = 'ORDER BY s.created_at DESC';
+  }
+
+  // Count query
+  const countSql = `
+    SELECT COUNT(*) as total
+    FROM studies s
+    LEFT JOIN categories c ON c.id = s.category_id
+    ${ftsJoin}
+    ${where}
+  `;
+  const countParams = [...params];
+  const { total } = db.prepare(countSql).get(...countParams) as { total: number };
+
+  // Main query with enriched fields
+  const sql = `
+    SELECT
+      s.id, s.title, s.slug, s.summary, s.format_type, s.translation_used,
+      s.is_public, s.is_featured, s.created_at, s.updated_at,
+      c.name AS category_name, c.slug AS category_slug,
+      u.display_name AS author_display_name, u.username AS author_username,
+      (SELECT image_url FROM study_images si WHERE si.study_id = s.id ORDER BY si.sort_order LIMIT 1) AS featured_image_url,
+      (SELECT COUNT(*) FROM favorites f WHERE f.study_id = s.id) AS favorite_count
+    FROM studies s
+    LEFT JOIN categories c ON c.id = s.category_id
+    INNER JOIN users u ON u.id = s.created_by
+    ${ftsJoin}
+    ${where}
+    ${orderBy}
+    LIMIT ? OFFSET ?
+  `;
+  const rows = db.prepare(sql).all(...params, limit, offset) as (Omit<StudyListItem, 'tags'>)[];
+
+  // Batch-fetch tags for all studies in the result set
+  const studies: StudyListItem[] = rows.map((row) => {
+    const tags = db
+      .prepare('SELECT tag_name FROM study_tags WHERE study_id = ? ORDER BY tag_name')
+      .all(row.id) as { tag_name: string }[];
+    return { ...row, tags: tags.map((t) => t.tag_name) };
+  });
+
+  return { studies, totalCount: total };
+}
+
+/**
+ * Full study with all related data for the reader view.
+ * Returns null if study doesn't exist or isn't accessible.
+ */
+export function getStudyDetail(slug: string, userId?: number): StudyDetail | null {
+  const db = getDb();
+
+  const row = db.prepare(`
+    SELECT
+      s.*,
+      c.name AS category_name, c.slug AS category_slug,
+      u.display_name AS author_display_name, u.username AS author_username,
+      (SELECT image_url FROM study_images si WHERE si.study_id = s.id ORDER BY si.sort_order LIMIT 1) AS featured_image_url,
+      (SELECT COUNT(*) FROM favorites f WHERE f.study_id = s.id) AS favorite_count,
+      (SELECT COUNT(*) FROM annotations a WHERE a.study_id = s.id AND a.is_public = 1) AS annotation_count
+    FROM studies s
+    LEFT JOIN categories c ON c.id = s.category_id
+    INNER JOIN users u ON u.id = s.created_by
+    WHERE s.slug = ?
+  `).get(slug) as (Study & {
+    category_name: string | null;
+    category_slug: string | null;
+    author_display_name: string | null;
+    author_username: string;
+    featured_image_url: string | null;
+    favorite_count: number;
+    annotation_count: number;
+  }) | undefined;
+
+  if (!row) return null;
+
+  // Check visibility
+  if (!row.is_public && row.created_by !== userId) return null;
+
+  const tags = db
+    .prepare('SELECT tag_name FROM study_tags WHERE study_id = ? ORDER BY tag_name')
+    .all(row.id) as { tag_name: string }[];
+
+  const images = db
+    .prepare('SELECT * FROM study_images WHERE study_id = ? ORDER BY sort_order')
+    .all(row.id) as StudyImage[];
+
+  return {
+    ...row,
+    tags: tags.map((t) => t.tag_name),
+    images,
+  };
+}
+
+/** Check if a user has favorited a specific study */
+export function isStudyFavorited(userId: number, studyId: number): boolean {
+  const row = getDb()
+    .prepare('SELECT 1 FROM favorites WHERE user_id = ? AND study_id = ?')
+    .get(userId, studyId);
+  return !!row;
+}
+
+/** Get the count of favorites for a study */
+export function getStudyFavoriteCount(studyId: number): number {
+  const row = getDb()
+    .prepare('SELECT COUNT(*) as count FROM favorites WHERE study_id = ?')
+    .get(studyId) as { count: number };
+  return row.count;
 }
 
 // ─── Category queries ─────────────────────────────────────────────────────────

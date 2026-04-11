@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -172,6 +172,31 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
   version INTEGER PRIMARY KEY,
   applied_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE VIRTUAL TABLE IF NOT EXISTS studies_fts USING fts5(
+  title,
+  summary,
+  content_markdown,
+  content='studies',
+  content_rowid='id'
+);
+
+CREATE TRIGGER IF NOT EXISTS studies_fts_insert AFTER INSERT ON studies BEGIN
+  INSERT INTO studies_fts(rowid, title, summary, content_markdown)
+  VALUES (new.id, new.title, new.summary, new.content_markdown);
+END;
+
+CREATE TRIGGER IF NOT EXISTS studies_fts_update AFTER UPDATE OF title, summary, content_markdown ON studies BEGIN
+  INSERT INTO studies_fts(studies_fts, rowid, title, summary, content_markdown)
+  VALUES ('delete', old.id, old.title, old.summary, old.content_markdown);
+  INSERT INTO studies_fts(rowid, title, summary, content_markdown)
+  VALUES (new.id, new.title, new.summary, new.content_markdown);
+END;
+
+CREATE TRIGGER IF NOT EXISTS studies_fts_delete AFTER DELETE ON studies BEGIN
+  INSERT INTO studies_fts(studies_fts, rowid, title, summary, content_markdown)
+  VALUES ('delete', old.id, old.title, old.summary, old.content_markdown);
+END;
 `;
 
 export const CREATE_INDEXES = `

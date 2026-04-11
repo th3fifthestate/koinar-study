@@ -6,6 +6,10 @@ import { getInviteCode, getUserByEmail, getUserByUsername, createUser } from "@/
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// 5 registration attempts per IP per 5 minutes
+const isRateLimited = createRateLimiter({ windowMs: 300_000, max: 5 });
 
 const registerSchema = z.object({
   name: z.string().min(2).max(100),
@@ -20,6 +24,14 @@ function generateUsername(name: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "300" } }
+      );
+    }
+
     const body = await request.json();
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
@@ -106,7 +118,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      user: { id: userId, username, displayName: invite.invitee_name },
+      user: { username, displayName: invite.invitee_name },
     });
   } catch (err) {
     console.error("[POST /api/auth/register]", err);

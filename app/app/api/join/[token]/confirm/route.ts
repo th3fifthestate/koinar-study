@@ -1,7 +1,7 @@
 // app/app/api/join/[token]/confirm/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getInviteCode, getVerificationCode, incrementVerificationAttempts, markVerificationVerified } from "@/lib/db/queries";
+import { getInviteCode, markVerificationVerified } from "@/lib/db/queries";
 import { getDb } from "@/lib/db/connection";
 
 const confirmSchema = z.object({
@@ -26,18 +26,30 @@ export async function POST(
       return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
     }
 
-    const verification = getVerificationCode(invite.id, code);
-    if (!verification) {
+    // Atomic: increment attempts and check code in a single transaction
+    const db = getDb();
+    const verification = db.transaction(() => {
       // Increment attempts on the latest unverified code for this invite
-      const latest = getDb()
-        .prepare(
-          `SELECT id FROM email_verification_codes
-           WHERE invite_code_id = ? AND verified = 0
-           ORDER BY created_at DESC LIMIT 1`
-        )
-        .get(invite.id) as { id: number } | undefined;
-      if (latest) incrementVerificationAttempts(latest.id);
+      db.prepare(
+        `UPDATE email_verification_codes
+         SET attempts = attempts + 1
+         WHERE invite_code_id = ? AND verified = 0
+           AND expires_at > datetime('now') AND attempts < 5`
+      ).run(invite.id);
 
+      // Now check if the code matches (with updated attempt count still under limit)
+      return db
+        .prepare(
+          `SELECT * FROM email_verification_codes
+           WHERE invite_code_id = ? AND code = ?
+             AND verified = 0
+             AND expires_at > datetime('now')
+             AND attempts <= 5`
+        )
+        .get(invite.id, code) as import("@/lib/db/types").EmailVerificationCode | undefined;
+    })();
+
+    if (!verification) {
       return NextResponse.json({ error: "Invalid or expired code" }, { status: 400 });
     }
 

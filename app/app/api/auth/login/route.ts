@@ -2,9 +2,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getUserForAuth } from "@/lib/db/queries";
-import { verifyPassword, isAccountLocked, recordFailedLogin, resetFailedLogins, getLockoutMinutesRemaining, hashPassword } from "@/lib/auth/password";
+import { verifyPassword, isAccountLocked, recordFailedLogin, resetFailedLogins, hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+
+// 10 login attempts per IP per minute
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 10 });
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -24,6 +28,14 @@ async function getDummyHash(): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
@@ -72,7 +84,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       user: {
-        id: user.id,
         username: user.username,
         displayName: user.display_name,
         isAdmin: user.is_admin === 1,
