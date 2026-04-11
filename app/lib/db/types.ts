@@ -86,6 +86,7 @@ export interface Category {
   sort_order: number;
 }
 
+/** Parsed shape of Study.generation_metadata JSON — not a direct table row. */
 export interface StudyGenerationMetadata {
   model: string;
   input_tokens: number;
@@ -171,4 +172,9 @@ export interface AdminAction {
   target_id: number | null;
   details: string | null;
   created_at: string;
+}
+
+export interface SchemaMigration {
+  version: number;
+  applied_at: string;
 }
