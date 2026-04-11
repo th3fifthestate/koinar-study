@@ -76,14 +76,14 @@ export function createInviteCode(data: {
   created_by: number;
   invitee_name: string;
   invitee_email: string;
-  linked_study_id: number;
+  linked_study_id?: number | null;
 }): number {
   const result = getDb()
     .prepare(
       `INSERT INTO invite_codes (code, created_by, invitee_name, invitee_email, linked_study_id)
        VALUES (?, ?, ?, ?, ?)`
     )
-    .run(data.code, data.created_by, data.invitee_name, data.invitee_email, data.linked_study_id);
+    .run(data.code, data.created_by, data.invitee_name, data.invitee_email, data.linked_study_id ?? null);
   return result.lastInsertRowid as number;
 }
 
@@ -96,6 +96,9 @@ export function markInviteCodeUsed(code: string, usedBy: number): void {
 }
 
 export function getInviteCountForUser(userId: number, days: number): number {
+  if (!Number.isFinite(days) || days <= 0) {
+    throw new Error(`getInviteCountForUser: days must be a positive finite number, got ${days}`);
+  }
   const modifier = `-${Math.floor(days)} days`;
   const row = getDb()
     .prepare(
@@ -168,12 +171,13 @@ export function getActiveGiftCodesForUser(userId: number): StudyGiftCode[] {
     .all(userId) as StudyGiftCode[];
 }
 
-export function decrementGiftCodeUse(id: number): void {
-  getDb()
+export function decrementGiftCodeUse(id: number): boolean {
+  const result = getDb()
     .prepare(
       'UPDATE study_gift_codes SET uses_remaining = uses_remaining - 1 WHERE id = ? AND uses_remaining > 0'
     )
     .run(id);
+  return result.changes === 1;
 }
 
 // ─── Study queries ────────────────────────────────────────────────────────────
