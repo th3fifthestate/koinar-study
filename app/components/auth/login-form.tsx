@@ -39,7 +39,7 @@ export function LoginForm() {
         return;
       }
 
-      router.push("/library");
+      router.push("/");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

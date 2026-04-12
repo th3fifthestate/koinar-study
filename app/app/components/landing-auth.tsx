@@ -243,7 +243,7 @@ function SignInForm({ onBack }: { onBack: () => void }) {
         return;
       }
 
-      router.push("/library");
+      router.push("/");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
