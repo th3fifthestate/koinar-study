@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import type { StudyDetail } from '@/lib/db/types';
+import type { StudyDetail, StudyEntityAnnotation } from '@/lib/db/types';
 import { useReadingProgress } from '@/lib/hooks/use-reading-progress';
 import { useActiveHeading } from '@/lib/hooks/use-active-heading';
 import { ReadingProgress } from './reading-progress';
@@ -16,6 +16,7 @@ interface StudyReaderProps {
   study: StudyDetail;
   isFavorited: boolean;
   isLoggedIn: boolean;
+  entityAnnotations?: StudyEntityAnnotation[];
 }
 
 function extractHeadings(markdown: string): HeadingItem[] {
@@ -42,7 +43,7 @@ function extractHeadings(markdown: string): HeadingItem[] {
   return headings;
 }
 
-export function StudyReader({ study, isFavorited, isLoggedIn }: StudyReaderProps) {
+export function StudyReader({ study, isFavorited, isLoggedIn, entityAnnotations: _entityAnnotations }: StudyReaderProps) {
   const [fontSize, setFontSize] = useState<FontSize>('medium');
   const [showCommunityAnnotations, setShowCommunityAnnotations] = useState(false);
 
