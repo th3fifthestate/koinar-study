@@ -175,7 +175,11 @@ function parseFile(filePath: string): PersonEntry[] {
         // Col 4: count
         const countStr = (cols[4] ?? '').trim();
         const count = parseInt(countStr, 10);
-        if (!isNaN(count)) current.verseCount = count;
+        if (isNaN(count)) {
+          console.warn(`  Could not parse verse count for: ${current.displayName}`);
+        } else {
+          current.verseCount = count;
+        }
       }
       continue;
     }
@@ -269,7 +273,7 @@ async function main() {
   const top100Ids = new Set(top100.map(e => toEntityId(e.unifiedName)));
 
   // 3. Initialize DB (creates tables if needed)
-  getDb();
+  const db = getDb();
 
   // 4. Insert all 100 entities + verse refs + citations
   let totalVerseRefs = 0;
@@ -278,6 +282,7 @@ async function main() {
   const allRefs: Omit<EntityVerseRef, 'id' | 'created_at'>[] = [];
   const citations: { entity_id: string; source_name: string; source_ref: string; source_url: string; content_field: 'general'; excerpt: null }[] = [];
 
+  db.transaction(() => {
   for (const entry of top100) {
     const entityId = toEntityId(entry.unifiedName);
 
@@ -353,6 +358,7 @@ async function main() {
   }
 
   insertCitations(citations);
+  })();
 
   console.log(`Inserted/updated 100 entities`);
   console.log(`Inserted ${totalVerseRefs} verse refs`);
@@ -363,6 +369,7 @@ async function main() {
   // 5. Insert relationships (only where both IDs exist in top 100)
   let relCount = 0;
 
+  db.transaction(() => {
   for (const entry of top100) {
     const fromId = toEntityId(entry.unifiedName);
 
@@ -430,6 +437,7 @@ async function main() {
       }
     }
   }
+  })();
 
   console.log(`Inserted ${relCount} relationships`);
   console.log('Import complete.');
