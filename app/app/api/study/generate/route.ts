@@ -18,6 +18,9 @@ import { config } from "@/lib/config";
 import { generateSlug } from "@/lib/utils/slug";
 import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
+import crypto from 'crypto';
+import { stripEntityAnnotations } from '@/lib/entities/strip-annotations';
+import { insertStudyAnnotations } from '@/lib/db/entities/queries';
 
 // 5 generations per 5-minute window per user
 const rateLimiter = createRateLimiter({ windowMs: 300_000, max: 5 });
@@ -138,16 +141,27 @@ export async function POST(request: Request) {
       const duration = Date.now() - startTime;
 
       // Parse json-metadata block
+      interface EntityAnnotationMeta {
+        surface: string;
+        entity_id: string;
+      }
+
       let metadata = {
         category: "topical",
         tags: [] as string[],
         topic: prompt,
         summary: "",
       };
+      let metaEntityAnnotations: EntityAnnotationMeta[] = [];
+
       const metadataMatch = text.match(/```json-metadata\s*\n([\s\S]*?)\n```/);
       if (metadataMatch) {
         try {
-          metadata = { ...metadata, ...(JSON.parse(metadataMatch[1]) as typeof metadata) };
+          const parsed = JSON.parse(metadataMatch[1]) as typeof metadata & {
+            entity_annotations?: EntityAnnotationMeta[];
+          };
+          metadata = { ...metadata, ...parsed };
+          metaEntityAnnotations = parsed.entity_annotations ?? [];
         } catch {
           // Use defaults if JSON parsing fails
         }
@@ -157,11 +171,19 @@ export async function POST(request: Request) {
       const titleMatch = text.match(/^#\s+(.+)$/m);
       const title = titleMatch ? titleMatch[1].trim() : prompt.slice(0, 100);
 
-      // Strip metadata and verification-audit blocks from stored content
-      const cleanContent = text
+      // Strip metadata and verification-audit blocks first (these live at the end of the text)
+      const textWithoutCodeBlocks = text
         .replace(/```json-metadata[\s\S]*?```/g, "")
         .replace(/```verification-audit[\s\S]*?```/g, "")
         .trim();
+
+      // Strip entity annotation markers and compute character offsets
+      // Offsets are relative to the final stored markdown (after code block removal)
+      const { cleanMarkdown: cleanContent, annotations: inlineAnnotations } =
+        stripEntityAnnotations(textWithoutCodeBlocks);
+
+      // SHA-256 of the stored content — used for annotation cache invalidation
+      const contentHash = crypto.createHash('sha256').update(cleanContent).digest('hex');
 
       // Collect unique tool names from all steps
       const toolsCalled = [
@@ -226,6 +248,26 @@ export async function POST(request: Request) {
           if (!consumed) {
             console.error("[generate/onFinish] Gift code consumption failed after study saved");
           }
+        }
+
+        // Insert entity annotations (after study saved so studyId is available)
+        if (inlineAnnotations.length > 0) {
+          insertStudyAnnotations(
+            inlineAnnotations.map((a) => ({
+              study_id: studyId,
+              entity_id: a.entity_id,
+              surface_text: a.surface_text,
+              start_offset: a.start_offset,
+              end_offset: a.end_offset,
+              content_hash: contentHash,
+              annotation_source: 'ai_generation' as const,
+            }))
+          );
+        } else {
+          // render_fallback annotator will handle this study on first page load
+          console.warn(
+            `[generate/onFinish] No inline entity annotations found for study "${title}" (id: ${studyId})`
+          );
         }
       } catch (error) {
         console.error("[generate/onFinish] Failed to save study:", error);
