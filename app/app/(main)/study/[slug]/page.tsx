@@ -10,7 +10,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const study = getStudyDetail(slug);
+  const session = await getCurrentUser();
+  const study = getStudyDetail(slug, session?.userId);
   if (!study) return { title: 'Study Not Found' };
 
   return {

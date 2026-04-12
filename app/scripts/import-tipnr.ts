@@ -11,11 +11,9 @@ import path from 'path';
 import { getDb } from '../lib/db/connection';
 import {
   upsertEntity,
-  insertVerseRefs,
-  insertCitations,
   insertRelationship,
 } from '../lib/db/entities/queries';
-import type { EntityVerseRef, EntityRelationship } from '../lib/db/types';
+import type { EntityVerseRef } from '../lib/db/types';
 
 // ==============================
 // Book abbreviation map
@@ -283,81 +281,95 @@ async function main() {
   const citations: { entity_id: string; source_name: string; source_ref: string; source_url: string; content_field: 'general'; excerpt: null }[] = [];
 
   db.transaction(() => {
-  for (const entry of top100) {
-    const entityId = toEntityId(entry.unifiedName);
+    for (const entry of top100) {
+      const entityId = toEntityId(entry.unifiedName);
 
-    // Build summary from first paragraph of article
-    const firstPara = entry.article
-      ? stripHtml(entry.article.split('¶')[0].trim())
-      : null;
+      // Build summary from first paragraph of article
+      const firstPara = entry.article
+        ? stripHtml(entry.article.split('¶')[0].trim())
+        : null;
 
-    // Build full_profile from article with paragraph breaks
-    const fullProfile = entry.article
-      ? stripHtml(entry.article.replace(/¶/g, '\n\n'))
-      : null;
+      // Build full_profile from article with paragraph breaks
+      const fullProfile = entry.article
+        ? stripHtml(entry.article.replace(/¶/g, '\n\n'))
+        : null;
 
-    upsertEntity({
-      id: entityId,
-      entity_type: 'person',
-      canonical_name: entry.displayName,
-      aliases: null,
-      quick_glance: entry.shortDesc || null,
-      summary: firstPara || null,
-      full_profile: fullProfile || null,
-      hebrew_name: entry.hebrewName || null,
-      greek_name: entry.greekName || null,
-      disambiguation_note: null,
-      date_range: null,
-      geographic_context: null,
-      source_verified: 1,
-      tipnr_id: entry.tipnrId,
-    });
-
-    // Parse verse refs — deduplicate within this entity
-    const seenRefs = new Set<string>();
-    for (const refStr of entry.verseRefs) {
-      const parsed = parseVerseRef(refStr);
-      if (!parsed) {
-        // Only count as error if it looks like it should be a verse ref
-        if (refStr.match(/\w+\.\d+\.\d+/)) {
-          parseErrors++;
-        }
-        continue;
-      }
-      const key = `${parsed.book}:${parsed.chapter}:${parsed.verse_start}`;
-      if (seenRefs.has(key)) continue;
-      seenRefs.add(key);
-
-      allRefs.push({
-        entity_id: entityId,
-        book: parsed.book,
-        chapter: parsed.chapter,
-        verse_start: parsed.verse_start,
-        verse_end: parsed.verse_end,
-        surface_text: null,
-        confidence: 'high',
-        source: 'tipnr',
+      upsertEntity({
+        id: entityId,
+        entity_type: 'person',
+        canonical_name: entry.displayName,
+        aliases: null,
+        quick_glance: entry.shortDesc || null,
+        summary: firstPara || null,
+        full_profile: fullProfile || null,
+        hebrew_name: entry.hebrewName || null,
+        greek_name: entry.greekName || null,
+        disambiguation_note: null,
+        date_range: null,
+        geographic_context: null,
+        source_verified: 1,
+        tipnr_id: entry.tipnrId,
       });
-      totalVerseRefs++;
+
+      // Parse verse refs — deduplicate within this entity
+      const seenRefs = new Set<string>();
+      for (const refStr of entry.verseRefs) {
+        const parsed = parseVerseRef(refStr);
+        if (!parsed) {
+          if (refStr.match(/\w+\.\d+\.\d+/)) {
+            parseErrors++;
+          }
+          continue;
+        }
+        const key = `${parsed.book}:${parsed.chapter}:${parsed.verse_start}`;
+        if (seenRefs.has(key)) continue;
+        seenRefs.add(key);
+
+        allRefs.push({
+          entity_id: entityId,
+          book: parsed.book,
+          chapter: parsed.chapter,
+          verse_start: parsed.verse_start,
+          verse_end: parsed.verse_end,
+          surface_text: null,
+          confidence: 'high',
+          source: 'tipnr',
+        });
+        totalVerseRefs++;
+      }
+
+      citations.push({
+        entity_id: entityId,
+        source_name: 'TIPNR Dataset',
+        source_ref: 'Tyndale House Cambridge (AI-generated, scholar-reviewed)',
+        source_url: 'https://github.com/STEPBible/STEPBible-Data',
+        content_field: 'general',
+        excerpt: null,
+      });
     }
 
-    citations.push({
-      entity_id: entityId,
-      source_name: 'TIPNR Dataset',
-      source_ref: 'Tyndale House Cambridge (AI-generated, scholar-reviewed)',
-      source_url: 'https://github.com/STEPBible/STEPBible-Data',
-      content_field: 'general',
-      excerpt: null,
-    });
-  }
+    // Inline verse ref inserts (avoid nested transaction from insertVerseRefs)
+    const refStmt = db.prepare(
+      `INSERT OR IGNORE INTO entity_verse_refs (entity_id, book, chapter, verse_start, verse_end, surface_text, confidence, source)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    );
+    for (const ref of allRefs) {
+      refStmt.run(ref.entity_id, ref.book, ref.chapter, ref.verse_start, ref.verse_end, ref.surface_text ?? null, ref.confidence, ref.source);
+    }
 
-  // Batch insert verse refs in chunks to avoid SQLite limits
-  const CHUNK_SIZE = 500;
-  for (let i = 0; i < allRefs.length; i += CHUNK_SIZE) {
-    insertVerseRefs(allRefs.slice(i, i + CHUNK_SIZE));
-  }
+    // Inline citation inserts (avoid nested transaction from insertCitations)
+    const citStmt = db.prepare(
+      `INSERT OR IGNORE INTO entity_citations (entity_id, source_name, source_ref, source_url, content_field, excerpt)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    );
+    for (const c of citations) {
+      citStmt.run(c.entity_id, c.source_name, c.source_ref, c.source_url, c.content_field, c.excerpt);
+    }
 
-  insertCitations(citations);
+    // Touch updated_at for all affected entities
+    const touchStmt = db.prepare("UPDATE entities SET updated_at = datetime('now') WHERE id = ?");
+    const uniqueEntityIds = [...new Set(allRefs.map((r) => r.entity_id))];
+    for (const id of uniqueEntityIds) touchStmt.run(id);
   })();
 
   console.log(`Inserted/updated 100 entities`);

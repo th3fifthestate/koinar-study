@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useReducedMotion } from 'framer-motion';
 
 interface ImageSectionProps {
@@ -13,11 +14,13 @@ export function ImageSection({ imageUrl, caption, index }: ImageSectionProps) {
 
   return (
     <figure className="my-10 -mx-4 md:mx-0">
-      <div className="relative overflow-hidden rounded-lg">
-        <img
+      <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[400px]">
+        <Image
           src={imageUrl}
           alt={caption || 'Study illustration'}
-          className="h-[300px] w-full object-cover md:h-[400px]"
+          fill
+          sizes="(max-width: 768px) 100vw, 720px"
+          className="object-cover"
           style={
             prefersReducedMotion
               ? undefined

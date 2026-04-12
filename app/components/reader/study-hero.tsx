@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 
 interface StudyHeroProps {
@@ -27,10 +28,13 @@ export function StudyHero({ imageUrl, title }: StudyHeroProps) {
         style={prefersReducedMotion ? undefined : { y }}
         className="absolute inset-0"
       >
-        <img
+        <Image
           src={imageUrl}
           alt={`Hero image for ${title}`}
-          className="h-full w-full object-cover"
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
           style={
             prefersReducedMotion
               ? undefined

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "import:tipnr": "tsx scripts/import-tipnr.ts",
+    "seed:entities": "tsx scripts/seed-entities.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
@@ -42,6 +44,7 @@
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

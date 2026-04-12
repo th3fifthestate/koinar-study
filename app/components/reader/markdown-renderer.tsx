@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, type ReactNode, type ComponentType } from 'react';
+import { useMemo, useRef, type ReactNode, type ComponentType } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { StudyImage } from '@/lib/db/types';
@@ -36,40 +36,38 @@ function extractTextContent(children: ReactNode): string {
   return '';
 }
 
-const slugCounters = new Map<string, number>();
+function createSlugify() {
+  const counters = new Map<string, number>();
+  return {
+    slugify(children: ReactNode): string {
+      const text = extractTextContent(children);
+      const base = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
 
-function slugify(children: ReactNode): string {
-  const text = extractTextContent(children);
-  const base = text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-
-  const count = slugCounters.get(base) ?? 0;
-  slugCounters.set(base, count + 1);
-  return count === 0 ? base : `${base}-${count}`;
-}
-
-function resetSlugCounters() {
-  slugCounters.clear();
+      const count = counters.get(base) ?? 0;
+      counters.set(base, count + 1);
+      return count === 0 ? base : `${base}-${count}`;
+    },
+    reset() {
+      counters.clear();
+    },
+  };
 }
 
 function isOriginalLanguage(text: string): boolean {
   return /[GH]\d{1,5}/.test(text) || /[\u0370-\u03FF\u0590-\u05FF]/.test(text);
 }
 
-// Detect verse reference patterns: "John 3:16", "1 Corinthians 2:1-5", etc.
-const VERSE_REF_PATTERN = /\b(\d?\s?[A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s+(\d+):(\d+(?:-\d+)?)\b/g;
-
+/** Wrap verse reference patterns in a plain text string */
 function wrapCrossReferences(text: string): ReactNode {
+  const pattern = /\b(\d?\s?[A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s+(\d+):(\d+(?:-\d+)?)\b/g;
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
-  // Reset regex state
-  VERSE_REF_PATTERN.lastIndex = 0;
-
-  while ((match = VERSE_REF_PATTERN.exec(text)) !== null) {
+  while ((match = pattern.exec(text)) !== null) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
@@ -87,6 +85,26 @@ function wrapCrossReferences(text: string): ReactNode {
   }
 
   return parts.length > 1 ? parts : text;
+}
+
+/** Recursively walk React children tree and wrap verse references in text nodes */
+function wrapCrossReferencesInChildren(children: ReactNode): ReactNode {
+  if (typeof children === 'string') {
+    return wrapCrossReferences(children);
+  }
+  if (typeof children === 'number') {
+    return wrapCrossReferences(String(children));
+  }
+  if (Array.isArray(children)) {
+    return children.map((child, i) => {
+      const wrapped = wrapCrossReferencesInChildren(child);
+      if (Array.isArray(wrapped)) {
+        return <span key={i}>{wrapped}</span>;
+      }
+      return wrapped;
+    });
+  }
+  return children;
 }
 
 // ─── Section splitting for image interspersion ────────────────────────────────
@@ -126,16 +144,17 @@ function buildSections(content: string, images: StudyImage[]): ContentSection[] 
   return sections;
 }
 
-// ─── Cross-reference section detection ────────────────────────────────────────
-
-let inCrossRefSection = false;
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function MarkdownRenderer({ content, images, fontSize }: MarkdownRendererProps) {
   const sections = useMemo(() => buildSections(content, images), [content, images]);
 
+  // Instance-scoped state — safe across concurrent SSR renders
+  const slugRef = useRef(createSlugify());
+  const crossRefSectionRef = useRef(false);
+
   const components = useMemo(() => {
+    const { slugify } = slugRef.current;
     // Type helper for react-markdown component props
     type MdProps = { children?: ReactNode; node?: unknown; [key: string]: unknown };
 
@@ -151,7 +170,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
       h2: ({ children, node, ...props }: MdProps) => {
         const id = slugify(children);
         const text = extractTextContent(children);
-        inCrossRefSection = /cross.?ref/i.test(text);
+        crossRefSectionRef.current = /cross.?ref/i.test(text);
         return (
           <h2 id={id} className="scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 border-b border-[var(--stone-200)] pb-2 dark:border-[var(--stone-700)]" {...props}>
             {children}
@@ -161,7 +180,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
       h3: ({ children, node, ...props }: MdProps) => {
         const id = slugify(children);
         const text = extractTextContent(children);
-        inCrossRefSection = /cross.?ref/i.test(text);
+        crossRefSectionRef.current = /cross.?ref/i.test(text);
         return (
           <h3 id={id} className="scroll-mt-24 font-display text-2xl font-normal mt-8 mb-3" {...props}>
             {children}
@@ -184,12 +203,10 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         if (text.startsWith('\u26f0\ufe0f')) {
           return <HistoricalContext>{children}</HistoricalContext>;
         }
-        // In cross-reference sections, wrap verse references
-        if (inCrossRefSection && typeof children === 'string') {
-          const wrapped = wrapCrossReferences(children);
-          if (wrapped !== children) {
-            return <p className="mb-4 leading-relaxed" {...props}>{wrapped}</p>;
-          }
+        // In cross-reference sections, walk the children tree to wrap verse references
+        if (crossRefSectionRef.current) {
+          const wrapped = wrapCrossReferencesInChildren(children);
+          return <p className="mb-4 leading-relaxed" {...props}>{wrapped}</p>;
         }
         return <p className="mb-4 leading-relaxed" {...props}>{children}</p>;
       },
@@ -258,10 +275,11 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
           );
         }
 
-        // Reset slug counters at start of each render pass
-        if (i === 0) resetSlugCounters();
-        // Reset cross-ref section tracking at start
-        if (i === 0) inCrossRefSection = false;
+        // Reset instance-scoped state at start of each render pass
+        if (i === 0) {
+          slugRef.current.reset();
+          crossRefSectionRef.current = false;
+        }
 
         return (
           <MarkdownHooks
