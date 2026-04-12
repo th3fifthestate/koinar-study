@@ -180,14 +180,48 @@ At the very end of the study, output a JSON metadata block wrapped in a markdown
   "category": "topical",
   "tags": ["love", "agape", "1 corinthians", "new testament"],
   "topic": "The Meaning of Agape Love",
-  "summary": "A comprehensive study exploring the Greek word agape (G26) and its usage throughout the New Testament, examining how this self-sacrificial love is demonstrated in key passages from 1 Corinthians 13, John 3:16, and Romans 5:8."
+  "summary": "A comprehensive study exploring the Greek word agape (G26) and its usage throughout the New Testament, examining how this self-sacrificial love is demonstrated in key passages from 1 Corinthians 13, John 3:16, and Romans 5:8.",
+  "entity_annotations": [
+    {"surface": "Herod the Great", "entity_id": "HEROD_GREAT"},
+    {"surface": "Pharisees", "entity_id": "PHARISEES"},
+    {"surface": "the temple", "entity_id": "JERUSALEM_TEMPLE"}
+  ]
 }
 \`\`\`
+
+entity_annotations is a structured list of all inline [text]{entity:ID} markers you used in the study body. Include every annotation you made, in order of first appearance.
 
 Category must be one of: old-testament, new-testament, topical, people, word-studies, book-studies, prophecy, wisdom, gospel, letters
 
 Tags should be 3-8 lowercase terms relevant to the study content.
 Summary should be 2-3 sentences describing what the study covers.`;
+
+const ENTITY_ANNOTATIONS = `## Entity Annotations
+
+When you mention a biblical person, place, culture, custom, time period, or key concept for the FIRST TIME in the study, annotate it using this syntax:
+
+[Display Text]{entity:ENTITY_ID}
+
+ENTITY_ID format: UPPERCASE_WITH_UNDERSCORES. Use the most specific identifier possible.
+
+Examples:
+- [Herod the Great]{entity:HEROD_GREAT} was the Roman-appointed king of Judea.
+- The [Pharisees]{entity:PHARISEES} challenged Jesus in [the temple]{entity:JERUSALEM_TEMPLE}.
+- During the [Babylonian Exile]{entity:BABYLONIAN_PERIOD}, the people of [Judah]{entity:JUDAH_KINGDOM} were deported.
+- The practice of [circumcision]{entity:CIRCUMCISION} was central to the covenant.
+
+Rules:
+1. Only annotate the FIRST mention of each unique entity in the study.
+2. The display text inside [] MUST match what you would naturally write without annotations. Do not alter your writing to accommodate annotations.
+3. Use specific entity IDs that disambiguate shared names:
+   - "Herod" in Matthew 2 → HEROD_GREAT
+   - "Herod" in Luke 23 → HEROD_ANTIPAS
+   - "James" the apostle → JAMES_SON_OF_ZEBEDEE
+   - "James" the brother of Jesus → JAMES_BROTHER_OF_JESUS
+4. Do NOT annotate: pronouns (he, she, they), generic references ("the people", "the land"), or God/Jesus/the Holy Spirit (these are not knowledge-base entities).
+5. Do NOT annotate references within scripture blockquotes (> blocks). Only annotate your own prose.
+6. If you are unsure which specific entity a name refers to, use the most general form: HEROD (not HEROD_GREAT) and note the ambiguity.
+7. Aim for 10-30 annotations per study depending on length and entity density. Do not over-annotate — only significant entities that would benefit from background context.`;
 
 const FORMAT_GUIDANCE: Record<string, string> = {
   simple: `This is a SIMPLE study. Be focused and accessible while maintaining rigor. Include:
@@ -226,6 +260,7 @@ export function getSystemPrompt(format: string): string {
     "## Context Verification Checklist\n\n" + CHECKLIST,
     TEMPLATES,
     OUTPUT_FORMAT,
+    ENTITY_ANNOTATIONS,
     "## Format-Specific Guidance\n\n" + formatGuidance,
   ].join("\n\n---\n\n");
 }
