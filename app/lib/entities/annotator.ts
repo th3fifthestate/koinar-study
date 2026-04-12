@@ -79,6 +79,8 @@ interface EntityCache {
 }
 
 let _cache: EntityCache | null = null;
+let _lastCacheCheckAt = 0;
+const CACHE_CHECK_INTERVAL_MS = 60_000;
 
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -129,15 +131,21 @@ function buildCache(): EntityCache {
 }
 
 function getEntityCache(): EntityCache {
+  const now = Date.now();
+  if (_cache && now - _lastCacheCheckAt < CACHE_CHECK_INTERVAL_MS) {
+    return _cache;
+  }
   if (_cache) {
-    // One lightweight staleness check per call
+    // Throttled staleness check — runs at most once per 60s
     const db = getDb();
     const row = db
       .prepare('SELECT MAX(updated_at) AS max_updated_at FROM entities')
       .get() as { max_updated_at: string | null };
+    _lastCacheCheckAt = now;
     if ((row.max_updated_at ?? '') === _cache.maxUpdatedAt) return _cache;
   }
   _cache = buildCache();
+  _lastCacheCheckAt = now;
   return _cache;
 }
 
@@ -228,8 +236,12 @@ export async function annotateStudyIfNeeded(
   // 1. Check existing annotations
   const existing = getAnnotationsForStudy(studyId);
   if (existing.length > 0) {
-    if (existing[0].content_hash === contentHash) return existing; // cache hit
-    // Hash mismatch — content changed, re-annotate
+    // AI-generated annotations take priority — don't overwrite with render fallback
+    const hasAiAnnotations = existing.some((a) => a.annotation_source === 'ai_generation');
+    // Cache hit if any annotation matches the current content hash (skip nulls)
+    const hashMatches = existing.some((a) => a.content_hash != null && a.content_hash === contentHash);
+    if (hashMatches || hasAiAnnotations) return existing;
+    // Hash mismatch on render-fallback annotations — content changed, re-annotate
     deleteAnnotationsForStudy(studyId);
   }
 

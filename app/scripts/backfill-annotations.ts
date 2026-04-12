@@ -1,6 +1,7 @@
 // app/scripts/backfill-annotations.ts
 // Run with: npm run backfill:annotations
 
+import 'dotenv/config';
 import { getDb } from '../lib/db/connection';
 import { annotateStudyIfNeeded } from '../lib/entities/annotator';
 import type { Study } from '../lib/db/types';

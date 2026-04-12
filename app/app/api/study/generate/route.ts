@@ -252,17 +252,35 @@ export async function POST(request: Request) {
 
         // Insert entity annotations (after study saved so studyId is available)
         if (inlineAnnotations.length > 0) {
-          insertStudyAnnotations(
-            inlineAnnotations.map((a) => ({
-              study_id: studyId,
-              entity_id: a.entity_id,
-              surface_text: a.surface_text,
-              start_offset: a.start_offset,
-              end_offset: a.end_offset,
-              content_hash: contentHash,
-              annotation_source: 'ai_generation' as const,
-            }))
+          // Filter out entity IDs that don't exist in the DB to avoid FK constraint failures
+          const annotationEntityIds = [...new Set(inlineAnnotations.map((a) => a.entity_id))];
+          const placeholders = annotationEntityIds.map(() => '?').join(',');
+          const knownIds = new Set(
+            (getDb()
+              .prepare(`SELECT id FROM entities WHERE id IN (${placeholders})`)
+              .all(...annotationEntityIds) as { id: string }[]).map((r) => r.id)
           );
+          const safeAnnotations = inlineAnnotations.filter((a) => knownIds.has(a.entity_id));
+
+          if (safeAnnotations.length < inlineAnnotations.length) {
+            console.warn(
+              `[generate/onFinish] Filtered ${inlineAnnotations.length - safeAnnotations.length} annotations with unknown entity IDs`
+            );
+          }
+
+          if (safeAnnotations.length > 0) {
+            insertStudyAnnotations(
+              safeAnnotations.map((a) => ({
+                study_id: studyId,
+                entity_id: a.entity_id,
+                surface_text: a.surface_text,
+                start_offset: a.start_offset,
+                end_offset: a.end_offset,
+                content_hash: contentHash,
+                annotation_source: 'ai_generation' as const,
+              }))
+            );
+          }
         } else {
           // render_fallback annotator will handle this study on first page load
           console.warn(

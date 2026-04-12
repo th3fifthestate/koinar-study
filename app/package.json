@@ -8,7 +8,9 @@
     "start": "next start",
     "import:tipnr": "tsx scripts/import-tipnr.ts",
     "seed:entities": "tsx scripts/seed-entities.ts",
-    "backfill:annotations": "tsx scripts/backfill-annotations.ts"
+    "backfill:annotations": "tsx scripts/backfill-annotations.ts",
+    "generate:entities": "tsx scripts/generate-entity-content.ts",
+    "verify:citations": "tsx scripts/verify-entity-citations.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",

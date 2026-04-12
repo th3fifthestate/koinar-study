@@ -6,6 +6,7 @@
  * Run from app/ directory: npx tsx scripts/import-tipnr.ts
  */
 
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { getDb } from '../lib/db/connection';
