@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -197,6 +197,121 @@ CREATE TRIGGER IF NOT EXISTS studies_fts_delete AFTER DELETE ON studies BEGIN
   INSERT INTO studies_fts(studies_fts, rowid, title, summary, content_markdown)
   VALUES ('delete', old.id, old.title, old.summary, old.content_markdown);
 END;
+
+CREATE TABLE IF NOT EXISTS entities (
+  id TEXT PRIMARY KEY,
+  entity_type TEXT NOT NULL CHECK (entity_type IN (
+    'person', 'culture', 'place', 'time_period', 'custom', 'concept'
+  )),
+  canonical_name TEXT NOT NULL,
+  aliases TEXT,
+  quick_glance TEXT,
+  summary TEXT,
+  full_profile TEXT,
+  hebrew_name TEXT,
+  greek_name TEXT,
+  disambiguation_note TEXT,
+  date_range TEXT,
+  geographic_context TEXT,
+  source_verified INTEGER NOT NULL DEFAULT 1,
+  tipnr_id TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS entity_verse_refs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  entity_id TEXT NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  book TEXT NOT NULL,
+  chapter INTEGER NOT NULL,
+  verse_start INTEGER NOT NULL,
+  verse_end INTEGER NOT NULL,
+  surface_text TEXT,
+  confidence TEXT NOT NULL DEFAULT 'high' CHECK (confidence IN ('high', 'medium', 'low')),
+  source TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS entity_citations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  entity_id TEXT NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  source_name TEXT NOT NULL,
+  source_ref TEXT,
+  source_url TEXT,
+  content_field TEXT NOT NULL CHECK (content_field IN (
+    'quick_glance', 'summary', 'full_profile', 'general'
+  )),
+  excerpt TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS entity_relationships (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  from_entity_id TEXT NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  to_entity_id TEXT NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  relationship_type TEXT NOT NULL,
+  relationship_label TEXT NOT NULL,
+  bidirectional INTEGER NOT NULL DEFAULT 0,
+  source TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(from_entity_id, to_entity_id, relationship_type)
+);
+
+CREATE TABLE IF NOT EXISTS study_entity_annotations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
+  entity_id TEXT NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
+  surface_text TEXT NOT NULL,
+  start_offset INTEGER NOT NULL,
+  end_offset INTEGER NOT NULL,
+  content_hash TEXT,
+  annotation_source TEXT NOT NULL DEFAULT 'ai_generation' CHECK (
+    annotation_source IN ('ai_generation', 'render_fallback', 'backfill', 'manual')
+  ),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS saved_branch_maps (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
+  name TEXT,
+  nodes TEXT NOT NULL,
+  edges TEXT NOT NULL,
+  layout TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS entities_fts USING fts5(
+  canonical_name,
+  aliases,
+  quick_glance,
+  summary,
+  content='entities',
+  content_rowid='rowid'
+);
+
+CREATE TRIGGER IF NOT EXISTS entities_fts_insert AFTER INSERT ON entities BEGIN
+  INSERT INTO entities_fts(rowid, canonical_name, aliases, quick_glance, summary)
+  VALUES (new.rowid, new.canonical_name, new.aliases, new.quick_glance, new.summary);
+END;
+
+CREATE TRIGGER IF NOT EXISTS entities_fts_update AFTER UPDATE ON entities
+WHEN old.canonical_name != new.canonical_name OR
+     old.aliases IS NOT new.aliases OR
+     old.quick_glance IS NOT new.quick_glance OR
+     old.summary IS NOT new.summary BEGIN
+  INSERT INTO entities_fts(entities_fts, rowid, canonical_name, aliases, quick_glance, summary)
+  VALUES ('delete', old.rowid, old.canonical_name, old.aliases, old.quick_glance, old.summary);
+  INSERT INTO entities_fts(rowid, canonical_name, aliases, quick_glance, summary)
+  VALUES (new.rowid, new.canonical_name, new.aliases, new.quick_glance, new.summary);
+END;
+
+CREATE TRIGGER IF NOT EXISTS entities_fts_delete AFTER DELETE ON entities BEGIN
+  INSERT INTO entities_fts(entities_fts, rowid, canonical_name, aliases, quick_glance, summary)
+  VALUES ('delete', old.rowid, old.canonical_name, old.aliases, old.quick_glance, old.summary);
+END;
 `;
 
 export const CREATE_INDEXES = `
@@ -236,6 +351,21 @@ CREATE INDEX IF NOT EXISTS idx_verse_cache_last_accessed ON verse_cache(last_acc
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON admin_actions(admin_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_target ON admin_actions(target_type, target_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions(created_at);
+CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(entity_type);
+CREATE INDEX IF NOT EXISTS idx_entities_canonical ON entities(canonical_name);
+CREATE INDEX IF NOT EXISTS idx_entities_tipnr ON entities(tipnr_id);
+CREATE INDEX IF NOT EXISTS idx_entities_source_verified ON entities(source_verified);
+CREATE INDEX IF NOT EXISTS idx_entity_verse_refs_entity ON entity_verse_refs(entity_id);
+CREATE INDEX IF NOT EXISTS idx_entity_verse_refs_verse ON entity_verse_refs(book, chapter, verse_start);
+CREATE INDEX IF NOT EXISTS idx_entity_verse_refs_confidence ON entity_verse_refs(confidence);
+CREATE INDEX IF NOT EXISTS idx_entity_citations_entity ON entity_citations(entity_id);
+CREATE INDEX IF NOT EXISTS idx_entity_rels_from ON entity_relationships(from_entity_id);
+CREATE INDEX IF NOT EXISTS idx_entity_rels_to ON entity_relationships(to_entity_id);
+CREATE INDEX IF NOT EXISTS idx_entity_rels_type ON entity_relationships(relationship_type);
+CREATE INDEX IF NOT EXISTS idx_study_entity_annot_study ON study_entity_annotations(study_id);
+CREATE INDEX IF NOT EXISTS idx_study_entity_annot_entity ON study_entity_annotations(entity_id);
+CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_user ON saved_branch_maps(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_study ON saved_branch_maps(study_id, user_id);
 `;
 
 export const SEED_CATEGORIES = `
