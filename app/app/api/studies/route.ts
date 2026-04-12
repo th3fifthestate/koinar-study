@@ -1,10 +1,21 @@
 // app/app/api/studies/route.ts
 import { NextRequest } from 'next/server';
-import { getStudies, getUserFavorites } from '@/lib/db/queries';
+import { getStudies } from '@/lib/db/queries';
 import { getSession } from '@/lib/auth/session';
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+
+// 30 requests per minute per IP (browsing/pagination)
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return Response.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      );
+    }
     const url = request.nextUrl;
     const page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10) || 1);
     const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit') ?? '24', 10) || 24));
@@ -28,28 +39,16 @@ export async function GET(request: NextRequest) {
       userId = session.userId;
     }
 
-    if (favoritesOnly && userId) {
-      // Get all favorited study IDs, then fetch matching studies and filter
-      // TODO: Add studyIds filter to getStudies() for proper DB-level filtering
-      const favStudies = getUserFavorites(userId);
-      const favIds = new Set(favStudies.map((s) => s.id));
-      const result = getStudies({
-        page: 1,
-        limit: 50,
-        category,
-        q,
-        sort: sortValue,
-        format_type,
-        userId,
-      });
-      const filtered = result.studies.filter((s) => favIds.has(s.id));
-      const totalCount = filtered.length;
-      const start = (page - 1) * limit;
-      const paged = filtered.slice(start, start + limit);
-      return Response.json({ studies: paged, totalCount, page, limit });
-    }
-
-    const result = getStudies({ page, limit, category, q, sort: sortValue, format_type });
+    const result = getStudies({
+      page,
+      limit,
+      category,
+      q,
+      sort: sortValue,
+      format_type,
+      userId: favoritesOnly ? userId : undefined,
+      favoritesOfUserId: favoritesOnly ? userId : undefined,
+    });
     return Response.json({ studies: result.studies, totalCount: result.totalCount, page, limit });
   } catch (error) {
     console.error('[GET /api/studies]', error);

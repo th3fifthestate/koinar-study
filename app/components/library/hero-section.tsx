@@ -21,14 +21,15 @@ function getTimeOfDay(): { label: string; greeting: string } {
   return { label: 'Night', greeting: 'Good evening' };
 }
 
-// Placeholder hero images mapped to time periods (Unsplash for MVP)
+// Local placeholder images mapped to time periods.
+// These will be replaced with Flux-generated images on images.koinar.app (R2) once Brief 11 is complete.
 const HERO_IMAGES: Record<string, string> = {
-  Dawn: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&auto=format&fit=crop',
-  Morning: 'https://images.unsplash.com/photo-1547483238-f400e65ccd56?w=1400&auto=format&fit=crop',
-  Midday: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1400&auto=format&fit=crop',
-  'Golden Hour': 'https://images.unsplash.com/photo-1547483238-f400e65ccd56?w=1400&auto=format&fit=crop',
-  Evening: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&auto=format&fit=crop',
-  Night: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1400&auto=format&fit=crop',
+  Dawn: '/images/09-morning-porch.jpeg',
+  Morning: '/images/09-morning-porch.jpeg',
+  Midday: '/images/02-day-coffee-shop.jpeg',
+  'Golden Hour': '/images/05-solomons-portico.jpeg',
+  Evening: '/images/11-stone-archway.jpeg',
+  Night: '/images/11-stone-archway.jpeg',
 };
 
 export function HeroSection({ username, displayName, featuredStudy }: HeroSectionProps) {
@@ -104,7 +105,7 @@ export function HeroSection({ username, displayName, featuredStudy }: HeroSectio
         )}
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-[var(--stone-50)]/25 animate-[drift_2.5s_ease-in-out_infinite]">
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-[var(--stone-50)]/25 motion-safe:animate-[drift_2.5s_ease-in-out_infinite]">
           <span className="text-[10px] uppercase tracking-[0.15em]">Browse Library</span>
           <span className="text-lg">&#8964;</span>
         </div>

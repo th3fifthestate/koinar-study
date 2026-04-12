@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { FavoriteButton } from '@/components/library/favorite-button';
 import type { StudyListItem } from '@/lib/db/types';
@@ -25,14 +25,15 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 };
 
 export function StudyCard({ study, isFavorited, index, isLoggedIn }: StudyCardProps) {
+  const prefersReducedMotion = useReducedMotion();
   const gradientClass =
     CATEGORY_GRADIENTS[study.category_slug ?? ''] ?? 'from-[var(--stone-200)]/30 to-[var(--sage-300)]/15';
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: index * 0.05 }}
     >
       <Link href={`/study/${study.slug}`} className="block group">
         <div className="flex gap-5 p-7 border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[#faf9f7] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]">

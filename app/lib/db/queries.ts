@@ -386,6 +386,7 @@ export interface GetStudiesOptions {
   sort?: 'newest' | 'oldest' | 'popular';
   format_type?: string;
   userId?: number; // for user-specific studies; omit for public only
+  favoritesOfUserId?: number; // filter to only studies favorited by this user
 }
 
 export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListItem[]; totalCount: number } {
@@ -419,9 +420,14 @@ export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListIt
   if (opts.q && opts.q.trim().length > 0) {
     ftsJoin = 'INNER JOIN studies_fts ON studies_fts.rowid = s.id';
     conditions.push('studies_fts MATCH ?');
-    // Escape FTS5 special characters and add prefix matching
     const safeQuery = opts.q.trim().replace(/['"*(){}[\]^~\\:]/g, '').slice(0, 200);
     params.push(safeQuery);
+  }
+
+  let favJoin = '';
+  if (opts.favoritesOfUserId) {
+    favJoin = 'INNER JOIN favorites fav_filter ON fav_filter.study_id = s.id AND fav_filter.user_id = ?';
+    params.push(opts.favoritesOfUserId);
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -444,6 +450,7 @@ export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListIt
     FROM studies s
     LEFT JOIN categories c ON c.id = s.category_id
     ${ftsJoin}
+    ${favJoin}
     ${where}
   `;
   const countParams = [...params];
@@ -462,19 +469,31 @@ export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListIt
     LEFT JOIN categories c ON c.id = s.category_id
     INNER JOIN users u ON u.id = s.created_by
     ${ftsJoin}
+    ${favJoin}
     ${where}
     ${orderBy}
     LIMIT ? OFFSET ?
   `;
   const rows = db.prepare(sql).all(...params, limit, offset) as (Omit<StudyListItem, 'tags'>)[];
 
-  // Batch-fetch tags for all studies in the result set
-  const studies: StudyListItem[] = rows.map((row) => {
-    const tags = db
-      .prepare('SELECT tag_name FROM study_tags WHERE study_id = ? ORDER BY tag_name')
-      .all(row.id) as { tag_name: string }[];
-    return { ...row, tags: tags.map((t) => t.tag_name) };
-  });
+  // Batch-fetch tags for all studies in the result set (single query, not N+1)
+  const studyIds = rows.map((r) => r.id);
+  const tagMap = new Map<number, string[]>();
+  if (studyIds.length > 0) {
+    const placeholders = studyIds.map(() => '?').join(',');
+    const tagRows = db
+      .prepare(`SELECT study_id, tag_name FROM study_tags WHERE study_id IN (${placeholders}) ORDER BY tag_name`)
+      .all(...studyIds) as { study_id: number; tag_name: string }[];
+    for (const t of tagRows) {
+      const arr = tagMap.get(t.study_id) ?? [];
+      arr.push(t.tag_name);
+      tagMap.set(t.study_id, arr);
+    }
+  }
+  const studies: StudyListItem[] = rows.map((row) => ({
+    ...row,
+    tags: tagMap.get(row.id) ?? [],
+  }));
 
   return { studies, totalCount: total };
 }
@@ -488,7 +507,9 @@ export function getStudyDetail(slug: string, userId?: number): StudyDetail | nul
 
   const row = db.prepare(`
     SELECT
-      s.*,
+      s.id, s.title, s.slug, s.content_markdown, s.summary,
+      s.format_type, s.translation_used, s.is_public, s.is_featured,
+      s.created_by, s.category_id, s.generation_metadata, s.created_at, s.updated_at,
       c.name AS category_name, c.slug AS category_slug,
       u.display_name AS author_display_name, u.username AS author_username,
       (SELECT image_url FROM study_images si WHERE si.study_id = s.id ORDER BY si.sort_order LIMIT 1) AS featured_image_url,
@@ -594,6 +615,14 @@ export function getUserFavorites(userId: number): Study[] {
        ORDER BY f.created_at DESC`
     )
     .all(userId) as Study[];
+}
+
+/** Returns just the study IDs a user has favorited. Much cheaper than getUserFavorites(). */
+export function getUserFavoriteIds(userId: number): Set<number> {
+  const rows = getDb()
+    .prepare('SELECT study_id FROM favorites WHERE user_id = ?')
+    .all(userId) as { study_id: number }[];
+  return new Set(rows.map((r) => r.study_id));
 }
 
 // ─── Tags ─────────────────────────────────────────────────────────────────────

@@ -1,11 +1,23 @@
 // app/app/api/studies/[id]/favorite/route.ts
 import { requireAuth } from '@/lib/auth/middleware';
 import { toggleFavorite, getStudyFavoriteCount } from '@/lib/db/queries';
+import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+
+// 20 favorite toggles per minute per IP
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const ip = getClientIp(request);
+  if (isRateLimited(ip)) {
+    return Response.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
+
   const { user, response } = await requireAuth();
   if (response) return response;
 
