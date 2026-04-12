@@ -20,6 +20,8 @@ function isPublicPath(pathname: string): boolean {
   if (pathname.startsWith("/join/")) return true;
   if (pathname.startsWith("/welcome/")) return true;
   if (pathname.startsWith("/api/join/")) return true;
+  if (pathname.startsWith("/api/verses")) return true;
+  if (pathname.startsWith("/study/")) return true;
   if (pathname.startsWith("/_next")) return true;
   if (pathname.startsWith("/fonts")) return true;
   if (pathname.startsWith("/images")) return true;
