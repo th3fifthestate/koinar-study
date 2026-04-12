@@ -18,6 +18,8 @@ app/data/
 *.db-shm
 !app/data/tipnr/
 !app/data/tipnr/**
+!app/data/seeds/
+!app/data/seeds/**
 
 # Build output
 app/dist/
