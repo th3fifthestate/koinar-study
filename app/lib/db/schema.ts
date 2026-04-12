@@ -254,6 +254,7 @@ CREATE TABLE IF NOT EXISTS entity_relationships (
   bidirectional INTEGER NOT NULL DEFAULT 0,
   source TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  -- For bidirectional=1 edges, normalize: always insert with from_entity_id < to_entity_id to prevent symmetric duplicates.
   UNIQUE(from_entity_id, to_entity_id, relationship_type)
 );
 
@@ -298,7 +299,7 @@ CREATE TRIGGER IF NOT EXISTS entities_fts_insert AFTER INSERT ON entities BEGIN
 END;
 
 CREATE TRIGGER IF NOT EXISTS entities_fts_update AFTER UPDATE ON entities
-WHEN old.canonical_name != new.canonical_name OR
+WHEN old.canonical_name IS NOT new.canonical_name OR
      old.aliases IS NOT new.aliases OR
      old.quick_glance IS NOT new.quick_glance OR
      old.summary IS NOT new.summary BEGIN
