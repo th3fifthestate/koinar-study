@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "import:tipnr": "tsx scripts/import-tipnr.ts",
-    "seed:entities": "tsx scripts/seed-entities.ts"
+    "seed:entities": "tsx scripts/seed-entities.ts",
+    "backfill:annotations": "tsx scripts/backfill-annotations.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
