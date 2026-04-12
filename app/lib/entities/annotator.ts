@@ -71,7 +71,8 @@ const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
 interface EntityCache {
   /** Normalized name (lowercase) → all entities with that name or alias */
   nameToEntities: Map<string, Entity[]>;
-  /** Case-insensitive regex for all names, longest patterns first */
+  /** Case-insensitive regex for all names, longest patterns first. ALWAYS clone before use:
+   *  `new RegExp(regex.source, regex.flags)` — the g flag makes lastIndex stateful. */
   regex: RegExp;
   /** max(updated_at) from entities table at time of cache build */
   maxUpdatedAt: string;
@@ -113,6 +114,16 @@ function buildCache(): EntityCache {
   const sortedNames = [...nameToEntities.keys()].sort((a, b) => b.length - a.length);
   const escaped = sortedNames.map(escapeRegex);
   const regex = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+
+  // Warn if any AMBIGUOUS_NAMES candidate IDs are absent from the loaded entity set
+  const entityIds = new Set(entities.map((e) => e.id));
+  for (const [name, config] of Object.entries(AMBIGUOUS_NAMES)) {
+    for (const candidateId of config.candidates) {
+      if (!entityIds.has(candidateId)) {
+        console.warn(`[annotator] AMBIGUOUS_NAMES candidate "${candidateId}" (for "${name}") not found in entities table`);
+      }
+    }
+  }
 
   return { nameToEntities, regex, maxUpdatedAt };
 }
@@ -210,7 +221,9 @@ export async function annotateStudyIfNeeded(
   studyId: number,
   contentMarkdown: string
 ): Promise<StudyEntityAnnotation[]> {
-  const contentHash = crypto.createHash('sha256').update(contentMarkdown).digest('hex');
+  // Normalize CRLF → LF so blockquote offset accounting is consistent
+  const text = contentMarkdown.replace(/\r\n/g, '\n');
+  const contentHash = crypto.createHash('sha256').update(text).digest('hex');
 
   // 1. Check existing annotations
   const existing = getAnnotationsForStudy(studyId);
@@ -224,7 +237,7 @@ export async function annotateStudyIfNeeded(
   const { nameToEntities, regex } = getEntityCache();
 
   // 3. Build excluded ranges (code blocks + blockquote lines)
-  const excludedRanges = getExcludedRanges(contentMarkdown);
+  const excludedRanges = getExcludedRanges(text);
 
   // 4. Match entity names — first mention only, skip excluded ranges
   const toInsert: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
@@ -233,7 +246,7 @@ export async function annotateStudyIfNeeded(
   // Clone regex so matchAll state is independent across calls
   const rx = new RegExp(regex.source, regex.flags);
 
-  for (const match of contentMarkdown.matchAll(rx)) {
+  for (const match of text.matchAll(rx)) {
     const matchedText = match[0];
     const normalizedName = matchedText.toLowerCase();
     const startOffset = match.index!;
@@ -244,7 +257,7 @@ export async function annotateStudyIfNeeded(
     const candidates = nameToEntities.get(normalizedName);
     if (!candidates || candidates.length === 0) continue;
 
-    const entity = disambiguate(normalizedName, candidates, contentMarkdown, startOffset);
+    const entity = disambiguate(normalizedName, candidates, text, startOffset);
     if (!entity) continue;
 
     if (seenEntityIds.has(entity.id)) continue;
