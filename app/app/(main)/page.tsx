@@ -1,6 +1,6 @@
 // app/app/(main)/page.tsx
 import { getSession } from '@/lib/auth/session';
-import { getStudies, getAllCategories, isStudyFavorited } from '@/lib/db/queries';
+import { getStudies, getAllCategories, getUserFavorites } from '@/lib/db/queries';
 import { CornerNav } from '@/components/layout/corner-nav';
 import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/library/hero-section';
@@ -46,19 +46,18 @@ export default async function HomePage({
   // Fetch categories for filter dropdown
   const categories = getAllCategories();
 
-  // Featured study: first is_featured study, or newest study
+  // Featured study: find first is_featured study, or fall back to newest
   let featuredStudy: StudyListItem | null = null;
-  const featuredResult = getStudies({ page: 1, limit: 1, sort: 'newest' });
-  // Check for featured flag
+  const featuredResult = getStudies({ page: 1, limit: 10, sort: 'newest' });
   const featured = featuredResult.studies.find((s) => s.is_featured);
   featuredStudy = featured ?? featuredResult.studies[0] ?? null;
 
-  // User's favorite IDs for initial client state
+  // User's favorite IDs for initial client state (single query, not N+1)
   let userFavoriteIds: number[] = [];
   if (session.userId) {
-    userFavoriteIds = studies
-      .filter((s) => isStudyFavorited(session.userId, s.id))
-      .map((s) => s.id);
+    const favStudies = getUserFavorites(session.userId);
+    const favIdSet = new Set(favStudies.map((s) => s.id));
+    userFavoriteIds = studies.filter((s) => favIdSet.has(s.id)).map((s) => s.id);
   }
 
   // User info for display
@@ -97,6 +96,7 @@ export default async function HomePage({
           {/* Study Grid */}
           <div className="mt-6">
             <StudyGrid
+              key={`${q ?? ''}-${category ?? ''}-${sortValue}-${format_type ?? ''}-${page}`}
               initialStudies={studies}
               totalCount={totalCount}
               userFavoriteIds={userFavoriteIds}

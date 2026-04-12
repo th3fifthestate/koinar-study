@@ -15,8 +15,12 @@ export async function POST(
     return Response.json({ error: 'Invalid study ID' }, { status: 400 });
   }
 
-  const favorited = toggleFavorite(user.userId, studyId);
-  const favorite_count = getStudyFavoriteCount(studyId);
-
-  return Response.json({ favorited, favorite_count });
+  try {
+    const favorited = toggleFavorite(user.userId, studyId);
+    const favorite_count = getStudyFavoriteCount(studyId);
+    return Response.json({ favorited, favorite_count });
+  } catch (error) {
+    console.error('[POST /api/studies/favorite]', error);
+    return Response.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }

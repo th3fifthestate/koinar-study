@@ -50,6 +50,11 @@ export function Footer() {
                 New Study
               </Link>
             </li>
+            <li>
+              <Link href="/contact" className="text-sm text-[var(--stone-50)]/60 hover:text-[var(--stone-50)] transition-colors">
+                Contact
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
