@@ -272,6 +272,11 @@ body {
   to { opacity: 0; transform: translateY(-6px); }
 }
 
+@keyframes drift {
+  0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.5; transform: translateX(-50%) translateY(5px); }
+}
+
 /* ========================================================================
    REDUCED MOTION
    ======================================================================== */
