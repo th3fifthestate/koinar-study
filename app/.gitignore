@@ -38,6 +38,7 @@ yarn-error.log*
 *.db
 *.sqlite
 /data/
+!/data/tipnr/
 
 # vercel
 .vercel

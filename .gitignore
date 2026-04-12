@@ -10,11 +10,14 @@ node_modules/
 app/.next/
 app/out/
 
-# Database files
+# Database files (ignore runtime DB files but allow static reference data)
 data/
+app/data/
 *.db
 *.db-wal
 *.db-shm
+!app/data/tipnr/
+!app/data/tipnr/**
 
 # Build output
 app/dist/
