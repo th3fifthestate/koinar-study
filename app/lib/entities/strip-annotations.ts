@@ -4,7 +4,7 @@ export interface StrippedAnnotation {
   surface_text: string;
   entity_id: string;
   start_offset: number;
-  end_offset: number;
+  end_offset: number; // exclusive — cleanMarkdown.slice(start_offset, end_offset) === surface_text
 }
 
 export interface StripResult {
