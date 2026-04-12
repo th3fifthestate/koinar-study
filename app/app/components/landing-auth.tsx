@@ -233,7 +233,13 @@ function SignInForm({ onBack }: { onBack: () => void }) {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Login failed");
+        const message =
+          res.status === 429
+            ? "Too many attempts. Please wait a moment and try again."
+            : res.status === 400 || res.status === 401
+              ? "The email or password you entered is incorrect."
+              : "We couldn't complete your sign-in right now. Please try again shortly.";
+        setError(message);
         return;
       }
 
