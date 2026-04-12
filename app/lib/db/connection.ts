@@ -88,6 +88,15 @@ function runMigration(database: Database.Database): void {
       }
     }
 
+    // v2 → v3: Entity knowledge layer tables
+    // No data backfill needed — entities table starts empty.
+    // CREATE TABLE IF NOT EXISTS statements in CREATE_TABLES handle table creation automatically.
+    // This block exists as a version marker and for any future one-time data migration.
+    if (currentVersion >= 2 && currentVersion < 3) {
+      // No-op: new tables are created by runStatements(database, CREATE_TABLES) above.
+      // Triggers and indexes are created by runStatements(database, CREATE_INDEXES) above.
+    }
+
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
       .run(SCHEMA_VERSION);
