@@ -218,3 +218,94 @@ export interface SchemaMigration {
   version: number;
   applied_at: string;
 }
+
+// ============================================================
+// Entity Knowledge Layer (Brief 07a)
+// ============================================================
+
+export interface Entity {
+  id: string;
+  entity_type: 'person' | 'culture' | 'place' | 'time_period' | 'custom' | 'concept';
+  canonical_name: string;
+  aliases: string | null;            // JSON array string when present
+  quick_glance: string | null;
+  summary: string | null;
+  full_profile: string | null;
+  hebrew_name: string | null;
+  greek_name: string | null;
+  disambiguation_note: string | null;
+  date_range: string | null;
+  geographic_context: string | null; // JSON string when present
+  source_verified: number;           // 0 | 1
+  tipnr_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EntityVerseRef {
+  id: number;
+  entity_id: string;
+  book: string;
+  chapter: number;
+  verse_start: number;
+  verse_end: number;
+  surface_text: string | null;
+  confidence: 'high' | 'medium' | 'low';
+  source: string;
+  created_at: string;
+}
+
+export interface EntityCitation {
+  id: number;
+  entity_id: string;
+  source_name: string;
+  source_ref: string | null;
+  source_url: string | null;
+  content_field: 'quick_glance' | 'summary' | 'full_profile' | 'general';
+  excerpt: string | null;
+  created_at: string;
+}
+
+export interface EntityRelationship {
+  id: number;
+  from_entity_id: string;
+  to_entity_id: string;
+  relationship_type: string;
+  relationship_label: string;
+  bidirectional: number;             // 0 | 1
+  source: string | null;
+  created_at: string;
+}
+
+export interface StudyEntityAnnotation {
+  id: number;
+  study_id: number;
+  entity_id: string;
+  surface_text: string;
+  start_offset: number;
+  end_offset: number;
+  content_hash: string | null;
+  annotation_source: 'ai_generation' | 'render_fallback' | 'backfill' | 'manual';
+  created_at: string;
+}
+
+export interface SavedBranchMap {
+  id: number;
+  user_id: number;
+  study_id: number;
+  name: string | null;
+  nodes: string;   // JSON array of entity IDs
+  edges: string;   // JSON array of relationship IDs
+  layout: string | null;  // JSON of node positions
+  created_at: string;
+  updated_at: string;
+}
+
+/** Entity with parsed JSON fields and all related data loaded */
+export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_context'> {
+  aliases: string[];
+  geographic_context: { lat: number; lon: number; region: string } | null;
+  verse_refs: EntityVerseRef[];
+  citations: EntityCitation[];
+  relationships: (EntityRelationship & { related_entity_name: string; related_entity_type: string })[];
+}
