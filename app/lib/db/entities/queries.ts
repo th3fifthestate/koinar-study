@@ -13,20 +13,11 @@ import { getDb } from '../connection';
 // READ
 // ==============================
 
-export function getEntityDetail(entityId: string): EntityDetail | null {
-  const db = getDb();
-  const entity = db.prepare('SELECT * FROM entities WHERE id = ?').get(entityId) as Entity | undefined;
-  if (!entity) return null;
-
-  const verseRefs = db
-    .prepare('SELECT * FROM entity_verse_refs WHERE entity_id = ? ORDER BY book, chapter, verse_start')
-    .all(entityId) as EntityVerseRef[];
-
-  const citations = db
-    .prepare('SELECT * FROM entity_citations WHERE entity_id = ?')
-    .all(entityId) as EntityCitation[];
-
-  const relationships = db
+function fetchRelationships(
+  db: ReturnType<typeof getDb>,
+  entityId: string
+): (EntityRelationship & { related_entity_name: string; related_entity_type: string })[] {
+  return db
     .prepare(
       `SELECT er.*,
         CASE WHEN er.from_entity_id = ? THEN e_to.canonical_name ELSE e_from.canonical_name END AS related_entity_name,
@@ -40,6 +31,22 @@ export function getEntityDetail(entityId: string): EntityDetail | null {
       related_entity_name: string;
       related_entity_type: string;
     })[];
+}
+
+export function getEntityDetail(entityId: string): EntityDetail | null {
+  const db = getDb();
+  const entity = db.prepare('SELECT * FROM entities WHERE id = ?').get(entityId) as Entity | undefined;
+  if (!entity) return null;
+
+  const verseRefs = db
+    .prepare('SELECT * FROM entity_verse_refs WHERE entity_id = ? ORDER BY book, chapter, verse_start')
+    .all(entityId) as EntityVerseRef[];
+
+  const citations = db
+    .prepare('SELECT * FROM entity_citations WHERE entity_id = ?')
+    .all(entityId) as EntityCitation[];
+
+  const relationships = fetchRelationships(db, entityId);
 
   return {
     ...entity,
@@ -114,21 +121,7 @@ export function getVerseRefsForEntity(entityId: string): EntityVerseRef[] {
 export function getRelationshipsForEntity(
   entityId: string
 ): (EntityRelationship & { related_entity_name: string; related_entity_type: string })[] {
-  const db = getDb();
-  return db
-    .prepare(
-      `SELECT er.*,
-        CASE WHEN er.from_entity_id = ? THEN e_to.canonical_name ELSE e_from.canonical_name END AS related_entity_name,
-        CASE WHEN er.from_entity_id = ? THEN e_to.entity_type   ELSE e_from.entity_type   END AS related_entity_type
-       FROM entity_relationships er
-       LEFT JOIN entities e_to   ON er.to_entity_id   = e_to.id
-       LEFT JOIN entities e_from ON er.from_entity_id = e_from.id
-       WHERE er.from_entity_id = ? OR er.to_entity_id = ?`
-    )
-    .all(entityId, entityId, entityId, entityId) as (EntityRelationship & {
-      related_entity_name: string;
-      related_entity_type: string;
-    })[];
+  return fetchRelationships(getDb(), entityId);
 }
 
 export function getCitationsForEntity(entityId: string): EntityCitation[] {
@@ -220,7 +213,7 @@ export function insertVerseRefs(refs: Omit<EntityVerseRef, 'id' | 'created_at'>[
   const db = getDb();
   db.transaction(() => {
     const stmt = db.prepare(
-      `INSERT INTO entity_verse_refs (entity_id, book, chapter, verse_start, verse_end, surface_text, confidence, source)
+      `INSERT OR IGNORE INTO entity_verse_refs (entity_id, book, chapter, verse_start, verse_end, surface_text, confidence, source)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     );
     for (const ref of refs) {
@@ -237,7 +230,7 @@ export function insertCitations(citations: Omit<EntityCitation, 'id' | 'created_
   const db = getDb();
   db.transaction(() => {
     const stmt = db.prepare(
-      `INSERT INTO entity_citations (entity_id, source_name, source_ref, source_url, content_field, excerpt)
+      `INSERT OR IGNORE INTO entity_citations (entity_id, source_name, source_ref, source_url, content_field, excerpt)
        VALUES (?, ?, ?, ?, ?, ?)`
     );
     for (const c of citations) {
@@ -278,6 +271,7 @@ export function insertStudyAnnotations(
 export function saveBranchMap(
   map: Omit<SavedBranchMap, 'id' | 'created_at' | 'updated_at'>
 ): number {
+  if (!map.nodes || !map.edges) throw new Error('saveBranchMap: nodes and edges are required');
   const db = getDb();
   const result = db
     .prepare(
