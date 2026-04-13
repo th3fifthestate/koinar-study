@@ -35,10 +35,6 @@ interface EntityLayerContextValue {
   // Detail cache (for drawer)
   getEntityDetail: (entityId: string) => EntityDetail | null;
   fetchEntityDetail: (entityId: string) => Promise<EntityDetail | null>;
-
-  // Rendered tracking
-  markEntityRendered: (entityId: string) => boolean;
-  resetRendered: () => void;
 }
 
 const EntityLayerContext = createContext<EntityLayerContextValue | null>(null);
@@ -166,19 +162,6 @@ export function EntityLayerProvider({
     []
   );
 
-  // ── Rendered tracking ──
-  const renderedRef = useRef(new Set<string>());
-
-  const markEntityRendered = useCallback((entityId: string): boolean => {
-    if (renderedRef.current.has(entityId)) return false;
-    renderedRef.current.add(entityId);
-    return true;
-  }, []);
-
-  const resetRendered = useCallback(() => {
-    renderedRef.current.clear();
-  }, []);
-
   // ── Context value ──
   const value = useMemo<EntityLayerContextValue>(
     () => ({
@@ -195,8 +178,6 @@ export function EntityLayerProvider({
       closeDrawer,
       getEntityDetail: getEntityDetailCached,
       fetchEntityDetail,
-      markEntityRendered,
-      resetRendered,
     }),
     [
       entityMap,
@@ -212,8 +193,6 @@ export function EntityLayerProvider({
       closeDrawer,
       getEntityDetailCached,
       fetchEntityDetail,
-      markEntityRendered,
-      resetRendered,
     ]
   );
 

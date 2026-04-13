@@ -114,7 +114,6 @@ function wrapEntityTerms(
   text: string,
   regex: RegExp,
   lookup: Map<string, string>,
-  markRendered: (id: string) => boolean
 ): ReactNode {
   regex.lastIndex = 0;
   const parts: ReactNode[] = [];
@@ -124,7 +123,7 @@ function wrapEntityTerms(
   while ((match = regex.exec(text)) !== null) {
     const surface = match[0];
     const entityId = lookup.get(surface.toLowerCase());
-    if (!entityId || !markRendered(entityId)) continue;
+    if (!entityId) continue;
 
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
@@ -147,17 +146,16 @@ function wrapEntityTermsInChildren(
   children: ReactNode,
   regex: RegExp,
   lookup: Map<string, string>,
-  markRendered: (id: string) => boolean
 ): ReactNode {
   if (typeof children === 'string') {
-    return wrapEntityTerms(children, regex, lookup, markRendered);
+    return wrapEntityTerms(children, regex, lookup);
   }
   if (typeof children === 'number') {
-    return wrapEntityTerms(String(children), regex, lookup, markRendered);
+    return wrapEntityTerms(String(children), regex, lookup);
   }
   if (Array.isArray(children)) {
     return children.map((child, i) => {
-      const wrapped = wrapEntityTermsInChildren(child, regex, lookup, markRendered);
+      const wrapped = wrapEntityTermsInChildren(child, regex, lookup);
       if (Array.isArray(wrapped)) return <span key={i}>{wrapped}</span>;
       return wrapped;
     });
@@ -271,7 +269,6 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
             processedChildren,
             entityCtx.annotationRegex,
             entityCtx.annotationLookup,
-            entityCtx.markEntityRendered
           );
         }
 
@@ -303,7 +300,6 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
             processedChildren,
             entityCtx.annotationRegex,
             entityCtx.annotationLookup,
-            entityCtx.markEntityRendered
           );
         }
         return <li className="leading-relaxed" {...props}>{processedChildren}</li>;
@@ -341,7 +337,6 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
             processedChildren,
             entityCtx.annotationRegex,
             entityCtx.annotationLookup,
-            entityCtx.markEntityRendered
           );
         }
         return (
@@ -351,7 +346,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         );
       },
     } as Record<string, ComponentType<Record<string, unknown>>>;
-  }, [entityCtx?.showAnnotations, entityCtx?.annotationRegex, entityCtx?.annotationLookup, entityCtx?.markEntityRendered]);
+  }, [entityCtx?.showAnnotations, entityCtx?.annotationRegex, entityCtx?.annotationLookup]);
 
   return (
     <div className={`font-body leading-[1.8] text-foreground/90 ${FONT_SIZE_CLASSES[fontSize]}`}>
@@ -371,7 +366,6 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         if (i === 0) {
           slugRef.current.reset();
           crossRefSectionRef.current = false;
-          entityCtx?.resetRendered();
         }
 
         return (
