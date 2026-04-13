@@ -53,7 +53,7 @@ function EntityBreadcrumbs({
         Study: {studyTitle}
       </button>
       {stack.map((id, i) => (
-        <span key={id + i} className="flex items-center gap-1">
+        <span key={`${id}-${i}`} className="flex items-center gap-1">
           <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
           {i === stack.length - 1 ? (
             <span className="font-medium text-foreground truncate max-w-[140px]">
@@ -212,7 +212,13 @@ function DrawerEntityContent({
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (detail) return;
+    // Skip fetch if we already have cached data
+    const cached = getCached(entityId);
+    if (cached) {
+      setDetail(cached);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     fetchEntityDetail(entityId).then((d) => {
@@ -224,7 +230,7 @@ function DrawerEntityContent({
     return () => {
       cancelled = true;
     };
-  }, [entityId, detail, fetchEntityDetail]);
+  }, [entityId, getCached, fetchEntityDetail]);
 
   const slideVariants = reducedMotion
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }

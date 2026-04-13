@@ -115,12 +115,13 @@ function wrapEntityTerms(
   regex: RegExp,
   lookup: Map<string, string>,
 ): ReactNode {
-  regex.lastIndex = 0;
+  // Clone regex to avoid shared lastIndex mutation across concurrent renders
+  const rx = new RegExp(regex.source, regex.flags);
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(text)) !== null) {
+  while ((match = rx.exec(text)) !== null) {
     const surface = match[0];
     const entityId = lookup.get(surface.toLowerCase());
     if (!entityId) continue;

@@ -129,9 +129,19 @@ export function EntityLayerProvider({
     });
   }, []);
 
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const closeDrawer = useCallback(() => {
     setDrawerOpen(false);
-    setTimeout(() => setEntityStack([]), 200);
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => setEntityStack([]), 200);
+  }, []);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
   }, []);
 
   // ── Detail cache ──

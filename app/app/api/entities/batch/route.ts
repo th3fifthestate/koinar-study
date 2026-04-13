@@ -13,8 +13,13 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  const body = await request.json();
-  const ids = body?.ids;
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+  const ids = (body as Record<string, unknown>)?.ids;
 
   if (!Array.isArray(ids) || ids.length === 0 || ids.length > 50) {
     return Response.json(
@@ -28,5 +33,19 @@ export async function POST(request: Request) {
   }
 
   const entities = getEntitiesByIds(ids);
-  return Response.json(entities);
+
+  // Shape response — exclude internal fields
+  const shaped = entities.map((e) => ({
+    id: e.id,
+    entity_type: e.entity_type,
+    canonical_name: e.canonical_name,
+    aliases: e.aliases,
+    quick_glance: e.quick_glance,
+    summary: e.summary,
+    hebrew_name: e.hebrew_name,
+    greek_name: e.greek_name,
+    disambiguation_note: e.disambiguation_note,
+    date_range: e.date_range,
+  }));
+  return Response.json(shaped);
 }

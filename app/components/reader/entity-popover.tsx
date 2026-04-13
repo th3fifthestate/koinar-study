@@ -33,7 +33,7 @@ export function EntityPopover({ entity, onExplore }: EntityPopoverProps) {
   return (
     <div className="max-w-[320px] space-y-3">
       {/* Type badge */}
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-[var(--stone-300)] dark:text-[var(--stone-700)]">
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-[var(--stone-500)] dark:text-[var(--stone-400)]">
         <Icon className="h-3 w-3" />
         <span>{typeLabel}</span>
       </div>

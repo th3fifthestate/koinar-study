@@ -14,8 +14,8 @@ export function EntityToggle({ enabled, onToggle, entityCount }: EntityTogglePro
 
   return (
     <div className="flex items-center gap-2">
-      <Switch checked={enabled} onCheckedChange={onToggle} />
-      <Label className="text-sm text-muted-foreground">
+      <Switch id="entity-toggle" checked={enabled} onCheckedChange={onToggle} />
+      <Label htmlFor="entity-toggle" className="text-sm text-muted-foreground">
         Context ({entityCount})
       </Label>
     </div>
