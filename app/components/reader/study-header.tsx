@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { FavoriteButton } from '@/components/library/favorite-button';
 import { FontControls } from './font-controls';
 import { CommunityToggle } from './community-toggle';
+import { EntityToggle } from './entity-toggle';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -28,6 +29,9 @@ interface StudyHeaderProps {
   onFontSizeChange: (size: FontSize) => void;
   showCommunityAnnotations: boolean;
   onCommunityToggle: (enabled: boolean) => void;
+  showEntityAnnotations: boolean;
+  onEntityAnnotationsToggle: (enabled: boolean) => void;
+  entityAnnotationCount: number;
 }
 
 const FORMAT_LABELS: Record<string, string> = {
@@ -54,6 +58,9 @@ export function StudyHeader({
   onFontSizeChange,
   showCommunityAnnotations,
   onCommunityToggle,
+  showEntityAnnotations,
+  onEntityAnnotationsToggle,
+  entityAnnotationCount,
 }: StudyHeaderProps) {
   const handleShare = useCallback(async () => {
     try {
@@ -125,6 +132,11 @@ export function StudyHeader({
         </button>
 
         <div className="ml-auto flex items-center gap-4">
+          <EntityToggle
+            enabled={showEntityAnnotations}
+            onToggle={onEntityAnnotationsToggle}
+            entityCount={entityAnnotationCount}
+          />
           <FontControls fontSize={fontSize} onFontSizeChange={onFontSizeChange} />
           <CommunityToggle
             enabled={showCommunityAnnotations}
