@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import type { StudyDetail, StudyEntityAnnotation } from '@/lib/db/types';
+import type { StudyDetail, StudyEntityAnnotation, Entity } from '@/lib/db/types';
 import { useReadingProgress } from '@/lib/hooks/use-reading-progress';
 import { useActiveHeading } from '@/lib/hooks/use-active-heading';
 import { ReadingProgress } from './reading-progress';
@@ -9,6 +9,8 @@ import { StudyHero } from './study-hero';
 import { StudyHeader } from './study-header';
 import { TableOfContents, MobileTocButton, type HeadingItem } from './table-of-contents';
 import { MarkdownRenderer } from './markdown-renderer';
+import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
+import { EntityDrawer } from './entity-drawer';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -17,6 +19,7 @@ interface StudyReaderProps {
   isFavorited: boolean;
   isLoggedIn: boolean;
   entityAnnotations?: StudyEntityAnnotation[];
+  entities?: Entity[];
 }
 
 function extractHeadings(markdown: string): HeadingItem[] {
@@ -43,16 +46,63 @@ function extractHeadings(markdown: string): HeadingItem[] {
   return headings;
 }
 
-export function StudyReader({ study, isFavorited, isLoggedIn, entityAnnotations: _entityAnnotations }: StudyReaderProps) {
+export function StudyReader({
+  study,
+  isFavorited,
+  isLoggedIn,
+  entityAnnotations = [],
+  entities = [],
+}: StudyReaderProps) {
   const [fontSize, setFontSize] = useState<FontSize>('medium');
   const [showCommunityAnnotations, setShowCommunityAnnotations] = useState(false);
 
-  // Extract headings from markdown
   const headings = useMemo(() => extractHeadings(study.content_markdown), [study.content_markdown]);
   const headingIds = useMemo(() => headings.map((h) => h.id), [headings]);
 
-  // Hooks
   useReadingProgress(study.slug);
+
+  return (
+    <EntityLayerProvider annotations={entityAnnotations} entities={entities}>
+      <StudyReaderContent
+        study={study}
+        isFavorited={isFavorited}
+        isLoggedIn={isLoggedIn}
+        entityAnnotationCount={entityAnnotations.length}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
+        showCommunityAnnotations={showCommunityAnnotations}
+        setShowCommunityAnnotations={setShowCommunityAnnotations}
+        headings={headings}
+        headingIds={headingIds}
+      />
+    </EntityLayerProvider>
+  );
+}
+
+function StudyReaderContent({
+  study,
+  isFavorited,
+  isLoggedIn,
+  entityAnnotationCount,
+  fontSize,
+  setFontSize,
+  showCommunityAnnotations,
+  setShowCommunityAnnotations,
+  headings,
+  headingIds,
+}: {
+  study: StudyDetail;
+  isFavorited: boolean;
+  isLoggedIn: boolean;
+  entityAnnotationCount: number;
+  fontSize: FontSize;
+  setFontSize: (s: FontSize) => void;
+  showCommunityAnnotations: boolean;
+  setShowCommunityAnnotations: (v: boolean) => void;
+  headings: HeadingItem[];
+  headingIds: string[];
+}) {
+  const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
 
   return (
@@ -82,6 +132,9 @@ export function StudyReader({ study, isFavorited, isLoggedIn, entityAnnotations:
           onFontSizeChange={setFontSize}
           showCommunityAnnotations={showCommunityAnnotations}
           onCommunityToggle={setShowCommunityAnnotations}
+          showEntityAnnotations={showAnnotations}
+          onEntityAnnotationsToggle={setShowAnnotations}
+          entityAnnotationCount={entityAnnotationCount}
         />
 
         <div className="flex gap-8 lg:gap-12">
@@ -105,6 +158,9 @@ export function StudyReader({ study, isFavorited, isLoggedIn, entityAnnotations:
 
       {/* Mobile TOC */}
       <MobileTocButton headings={headings} activeId={activeId} />
+
+      {/* Entity Context Drawer */}
+      <EntityDrawer studyTitle={study.title} />
     </>
   );
 }

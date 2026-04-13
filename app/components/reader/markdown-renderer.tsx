@@ -9,6 +9,8 @@ import { HistoricalContext } from './historical-context';
 import { OriginalLanguage } from './original-language';
 import { CrossRefTooltip } from './cross-ref-tooltip';
 import { ImageSection } from './image-section';
+import { useEntityLayerOptional } from './entity-layer-context';
+import { EntityTerm } from './entity-term';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -107,6 +109,62 @@ function wrapCrossReferencesInChildren(children: ReactNode): ReactNode {
   return children;
 }
 
+/** Wrap entity terms in a plain text string */
+function wrapEntityTerms(
+  text: string,
+  regex: RegExp,
+  lookup: Map<string, string>,
+  markRendered: (id: string) => boolean
+): ReactNode {
+  regex.lastIndex = 0;
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    const surface = match[0];
+    const entityId = lookup.get(surface.toLowerCase());
+    if (!entityId || !markRendered(entityId)) continue;
+
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <EntityTerm key={`${entityId}-${match.index}`} entityId={entityId}>
+        {surface}
+      </EntityTerm>
+    );
+    lastIndex = match.index + surface.length;
+  }
+
+  if (parts.length === 0) return text;
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
+
+/** Recursively walk React children and wrap entity terms in text nodes */
+function wrapEntityTermsInChildren(
+  children: ReactNode,
+  regex: RegExp,
+  lookup: Map<string, string>,
+  markRendered: (id: string) => boolean
+): ReactNode {
+  if (typeof children === 'string') {
+    return wrapEntityTerms(children, regex, lookup, markRendered);
+  }
+  if (typeof children === 'number') {
+    return wrapEntityTerms(String(children), regex, lookup, markRendered);
+  }
+  if (Array.isArray(children)) {
+    return children.map((child, i) => {
+      const wrapped = wrapEntityTermsInChildren(child, regex, lookup, markRendered);
+      if (Array.isArray(wrapped)) return <span key={i}>{wrapped}</span>;
+      return wrapped;
+    });
+  }
+  return children;
+}
+
 // ─── Section splitting for image interspersion ────────────────────────────────
 
 interface ContentSection {
@@ -152,6 +210,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
   // Instance-scoped state — safe across concurrent SSR renders
   const slugRef = useRef(createSlugify());
   const crossRefSectionRef = useRef(false);
+  const entityCtx = useEntityLayerOptional();
 
   const components = useMemo(() => {
     const { slugify } = slugRef.current;
@@ -203,12 +262,25 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         if (text.startsWith('\u26f0\ufe0f')) {
           return <HistoricalContext>{children}</HistoricalContext>;
         }
-        // In cross-reference sections, walk the children tree to wrap verse references
-        if (crossRefSectionRef.current) {
-          const wrapped = wrapCrossReferencesInChildren(children);
-          return <p className="mb-4 leading-relaxed" {...props}>{wrapped}</p>;
+
+        let processedChildren = children;
+
+        // Apply entity annotations
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+          processedChildren = wrapEntityTermsInChildren(
+            processedChildren,
+            entityCtx.annotationRegex,
+            entityCtx.annotationLookup,
+            entityCtx.markEntityRendered
+          );
         }
-        return <p className="mb-4 leading-relaxed" {...props}>{children}</p>;
+
+        // In cross-reference sections, wrap verse references
+        if (crossRefSectionRef.current) {
+          processedChildren = wrapCrossReferencesInChildren(processedChildren);
+        }
+
+        return <p className="mb-4 leading-relaxed" {...props}>{processedChildren}</p>;
       },
       strong: ({ children, node, ...props }: MdProps) => {
         const text = extractTextContent(children);
@@ -224,9 +296,18 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
       ol: ({ children, node, ...props }: MdProps) => (
         <ol className="mb-4 ml-6 list-decimal space-y-1" {...props}>{children}</ol>
       ),
-      li: ({ children, node, ...props }: MdProps) => (
-        <li className="leading-relaxed" {...props}>{children}</li>
-      ),
+      li: ({ children, node, ...props }: MdProps) => {
+        let processedChildren = children;
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+          processedChildren = wrapEntityTermsInChildren(
+            processedChildren,
+            entityCtx.annotationRegex,
+            entityCtx.annotationLookup,
+            entityCtx.markEntityRendered
+          );
+        }
+        return <li className="leading-relaxed" {...props}>{processedChildren}</li>;
+      },
       code: ({ children, node, ...props }: MdProps) => (
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm" {...props}>
           {children}
@@ -253,13 +334,24 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
           {children}
         </th>
       ),
-      td: ({ children, node, ...props }: MdProps) => (
-        <td className="border border-[var(--stone-200)] px-3 py-2 dark:border-[var(--stone-700)]" {...props}>
-          {children}
-        </td>
-      ),
+      td: ({ children, node, ...props }: MdProps) => {
+        let processedChildren = children;
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+          processedChildren = wrapEntityTermsInChildren(
+            processedChildren,
+            entityCtx.annotationRegex,
+            entityCtx.annotationLookup,
+            entityCtx.markEntityRendered
+          );
+        }
+        return (
+          <td className="border border-[var(--stone-200)] px-3 py-2 dark:border-[var(--stone-700)]" {...props}>
+            {processedChildren}
+          </td>
+        );
+      },
     } as Record<string, ComponentType<Record<string, unknown>>>;
-  }, []);
+  }, [entityCtx?.showAnnotations, entityCtx?.annotationRegex, entityCtx?.annotationLookup, entityCtx?.markEntityRendered]);
 
   return (
     <div className={`font-body leading-[1.8] text-foreground/90 ${FONT_SIZE_CLASSES[fontSize]}`}>
@@ -279,6 +371,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         if (i === 0) {
           slugRef.current.reset();
           crossRefSectionRef.current = false;
+          entityCtx?.resetRendered();
         }
 
         return (

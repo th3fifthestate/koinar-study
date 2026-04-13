@@ -4,6 +4,7 @@ import { getStudyDetail, isStudyFavorited } from '@/lib/db/queries';
 import { getCurrentUser } from '@/lib/auth/session';
 import { StudyReader } from '@/components/reader/study-reader';
 import { annotateStudyIfNeeded } from '@/lib/entities/annotator';
+import { getEntitiesByIds } from '@/lib/db/entities/queries';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -37,6 +38,8 @@ export default async function StudyPage({ params }: Props) {
 
   // Ensure entity annotations exist — generates on first access for older studies
   const entityAnnotations = await annotateStudyIfNeeded(study.id, study.content_markdown);
+  const entityIds = [...new Set(entityAnnotations.map((a) => a.entity_id))];
+  const entities = entityIds.length > 0 ? getEntitiesByIds(entityIds) : [];
 
   return (
     <StudyReader
@@ -44,6 +47,7 @@ export default async function StudyPage({ params }: Props) {
       isFavorited={favorited}
       isLoggedIn={!!session}
       entityAnnotations={entityAnnotations}
+      entities={entities}
     />
   );
 }

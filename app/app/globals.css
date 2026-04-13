@@ -310,3 +310,36 @@ body {
     @apply font-sans;
   }
 }
+
+/* Entity drawer markdown content */
+.prose-entity p {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+.prose-entity h1,
+.prose-entity h2,
+.prose-entity h3,
+.prose-entity h4 {
+  font-family: var(--font-display);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.prose-entity ul {
+  list-style: disc;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.prose-entity ol {
+  list-style: decimal;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.prose-entity blockquote {
+  border-left: 2px solid var(--sage-300);
+  padding-left: 0.75rem;
+  font-style: italic;
+  color: var(--stone-700);
+}
+.dark .prose-entity blockquote {
+  color: var(--stone-300);
+}
