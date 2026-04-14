@@ -169,16 +169,21 @@ export function computeLayout(
 
     // Recurse into children
     if (node.children.length > 0) {
+      const parentWedge = angleEnd - angleStart;
       const childTotalLeaves = node.children.reduce((s, c) => s + leafCount(c), 0);
-      let childAngleStart = angleStart;
 
-      for (const child of node.children) {
+      // Compute raw wedges with MIN_WEDGE floor, then normalize to fit parent
+      const rawChildWedges = node.children.map((child) => {
         const childLeaves = leafCount(child);
-        const childWedge = Math.max(
-          ((angleEnd - angleStart) * childLeaves) / childTotalLeaves,
-          MIN_WEDGE
-        );
-        placeSubtree(child, childAngleStart, childAngleStart + childWedge, depth + 1, node.entity.entityId);
+        return Math.max((parentWedge * childLeaves) / childTotalLeaves, MIN_WEDGE);
+      });
+      const rawChildSum = rawChildWedges.reduce((a, b) => a + b, 0);
+      const childScale = rawChildSum > parentWedge ? parentWedge / rawChildSum : 1;
+
+      let childAngleStart = angleStart;
+      for (let ci = 0; ci < node.children.length; ci++) {
+        const childWedge = rawChildWedges[ci] * childScale;
+        placeSubtree(node.children[ci], childAngleStart, childAngleStart + childWedge, depth + 1, node.entity.entityId);
         childAngleStart += childWedge;
       }
     }
@@ -199,8 +204,12 @@ export function computeLayout(
     if (n.y > maxY) maxY = n.y;
   }
 
-  const contentW = Math.max(maxX - minX + PADDING * 2, MIN_VIEWBOX);
-  const contentH = Math.max(maxY - minY + PADDING * 2, MIN_VIEWBOX);
+  const rawW = Math.max(maxX - minX + PADDING * 2, MIN_VIEWBOX);
+  const rawH = Math.max(maxY - minY + PADDING * 2, MIN_VIEWBOX);
+  // Use the larger dimension for both axes so a deep chain in one direction
+  // still produces a wide viewBox (nodes are spread widely → viewBox grows).
+  const contentW = Math.max(rawW, rawH);
+  const contentH = contentW;
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
 

@@ -165,14 +165,12 @@ export function EntityLayerProvider({
 
   const navigateToEntity = useCallback(
     (entityId: string, relationshipLabel?: string) => {
-      setEntityStack((prev) => {
-        // Capture parent BEFORE the push
-        const openedFrom = prev[prev.length - 1] ?? null;
-        recordExploration(entityId, openedFrom, relationshipLabel ?? null);
-        return [...prev, entityId];
-      });
+      // Capture parent BEFORE the push — read from current committed state
+      const openedFrom = entityStack[entityStack.length - 1] ?? null;
+      recordExploration(entityId, openedFrom, relationshipLabel ?? null);
+      setEntityStack((prev) => [...prev, entityId]);
     },
-    [recordExploration]
+    [recordExploration, entityStack]
   );
 
   const navigateBack = useCallback((toIndex?: number) => {
