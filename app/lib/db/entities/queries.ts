@@ -149,6 +149,79 @@ export function getEntitiesForStudy(studyId: number): Entity[] {
     .all(studyId) as Entity[];
 }
 
+/** Get all entities referenced in a chapter (for batch loading in reader) */
+export function getEntitiesForChapter(
+  book: string,
+  chapter: number
+): (EntityVerseRef & { canonical_name: string; entity_type: string })[] {
+  const db = getDb();
+  return db
+    .prepare(
+      `SELECT evr.*, e.canonical_name, e.entity_type
+       FROM entity_verse_refs evr
+       JOIN entities e ON evr.entity_id = e.id
+       WHERE evr.book = ? AND evr.chapter = ? AND evr.confidence IN ('high', 'medium')
+       ORDER BY evr.verse_start ASC`
+    )
+    .all(book, chapter) as (EntityVerseRef & { canonical_name: string; entity_type: string })[];
+}
+
+/** Get entity density stats for a book (for progress tracking) */
+export function getEntityDensityForBook(book: string): {
+  total_refs: number;
+  unique_entities: number;
+  by_confidence: Record<string, number>;
+  by_source: Record<string, number>;
+} {
+  const db = getDb();
+  const total = db
+    .prepare('SELECT COUNT(*) as c FROM entity_verse_refs WHERE book = ?')
+    .get(book) as { c: number };
+  const unique = db
+    .prepare('SELECT COUNT(DISTINCT entity_id) as c FROM entity_verse_refs WHERE book = ?')
+    .get(book) as { c: number };
+  const byConfidence = db
+    .prepare('SELECT confidence, COUNT(*) as c FROM entity_verse_refs WHERE book = ? GROUP BY confidence')
+    .all(book) as { confidence: string; c: number }[];
+  const bySource = db
+    .prepare('SELECT source, COUNT(*) as c FROM entity_verse_refs WHERE book = ? GROUP BY source')
+    .all(book) as { source: string; c: number }[];
+
+  return {
+    total_refs: total.c,
+    unique_entities: unique.c,
+    by_confidence: Object.fromEntries(byConfidence.map((r) => [r.confidence, r.c])),
+    by_source: Object.fromEntries(bySource.map((r) => [r.source, r.c])),
+  };
+}
+
+/** Get all ambiguous refs for a book (for disambiguation pipeline) */
+export function getAmbiguousRefsForBook(book: string): EntityVerseRef[] {
+  const db = getDb();
+  return db
+    .prepare("SELECT * FROM entity_verse_refs WHERE book = ? AND source = 'deterministic_ambiguous' ORDER BY chapter, verse_start")
+    .all(book) as EntityVerseRef[];
+}
+
+/** Update a ref after disambiguation */
+export function updateVerseRefAfterDisambiguation(
+  id: number,
+  entityId: string,
+  confidence: 'high' | 'medium' | 'low',
+  source: string
+): void {
+  const db = getDb();
+  db.prepare(
+    'UPDATE entity_verse_refs SET entity_id = ?, confidence = ?, source = ? WHERE id = ?'
+  ).run(entityId, confidence, source, id);
+}
+
+/** Delete a verse ref (for false-positive disambiguation results) */
+export function deleteVerseRef(id: number): void {
+  const db = getDb();
+  db.prepare('DELETE FROM entity_verse_refs WHERE id = ?').run(id);
+}
+
 export function getSavedBranchMaps(userId: number, studyId: number): SavedBranchMap[] {
   const db = getDb();
   return db
