@@ -339,7 +339,7 @@ function DrawerEntityContent({
                   entityType={rel.related_entity_type}
                   relationshipLabel={rel.relationship_label}
                   quickGlance={relatedEntity?.quick_glance}
-                  onClick={() => navigateToEntity(relatedId)}
+                  onClick={() => navigateToEntity(relatedId, rel.relationship_label)}
                 />
               );
             })}

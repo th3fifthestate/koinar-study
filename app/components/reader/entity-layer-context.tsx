@@ -28,14 +28,27 @@ interface EntityLayerContextValue {
   drawerOpen: boolean;
   entityStack: string[];
   openDrawer: (entityId: string) => void;
-  navigateToEntity: (entityId: string) => void;
+  navigateToEntity: (entityId: string, relationshipLabel?: string) => void;
   navigateBack: (toIndex?: number) => void;
   closeDrawer: () => void;
 
   // Detail cache (for drawer)
   getEntityDetail: (entityId: string) => EntityDetail | null;
   fetchEntityDetail: (entityId: string) => Promise<EntityDetail | null>;
+
+  // Branch map
+  exploredEntities: ExploredEntity[];
+  exploredCount: number;
 }
+
+// ─── Branch Map Tracking ────────────────────────────────────────────────────
+
+export type ExploredEntity = {
+  entityId: string;
+  firstOpenedAt: number;
+  openedFrom: string | null;
+  openedFromLabel: string | null;
+};
 
 const EntityLayerContext = createContext<EntityLayerContextValue | null>(null);
 
@@ -108,18 +121,59 @@ export function EntityLayerProvider({
     localStorage.setItem('koinar:entity-annotations-visible', String(v));
   }, []);
 
+  // ── Branch map tracking ──
+  const exploredRef = useRef(new Map<string, ExploredEntity>());
+  const [exploredTick, setExploredTick] = useState(0);
+
+  const recordExploration = useCallback(
+    (entityId: string, openedFrom: string | null, openedFromLabel: string | null) => {
+      if (exploredRef.current.has(entityId)) return;
+      exploredRef.current.set(entityId, {
+        entityId,
+        firstOpenedAt: Date.now(),
+        openedFrom,
+        openedFromLabel,
+      });
+      setExploredTick((t) => t + 1);
+    },
+    []
+  );
+
+  const exploredEntities = useMemo(
+    () =>
+      Array.from(exploredRef.current.values()).sort(
+        (a, b) => a.firstOpenedAt - b.firstOpenedAt
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [exploredTick]
+  );
+
+  const exploredCount = exploredEntities.length;
+
   // ── Drawer ──
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [entityStack, setEntityStack] = useState<string[]>([]);
 
-  const openDrawer = useCallback((entityId: string) => {
-    setEntityStack([entityId]);
-    setDrawerOpen(true);
-  }, []);
+  const openDrawer = useCallback(
+    (entityId: string) => {
+      recordExploration(entityId, null, null);
+      setEntityStack([entityId]);
+      setDrawerOpen(true);
+    },
+    [recordExploration]
+  );
 
-  const navigateToEntity = useCallback((entityId: string) => {
-    setEntityStack((prev) => [...prev, entityId]);
-  }, []);
+  const navigateToEntity = useCallback(
+    (entityId: string, relationshipLabel?: string) => {
+      setEntityStack((prev) => {
+        // Capture parent BEFORE the push
+        const openedFrom = prev[prev.length - 1] ?? null;
+        recordExploration(entityId, openedFrom, relationshipLabel ?? null);
+        return [...prev, entityId];
+      });
+    },
+    [recordExploration]
+  );
 
   const navigateBack = useCallback((toIndex?: number) => {
     setEntityStack((prev) => {
@@ -188,6 +242,8 @@ export function EntityLayerProvider({
       closeDrawer,
       getEntityDetail: getEntityDetailCached,
       fetchEntityDetail,
+      exploredEntities,
+      exploredCount,
     }),
     [
       entityMap,
@@ -203,6 +259,8 @@ export function EntityLayerProvider({
       closeDrawer,
       getEntityDetailCached,
       fetchEntityDetail,
+      exploredEntities,
+      exploredCount,
     ]
   );
 
