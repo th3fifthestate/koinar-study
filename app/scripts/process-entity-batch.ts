@@ -39,6 +39,7 @@ let batchId = getArg('batch-id');
 const statusOnly = hasFlag('status');
 const poll = hasFlag('poll');
 const dryRun = hasFlag('dry-run');
+const forceRegenerate = hasFlag('regenerate');
 
 // If no batch ID given, try to load from last-entity-batch.json
 if (!batchId) {
@@ -303,14 +304,16 @@ async function main() {
   console.log('\nProcessing results...\n');
 
   // Load batch info to know if this was a regenerate run
-  let isRegenerate = false;
-  try {
-    const info = JSON.parse(fs.readFileSync('data/last-entity-batch.json', 'utf-8'));
-    if (info.batch_id === batchId) {
-      isRegenerate = !!info.regenerate;
+  let isRegenerate = forceRegenerate;
+  if (!isRegenerate) {
+    try {
+      const info = JSON.parse(fs.readFileSync('data/last-entity-batch.json', 'utf-8'));
+      if (info.batch_id === batchId) {
+        isRegenerate = !!info.regenerate;
+      }
+    } catch {
+      // ignore
     }
-  } catch {
-    // ignore
   }
 
   let succeeded = 0;

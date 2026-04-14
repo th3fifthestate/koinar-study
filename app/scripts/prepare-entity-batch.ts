@@ -9,6 +9,8 @@
 //   --regenerate       Include entities that already have content
 //   --limit <n>        Limit number of entities
 //   --output <path>    Write requests JSONL to file (for inspection) instead of submitting
+//   --min-chars <n>    Treat profiles shorter than N chars as needing generation
+//                      (defaults to 3000 so thin TIPNR @Article seeds are regenerated)
 
 import 'dotenv/config';
 import Anthropic from '@anthropic-ai/sdk';
@@ -51,6 +53,7 @@ const dryRun = hasFlag('dry-run');
 const regenerate = hasFlag('regenerate');
 const limit = getArg('limit') ? parseInt(getArg('limit')!, 10) : undefined;
 const outputPath = getArg('output');
+const minChars = getArg('min-chars') ? parseInt(getArg('min-chars')!, 10) : 3000;
 
 // ---------------------------------------------------------------------------
 // API setup
@@ -86,7 +89,11 @@ function getEntitiesToProcess(): Entity[] {
   }
 
   if (!regenerate && !filterId) {
-    conditions.push("(full_profile IS NULL OR full_profile = '')");
+    // Treat both NULL and "thin" profiles (typically TIPNR @Article seeds) as
+    // needing generation. 3000 chars is well above any TIPNR article and well
+    // below any fully-generated Koinar profile (avg ~9000 chars).
+    conditions.push("(full_profile IS NULL OR full_profile = '' OR length(full_profile) < ?)");
+    params.push(minChars);
   }
 
   if (conditions.length > 0) {

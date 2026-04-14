@@ -202,25 +202,31 @@ When you mention a biblical person, place, culture, custom, time period, or key 
 
 [Display Text]{entity:ENTITY_ID}
 
-ENTITY_ID format: UPPERCASE_WITH_UNDERSCORES. Use the most specific identifier possible.
+ENTITY_ID format: UPPERCASE_NAME + Strong's suffix (e.g. MOSES_H4872, MARY_G3137G, JAMES_G2385I).
+Person entity IDs follow the pattern NAME_STRONGS where STRONGS is the Hebrew (H) or Greek (G) Strong's number
+that uniquely identifies which individual is meant. Non-person entities use descriptive IDs (e.g. PHARISEES, JERUSALEM_TEMPLE).
 
 Examples:
-- [Herod the Great]{entity:HEROD_GREAT} was the Roman-appointed king of Judea.
+- [Herod the Great]{entity:HEROD_G2264G} was the Roman-appointed king of Judea.
 - The [Pharisees]{entity:PHARISEES} challenged Jesus in [the temple]{entity:JERUSALEM_TEMPLE}.
 - During the [Babylonian Exile]{entity:BABYLONIAN_PERIOD}, the people of [Judah]{entity:JUDAH_KINGDOM} were deported.
-- The practice of [circumcision]{entity:CIRCUMCISION} was central to the covenant.
+- [Mary]{entity:MARY_G3137G} and [Joseph]{entity:JOSEPH_G2501G} traveled to Bethlehem.
 
 Rules:
 1. Only annotate the FIRST mention of each unique entity in the study.
 2. The display text inside [] MUST match what you would naturally write without annotations. Do not alter your writing to accommodate annotations.
-3. Use specific entity IDs that disambiguate shared names:
-   - "Herod" in Matthew 2 → HEROD_GREAT
-   - "Herod" in Luke 23 → HEROD_ANTIPAS
-   - "James" the apostle → JAMES_SON_OF_ZEBEDEE
-   - "James" the brother of Jesus → JAMES_BROTHER_OF_JESUS
+3. Use specific Strong's-suffixed entity IDs that disambiguate shared names:
+   - "Herod" in Matthew 2 → HEROD_G2264G (Herod the Great)
+   - "Herod" in Luke 23 → HEROD_G2264H (Herod Antipas)
+   - "James" the apostle (son of Zebedee) → JAMES_G2385G
+   - "James" the brother of Jesus → JAMES_G2385I
+   - "Mary" mother of Jesus → MARY_G3137G
+   - "Mary" of Bethany → MARY_G3137J
+   - "Joseph" husband of Mary → JOSEPH_G2501G
+   - "Joseph" of Arimathea → JOSEPH_G2501I
 4. Do NOT annotate: pronouns (he, she, they), generic references ("the people", "the land"), or God/Jesus/the Holy Spirit (these are not knowledge-base entities).
 5. Do NOT annotate references within scripture blockquotes (> blocks). Only annotate your own prose.
-6. If you are unsure which specific entity a name refers to, use the most general form: HEROD (not HEROD_GREAT) and note the ambiguity.
+6. If you are unsure which specific individual a name refers to, use the entity_search tool to look up the correct Strong's-suffixed ID.
 7. Aim for 10-30 annotations per study depending on length and entity density. Do not over-annotate — only significant entities that would benefit from background context.`;
 
 const FORMAT_GUIDANCE: Record<string, string> = {

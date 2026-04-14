@@ -14,7 +14,8 @@
     "batch:process": "tsx scripts/process-entity-batch.ts",
     "batch:status": "tsx scripts/process-entity-batch.ts --status",
     "batch:poll": "tsx scripts/process-entity-batch.ts --poll",
-    "verify:citations": "tsx scripts/verify-entity-citations.ts"
+    "verify:citations": "tsx scripts/verify-entity-citations.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
@@ -53,6 +54,7 @@
     "@types/ws": "^8.18.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.4"
   }
 }

@@ -11,6 +11,7 @@ import { TableOfContents, MobileTocButton, type HeadingItem } from './table-of-c
 import { MarkdownRenderer } from './markdown-renderer';
 import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
 import { EntityDrawer } from './entity-drawer';
+import { BranchMapOverlay } from './branch-map-overlay';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -104,6 +105,7 @@ function StudyReaderContent({
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
+  const [branchMapOpen, setBranchMapOpen] = useState(false);
 
   return (
     <>
@@ -135,6 +137,7 @@ function StudyReaderContent({
           showEntityAnnotations={showAnnotations}
           onEntityAnnotationsToggle={setShowAnnotations}
           entityAnnotationCount={entityAnnotationCount}
+          onOpenMap={() => setBranchMapOpen(true)}
         />
 
         <div className="flex gap-8 lg:gap-12">
@@ -161,6 +164,13 @@ function StudyReaderContent({
 
       {/* Entity Context Drawer */}
       <EntityDrawer studyTitle={study.title} />
+
+      {/* Branch Map Overlay */}
+      <BranchMapOverlay
+        open={branchMapOpen}
+        onClose={() => setBranchMapOpen(false)}
+        studyTitle={study.title}
+      />
     </>
   );
 }
