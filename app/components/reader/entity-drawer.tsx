@@ -1,16 +1,10 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import {
-  Sheet,
-  SheetOverlay,
-  SheetPortal,
-  SheetTitle,
-} from '@/components/ui/sheet';
-import { Dialog as SheetPrimitive } from '@base-ui/react/dialog';
+import { ReaderOverlay } from './reader-overlay';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -388,49 +382,37 @@ export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
     return map;
   }, [entityStack, entityMap]);
 
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      if (!open) closeDrawer();
-    },
-    [closeDrawer]
-  );
-
   return (
-    <Sheet open={drawerOpen} onOpenChange={handleOpenChange}>
-      <SheetPortal>
-        <SheetOverlay className="bg-black/5 backdrop-blur-none dark:bg-white/5" />
-        <SheetPrimitive.Popup
-          data-slot="sheet-content"
-          data-side="right"
-          className="fixed inset-y-0 right-0 z-50 flex h-full w-full flex-col border-l bg-popover text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-ending-style:translate-x-[2.5rem] data-ending-style:opacity-0 data-starting-style:translate-x-[2.5rem] data-starting-style:opacity-0 sm:max-w-md"
-        >
-          <SheetTitle className="sr-only">Entity Details</SheetTitle>
+    <ReaderOverlay
+      open={drawerOpen}
+      onClose={closeDrawer}
+      variant="sheet"
+      stackLevel={60}
+      ariaLabel="Entity Details"
+    >
+      {/* Breadcrumbs */}
+      <div className="border-b border-[var(--stone-200)] px-5 py-3 dark:border-[var(--stone-700)]">
+        <EntityBreadcrumbs
+          studyTitle={studyTitle}
+          stack={entityStack}
+          names={nameMap}
+          onNavigate={(i) => navigateBack(i)}
+          onClose={closeDrawer}
+        />
+      </div>
 
-          {/* Breadcrumbs */}
-          <div className="border-b border-[var(--stone-200)] px-5 py-3 dark:border-[var(--stone-700)]">
-            <EntityBreadcrumbs
-              studyTitle={studyTitle}
-              stack={entityStack}
-              names={nameMap}
-              onNavigate={(i) => navigateBack(i)}
-              onClose={closeDrawer}
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto px-5 py-4">
+        <AnimatePresence mode="wait">
+          {currentEntityId && (
+            <DrawerEntityContent
+              key={currentEntityId}
+              entityId={currentEntityId}
+              direction={direction}
             />
-          </div>
-
-          {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto px-5 py-4">
-            <AnimatePresence mode="wait">
-              {currentEntityId && (
-                <DrawerEntityContent
-                  key={currentEntityId}
-                  entityId={currentEntityId}
-                  direction={direction}
-                />
-              )}
-            </AnimatePresence>
-          </div>
-        </SheetPrimitive.Popup>
-      </SheetPortal>
-    </Sheet>
+          )}
+        </AnimatePresence>
+      </div>
+    </ReaderOverlay>
   );
 }
