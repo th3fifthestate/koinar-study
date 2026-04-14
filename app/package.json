@@ -16,7 +16,9 @@
     "batch:poll": "tsx scripts/process-entity-batch.ts --poll",
     "verify:citations": "tsx scripts/verify-entity-citations.ts",
     "test": "vitest run",
-    "map:entities:deterministic": "tsx scripts/map-entities-deterministic.ts"
+    "map:entities:deterministic": "tsx scripts/map-entities-deterministic.ts",
+    "map:entities:disambiguate": "tsx scripts/map-entities-disambiguate.ts",
+    "map:entities:validate": "tsx scripts/map-entities-validate.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",
