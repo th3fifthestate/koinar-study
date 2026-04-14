@@ -1,19 +1,30 @@
 #!/usr/bin/env tsx
 /**
  * TIPNR Import Script — Koinar Bible Study App
- * Imports top-100 most-referenced biblical people from the STEPBible TIPNR dataset.
+ *
+ * Imports EVERY person from the STEPBible TIPNR dataset, keyed on a
+ * Strong's-suffixed entity id (`NAME_STRONGS`) so that each TIPNR
+ * individual gets its own distinct row. This eliminates the collision
+ * class where multiple biblical figures sharing a name (Mary, James,
+ * Joseph, Judas, ...) would collapse into a single DB row.
+ *
+ * Family relationships (parents, siblings, partners, offspring) are
+ * resolved through a `Name@Ref → entity_id` lookup map, so each edge
+ * points to the specific individual TIPNR references — not to whatever
+ * the bare-name happened to resolve to previously.
+ *
  * Source: Tyndale House Cambridge, CC BY 4.0
  * Run from app/ directory: npx tsx scripts/import-tipnr.ts
+ *   Flags:
+ *     --dry-run   parse only, no DB writes
+ *     --limit=N   import first N entries (debug)
  */
 
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { getDb } from '../lib/db/connection';
-import {
-  upsertEntity,
-  insertRelationship,
-} from '../lib/db/entities/queries';
+import { insertRelationship } from '../lib/db/entities/queries';
 import type { EntityVerseRef } from '../lib/db/types';
 
 // ==============================
@@ -42,17 +53,28 @@ const BOOK_MAP: Record<string, string> = {
 // Helper functions
 // ==============================
 
-function toEntityId(unifiedName: string): string {
-  // Extract name before @ sign
+/**
+ * Build a Strong's-suffixed entity ID.
+ *
+ * @param unifiedName e.g. "James@Mat.13.55-Jud"
+ * @param strongsKey  e.g. "G2385I" — the token after `=` in the TIPNR row
+ */
+function toEntityId(unifiedName: string, strongsKey: string): string {
   const namePart = unifiedName.split('@')[0];
-  // Split camelCase: insert _ before uppercase letter preceded by lowercase
   const split = namePart.replace(/([a-z])([A-Z])/g, '$1_$2');
-  // Replace . and spaces with _, uppercase
-  return split.replace(/[.\s]+/g, '_').toUpperCase();
+  // Collapse any non-alphanumeric char (except _) to _ — covers #, ', ., etc.
+  const base = split.replace(/[^A-Za-z0-9_]+/g, '_').toUpperCase();
+  return `${base}_${strongsKey}`;
 }
 
-function stripFamilyRef(nameWithRef: string): string {
-  return nameWithRef.split('@')[0].trim();
+/**
+ * Keep the full family ref (e.g. "Aaron@Exo.4.14-Heb") intact — we resolve
+ * it to a specific entity id later via a `unifiedName → entity_id` map.
+ */
+function normalizeFamilyRef(raw: string): string {
+  // Strip trailing whitespace and any stray noise, but PRESERVE the `@Ref`
+  // disambiguator so we can look up the specific individual.
+  return raw.trim();
 }
 
 function parseVerseRef(ref: string): { book: string; chapter: number; verse_start: number; verse_end: number } | null {
@@ -72,11 +94,13 @@ function stripHtml(text: string): string {
 
 function parseFamilyList(raw: string): string[] {
   if (!raw || raw.trim() === '' || raw.trim() === '>' || raw.trim() === '+') return [];
-  // Handle "Name@ref + Name@ref" (parents) and "Name@ref, Name@ref" (others)
+  // Handle "Name@ref + Name@ref" (parents) and "Name@ref, Name@ref" (others).
+  // We KEEP the full `Name@ref` form so we can disambiguate which individual
+  // the edge points to via the unifiedName → entity_id lookup.
   return raw
     .split(/[,+]/)
-    .map(s => stripFamilyRef(s.trim()))
-    .filter(s => s.length > 0 && s !== '>');
+    .map((s) => normalizeFamilyRef(s))
+    .filter((s) => s.length > 0 && s !== '>' && s !== '+');
 }
 
 // ==============================
@@ -84,16 +108,17 @@ function parseFamilyList(raw: string): string[] {
 // ==============================
 
 type PersonEntry = {
-  unifiedName: string;    // full "Aaron@Exo.4.14-Heb=H0175" string (before =)
-  displayName: string;    // name before "@"
+  unifiedName: string;    // "Name@Ref" part (before the "=") — unique per TIPNR person
+  strongsKey: string;     // "Strong's" part (after the "=") — e.g. "G2385I"
+  displayName: string;    // bare canonical name ("James")
   description: string;
-  parents: string[];
+  parents: string[];      // raw "Name@ref" strings, resolved later
   siblings: string[];
   partners: string[];
   offspring: string[];
   hebrewName: string;     // extracted from – Named row after "="
   greekName: string;      // extracted from – Greek row after "="
-  tipnrId: string;        // full UnifiedName@Ref=uStrong string
+  tipnrId: string;        // full "Name@Ref=Strong's" string
   verseRefs: string[];    // exhaustive list from Named + Greek sub-rows (col 5)
   verseCount: number;     // from – Total row col 4
   briefest: string;
@@ -122,6 +147,7 @@ function parseFile(filePath: string): PersonEntry[] {
       if (current) entries.push(current);
       current = {
         unifiedName: '',
+        strongsKey: '',
         displayName: '',
         description: '',
         parents: [],
@@ -221,9 +247,15 @@ function parseFile(filePath: string): PersonEntry[] {
       if (cols.length >= 2 && cols[0].includes('@')) {
         const col0 = cols[0].trim();
         current.tipnrId = col0;
-        // UnifiedName is the part before "=" in col0
+        // UnifiedName is the part before "=" in col0; Strong's key is after
         const eqIdx = col0.indexOf('=');
-        current.unifiedName = eqIdx !== -1 ? col0.slice(0, eqIdx) : col0;
+        if (eqIdx !== -1) {
+          current.unifiedName = col0.slice(0, eqIdx);
+          current.strongsKey = col0.slice(eqIdx + 1).trim();
+        } else {
+          current.unifiedName = col0;
+          current.strongsKey = '';
+        }
         current.displayName = current.unifiedName.split('@')[0];
         current.description = (cols[1] ?? '').trim();
 
@@ -255,35 +287,94 @@ function parseFile(filePath: string): PersonEntry[] {
 // ==============================
 
 async function main() {
+  const args = process.argv.slice(2);
+  const dryRun = args.includes('--dry-run');
+  const limitArg = args.find((a) => a.startsWith('--limit='));
+  const limit = limitArg ? parseInt(limitArg.slice('--limit='.length), 10) : null;
+
   const filePath = path.join(__dirname, '../data/tipnr/tipnr-names.tsv');
 
   console.log(`Parsing TIPNR file: ${filePath}`);
+  console.log(`Mode: ${dryRun ? 'DRY RUN (no writes)' : 'COMMIT'}${limit ? ` — limit ${limit}` : ''}`);
 
   // 1. Parse all person entries
-  const allEntries = parseFile(filePath);
-  console.log(`Total persons parsed from file: ${allEntries.length}`);
+  const allParsed = parseFile(filePath);
+  console.log(`Total persons parsed from file: ${allParsed.length}`);
 
-  // 2. Sort by verseCount descending, take top 100
-  const sorted = [...allEntries].sort((a, b) => b.verseCount - a.verseCount);
-  const top100 = sorted.slice(0, 100);
+  // 1a. Drop malformed entries (no strongsKey means we can't build a unique id)
+  const allEntries = allParsed.filter((e) => {
+    if (!e.strongsKey) {
+      console.warn(`  skipping ${e.displayName}: no strongsKey (tipnrId=${e.tipnrId})`);
+      return false;
+    }
+    return true;
+  });
+  const entries = limit ? allEntries.slice(0, limit) : allEntries;
+  console.log(`Importing ${entries.length} persons${limit ? ` (limit)` : ''}.`);
 
-  console.log(`Top 100 selected. #1: ${top100[0]?.displayName} (${top100[0]?.verseCount} refs), #100: ${top100[99]?.displayName} (${top100[99]?.verseCount} refs)`);
+  // 2. Build unifiedName → entity_id map (resolves family refs later)
+  //    Family refs in TIPNR use the "Name@Ref" form WITHOUT the Strong's suffix,
+  //    but that form is globally unique in TIPNR (it's the PK of the person row).
+  const entityIdByUnifiedName = new Map<string, string>();
+  for (const entry of entries) {
+    const id = toEntityId(entry.unifiedName, entry.strongsKey);
+    entityIdByUnifiedName.set(entry.unifiedName, id);
+  }
 
-  const top100Ids = new Set(top100.map(e => toEntityId(e.unifiedName)));
-
-  // 3. Initialize DB (creates tables if needed)
+  // 3. Initialize DB
   const db = getDb();
 
-  // 4. Insert all 100 entities + verse refs + citations
+  if (dryRun) {
+    console.log('\nDry-run summary:');
+    console.log(`  entities to insert:  ${entries.length}`);
+    let edgeCount = 0;
+    let verseCount = 0;
+    for (const e of entries) {
+      verseCount += e.verseRefs.length;
+      for (const list of [e.parents, e.offspring, e.partners, e.siblings]) {
+        for (const ref of list) {
+          if (entityIdByUnifiedName.has(ref)) edgeCount++;
+        }
+      }
+    }
+    console.log(`  relationship edges:  ${edgeCount} (resolvable through map)`);
+    console.log(`  verse refs parsed:   ${verseCount}`);
+    console.log('✓ Dry run complete.');
+    return;
+  }
+
+  // 4. Insert entities + verse refs + citations
   let totalVerseRefs = 0;
   let parseErrors = 0;
 
   const allRefs: Omit<EntityVerseRef, 'id' | 'created_at'>[] = [];
   const citations: { entity_id: string; source_name: string; source_ref: string; source_url: string; content_field: 'general'; excerpt: null }[] = [];
 
+  // Content-preserving upsert:
+  //   • INSERT inserts all TIPNR fields (incl. thin @Article as full_profile seed)
+  //   • ON CONFLICT only updates TIPNR-owned metadata (tipnr_id, canonical_name,
+  //     hebrew_name, greek_name) and seeds content fields ONLY IF they are
+  //     currently NULL. Existing generated content is preserved verbatim.
+  const upsertStmt = db.prepare(
+    `INSERT INTO entities (
+       id, entity_type, canonical_name, aliases, quick_glance, summary, full_profile,
+       hebrew_name, greek_name, disambiguation_note, date_range, geographic_context,
+       source_verified, tipnr_id
+     ) VALUES (?, 'person', ?, NULL, ?, ?, ?, ?, ?, NULL, NULL, NULL, 1, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       canonical_name = excluded.canonical_name,
+       hebrew_name    = COALESCE(entities.hebrew_name, excluded.hebrew_name),
+       greek_name     = COALESCE(entities.greek_name, excluded.greek_name),
+       tipnr_id       = excluded.tipnr_id,
+       quick_glance   = COALESCE(entities.quick_glance, excluded.quick_glance),
+       summary        = COALESCE(entities.summary, excluded.summary),
+       full_profile   = COALESCE(entities.full_profile, excluded.full_profile),
+       updated_at     = datetime('now')`
+  );
+
   db.transaction(() => {
-    for (const entry of top100) {
-      const entityId = toEntityId(entry.unifiedName);
+    for (const entry of entries) {
+      const entityId = toEntityId(entry.unifiedName, entry.strongsKey);
 
       // Build summary from first paragraph of article
       const firstPara = entry.article
@@ -295,22 +386,16 @@ async function main() {
         ? stripHtml(entry.article.replace(/¶/g, '\n\n'))
         : null;
 
-      upsertEntity({
-        id: entityId,
-        entity_type: 'person',
-        canonical_name: entry.displayName,
-        aliases: null,
-        quick_glance: entry.shortDesc || null,
-        summary: firstPara || null,
-        full_profile: fullProfile || null,
-        hebrew_name: entry.hebrewName || null,
-        greek_name: entry.greekName || null,
-        disambiguation_note: null,
-        date_range: null,
-        geographic_context: null,
-        source_verified: 1,
-        tipnr_id: entry.tipnrId,
-      });
+      upsertStmt.run(
+        entityId,
+        entry.displayName,
+        entry.shortDesc || null,
+        firstPara || null,
+        fullProfile || null,
+        entry.hebrewName || null,
+        entry.greekName || null,
+        entry.tipnrId
+      );
 
       // Parse verse refs — deduplicate within this entity
       const seenRefs = new Set<string>();
@@ -373,86 +458,56 @@ async function main() {
     for (const id of uniqueEntityIds) touchStmt.run(id);
   })();
 
-  console.log(`Inserted/updated 100 entities`);
+  console.log(`Inserted/updated ${entries.length} entities`);
   console.log(`Inserted ${totalVerseRefs} verse refs`);
   if (parseErrors > 0) {
     console.warn(`Parse errors (skipped refs): ${parseErrors}`);
   }
 
-  // 5. Insert relationships (only where both IDs exist in top 100)
+  // 5. Insert relationships. Family refs are stored as "Name@Ref" in the TSV;
+  //    resolve them via `entityIdByUnifiedName` to the strongs-suffixed entity id.
+  //    Drop any edge whose endpoint isn't in the import set (rare, e.g. refs
+  //    to entries that were filtered out because of a missing strongsKey).
   let relCount = 0;
+  let unresolvedRefs = 0;
+
+  const tryInsert = (
+    fromId: string,
+    toRef: string,
+    relationship_type: 'child_of' | 'parent_of' | 'spouse_of' | 'sibling_of',
+    relationship_label: string,
+    bidirectional: 0 | 1
+  ) => {
+    const toId = entityIdByUnifiedName.get(toRef);
+    if (!toId) {
+      unresolvedRefs++;
+      return;
+    }
+    insertRelationship({
+      from_entity_id: fromId,
+      to_entity_id: toId,
+      relationship_type,
+      relationship_label,
+      bidirectional,
+      source: 'tipnr',
+    });
+    relCount++;
+  };
 
   db.transaction(() => {
-  for (const entry of top100) {
-    const fromId = toEntityId(entry.unifiedName);
-
-    // Parents: this person is a child_of each parent
-    for (const parentName of entry.parents) {
-      const toId = toEntityId(parentName);
-      if (top100Ids.has(toId)) {
-        insertRelationship({
-          from_entity_id: fromId,
-          to_entity_id: toId,
-          relationship_type: 'child_of',
-          relationship_label: 'child of',
-          bidirectional: 0,
-          source: 'tipnr',
-        });
-        relCount++;
-      }
+    for (const entry of entries) {
+      const fromId = toEntityId(entry.unifiedName, entry.strongsKey);
+      for (const parentRef of entry.parents) tryInsert(fromId, parentRef, 'child_of', 'child of', 0);
+      for (const childRef of entry.offspring) tryInsert(fromId, childRef, 'parent_of', 'parent of', 0);
+      for (const partnerRef of entry.partners) tryInsert(fromId, partnerRef, 'spouse_of', 'spouse of', 1);
+      for (const siblingRef of entry.siblings) tryInsert(fromId, siblingRef, 'sibling_of', 'sibling of', 1);
     }
-
-    // Offspring: this person is a parent_of each child
-    for (const childName of entry.offspring) {
-      const toId = toEntityId(childName);
-      if (top100Ids.has(toId)) {
-        insertRelationship({
-          from_entity_id: fromId,
-          to_entity_id: toId,
-          relationship_type: 'parent_of',
-          relationship_label: 'parent of',
-          bidirectional: 0,
-          source: 'tipnr',
-        });
-        relCount++;
-      }
-    }
-
-    // Partners: spouse_of (bidirectional)
-    for (const partnerName of entry.partners) {
-      const toId = toEntityId(partnerName);
-      if (top100Ids.has(toId)) {
-        insertRelationship({
-          from_entity_id: fromId,
-          to_entity_id: toId,
-          relationship_type: 'spouse_of',
-          relationship_label: 'spouse of',
-          bidirectional: 1,
-          source: 'tipnr',
-        });
-        relCount++;
-      }
-    }
-
-    // Siblings: sibling_of (bidirectional)
-    for (const siblingName of entry.siblings) {
-      const toId = toEntityId(siblingName);
-      if (top100Ids.has(toId)) {
-        insertRelationship({
-          from_entity_id: fromId,
-          to_entity_id: toId,
-          relationship_type: 'sibling_of',
-          relationship_label: 'sibling of',
-          bidirectional: 1,
-          source: 'tipnr',
-        });
-        relCount++;
-      }
-    }
-  }
   })();
 
   console.log(`Inserted ${relCount} relationships`);
+  if (unresolvedRefs > 0) {
+    console.warn(`Unresolved family refs (endpoint not in import set): ${unresolvedRefs}`);
+  }
   console.log('Import complete.');
 }
 

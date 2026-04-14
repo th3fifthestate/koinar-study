@@ -18,50 +18,85 @@ interface AmbigConfig {
   contextKeywords: Record<string, string[]>;
 }
 
+// Entity IDs use Strong's-suffixed format: NAME_STRONGS (e.g. HEROD_G2264G).
+// When multiple entities share a canonical name, we use context keywords within
+// a 200-char window to pick the most likely individual.
 const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
   herod: {
-    candidates: ['HEROD_GREAT', 'HEROD_ANTIPAS', 'HEROD_AGRIPPA_I', 'HEROD_AGRIPPA_II'],
+    candidates: ['HEROD_G2264G', 'HEROD_G2264H', 'HEROD_G2264I'],
     contextKeywords: {
-      HEROD_GREAT: ['birth', 'magi', 'bethlehem', 'massacre', 'wise men', 'slaughter', 'infant'],
-      HEROD_ANTIPAS: ['galilee', 'herodias', 'salome', 'tetrarch', 'beheaded', 'john the baptist'],
-      HEROD_AGRIPPA_I: ['james', 'peter', 'acts 12', 'worm', 'agrippa'],
+      HEROD_G2264G: ['birth', 'magi', 'bethlehem', 'massacre', 'wise men', 'slaughter', 'infant', 'great'],
+      HEROD_G2264H: ['galilee', 'herodias', 'salome', 'tetrarch', 'beheaded', 'john the baptist', 'antipas'],
+      HEROD_G2264I: ['james', 'peter', 'acts 12', 'worm', 'agrippa'],
     },
   },
   james: {
-    candidates: ['JAMES_SON_OF_ZEBEDEE', 'JAMES_BROTHER_OF_JESUS', 'JAMES_SON_OF_ALPHAEUS'],
+    candidates: ['JAMES_G2385G', 'JAMES_G2385I', 'JAMES_G2385H', 'JAMES_G2385J'],
     contextKeywords: {
-      JAMES_SON_OF_ZEBEDEE: ['zebedee', 'john', 'boanerges', 'thunder', 'fishermen', 'transfiguration'],
-      JAMES_BROTHER_OF_JESUS: ['lord', 'brother', 'epistle', 'jerusalem', 'pillar', 'half-brother'],
-      JAMES_SON_OF_ALPHAEUS: ['alphaeus', 'lesser', 'little'],
+      JAMES_G2385G: ['zebedee', 'john', 'boanerges', 'thunder', 'fishermen', 'transfiguration', 'martyred'],
+      JAMES_G2385I: ['lord', 'brother', 'epistle', 'jerusalem', 'pillar', 'half-brother', 'jude'],
+      JAMES_G2385H: ['alphaeus', 'lesser', 'little', 'the less'],
+      JAMES_G2385J: ['father', 'judas', 'not iscariot'],
     },
   },
   simon: {
-    candidates: ['SIMON_PETER', 'SIMON_OF_CYRENE', 'SIMON_THE_ZEALOT', 'SIMON_THE_PHARISEE'],
+    candidates: ['PETER_G4074G', 'SIMON_G4613J', 'SIMON_G4613G', 'SIMON_G4613I', 'SIMON_G4613M'],
     contextKeywords: {
-      SIMON_PETER: ['peter', 'rock', 'cephas', 'fish', 'galilee', 'keys'],
-      SIMON_OF_CYRENE: ['cyrene', 'cross', 'carried'],
-      SIMON_THE_ZEALOT: ['zealot', 'zealots', 'cananaean'],
-      SIMON_THE_PHARISEE: ['pharisee', 'anointed', 'woman'],
+      PETER_G4074G: ['peter', 'rock', 'cephas', 'fish', 'galilee', 'keys'],
+      SIMON_G4613J: ['cyrene', 'cross', 'carried', 'rufus', 'alexander'],
+      SIMON_G4613G: ['zealot', 'zealots', 'cananaean'],
+      SIMON_G4613I: ['leper', 'pharisee', 'anointed', 'woman', 'alabaster'],
+      SIMON_G4613M: ['sorcerer', 'magic', 'samaria', 'simony'],
     },
   },
   peter: {
-    candidates: ['SIMON_PETER'],
+    candidates: ['PETER_G4074G'],
     contextKeywords: {},
   },
   mary: {
-    candidates: ['MARY_MOTHER_OF_JESUS', 'MARY_MAGDALENE', 'MARY_OF_BETHANY', 'MARY_MOTHER_OF_JAMES'],
+    candidates: ['MARY_G3137G', 'MARY_MAGDALENE_G3137I', 'MARY_G3137J', 'MARY_G3137K'],
     contextKeywords: {
-      MARY_MOTHER_OF_JESUS: ['virgin', 'joseph', 'birth', 'nazareth', 'magnificat', 'annunciation'],
-      MARY_MAGDALENE: ['magdalene', 'seven demons', 'resurrection', 'garden', 'tomb', 'first'],
-      MARY_OF_BETHANY: ['bethany', 'lazarus', 'martha', 'feet', 'ointment', 'perfume'],
+      MARY_G3137G: ['virgin', 'joseph', 'birth', 'nazareth', 'magnificat', 'annunciation', 'mother of jesus'],
+      MARY_MAGDALENE_G3137I: ['magdalene', 'seven demons', 'resurrection', 'garden', 'tomb', 'magdala'],
+      MARY_G3137J: ['bethany', 'lazarus', 'martha', 'feet', 'ointment', 'perfume'],
+      MARY_G3137K: ['clopas', 'alphaeus', 'mother of james', 'mother of joses'],
     },
   },
+  // "mary magdalene" as a distinct key so the two-word name gets direct lookup
+  'mary magdalene': {
+    candidates: ['MARY_MAGDALENE_G3137I'],
+    contextKeywords: {},
+  },
   john: {
-    candidates: ['JOHN_THE_APOSTLE', 'JOHN_THE_BAPTIST', 'JOHN_MARK'],
+    candidates: ['JOHN_G2491H', 'JOHN_G2491G', 'MARK_G3138'],
     contextKeywords: {
-      JOHN_THE_APOSTLE: ['zebedee', 'beloved', 'disciple', 'revelation', 'ephesus', 'thunder'],
-      JOHN_THE_BAPTIST: ['baptist', 'baptize', 'jordan', 'wilderness', 'elijah', 'locust'],
-      JOHN_MARK: ['mark', 'barnabas', 'cyprus', 'acts', 'pamphylia'],
+      JOHN_G2491H: ['zebedee', 'beloved', 'disciple', 'revelation', 'ephesus', 'thunder', 'apostle'],
+      JOHN_G2491G: ['baptist', 'baptize', 'jordan', 'wilderness', 'elijah', 'locust'],
+      MARK_G3138: ['mark', 'barnabas', 'cyprus', 'acts', 'pamphylia'],
+    },
+  },
+  joseph: {
+    candidates: ['JOSEPH_H3130G', 'JOSEPH_G2501G', 'JOSEPH_G2501I'],
+    contextKeywords: {
+      JOSEPH_H3130G: ['egypt', 'pharaoh', 'dreamer', 'coat', 'potiphar', 'genesis', 'patriarch'],
+      JOSEPH_G2501G: ['mary', 'nazareth', 'bethlehem', 'carpenter', 'husband', 'dream', 'angel'],
+      JOSEPH_G2501I: ['arimathea', 'tomb', 'burial', 'body', 'pilate', 'linen'],
+    },
+  },
+  judas: {
+    candidates: ['JUDAS_G2455H', 'JUDE_G2455I', 'JUDAS_G2455G', 'JUDAS_G2455M'],
+    contextKeywords: {
+      JUDAS_G2455H: ['iscariot', 'betray', 'silver', 'thirty', 'field', 'kiss'],
+      JUDE_G2455I: ['brother', 'epistle', 'james', 'jude'],
+      JUDAS_G2455G: ['thaddaeus', 'lebbaeus', 'not iscariot'],
+      JUDAS_G2455M: ['barsabbas', 'silas', 'antioch', 'prophets'],
+    },
+  },
+  lazarus: {
+    candidates: ['LAZARUS_G2976H', 'LAZARUS_G2976G'],
+    contextKeywords: {
+      LAZARUS_G2976H: ['bethany', 'martha', 'mary', 'raised', 'tomb', 'four days', 'dead'],
+      LAZARUS_G2976G: ['rich man', 'bosom', 'abraham', 'parable', 'purple', 'crumbs'],
     },
   },
 };

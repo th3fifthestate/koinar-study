@@ -92,18 +92,42 @@ export function normalizeBookName(input: string): string | null {
   // Try direct match on aliases
   if (BOOK_ALIASES[lower]) return BOOK_ALIASES[lower];
 
-  // Try matching against full book names in BSB
   const db = getBsbDb();
+
+  // Try direct full-name match
   const row = db
     .prepare("SELECT name FROM BSB_books WHERE LOWER(name) = ?")
     .get(lower) as { name: string } | undefined;
   if (row) return row.name;
 
-  // Partial match
+  // The BSB database stores numbered books with Roman numerals
+  // ("I Samuel", "II Kings", "III John"). Citations commonly use
+  // Arabic numerals ("1 Samuel", "2 Kings"), so normalize the prefix
+  // before querying again.
+  let romanized: string | null = null;
+  if (/^3\s+/.test(lower)) romanized = lower.replace(/^3\s+/, "iii ");
+  else if (/^2\s+/.test(lower)) romanized = lower.replace(/^2\s+/, "ii ");
+  else if (/^1\s+/.test(lower)) romanized = lower.replace(/^1\s+/, "i ");
+
+  if (romanized) {
+    const romanRow = db
+      .prepare("SELECT name FROM BSB_books WHERE LOWER(name) = ?")
+      .get(romanized) as { name: string } | undefined;
+    if (romanRow) return romanRow.name;
+  }
+
+  // Partial match (handles e.g. "Revelation" → "Revelation of John")
   const partial = db
     .prepare("SELECT name FROM BSB_books WHERE LOWER(name) LIKE ?")
     .get(`${lower}%`) as { name: string } | undefined;
   if (partial) return partial.name;
+
+  if (romanized) {
+    const partialRoman = db
+      .prepare("SELECT name FROM BSB_books WHERE LOWER(name) LIKE ?")
+      .get(`${romanized}%`) as { name: string } | undefined;
+    if (partialRoman) return partialRoman.name;
+  }
 
   return null;
 }
