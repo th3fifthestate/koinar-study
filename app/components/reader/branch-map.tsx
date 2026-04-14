@@ -49,6 +49,7 @@ export function BranchMap({ studyTitle, onNodeClick }: BranchMapProps) {
   );
 
   const { nodes, edges, viewBox } = layout;
+  const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
   const resolveLabel = useCallback(
     (node: GraphNode) => {
@@ -112,10 +113,10 @@ export function BranchMap({ studyTitle, onNodeClick }: BranchMapProps) {
         preserveAspectRatio="xMidYMid meet"
         className="h-full w-full"
       >
-        {/* Edges */}
+        {/* Edges — build O(1) lookup to avoid O(N²) scans */}
         {edges.map((edge) => {
-          const from = nodes.find((n) => n.id === edge.fromId)!;
-          const to = nodes.find((n) => n.id === edge.toId)!;
+          const from = nodeById.get(edge.fromId)!;
+          const to = nodeById.get(edge.toId)!;
           return (
             <g key={`${edge.fromId}-${edge.toId}`}>
               <line
@@ -154,6 +155,11 @@ export function BranchMap({ studyTitle, onNodeClick }: BranchMapProps) {
               className={node.isCenter ? '' : 'cursor-pointer'}
               onClick={() => !node.isCenter && onNodeClick(node.id)}
             >
+              {/* SVG <title> must be first child for browser tooltip */}
+              {!node.isCenter && displayLabel !== label && (
+                <title>{label}</title>
+              )}
+
               {/* Node circle */}
               {node.isCenter ? (
                 <circle
@@ -196,10 +202,6 @@ export function BranchMap({ studyTitle, onNodeClick }: BranchMapProps) {
                 {displayLabel}
               </text>
 
-              {/* Native SVG tooltip for full name */}
-              {!node.isCenter && displayLabel !== label && (
-                <title>{label}</title>
-              )}
             </g>
           );
         })}

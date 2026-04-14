@@ -163,14 +163,18 @@ export function EntityLayerProvider({
     [recordExploration]
   );
 
+  // Ref mirrors entityStack so navigateToEntity can read it without
+  // closing over the state value (avoids new callback identity per navigation)
+  const entityStackRef = useRef<string[]>([]);
+  entityStackRef.current = entityStack;
+
   const navigateToEntity = useCallback(
     (entityId: string, relationshipLabel?: string) => {
-      // Capture parent BEFORE the push — read from current committed state
-      const openedFrom = entityStack[entityStack.length - 1] ?? null;
+      const openedFrom = entityStackRef.current[entityStackRef.current.length - 1] ?? null;
       recordExploration(entityId, openedFrom, relationshipLabel ?? null);
       setEntityStack((prev) => [...prev, entityId]);
     },
-    [recordExploration, entityStack]
+    [recordExploration]
   );
 
   const navigateBack = useCallback((toIndex?: number) => {
