@@ -8,6 +8,7 @@ import { FavoriteButton } from '@/components/library/favorite-button';
 import { FontControls } from './font-controls';
 import { CommunityToggle } from './community-toggle';
 import { EntityToggle } from './entity-toggle';
+import { BranchMapIndicator } from './branch-map-indicator';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -32,6 +33,7 @@ interface StudyHeaderProps {
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
+  onOpenMap: () => void;
 }
 
 const FORMAT_LABELS: Record<string, string> = {
@@ -61,6 +63,7 @@ export function StudyHeader({
   showEntityAnnotations,
   onEntityAnnotationsToggle,
   entityAnnotationCount,
+  onOpenMap,
 }: StudyHeaderProps) {
   const handleShare = useCallback(async () => {
     try {
@@ -132,6 +135,7 @@ export function StudyHeader({
         </button>
 
         <div className="ml-auto flex items-center gap-4">
+          <BranchMapIndicator onOpenMap={onOpenMap} />
           <EntityToggle
             enabled={showEntityAnnotations}
             onToggle={onEntityAnnotationsToggle}
