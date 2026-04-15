@@ -747,13 +747,17 @@ export function getAnnotationsForStudy(studyId: number, userId: number): Annotat
           AND (a.is_public = 1 OR a.user_id = ?)
         ORDER BY a.start_offset ASC`
     )
-    .all(studyId, userId) as (Omit<AnnotationPayload, 'is_public'> & { is_public: number })[];
+    .all(studyId, userId) as (Omit<AnnotationPayload, 'is_public' | 'is_own'> & { user_id: number; is_public: number })[];
 
-  return rows.map((r) => ({ ...r, is_public: r.is_public === 1 }));
+  return rows.map(({ user_id, ...r }) => ({
+    ...r,
+    is_own: user_id === userId,
+    is_public: r.is_public === 1,
+  }));
 }
 
-/** Returns a single annotation with username. Returns null if not found. */
-export function getAnnotationById(annotationId: number): AnnotationPayload | null {
+/** Returns a single annotation with username. requestingUserId sets is_own. */
+export function getAnnotationById(annotationId: number, requestingUserId: number): AnnotationPayload | null {
   const row = getDb()
     .prepare(
       `SELECT a.id, a.study_id, a.user_id, u.username,
@@ -764,10 +768,11 @@ export function getAnnotationById(annotationId: number): AnnotationPayload | nul
          JOIN users u ON u.id = a.user_id
         WHERE a.id = ?`
     )
-    .get(annotationId) as (Omit<AnnotationPayload, 'is_public'> & { is_public: number }) | undefined;
+    .get(annotationId) as (Omit<AnnotationPayload, 'is_public' | 'is_own'> & { user_id: number; is_public: number }) | undefined;
 
   if (!row) return null;
-  return { ...row, is_public: row.is_public === 1 };
+  const { user_id, ...rest } = row;
+  return { ...rest, is_own: user_id === requestingUserId, is_public: rest.is_public === 1 };
 }
 
 export interface CreateAnnotationInput {
@@ -805,7 +810,7 @@ export function createAnnotation(input: CreateAnnotationInput): AnnotationPayloa
       input.isPublic ? 1 : 0
     );
 
-  const annotation = getAnnotationById(result.lastInsertRowid as number);
+  const annotation = getAnnotationById(result.lastInsertRowid as number, input.userId);
   if (!annotation) throw new Error('Failed to retrieve created annotation');
   return annotation;
 }

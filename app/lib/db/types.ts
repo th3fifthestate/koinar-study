@@ -184,11 +184,12 @@ export interface Annotation {
   updated_at: string;
 }
 
-/** API-safe shape returned by REST endpoints and broadcast over WebSocket. */
+/** API-safe shape returned by REST endpoints and broadcast over WebSocket.
+ *  Never exposes user_id to the client — use is_own for ownership checks. */
 export interface AnnotationPayload {
   id: number;
   study_id: number;
-  user_id: number;
+  is_own: boolean;
   username: string;
   type: 'highlight' | 'note';
   color: AnnotationColor;

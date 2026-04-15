@@ -1,14 +1,21 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import type { StudyDetail, StudyEntityAnnotation, Entity } from '@/lib/db/types';
+import type { AnnotationPayload } from '@/lib/ws/types';
+import type { HighlightColor } from './highlight-layer';
 import { useReadingProgress } from '@/lib/hooks/use-reading-progress';
 import { useActiveHeading } from '@/lib/hooks/use-active-heading';
+import { useStudyAnnotations } from '@/lib/hooks/use-study-annotations';
+import { useTextSelection } from '@/lib/hooks/use-text-selection';
+import { useHighlightLayer } from './highlight-layer';
 import { ReadingProgress } from './reading-progress';
 import { StudyHero } from './study-hero';
 import { StudyHeader } from './study-header';
 import { TableOfContents, MobileTocButton, type HeadingItem } from './table-of-contents';
 import { MarkdownRenderer } from './markdown-renderer';
+import { AnnotationPopover } from './annotation-popover';
+import { AnnotationNotes } from './annotation-notes';
 import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
 import { EntityDrawer } from './entity-drawer';
 import { BranchMapOverlay } from './branch-map-overlay';
@@ -107,6 +114,35 @@ function StudyReaderContent({
   const activeId = useActiveHeading(headingIds);
   const [branchMapOpen, setBranchMapOpen] = useState(false);
 
+  // Annotation system
+  const contentRef = useRef<HTMLDivElement>(null);
+  const {
+    annotations,
+    loading: annotationsLoading,
+    activeReaders,
+    createAnnotation,
+    deleteAnnotation,
+  } = useStudyAnnotations({
+    studyId: study.id,
+    isLoggedIn,
+    showCommunity: showCommunityAnnotations,
+  });
+
+  const { selection, clearSelection } = useTextSelection(contentRef);
+
+  // Track which annotation was clicked (for note expansion)
+  const [clickedAnnotation, setClickedAnnotation] = useState<AnnotationPayload | null>(null);
+
+  const handleAnnotationClick = useCallback((annotation: AnnotationPayload) => {
+    setClickedAnnotation((prev) => prev?.id === annotation.id ? null : annotation);
+  }, []);
+
+  // Apply highlights to the DOM when annotations change
+  useHighlightLayer(contentRef, annotations, annotationsLoading, handleAnnotationClick);
+
+  // Community annotation count (public annotations from others)
+  const communityCount = annotations.filter((a) => !a.is_own && a.is_public).length;
+
   return (
     <>
       <ReadingProgress />
@@ -134,6 +170,8 @@ function StudyReaderContent({
           onFontSizeChange={setFontSize}
           showCommunityAnnotations={showCommunityAnnotations}
           onCommunityToggle={setShowCommunityAnnotations}
+          communityAnnotationCount={communityCount}
+          activeReaders={activeReaders}
           showEntityAnnotations={showAnnotations}
           onEntityAnnotationsToggle={setShowAnnotations}
           entityAnnotationCount={entityAnnotationCount}
@@ -147,14 +185,56 @@ function StudyReaderContent({
           </aside>
 
           {/* Main content */}
-          <main className="min-w-0 flex-1">
-            <article className="rounded-lg bg-[rgba(247,246,243,0.92)] p-6 backdrop-blur-sm dark:bg-[rgba(58,54,47,0.92)] md:p-10">
-              <MarkdownRenderer
-                content={study.content_markdown}
-                images={study.images}
-                fontSize={fontSize}
-              />
+          <main className="relative min-w-0 flex-1">
+            <article className="relative rounded-lg bg-[rgba(247,246,243,0.92)] p-6 backdrop-blur-sm dark:bg-[rgba(58,54,47,0.92)] md:p-10">
+              <div ref={contentRef}>
+                <MarkdownRenderer
+                  content={study.content_markdown}
+                  images={study.images}
+                  fontSize={fontSize}
+                />
+              </div>
+
+              {/* Margin notes for annotations with type 'note' */}
+              {isLoggedIn && (
+                <AnnotationNotes
+                  annotations={annotations}
+                  contentRef={contentRef}
+                  onDelete={deleteAnnotation}
+                />
+              )}
             </article>
+
+            {/* Annotation popover on text selection */}
+            {isLoggedIn && selection && (
+              <AnnotationPopover
+                selection={selection}
+                onHighlight={(color, isPublic) => {
+                  createAnnotation({
+                    type: 'highlight',
+                    color,
+                    start_offset: selection.startOffset,
+                    end_offset: selection.endOffset,
+                    selected_text: selection.text,
+                    is_public: isPublic,
+                  });
+                  clearSelection();
+                }}
+                onNote={(color, noteText, isPublic) => {
+                  createAnnotation({
+                    type: 'note',
+                    color,
+                    start_offset: selection.startOffset,
+                    end_offset: selection.endOffset,
+                    selected_text: selection.text,
+                    note_text: noteText,
+                    is_public: isPublic,
+                  });
+                  clearSelection();
+                }}
+                onClose={clearSelection}
+              />
+            )}
           </main>
         </div>
       </div>

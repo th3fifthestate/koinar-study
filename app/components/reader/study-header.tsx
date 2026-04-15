@@ -30,6 +30,8 @@ interface StudyHeaderProps {
   onFontSizeChange: (size: FontSize) => void;
   showCommunityAnnotations: boolean;
   onCommunityToggle: (enabled: boolean) => void;
+  communityAnnotationCount?: number;
+  activeReaders?: number;
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
@@ -60,6 +62,8 @@ export function StudyHeader({
   onFontSizeChange,
   showCommunityAnnotations,
   onCommunityToggle,
+  communityAnnotationCount,
+  activeReaders,
   showEntityAnnotations,
   onEntityAnnotationsToggle,
   entityAnnotationCount,
@@ -145,7 +149,8 @@ export function StudyHeader({
           <CommunityToggle
             enabled={showCommunityAnnotations}
             onToggle={onCommunityToggle}
-            annotationCount={annotationCount}
+            annotationCount={communityAnnotationCount ?? annotationCount}
+            activeReaders={activeReaders}
           />
         </div>
       </div>

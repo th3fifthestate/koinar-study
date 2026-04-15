@@ -133,9 +133,11 @@ export async function POST(
       isPublic: is_public === true,
     });
 
-    // Broadcast to the study room if annotation is public
+    // Broadcast to the study room if annotation is public.
+    // Set is_own: false for broadcast — recipients are other users.
+    // The creator already has the annotation from this REST response with is_own: true.
     if (annotation.is_public) {
-      broadcastAnnotationCreated(studyId, annotation);
+      broadcastAnnotationCreated(studyId, { ...annotation, is_own: false });
     }
 
     return Response.json({ annotation }, { status: 201 });
