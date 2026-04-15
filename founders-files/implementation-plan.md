@@ -892,12 +892,14 @@ Completion notes (07f — April 14, 2026):
 | **11 — Flux Images** | **Sonnet** | Direct Execution | Flux Pro + Max, admin preview workflow, R2 upload. Pure API integration — no user-facing design. |
 | **09 — Admin Panel** | **Sonnet** | Direct Execution | Dashboard, gift codes, waitlist, users, studies, images, analytics. Functional admin UI — Shadcn defaults, no custom design needed. |
 
-**Execution order:** 08a (Sonnet) → 08b (Opus) → 11 (Sonnet) → 09 (Sonnet). 11 before 09 because admin panel's image section triggers Flux — building 11 first means 09 integrates directly.
+**Execution order:** 08a ✅ → 08b ✅ → **11 (next)** → 09. 11 before 09 because admin panel's image section triggers Flux — building 11 first means 09 integrates directly.
 
 **Critical files:**
-- `briefs/08-annotations-and-websockets.md` (1206 lines)
-- `briefs/11-flux-image-integration.md` (1132 lines) — **needs updates per "Brief Changes" section**
-- `briefs/09-admin-panel.md` (901 lines) — **needs gift code + image preview additions**
+- `briefs/08-annotations-and-websockets.md` — ✅ COMPLETE
+- `briefs/11-flux-image-integration.md` — pre-implementation notes added 2026-04-15 (5 issues flagged)
+- `briefs/09-admin-panel.md` — pre-implementation notes added 2026-04-15 (auth pattern + existing routes)
+
+**Brief 11 readiness audit (2026-04-15):** Codebase is ~60% prepared. Already in place: `config.r2.*`, `config.ai.fluxApiKey`, `@aws-sdk/client-s3`, `requireAdmin()` helper, admin route group, `study_images` table (partial — needs additive migration), `featured_image_url` subquery in study queries. Missing: `sharp` install, `seasonal_images` table, `lib/images/` directory. See brief's pre-implementation notes section for the 5 issues (schema mismatch, auth pattern, `FLUX_API_URL` bug, base64 payload size, /src/ path prefix).
 
 **Risk:** Custom server breaks Turbopack HMR. During Phases 1-3, use `next dev`. Only switch to custom server in Phase 4. Consider conditional entrypoint for frontend-only work.
 
