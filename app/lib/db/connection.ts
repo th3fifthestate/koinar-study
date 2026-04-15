@@ -97,6 +97,35 @@ function runMigration(database: Database.Database): void {
       // Triggers and indexes are created by runStatements(database, CREATE_INDEXES) above.
     }
 
+    // v3 → v4: Annotations schema overhaul — adds selected_text, note_text, named color
+    // enum, updated_at, and changes is_public default from 1 to 0.
+    // No production annotation data exists (feature was never implemented), so the
+    // table is dropped and recreated. Indexes are re-created explicitly because
+    // CREATE_INDEXES ran before this block on the now-dropped old table.
+    if (currentVersion >= 3 && currentVersion < 4) {
+      database.prepare('DROP TABLE IF EXISTS annotations').run();
+      database.prepare(`
+        CREATE TABLE annotations (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          type TEXT NOT NULL CHECK(type IN ('highlight', 'note')),
+          color TEXT NOT NULL DEFAULT 'yellow' CHECK(color IN ('yellow', 'green', 'blue', 'pink', 'purple')),
+          start_offset INTEGER NOT NULL,
+          end_offset INTEGER NOT NULL,
+          selected_text TEXT NOT NULL,
+          note_text TEXT,
+          is_public INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_annotations_study ON annotations(study_id)').run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_annotations_user ON annotations(user_id)').run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_annotations_study_public ON annotations(study_id, is_public)').run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_annotations_type ON annotations(study_id, type)').run();
+    }
+
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
       .run(SCHEMA_VERSION);

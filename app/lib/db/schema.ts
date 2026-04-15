@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -124,13 +124,15 @@ CREATE TABLE IF NOT EXISTS annotations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  type TEXT NOT NULL CHECK (type IN ('highlight', 'note')),
-  content TEXT,
+  type TEXT NOT NULL CHECK(type IN ('highlight', 'note')),
+  color TEXT NOT NULL DEFAULT 'yellow' CHECK(color IN ('yellow', 'green', 'blue', 'pink', 'purple')),
   start_offset INTEGER NOT NULL,
   end_offset INTEGER NOT NULL,
-  color TEXT DEFAULT '#fde68a',
-  is_public INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  selected_text TEXT NOT NULL,
+  note_text TEXT,
+  is_public INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS study_images (
@@ -346,6 +348,7 @@ CREATE INDEX IF NOT EXISTS idx_favorites_study ON favorites(study_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_study ON annotations(study_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_user ON annotations(user_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_study_public ON annotations(study_id, is_public);
+CREATE INDEX IF NOT EXISTS idx_annotations_type ON annotations(study_id, type);
 CREATE INDEX IF NOT EXISTS idx_study_images_study ON study_images(study_id);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_cached_at ON verse_cache(cached_at);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_last_accessed ON verse_cache(last_accessed_at);

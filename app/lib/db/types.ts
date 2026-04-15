@@ -167,17 +167,38 @@ export interface Favorite {
   created_at: string;
 }
 
+export type AnnotationColor = 'yellow' | 'green' | 'blue' | 'pink' | 'purple';
+
 export interface Annotation {
   id: number;
   study_id: number;
   user_id: number;
   type: 'highlight' | 'note';
-  content: string | null;
+  color: AnnotationColor;
   start_offset: number;
   end_offset: number;
-  color: string | null;
+  selected_text: string;
+  note_text: string | null;
   is_public: number;
   created_at: string;
+  updated_at: string;
+}
+
+/** API-safe shape returned by REST endpoints and broadcast over WebSocket. */
+export interface AnnotationPayload {
+  id: number;
+  study_id: number;
+  user_id: number;
+  username: string;
+  type: 'highlight' | 'note';
+  color: AnnotationColor;
+  start_offset: number;
+  end_offset: number;
+  selected_text: string;
+  note_text: string | null;
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface StudyImage {
