@@ -196,7 +196,7 @@ export interface AnnotationPayload {
   end_offset: number;
   selected_text: string;
   note_text: string | null;
-  is_public: boolean;
+  is_public: boolean;  // coerced from DB integer (0|1) by query layer
   created_at: string;
   updated_at: string;
 }

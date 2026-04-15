@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS annotations (
   type TEXT NOT NULL CHECK(type IN ('highlight', 'note')),
   color TEXT NOT NULL DEFAULT 'yellow' CHECK(color IN ('yellow', 'green', 'blue', 'pink', 'purple')),
   start_offset INTEGER NOT NULL,
-  end_offset INTEGER NOT NULL,
+  end_offset INTEGER NOT NULL CHECK(end_offset > start_offset),
   selected_text TEXT NOT NULL,
   note_text TEXT,
   is_public INTEGER NOT NULL DEFAULT 0,
