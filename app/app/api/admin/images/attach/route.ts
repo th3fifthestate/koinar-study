@@ -86,8 +86,9 @@ export async function POST(request: NextRequest) {
       image: { id: imageId, url: imageUrl, r2Key, sizeBytes },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to attach image";
+    // Raw errors here may include R2/AWS SDK details, DB errors, or sharp internals.
+    // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
     console.error("[POST /api/admin/images/attach]", error);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to attach image" }, { status: 500 });
   }
 }

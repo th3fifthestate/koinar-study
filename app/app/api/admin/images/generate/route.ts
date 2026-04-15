@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/middleware";
-import { generateImage, estimateCost } from "@/lib/images/flux";
+import { generateImage, estimateCost, FluxApiError } from "@/lib/images/flux";
 import { getDimensions, type AspectRatio } from "@/lib/images/prompt-builder";
 import { z } from "zod";
 
@@ -51,8 +51,12 @@ export async function POST(request: NextRequest) {
       sizeBytes: buffer.length,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Image generation failed";
     console.error("[POST /api/admin/images/generate]", error);
-    return NextResponse.json({ error: message }, { status: 500 });
+    // FluxApiError.message is curated and safe to return. Anything else gets a generic message.
+    if (error instanceof FluxApiError) {
+      const status = error.statusCode === 429 ? 429 : 500;
+      return NextResponse.json({ error: error.message }, { status });
+    }
+    return NextResponse.json({ error: "Image generation failed" }, { status: 500 });
   }
 }

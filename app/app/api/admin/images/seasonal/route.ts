@@ -65,8 +65,9 @@ export async function POST(request: NextRequest) {
       image: { id: Number(info.lastInsertRowid), url: imageUrl, r2Key },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to save seasonal image";
+    // Raw errors may include R2/AWS SDK details or sharp internals.
+    // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
     console.error("[POST /api/admin/images/seasonal]", error);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save seasonal image" }, { status: 500 });
   }
 }

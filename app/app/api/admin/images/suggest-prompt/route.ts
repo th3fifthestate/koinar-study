@@ -56,8 +56,12 @@ Rules:
 
     return NextResponse.json({ suggestedPrompt: text.trim() });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to generate prompt suggestion";
+    // Anthropic SDK errors can include API keys, rate-limit tokens, internal URLs.
+    // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
     console.error("[POST /api/admin/images/suggest-prompt]", error);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate prompt suggestion" },
+      { status: 500 }
+    );
   }
 }

@@ -30,21 +30,57 @@ const FLUX_RESULT_URL = "https://api.bfl.ml/v1/get_result";
 const MAX_POLL_ATTEMPTS = 120; // 2 minutes at 1-second intervals
 const POLL_INTERVAL_MS = 1000;
 
+/**
+ * FluxApiError carries a user-safe `message` and optional server-only `details`.
+ * Per CLAUDE.md §6: the `message` is safe to return to the client; `details`
+ * (e.g. raw upstream response body) must only be logged server-side.
+ */
 export class FluxApiError extends Error {
   constructor(
     message: string,
-    public statusCode?: number,
-    public fluxStatus?: string
+    public readonly statusCode?: number,
+    public readonly fluxStatus?: string,
+    /** Internal details — upstream response body, config names, etc. NEVER return to client. */
+    public readonly details?: string
   ) {
     super(message);
     this.name = "FluxApiError";
   }
 }
 
+/**
+ * Module-level concurrency guard. Flux enforces 24 concurrent requests
+ * API-side; we cap at 8 per process to bound memory (each in-flight
+ * image holds a ~10 MB buffer while polling + downloading).
+ */
+const MAX_CONCURRENT_GENERATIONS = 8;
+let activeGenerations = 0;
+
+async function withConcurrencyGuard<T>(fn: () => Promise<T>): Promise<T> {
+  if (activeGenerations >= MAX_CONCURRENT_GENERATIONS) {
+    throw new FluxApiError(
+      "Too many image generations in progress. Please wait a moment and try again.",
+      429
+    );
+  }
+  activeGenerations++;
+  try {
+    return await fn();
+  } finally {
+    activeGenerations--;
+  }
+}
+
 async function submitGenerationTask(request: FluxGenerateRequest): Promise<string> {
   const apiKey = config.ai.fluxApiKey;
   if (!apiKey) {
-    throw new FluxApiError("FLUX_API_KEY is not configured");
+    // Generic user-facing message; details (env var name) stay in server logs.
+    throw new FluxApiError(
+      "Image generation is not configured on this server.",
+      undefined,
+      undefined,
+      "FLUX_API_KEY env var is missing"
+    );
   }
 
   const model = request.model ?? "flux-2-pro";
@@ -73,10 +109,14 @@ async function submitGenerationTask(request: FluxGenerateRequest): Promise<strin
   }
 
   if (!response.ok) {
+    // Do NOT include upstream body in the user-facing message — it can contain
+    // internal model/account details. Keep the raw body in `details` for logs.
     const errorText = await response.text().catch(() => "Unknown error");
     throw new FluxApiError(
-      `Flux API request failed: ${response.status} ${errorText}`,
-      response.status
+      `Flux API request failed with status ${response.status}.`,
+      response.status,
+      undefined,
+      errorText
     );
   }
 
@@ -155,10 +195,12 @@ async function downloadImage(url: string): Promise<Buffer> {
 export async function generateImage(
   request: FluxGenerateRequest
 ): Promise<{ buffer: Buffer; taskId: string }> {
-  const taskId = await submitGenerationTask(request);
-  const imageUrl = await pollForResult(taskId);
-  const buffer = await downloadImage(imageUrl);
-  return { buffer, taskId };
+  return withConcurrencyGuard(async () => {
+    const taskId = await submitGenerationTask(request);
+    const imageUrl = await pollForResult(taskId);
+    const buffer = await downloadImage(imageUrl);
+    return { buffer, taskId };
+  });
 }
 
 export async function generatePreviews(
