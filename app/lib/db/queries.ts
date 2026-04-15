@@ -819,7 +819,11 @@ export function getAnnotationForOwner(
 ): Annotation | null {
   return (
     (getDb()
-      .prepare('SELECT * FROM annotations WHERE id = ? AND user_id = ? AND study_id = ?')
+      .prepare(
+        `SELECT id, study_id, user_id, type, color, start_offset, end_offset,
+                selected_text, note_text, is_public, created_at, updated_at
+           FROM annotations WHERE id = ? AND user_id = ? AND study_id = ?`
+      )
       .get(annotationId, userId, studyId) as Annotation | undefined) ?? null
   );
 }

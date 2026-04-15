@@ -86,6 +86,8 @@ export async function POST(
   if (
     typeof start_offset !== 'number' ||
     typeof end_offset !== 'number' ||
+    !Number.isInteger(start_offset) ||
+    !Number.isInteger(end_offset) ||
     start_offset < 0 ||
     end_offset <= start_offset
   ) {
