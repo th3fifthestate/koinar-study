@@ -126,6 +126,32 @@ function runMigration(database: Database.Database): void {
       database.prepare('CREATE INDEX IF NOT EXISTS idx_annotations_type ON annotations(study_id, type)').run();
     }
 
+    // v4 → v5: Image generation — add new columns to study_images, add seasonal_images table.
+    // The CREATE TABLE IF NOT EXISTS statements above handle seasonal_images creation.
+    // For study_images, add columns that don't exist yet (ALTER TABLE ADD COLUMN is idempotent
+    // when wrapped in try/catch — SQLite throws if column already exists).
+    if (currentVersion >= 4 && currentVersion < 5) {
+      const addColumns = [
+        "ALTER TABLE study_images ADD COLUMN r2_key TEXT",
+        "ALTER TABLE study_images ADD COLUMN style TEXT NOT NULL DEFAULT 'cinematic'",
+        "ALTER TABLE study_images ADD COLUMN aspect_ratio TEXT NOT NULL DEFAULT '16:9'",
+        "ALTER TABLE study_images ADD COLUMN width INTEGER NOT NULL DEFAULT 1920",
+        "ALTER TABLE study_images ADD COLUMN height INTEGER NOT NULL DEFAULT 1080",
+        "ALTER TABLE study_images ADD COLUMN size_bytes INTEGER",
+        "ALTER TABLE study_images ADD COLUMN is_hero INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE study_images ADD COLUMN flux_task_id TEXT",
+        "ALTER TABLE study_images ADD COLUMN created_by INTEGER REFERENCES users(id)",
+      ];
+      for (const sql of addColumns) {
+        try {
+          database.prepare(sql).run();
+        } catch {
+          // Column already exists — safe to ignore
+        }
+      }
+      // New indexes for expanded study_images + seasonal_images (created above by CREATE_INDEXES)
+    }
+
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
       .run(SCHEMA_VERSION);

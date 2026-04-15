@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -142,6 +142,26 @@ CREATE TABLE IF NOT EXISTS study_images (
   caption TEXT,
   sort_order INTEGER NOT NULL DEFAULT 0,
   flux_prompt TEXT,
+  r2_key TEXT,
+  style TEXT NOT NULL DEFAULT 'cinematic',
+  aspect_ratio TEXT NOT NULL DEFAULT '16:9',
+  width INTEGER NOT NULL DEFAULT 1920,
+  height INTEGER NOT NULL DEFAULT 1080,
+  size_bytes INTEGER,
+  is_hero INTEGER NOT NULL DEFAULT 0,
+  flux_task_id TEXT,
+  created_by INTEGER REFERENCES users(id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS seasonal_images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  season TEXT NOT NULL CHECK(season IN ('spring', 'summer', 'autumn', 'winter')),
+  r2_key TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  flux_prompt TEXT NOT NULL,
+  style TEXT NOT NULL DEFAULT 'cinematic',
+  is_active INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -349,7 +369,10 @@ CREATE INDEX IF NOT EXISTS idx_annotations_study ON annotations(study_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_user ON annotations(user_id);
 CREATE INDEX IF NOT EXISTS idx_annotations_study_public ON annotations(study_id, is_public);
 CREATE INDEX IF NOT EXISTS idx_annotations_type ON annotations(study_id, type);
-CREATE INDEX IF NOT EXISTS idx_study_images_study ON study_images(study_id);
+CREATE INDEX IF NOT EXISTS idx_study_images_study ON study_images(study_id, sort_order);
+CREATE INDEX IF NOT EXISTS idx_study_images_hero ON study_images(study_id, is_hero);
+CREATE INDEX IF NOT EXISTS idx_seasonal_images_season ON seasonal_images(season);
+CREATE INDEX IF NOT EXISTS idx_seasonal_images_active ON seasonal_images(is_active);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_cached_at ON verse_cache(cached_at);
 CREATE INDEX IF NOT EXISTS idx_verse_cache_last_accessed ON verse_cache(last_accessed_at);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON admin_actions(admin_id);

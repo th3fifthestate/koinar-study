@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   // Native Node modules that cannot be bundled by webpack
-  serverExternalPackages: ["better-sqlite3", "argon2"],
+  serverExternalPackages: ["better-sqlite3", "argon2", "sharp"],
 
   images: {
     remotePatterns: [
