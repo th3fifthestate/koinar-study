@@ -12,7 +12,7 @@
 import 'dotenv/config';
 import { getDb } from '../lib/db/connection';
 import { getBsbDb } from '../lib/db/bible/connection';
-import { getBookId } from '../lib/db/bible/queries';
+import { getBookId, normalizeBookName } from '../lib/db/bible/queries';
 import { buildEntityNameIndex } from '../lib/entities/name-index';
 import type { EntityVerseRef } from '../lib/db/types';
 
@@ -127,10 +127,11 @@ function main() {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   );
 
-  for (const bookName of books) {
+  for (const rawBookName of books) {
+    const bookName = normalizeBookName(rawBookName) ?? rawBookName;
     const bookId = getBookId(bookName);
     if (!bookId) {
-      console.log(`[SKIP] Book not found in BSB: ${bookName}`);
+      console.log(`[SKIP] Book not found in BSB: ${rawBookName}`);
       continue;
     }
 
@@ -163,14 +164,14 @@ function main() {
         for (const match of matches) {
           if (match.ambiguous) {
             // For ambiguous matches, store ALL candidate IDs in surface_text as JSON
-            const dedupKey = `${match.candidate_ids[0]}|${bookName}|${chapter}|${v.verse}`;
+            const dedupKey = `${match.candidate_ids[0]}|${rawBookName}|${chapter}|${v.verse}`;
             if (existingRefs.has(dedupKey)) {
               bookSkipped++;
               continue;
             }
             refsToInsert.push({
               entity_id: match.candidate_ids[0], // placeholder — will be resolved in Phase 1b/2
-              book: bookName,
+              book: rawBookName,
               chapter,
               verse_start: v.verse,
               verse_end: v.verse,
@@ -185,14 +186,14 @@ function main() {
             bookAmbiguous++;
           } else {
             // Unambiguous — check dedup
-            const dedupKey = `${match.entity_id}|${bookName}|${chapter}|${v.verse}`;
+            const dedupKey = `${match.entity_id}|${rawBookName}|${chapter}|${v.verse}`;
             if (existingRefs.has(dedupKey)) {
               bookSkipped++;
               continue;
             }
             refsToInsert.push({
               entity_id: match.entity_id,
-              book: bookName,
+              book: rawBookName,
               chapter,
               verse_start: v.verse,
               verse_end: v.verse,
@@ -224,7 +225,7 @@ function main() {
     totalSkippedDedup += bookSkipped;
 
     console.log(
-      `  ${bookName.padEnd(20)} ${verses.length.toString().padStart(5)} verses → ` +
+      `  ${rawBookName.padEnd(20)} ${verses.length.toString().padStart(5)} verses → ` +
       `${bookUnambiguous} unambiguous, ${bookAmbiguous} ambiguous, ${bookSkipped} deduped`
     );
   }

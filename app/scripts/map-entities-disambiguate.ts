@@ -14,10 +14,25 @@
 //   --dry-run           Print decisions without updating DB
 
 import 'dotenv/config';
+import { readFileSync, existsSync } from 'fs';
+import { resolve } from 'path';
 import Anthropic from '@anthropic-ai/sdk';
 import { getDb } from '../lib/db/connection';
 import { getChapter } from '../lib/db/bible/queries';
-import { config } from '../lib/config';
+
+// Ensure ANTHROPIC_API_KEY is loaded — dotenv may not set it in some environments
+// (e.g. when a hook pre-loads env vars and filters secrets). Fall back to direct
+// .env file parsing so the script works consistently.
+function loadApiKey(): string {
+  if (process.env.ANTHROPIC_API_KEY) return process.env.ANTHROPIC_API_KEY;
+  const envPath = resolve(process.cwd(), '.env');
+  if (existsSync(envPath)) {
+    const content = readFileSync(envPath, 'utf-8');
+    const match = content.match(/^ANTHROPIC_API_KEY=(.+)$/m);
+    if (match) return match[1].trim();
+  }
+  return '';
+}
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
 
@@ -270,7 +285,7 @@ async function main() {
   console.log('Phase 2: AI disambiguation (Claude Sonnet)');
   console.log('───────────────────────────────────────────');
 
-  const apiKey = config.ai.anthropicApiKey;
+  const apiKey = loadApiKey();
   if (!apiKey) {
     console.error('ERROR: ANTHROPIC_API_KEY is not set. Cannot run AI disambiguation.');
     process.exit(1);
