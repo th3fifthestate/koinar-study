@@ -152,6 +152,17 @@ function runMigration(database: Database.Database): void {
       // New indexes for expanded study_images + seasonal_images (created above by CREATE_INDEXES)
     }
 
+    // v5 → v6: Add is_banned column to users for admin ban/unban feature.
+    if (currentVersion >= 5 && currentVersion < 6) {
+      try {
+        database
+          .prepare('ALTER TABLE users ADD COLUMN is_banned INTEGER NOT NULL DEFAULT 0')
+          .run();
+      } catch {
+        // Column already exists — safe to ignore
+      }
+    }
+
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
       .run(SCHEMA_VERSION);

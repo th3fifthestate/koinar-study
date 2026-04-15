@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   avatar_url TEXT,
   is_admin INTEGER NOT NULL DEFAULT 0,
   is_approved INTEGER NOT NULL DEFAULT 0,
+  is_banned INTEGER NOT NULL DEFAULT 0,
   invited_by INTEGER REFERENCES users(id),
   api_key_encrypted TEXT,
   onboarding_completed INTEGER NOT NULL DEFAULT 0,
