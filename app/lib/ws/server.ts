@@ -1,0 +1,182 @@
+// app/lib/ws/server.ts
+import { WebSocketServer, WebSocket } from 'ws';
+import type { IncomingMessage } from 'http';
+import type { Server } from 'http';
+import { unsealData } from 'iron-session';
+import { sessionOptions } from '@/lib/auth/session';
+import type { SessionData } from '@/lib/auth/session';
+import { registerBroadcasters } from './broadcaster';
+import type { ClientMessage, ServerMessage } from './types';
+import type { AnnotationPayload } from '@/lib/db/types';
+
+interface ConnectedClient {
+  ws: WebSocket;
+  userId: number;
+  username: string;
+  studyId: number | null;
+}
+
+const clients = new Map<WebSocket, ConnectedClient>();
+const studyRooms = new Map<number, Set<WebSocket>>(); // studyId → Set<WebSocket>
+
+/**
+ * Parses the Cookie header from a WS upgrade request and decrypts the
+ * iron-session cookie using unsealData. Returns null if missing or invalid.
+ * Authentication happens here — no userId in query params.
+ */
+async function getSessionFromRequest(req: IncomingMessage): Promise<SessionData | null> {
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) return null;
+
+  // Parse "name=value; name2=value2" — split on first '=' only (values may contain '=')
+  const cookies: Record<string, string> = {};
+  for (const part of cookieHeader.split(';')) {
+    const idx = part.indexOf('=');
+    if (idx === -1) continue;
+    const name = part.slice(0, idx).trim();
+    const value = decodeURIComponent(part.slice(idx + 1).trim());
+    cookies[name] = value;
+  }
+
+  const cookieValue = cookies[sessionOptions.cookieName];
+  if (!cookieValue) return null;
+
+  try {
+    const session = await unsealData<SessionData>(cookieValue, {
+      password: sessionOptions.password as string,
+    });
+    if (!session.userId || !session.isApproved) return null;
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+export function setupWebSocketServer(server: Server) {
+  const wss = new WebSocketServer({ server, path: '/ws' });
+
+  wss.on('connection', async (ws: WebSocket, req: IncomingMessage) => {
+    const session = await getSessionFromRequest(req);
+
+    if (!session) {
+      ws.close(4001, 'Authentication required');
+      return;
+    }
+
+    const client: ConnectedClient = {
+      ws,
+      userId: session.userId,
+      username: session.username,
+      studyId: null,
+    };
+    clients.set(ws, client);
+
+    ws.on('message', (data: Buffer) => {
+      try {
+        const message: ClientMessage = JSON.parse(data.toString());
+        handleMessage(ws, client, message);
+      } catch {
+        sendToClient(ws, { type: 'error', message: 'Invalid message format' });
+      }
+    });
+
+    ws.on('close', () => {
+      if (client.studyId !== null) {
+        leaveRoom(ws, client.studyId);
+      }
+      clients.delete(ws);
+    });
+
+    ws.on('error', () => {
+      clients.delete(ws);
+    });
+  });
+
+  // Heartbeat: ping all clients every 30s to detect dead connections
+  const heartbeat = setInterval(() => {
+    wss.clients.forEach((ws) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.ping();
+      }
+    });
+  }, 30_000);
+
+  wss.on('close', () => clearInterval(heartbeat));
+
+  // Register broadcast functions with the broadcaster module so API routes can call them
+  registerBroadcasters(broadcastAnnotationCreated, broadcastAnnotationDeleted);
+
+  return wss;
+}
+
+function handleMessage(ws: WebSocket, client: ConnectedClient, message: ClientMessage) {
+  switch (message.type) {
+    case 'join':
+      if (client.studyId !== null) {
+        leaveRoom(ws, client.studyId);
+      }
+      client.studyId = message.studyId;
+      joinRoom(ws, message.studyId);
+      break;
+
+    case 'leave':
+      if (client.studyId !== null) {
+        leaveRoom(ws, client.studyId);
+        client.studyId = null;
+      }
+      break;
+
+    case 'ping':
+      sendToClient(ws, { type: 'pong' });
+      break;
+  }
+}
+
+function joinRoom(ws: WebSocket, studyId: number) {
+  if (!studyRooms.has(studyId)) {
+    studyRooms.set(studyId, new Set());
+  }
+  studyRooms.get(studyId)!.add(ws);
+  broadcastPresence(studyId);
+}
+
+function leaveRoom(ws: WebSocket, studyId: number) {
+  const room = studyRooms.get(studyId);
+  if (!room) return;
+  room.delete(ws);
+  if (room.size === 0) {
+    studyRooms.delete(studyId);
+  } else {
+    broadcastPresence(studyId);
+  }
+}
+
+function broadcastPresence(studyId: number) {
+  const count = studyRooms.get(studyId)?.size ?? 0;
+  broadcastToRoom(studyId, { type: 'presence:update', studyId, activeReaders: count });
+}
+
+export function broadcastAnnotationCreated(studyId: number, annotation: AnnotationPayload): void {
+  broadcastToRoom(studyId, { type: 'annotation:created', annotation });
+}
+
+export function broadcastAnnotationDeleted(studyId: number, annotationId: number): void {
+  broadcastToRoom(studyId, { type: 'annotation:deleted', annotationId, studyId });
+}
+
+function broadcastToRoom(studyId: number, message: ServerMessage) {
+  const room = studyRooms.get(studyId);
+  if (!room) return;
+  const data = JSON.stringify(message);
+  room.forEach((ws) => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(data);
+    }
+  });
+}
+
+function sendToClient(ws: WebSocket, message: ServerMessage) {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(message));
+  }
+}
