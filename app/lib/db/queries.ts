@@ -1,6 +1,9 @@
 // app/lib/db/queries.ts
 import { getDb } from './connection';
 import type {
+  Annotation,
+  AnnotationColor,
+  AnnotationPayload,
   Category,
   EmailVerificationCode,
   InviteCode,
@@ -708,4 +711,115 @@ export function denyWaitlistEntry(id: number, reviewedBy: number): void {
        WHERE id = ?`
     )
     .run(reviewedBy, id);
+}
+
+// ─── Annotation queries ───────────────────────────────────────────────────────
+
+/**
+ * Returns annotations for a study visible to the given user:
+ * - All public annotations (is_public=1) from any user
+ * - The requesting user's own private annotations
+ * Returns shaped AnnotationPayload objects — no raw DB rows.
+ */
+export function getAnnotationsForStudy(studyId: number, userId: number): AnnotationPayload[] {
+  const rows = getDb()
+    .prepare(
+      `SELECT a.id, a.study_id, a.user_id, u.username,
+              a.type, a.color, a.start_offset, a.end_offset,
+              a.selected_text, a.note_text, a.is_public,
+              a.created_at, a.updated_at
+         FROM annotations a
+         JOIN users u ON u.id = a.user_id
+        WHERE a.study_id = ?
+          AND (a.is_public = 1 OR a.user_id = ?)
+        ORDER BY a.start_offset ASC`
+    )
+    .all(studyId, userId) as (Omit<AnnotationPayload, 'is_public'> & { is_public: number })[];
+
+  return rows.map((r) => ({ ...r, is_public: r.is_public === 1 }));
+}
+
+/** Returns a single annotation with username. Returns null if not found. */
+export function getAnnotationById(annotationId: number): AnnotationPayload | null {
+  const row = getDb()
+    .prepare(
+      `SELECT a.id, a.study_id, a.user_id, u.username,
+              a.type, a.color, a.start_offset, a.end_offset,
+              a.selected_text, a.note_text, a.is_public,
+              a.created_at, a.updated_at
+         FROM annotations a
+         JOIN users u ON u.id = a.user_id
+        WHERE a.id = ?`
+    )
+    .get(annotationId) as (Omit<AnnotationPayload, 'is_public'> & { is_public: number }) | undefined;
+
+  if (!row) return null;
+  return { ...row, is_public: row.is_public === 1 };
+}
+
+export interface CreateAnnotationInput {
+  studyId: number;
+  userId: number;
+  type: 'highlight' | 'note';
+  color: AnnotationColor;
+  startOffset: number;
+  endOffset: number;
+  selectedText: string;
+  noteText?: string | null;
+  isPublic: boolean;
+}
+
+/**
+ * Inserts a new annotation and returns the full AnnotationPayload (with username via JOIN).
+ */
+export function createAnnotation(input: CreateAnnotationInput): AnnotationPayload {
+  const db = getDb();
+  const result = db
+    .prepare(
+      `INSERT INTO annotations
+         (study_id, user_id, type, color, start_offset, end_offset, selected_text, note_text, is_public)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      input.studyId,
+      input.userId,
+      input.type,
+      input.color,
+      input.startOffset,
+      input.endOffset,
+      input.selectedText,
+      input.noteText ?? null,
+      input.isPublic ? 1 : 0
+    );
+
+  const annotation = getAnnotationById(result.lastInsertRowid as number);
+  if (!annotation) throw new Error('Failed to retrieve created annotation');
+  return annotation;
+}
+
+/**
+ * Deletes an annotation by ID. Returns true if a row was deleted, false if not found.
+ * Callers must verify ownership before calling.
+ */
+export function deleteAnnotation(annotationId: number): boolean {
+  const result = getDb()
+    .prepare('DELETE FROM annotations WHERE id = ?')
+    .run(annotationId);
+  return result.changes > 0;
+}
+
+/**
+ * Returns an annotation owned by a specific user in a specific study, or null.
+ * Used to verify ownership before DELETE — prevents users deleting others' annotations.
+ */
+export function getAnnotationForOwner(
+  annotationId: number,
+  userId: number,
+  studyId: number
+): Annotation | null {
+  return (
+    (getDb()
+      .prepare('SELECT * FROM annotations WHERE id = ? AND user_id = ? AND study_id = ?')
+      .get(annotationId, userId, studyId) as Annotation | undefined) ?? null
+  );
 }
