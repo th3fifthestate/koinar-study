@@ -88,6 +88,9 @@ export function setupWebSocketServer(server: Server) {
     });
 
     ws.on('error', () => {
+      if (client.studyId !== null) {
+        leaveRoom(ws, client.studyId);
+      }
       clients.delete(ws);
     });
   });
@@ -144,10 +147,10 @@ function leaveRoom(ws: WebSocket, studyId: number) {
   const room = studyRooms.get(studyId);
   if (!room) return;
   room.delete(ws);
+  // Always broadcast updated presence count (including activeReaders: 0 on last leave)
+  broadcastPresence(studyId);
   if (room.size === 0) {
     studyRooms.delete(studyId);
-  } else {
-    broadcastPresence(studyId);
   }
 }
 
