@@ -3,6 +3,8 @@
 **08a completed:** 2026-04-14 (Sonnet, Plan Mode → Direct Execution)
 **08b completed:** 2026-04-14 (Opus, Direct Execution)
 
+> **📌 V2 Deferral (2026-04-15):** The **public/community annotation layer built in this brief is deferred to V2 (Study Rooms).** V1 ships with private-only annotations. The community toggle UI, community annotation count badge, "show community annotations" toggle, and public visibility controls must be **hidden or removed** before V1 launch. The underlying schema (`is_public` column) and WebSocket broadcast infrastructure stay in place for V2 reuse — rooms will replace the global public layer with scoped room-based sharing. See `founders-files/implementation-plan.md → Post-V1 Roadmap` for the full design rationale. **Pre-launch cleanup is tracked in the Brief 14 launch checklist.**
+
 **Recommended mode: Plan Mode**
 
 > **Branch:** All work on `develop`. Commit when complete with message: `Brief 08: Annotations — custom server, WebSocket rooms, text selection, real-time sync`

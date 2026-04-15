@@ -889,7 +889,7 @@ Completion notes (07f — April 14, 2026):
 |--------|-------|------|-----------|
 | **08a — Annotations Backend** ✅ | **Sonnet** | Plan Mode | Custom `server.ts` wrapping Next.js, WebSocket server with per-study rooms, REST CRUD for annotations, `data-offset-start/end` attribute system for markdown-to-HTML offset mapping, database queries. Pure architecture. |
 | **08b — Annotations UI** ✅ | **Opus** | Direct Execution | Text selection detection, highlight rendering overlay, annotation popovers, community toggle, real-time sync visual feedback. Use `frontend-design` skill. **Opus: selection UX and popover design need real taste.** |
-| **11 — Flux Images** | **Sonnet** | Direct Execution | Flux Pro + Max, admin preview workflow, R2 upload. Pure API integration — no user-facing design. |
+| **11 — Flux Images** ✅ | **Sonnet** | Direct Execution | Flux Pro + Max, admin preview workflow, R2 upload. Pure API integration — no user-facing design. |
 | **09 — Admin Panel** | **Sonnet** | Direct Execution | Dashboard, gift codes, waitlist, users, studies, images, analytics. Functional admin UI — Shadcn defaults, no custom design needed. |
 
 **Execution order:** 08a ✅ → 08b ✅ → **11 (next)** → 09. 11 before 09 because admin panel's image section triggers Flux — building 11 first means 09 integrates directly.
@@ -1023,6 +1023,51 @@ Completion notes (07f — April 14, 2026):
 - Persistent volume retains app.db across redeploys
 - R2 images load from production URL
 - Custom domain resolves correctly
+
+---
+
+## Post-V1 Roadmap
+
+Features deferred beyond V1 launch. Not in scope for Phases 0-6. Listed here to keep the backlog visible and to inform V1 design decisions (e.g., avoid painting ourselves into a corner).
+
+### 🏛️ Study Rooms (V2 — top priority post-launch)
+
+**Decision date:** 2026-04-15 · **Status:** planned for V2, not V1
+
+**What it is:** Replace the current global public/private annotation model with **scoped study rooms** — invite-only spaces where a small group (church Bible study, discipleship pair, seminary cohort) collaborates on a study together. Annotations, highlights, and eventually leader-follow navigation are scoped to room membership, not broadcast globally.
+
+**Key decisions confirmed during V1:**
+
+1. **Replace public annotations with room-scoped annotations.** V1 ships **without** the community/public annotation layer in the UI. All V1 annotations are effectively private. V2 introduces rooms as the sharing layer.
+2. **Invitation is primarily church/small-group oriented.** Marketing + onboarding will frame rooms as the natural venue for a Tuesday-night Bible study, a discipleship pair, or a church staff cohort.
+3. **Async-first.** Rooms are persistent membership, not Zoom-style transient sessions. Sarah highlights at 9am, Mike sees it at 11pm. Live sync features (leader-follow, cursor broadcast) are a sub-feature, not the core.
+4. **Comprehensive studies support repeat visits** — room membership persists across sessions.
+5. **Naming:** "Study Rooms" as the working name. Final name TBD (candidates: Tables, Gatherings, Fellowships, Koina).
+
+**Architecture reuse (already built in V1):**
+- `lib/ws/server.ts` — WebSocket server is already room-keyed (by `studyId`). Swap to `roomId` is a routing change, not a rewrite.
+- Presence tracking already exists per study; same mechanic, different key.
+- iron-session cookie auth is room-agnostic.
+- Annotation schema already has `is_public` — becomes a three-state visibility field (`private` / `room:<id>` / `public` if we keep a public layer at all).
+
+**V2 phasing (sketch):**
+
+- **V2.0** — Persistent rooms with async collaboration: `rooms` + `room_members` tables, invite flow, per-room WebSocket channels, annotation visibility scoped to room membership.
+- **V2.1** — Live sessions: leader-follow mode, scroll/selection broadcast, "you've fallen behind" nudge.
+- **V2.2** — Shared context navigation: entity drawer sync, branch-map sync.
+- **V2.3** — Richer collaboration: threaded discussions on annotations, reactions, session recording/replay.
+
+**What this means for V1 implementation (enforced in remaining briefs):**
+- Brief 08b built the community toggle UI — it stays in the codebase but **must be hidden or removed from the UI before V1 ship**.
+- No future brief should introduce or reinforce public-community annotation UI. Treat all annotations as private for the V1 shipped product.
+- Admin panel (Brief 09) should not surface community-annotation moderation tools.
+- Backend public/is_public flag stays in the schema (cheap to keep, needed by V2 if we decide public is still a layer).
+
+### Other deferred ideas
+
+- **Tier 2/3 translations** (NASB/ESV/NLT/NIV) — already tracked in Brief 13; some may slip to post-launch depending on api.bible approval timing.
+- **Mobile apps** — V1 is responsive web. Native iOS/Android post-launch if engagement warrants.
+- **AI-assisted Bible study coaching** — follow-up questions, "explain this passage like I'm 12," etc.
 
 ---
 
