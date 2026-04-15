@@ -23,6 +23,16 @@ export function useStudyWebSocket({
   // Prevents reconnect loop after component unmount
   const mountedRef = useRef(true);
 
+  // Store callbacks in refs so the connect function doesn't depend on them.
+  // Without this, passing inline arrow functions from the parent causes
+  // connect to get a new identity every render, bouncing the WebSocket.
+  const onAnnotationCreatedRef = useRef(onAnnotationCreated);
+  const onAnnotationDeletedRef = useRef(onAnnotationDeleted);
+  const onPresenceUpdateRef = useRef(onPresenceUpdate);
+  useEffect(() => { onAnnotationCreatedRef.current = onAnnotationCreated; }, [onAnnotationCreated]);
+  useEffect(() => { onAnnotationDeletedRef.current = onAnnotationDeleted; }, [onAnnotationDeleted]);
+  useEffect(() => { onPresenceUpdateRef.current = onPresenceUpdate; }, [onPresenceUpdate]);
+
   const connect = useCallback(() => {
     if (!mountedRef.current) return;
 
@@ -44,13 +54,13 @@ export function useStudyWebSocket({
         const message: ServerMessage = JSON.parse(event.data as string);
         switch (message.type) {
           case 'annotation:created':
-            onAnnotationCreated?.(message.annotation);
+            onAnnotationCreatedRef.current?.(message.annotation);
             break;
           case 'annotation:deleted':
-            onAnnotationDeleted?.(message.annotationId);
+            onAnnotationDeletedRef.current?.(message.annotationId);
             break;
           case 'presence:update':
-            onPresenceUpdate?.(message.activeReaders);
+            onPresenceUpdateRef.current?.(message.activeReaders);
             break;
           // pong and error: no-op on client
         }
@@ -72,7 +82,7 @@ export function useStudyWebSocket({
     };
 
     wsRef.current = ws;
-  }, [studyId, onAnnotationCreated, onAnnotationDeleted, onPresenceUpdate]);
+  }, [studyId]);
 
   useEffect(() => {
     mountedRef.current = true;

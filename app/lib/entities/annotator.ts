@@ -99,6 +99,18 @@ const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
       LAZARUS_G2976G: ['rich man', 'bosom', 'abraham', 'parable', 'purple', 'crumbs'],
     },
   },
+  saul: {
+    candidates: ['PAUL_G3972G', 'SAUL_H7586G'],
+    contextKeywords: {
+      PAUL_G3972G: ['tarsus', 'damascus', 'barnabas', 'gentiles', 'apostle', 'ananias', 'antioch', 'conversion', 'persecuted', 'church', 'christians', 'acts'],
+      SAUL_H7586G: ['king', 'david', 'jonathan', 'samuel', 'gilboa', 'philistines', 'israel', 'benjamin', 'anointed', 'spear', 'witch', 'endor'],
+    },
+  },
+  // "saul of tarsus" as a distinct key for direct lookup
+  'saul of tarsus': {
+    candidates: ['PAUL_G3972G'],
+    contextKeywords: {},
+  },
 };
 
 // ─── Entity Cache ─────────────────────────────────────────────────────────────

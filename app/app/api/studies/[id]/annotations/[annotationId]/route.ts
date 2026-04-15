@@ -1,6 +1,6 @@
 // app/app/api/studies/[id]/annotations/[annotationId]/route.ts
 import { requireAuth } from '@/lib/auth/middleware';
-import { getAnnotationForOwner, deleteAnnotation } from '@/lib/db/queries';
+import { getAnnotationForOwner, deleteAnnotation, studyIsAccessible } from '@/lib/db/queries';
 import { broadcastAnnotationDeleted } from '@/lib/ws/broadcaster';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
 
@@ -25,6 +25,11 @@ export async function DELETE(
 
   if (isNaN(studyId) || studyId <= 0 || isNaN(annId) || annId <= 0) {
     return Response.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
+  // Study-level access check (matches GET/POST pattern)
+  if (!studyIsAccessible(studyId, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 });
   }
 
   // Verify ownership — users can only delete their own annotations.

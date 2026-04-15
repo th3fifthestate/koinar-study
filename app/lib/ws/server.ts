@@ -6,6 +6,7 @@ import { unsealData } from 'iron-session';
 import { sessionOptions } from '@/lib/auth/session';
 import type { SessionData } from '@/lib/auth/session';
 import { registerBroadcasters } from './broadcaster';
+import { studyIsAccessible } from '@/lib/db/queries';
 import type { ClientMessage, ServerMessage } from './types';
 import type { AnnotationPayload } from '@/lib/db/types';
 
@@ -118,6 +119,11 @@ function handleMessage(ws: WebSocket, client: ConnectedClient, message: ClientMe
       const sid = (message as Record<string, unknown>).studyId;
       if (typeof sid !== 'number' || !Number.isInteger(sid) || sid <= 0) {
         sendToClient(ws, { type: 'error', message: 'Invalid studyId' });
+        return;
+      }
+      // Verify user has access to this study (public or own private study)
+      if (!studyIsAccessible(sid, client.userId)) {
+        sendToClient(ws, { type: 'error', message: 'Study not found' });
         return;
       }
       if (client.studyId !== null) {
