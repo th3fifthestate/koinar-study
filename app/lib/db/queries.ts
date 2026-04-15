@@ -716,6 +716,19 @@ export function denyWaitlistEntry(id: number, reviewedBy: number): void {
 // ─── Annotation queries ───────────────────────────────────────────────────────
 
 /**
+ * Returns true if the study exists and the user can access it:
+ * - Public studies are accessible to everyone.
+ * - Private studies are only accessible to their creator.
+ */
+export function studyIsAccessible(studyId: number, userId: number): boolean {
+  const row = getDb()
+    .prepare('SELECT is_public, created_by FROM studies WHERE id = ?')
+    .get(studyId) as { is_public: number; created_by: number } | undefined;
+  if (!row) return false;
+  return row.is_public === 1 || row.created_by === userId;
+}
+
+/**
  * Returns annotations for a study visible to the given user:
  * - All public annotations (is_public=1) from any user
  * - The requesting user's own private annotations

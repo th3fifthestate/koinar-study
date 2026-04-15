@@ -1,6 +1,6 @@
 // app/app/api/studies/[id]/annotations/route.ts
 import { requireAuth } from '@/lib/auth/middleware';
-import { getAnnotationsForStudy, createAnnotation } from '@/lib/db/queries';
+import { getAnnotationsForStudy, createAnnotation, studyIsAccessible } from '@/lib/db/queries';
 import { broadcastAnnotationCreated } from '@/lib/ws/broadcaster';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
 import type { AnnotationColor } from '@/lib/db/types';
@@ -31,6 +31,10 @@ export async function GET(
     return Response.json({ error: 'Invalid study ID' }, { status: 400 });
   }
 
+  if (!studyIsAccessible(studyId, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 });
+  }
+
   try {
     const annotations = getAnnotationsForStudy(studyId, user.userId);
     return Response.json({ annotations });
@@ -56,6 +60,10 @@ export async function POST(
   const studyId = parseInt(id, 10);
   if (isNaN(studyId) || studyId <= 0) {
     return Response.json({ error: 'Invalid study ID' }, { status: 400 });
+  }
+
+  if (!studyIsAccessible(studyId, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 });
   }
 
   let body: unknown;

@@ -34,7 +34,7 @@ async function getSessionFromRequest(req: IncomingMessage): Promise<SessionData 
     const idx = part.indexOf('=');
     if (idx === -1) continue;
     const name = part.slice(0, idx).trim();
-    const value = decodeURIComponent(part.slice(idx + 1).trim());
+    const value = part.slice(idx + 1).trim();
     cookies[name] = value;
   }
 
@@ -114,20 +114,27 @@ export function setupWebSocketServer(server: Server) {
 
 function handleMessage(ws: WebSocket, client: ConnectedClient, message: ClientMessage) {
   switch (message.type) {
-    case 'join':
+    case 'join': {
+      const sid = (message as Record<string, unknown>).studyId;
+      if (typeof sid !== 'number' || !Number.isInteger(sid) || sid <= 0) {
+        sendToClient(ws, { type: 'error', message: 'Invalid studyId' });
+        return;
+      }
       if (client.studyId !== null) {
         leaveRoom(ws, client.studyId);
       }
-      client.studyId = message.studyId;
-      joinRoom(ws, message.studyId);
+      client.studyId = sid;
+      joinRoom(ws, sid);
       break;
+    }
 
-    case 'leave':
+    case 'leave': {
       if (client.studyId !== null) {
         leaveRoom(ws, client.studyId);
         client.studyId = null;
       }
       break;
+    }
 
     case 'ping':
       sendToClient(ws, { type: 'pong' });
