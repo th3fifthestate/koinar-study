@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "tsx watch server.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "tsx server.ts",
     "import:tipnr": "tsx scripts/import-tipnr.ts",
     "seed:entities": "tsx scripts/seed-entities.ts",
     "backfill:annotations": "tsx scripts/backfill-annotations.ts",
