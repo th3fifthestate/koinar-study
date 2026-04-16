@@ -26,7 +26,6 @@ interface AdminGiftCodeDTO {
   id: number;
   code: string;
   recipient_username: string;
-  recipient_id: number;
   format_locked: 'simple' | 'standard' | 'comprehensive';
   max_uses: number;
   uses_remaining: number;
@@ -82,6 +81,7 @@ export default function GiftCodesPage() {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/gift-codes?page=${page}&pageSize=50`);
+      if (!res.ok) throw new Error('Failed to load gift codes');
       const data = await res.json();
       setCodes(data.items ?? []);
       setPagination({
@@ -104,6 +104,7 @@ export default function GiftCodesPage() {
   const loadUsers = async () => {
     try {
       const res = await fetch('/api/admin/users?pageSize=200');
+      if (!res.ok) throw new Error('Failed to load users');
       const data = await res.json();
       setUsers(data.items ?? []);
     } catch {

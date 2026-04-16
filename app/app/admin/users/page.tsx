@@ -60,6 +60,7 @@ export default function UsersPage() {
       const p = new URLSearchParams({ page: String(page), pageSize: '50' });
       if (q) p.set('search', q);
       const res = await fetch(`/api/admin/users?${p}`);
+      if (!res.ok) throw new Error('Failed to load users');
       const data = await res.json();
       setUsers(data.items ?? []);
       setPagination({

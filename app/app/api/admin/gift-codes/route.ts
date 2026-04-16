@@ -4,6 +4,7 @@ import { randomBytes } from 'crypto';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { logAdminAction } from '@/lib/admin/actions';
+import { parsePagination, paginatedResponse } from '@/lib/admin/pagination';
 
 const createSchema = z.object({
   user_id: z.number().int().positive(),
@@ -26,9 +27,7 @@ export async function GET(request: NextRequest) {
   if (response) return response;
 
   const { searchParams } = new URL(request.url);
-  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
-  const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') ?? '50', 10)));
-  const offset = (page - 1) * pageSize;
+  const pg = parsePagination(searchParams);
 
   const db = getDb();
 
@@ -41,14 +40,13 @@ export async function GET(request: NextRequest) {
       `SELECT
          gc.id, gc.code, gc.format_locked, gc.max_uses, gc.uses_remaining,
          gc.created_at, gc.expires_at,
-         recipient.id as recipient_id,
          recipient.username as recipient_username
        FROM study_gift_codes gc
        JOIN users recipient ON recipient.id = gc.user_id
        ORDER BY gc.created_at DESC
        LIMIT ? OFFSET ?`
     )
-    .all(pageSize, offset) as Array<{
+    .all(pg.pageSize, pg.offset) as Array<{
     id: number;
     code: string;
     format_locked: 'simple' | 'standard' | 'comprehensive';
@@ -56,19 +54,22 @@ export async function GET(request: NextRequest) {
     uses_remaining: number;
     created_at: string;
     expires_at: string | null;
-    recipient_id: number;
     recipient_username: string;
   }>;
 
   const items = rows.map((r) => ({
-    ...r,
+    id: r.id,
+    code: r.code,
+    format_locked: r.format_locked,
+    max_uses: r.max_uses,
+    uses_remaining: r.uses_remaining,
+    created_at: r.created_at,
+    expires_at: r.expires_at,
+    recipient_username: r.recipient_username,
     status: deriveStatus(r.uses_remaining, r.expires_at),
   }));
 
-  const total = countRow.total;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-
-  return NextResponse.json({ items, page, pageSize, total, totalPages });
+  return NextResponse.json(paginatedResponse(items, countRow.total, pg));
 }
 
 export async function POST(request: NextRequest) {
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
   }
 
   const { user_id, format_locked, max_uses, expires_at } = parsed.data;
@@ -110,8 +111,36 @@ export async function POST(request: NextRequest) {
   });
 
   const created = db
-    .prepare('SELECT * FROM study_gift_codes WHERE id = ?')
-    .get(result.lastInsertRowid);
+    .prepare(
+      `SELECT gc.id, gc.code, gc.format_locked, gc.max_uses, gc.uses_remaining,
+              gc.created_at, gc.expires_at,
+              recipient.username as recipient_username
+       FROM study_gift_codes gc
+       JOIN users recipient ON recipient.id = gc.user_id
+       WHERE gc.id = ?`
+    )
+    .get(result.lastInsertRowid) as {
+    id: number;
+    code: string;
+    format_locked: string;
+    max_uses: number;
+    uses_remaining: number;
+    created_at: string;
+    expires_at: string | null;
+    recipient_username: string;
+  };
 
-  return NextResponse.json({ giftCode: created }, { status: 201 });
+  return NextResponse.json({
+    giftCode: {
+      id: created.id,
+      code: created.code,
+      format_locked: created.format_locked,
+      max_uses: created.max_uses,
+      uses_remaining: created.uses_remaining,
+      created_at: created.created_at,
+      expires_at: created.expires_at,
+      recipient_username: created.recipient_username,
+      status: deriveStatus(created.uses_remaining, created.expires_at),
+    },
+  }, { status: 201 });
 }

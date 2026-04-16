@@ -41,6 +41,7 @@ export default function InviteCodesPage() {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/invite-codes?page=${page}&pageSize=50`);
+      if (!res.ok) throw new Error('Failed to load invite codes');
       const data = await res.json();
       setCodes(data.items ?? []);
       setPagination({

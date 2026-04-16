@@ -43,7 +43,10 @@ export default function WaitlistPage() {
 
   useEffect(() => {
     fetch('/api/admin/waitlist')
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to load waitlist');
+        return r.json();
+      })
       .then((data) => setEntries(data.entries ?? []))
       .catch(() => toast.error('Failed to load waitlist'))
       .finally(() => setLoading(false));

@@ -10,10 +10,8 @@ interface Stats {
   studies: { total: number; public: number; featured: number };
   images: { total: number };
   recentActivity: {
-    id: number;
     action_type: string;
     target_type: string;
-    target_id: number | null;
     created_at: string;
     admin_username: string;
   }[];
@@ -29,7 +27,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetch('/api/admin/stats')
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to load stats');
+        return r.json();
+      })
       .then(setStats)
       .catch(() => toast.error('Failed to load stats'))
       .finally(() => setLoading(false));
@@ -83,16 +84,14 @@ export default function AdminDashboard() {
               <p className="text-sm text-muted-foreground">No activity yet.</p>
             ) : (
               <div className="rounded-lg border divide-y">
-                {stats.recentActivity.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between px-4 py-3 text-sm">
+                {stats.recentActivity.map((item, i) => (
+                  <div key={`${item.created_at}-${i}`} className="flex items-center justify-between px-4 py-3 text-sm">
                     <div>
                       <span className="font-medium">{item.admin_username}</span>{' '}
                       <span className="text-muted-foreground">{formatActionLabel(item.action_type)}</span>
-                      {item.target_id !== null && (
-                        <span className="text-muted-foreground">
-                          {' '}#{item.target_id}
-                        </span>
-                      )}
+                      <span className="text-muted-foreground ml-1">
+                        ({item.target_type})
+                      </span>
                     </div>
                     <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">
                       {new Date(item.created_at).toLocaleString()}

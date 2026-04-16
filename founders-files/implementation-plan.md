@@ -59,9 +59,20 @@ All 16 implementation briefs (01-15 + 06a) are written and the UI/UX design spec
 6. Output Format — markdown + JSON metadata + verification-audit block
 7. Format-Specific Guidance — word counts and depth per format
 
-### Translation Licensing Architecture (Researched April 8, 2026)
+### Translation Licensing Architecture (Researched April 8, 2026 — Agreements Signed April 15, 2026)
 
 All studies are generated using BSB (public domain) only. Copyrighted translations are never touched by AI. Verse swaps are mechanical substitutions at the user's request.
+
+**Signed agreements — private copies at `founders-files/api-bible-docs/`:**
+- ABS Minimum Acceptable Use Agreement
+- ABS Strictly Non-commercial Use Agreement (Koinar is non-commercial; no ads, IAP, subscriptions, or revenue generation — minor non-intrusive tithe/donation links only)
+- ABS Statement of Orthodoxy (Apostles' Creed)
+- ABS API.Bible Terms of Service
+- Biblica NIV Content License Agreement (confidentiality §XIX — do not quote clause text in public/committed docs)
+
+**Plan level:** Starter (free, non-commercial). Starter plan **requires** a visible citation + hyperlink to `https://api.bible` in the app interface (Acceptable Use). A small "Powered by API.Bible" line in the global footer satisfies this.
+
+**Translations available via API.Bible (one key, one client):** NLT · NIV · NASB 1995. ESV access is not yet granted by Crossway — application is pending. Keep ESV code paths feature-gated by presence of `ESV_API_KEY` so a later approval plugs in without refactoring.
 
 #### Tier 1 — Public Domain (Launch)
 No restrictions. Stored locally. Used for AI generation, in-app display, and all exports.
@@ -75,18 +86,18 @@ No restrictions. Stored locally. Used for AI generation, in-app display, and all
 #### Tier 2 — Licensed, Display + Export (Post-Launch)
 Live API calls only. Per-translation caching and export rules vary.
 
-| Translation | API Source | Verse Limit | Caching Strategy | In-App Display | PDF/DOCX Export | Key Restrictions |
-|-------------|-----------|-------------|------------------|---------------|-----------------|------------------|
-| **NASB** | api.bible | ≤1,000 verses per work | Cache ≤1,000 verses in SQLite, 14-day TTL | ✅ | ✅ (≤1,000 verses, ≤50% of work) | Most permissive. Explicit AI permission. Must link to lockman.org. Full copyright notice on web/app. |
-| **ESV** | api.esv.org | ≤500 verses per query/work | **No persistent cache.** Live API call every time. | ✅ | ✅ (≤500 verses, ≤25% of work) | Must link to esv.org on every page. 23h download expiry. 5,000 queries/day, 1,000/hr, 60/min. No Creative Commons. |
-| **NLT** | api.nlt.to | ≤500 verses per work | Cache with 14-day TTL (conservative) | ✅ | ✅ (≤500 verses, ≤25% of work) | Key-based: 500 verses/request, 5,000 requests/day. Returns HTML (must strip tags). Copyright notice required. |
+| Translation | API Source | Verse Limit (per work) | Per-View Display Limit | Caching Strategy | In-App Display | PDF/DOCX Export | Key Restrictions |
+|-------------|-----------|------------------------|------------------------|------------------|---------------|-----------------|------------------|
+| **NASB 1995** | api.bible | ≤1,000 verses per work | None beyond work limit | DHCP lease (≤1,000 verses, 7-day lease) | ✅ | ✅ (≤1,000 verses, ≤50% of work) | Most permissive. Explicit AI permission (not used — we stay BSB-only for AI). Must link to lockman.org. Full copyright notice on web/app. |
+| **ESV** *(pending Crossway approval)* | api.esv.org | ≤500 verses per query/work | None beyond work limit | **No persistent cache.** Live API call every time. | ✅ | ✅ (≤500 verses, ≤25% of work) | Must link to esv.org on every page. 23h download expiry. 5,000 queries/day, 1,000/hr, 60/min. No Creative Commons. Feature-gated by `ESV_API_KEY`. |
+| **NLT** | api.bible | ≤500 verses per work | None beyond work limit | DHCP lease (≤500 verses, 7-day lease) | ✅ | ✅ (≤500 verses, ≤25% of work) | Routed through api.bible (same key as NIV/NASB). Copyright notice required. |
 
 #### Tier 3 — Licensed, Display Only (Post-Launch)
 In-app reading only. No downloadable exports permitted.
 
-| Translation | API Source | Verse Limit | Caching Strategy | In-App Display | PDF/DOCX Export | Key Restrictions |
-|-------------|-----------|-------------|------------------|---------------|-----------------|------------------|
-| **NIV** | api.bible | ≤500 verses per work | Cache for display only, 14-day TTL | ✅ | ❌ **Prohibited** | Biblica prohibits "uncontrolled downloads." Display and streaming only. No ads/monetization. Export option grayed out with explanation. |
+| Translation | API Source | Verse Limit (per work) | Per-View Display Limit | Caching Strategy | In-App Display | PDF/DOCX Export | Key Restrictions |
+|-------------|-----------|------------------------|------------------------|------------------|---------------|-----------------|------------------|
+| **NIV** | api.bible | ≤500 verses per work | **≤2 chapters OR ≤25 verses per user per view, whichever is greater** (Biblica §V.F) | DHCP lease (≤500 verses, 7-day lease) | ✅ (display-limit guard required) | ❌ **Prohibited** | Biblica prohibits downloads. Display and streaming only. Must offer free to all end users (never behind a paywall — moot since Koinar is non-commercial). Per-view cap enforced in reader UI. One-step link to biblica.com required (§V.C). TM/® on first display (§VIII.B). Export option grayed out with explanation. |
 
 #### Translation-Specific Implementation Rules
 
@@ -108,13 +119,12 @@ In-app reading only. No downloadable exports permitted.
 - Web/app pages require full copyright notice with clickable link to lockman.org
 - Required copyright: "Scripture quotations taken from the (NASB®) New American Standard Bible®, Copyright © 1960, 1971, 1977, 1995, 2020 by The Lockman Foundation. Used by permission. All rights reserved. www.Lockman.org"
 
-**NLT (Tyndale House) — api.nlt.to:**
-- Dedicated REST API: `GET /api/passages?ref=John.3.16&key=YOUR_KEY`
-- Returns **HTML format** — must strip HTML tags for clean verse text during swap
-- Also serves KJV and NTV (Spanish) — KJV endpoint could serve as fallback for our local KJV
-- Anonymous: 50 verses/request, 500 requests/day. Key-based: 500 verses/request, 5,000 requests/day
-- Cache conservatively with 14-day TTL
+**NLT (Tyndale House) — via api.bible:**
+- Accessed through the same api.bible REST client used for NIV and NASB (one API key, one FUNS integration, one base URL)
+- Bible ID looked up once via `/v1/bibles` metadata and stored in `config.bible.translationIds.nlt`
+- Cache via DHCP-lease system (≤500 verses, 7-day lease, renew at 5d 6h)
 - Required copyright: "Scripture quotations are taken from the Holy Bible, New Living Translation, copyright ©1996, 2004, 2015 by Tyndale House Foundation. Used by permission of Tyndale House Publishers, Carol Stream, Illinois 60188. All rights reserved."
+- Appendix-A long form adds the Creative-Commons-prohibition clause — use full form on `/about#scripture-translations` and in PDF/DOCX exports; short form acceptable in reader footer
 
 **NIV (Biblica) — via api.bible:**
 - Access via api.bible REST API (requires contacting support@api.bible for NIV access approval)
@@ -185,6 +195,69 @@ verse_cache table:
 - **More efficient:** Only renews verses people are actually reading; unused verses expire naturally
 - **Rate-limit friendly:** Renewal happens in scheduled batches, not in burst during user requests
 - **Storage-cap safe:** LRU eviction ensures we never exceed per-translation verse limits
+
+#### API.Bible Platform Obligations (from signed agreements)
+
+These obligations apply across all three api.bible translations (NLT, NIV, NASB 1995) — implement once in shared infrastructure.
+
+**1. Fair Use Management System (FUMS)** — ToS §14
+- Every verse read that sources from api.bible must report a FUMS event
+- Client-side JS tracker or server-side POST per verse view (prefer server-side for privacy — no user-agent snitching)
+- Event payload: FUMS token, device ID (random, per-session), session ID, Bible ID, verse references requested
+- Retain FUMS logs for ≥12 months for audit purposes
+- Implementation: `lib/bible/fums-tracker.ts` + `fums_events` table with 12-month retention policy
+
+**2. DRM — copy/extraction cap** — ToS §12
+- User-facing reader must restrict bulk copy of licensed text: clipboard payload capped at 100 verses per copy action
+- Reader intercepts `copy` event on scripture blocks; if selection spans > 100 verses of licensed translation, replace clipboard contents with a truncated excerpt + "… [remaining verses omitted — NIV licensing restricts copies to 100 verses]"
+- BSB/KJV/WEB are unaffected (public domain)
+- Implementation: `components/reader/CopyGuard.tsx`
+
+**3. NIV per-view display cap** — Biblica §V.F
+- Reader must not render more than 2 chapters **or** 25 verses (whichever is greater) of NIV text in a single view
+- Study reader already displays passages per-pericope, so the cap will be hit only if a user requests a whole-book read
+- Guard: pre-render check on content before NIV swap; if over-cap, fall back to BSB for the excess and show a banner ("NIV display is limited to 2 chapters per view per Biblica's licensing")
+- Does NOT apply to NLT or NASB
+
+**4. Starter plan attribution** — Acceptable Use §Attribution
+- Global footer (or equivalent always-visible element) includes "Powered by API.Bible" with hyperlink to `https://api.bible`
+- Literata body text, stone-700, underlined on hover
+
+**5. Copyright citation format** — ToS Appendix A
+- Full form (use on `/about#scripture-translations` and in exports): "Scriptures quotations marked [ABBR] © are taken from the [NAME] ©, Copyright [YEAR] [ORG]. Used by permission. All rights reserved. The [ABBR] text may not be quoted in any publication made available to the public by a Creative Commons license. The [ABBR] may not be translated into any other language. Website: [URL]"
+- Short form (use in reader footer when space-constrained): "[ABBR] © [YEAR] [ORG]. All rights reserved."
+
+**6. NIV-specific display requirements** — Biblica §V.C, §VIII.B
+- One-step link to `https://www.biblica.com` must appear wherever NIV text is shown (in-reader footer link is sufficient)
+- TM/® symbol on first NIV display (typeset correctly: "NIV®")
+- No derivative works; text is for display and streaming only
+
+**7. 72-hour content purge runbook** — ToS §10, Biblica §XIII.H
+- Documented procedure for termination of API.Bible access or Biblica agreement
+- Kill-switch: environment flag `ABS_PURGE_ENABLED=true` triggers: (a) wipe `verse_cache` rows where `translation IN ('NIV', 'NLT', 'NASB')`, (b) disable relevant rows in translation registry, (c) remove translation options from reader UI
+- Complete within 72 hours of termination notice
+- Runbook lives at `founders-files/runbooks/abs-termination-purge.md`
+
+**8. Cache recency** — ToS §11
+- All cached licensed content must be revalidated ≤ 30 days (we're on 7-day DHCP leases, well inside this)
+- DHCP background renewal satisfies this automatically; monitoring alert if any licensed row has `cached_at < NOW() - 25 days` (5-day warning buffer)
+
+**9. Content integrity** — Acceptable Use
+- Never modify API-sourced text (no autocorrect, no punctuation normalization beyond verbatim whitespace trim, no "smart quotes" substitution)
+- Source text stored exactly as received
+
+**10. Format segregation** — Acceptable Use §Format Restrictions
+- Text content stays text — **no TTS generation** from licensed translations
+- If we ever add TTS, it must be BSB/KJV/WEB only (public domain)
+
+**11. AI/LLM prohibition** — Acceptable Use, NIV §III.C
+- Licensed translation text **never enters a Claude (or any generative AI) prompt**
+- Enforced architecturally: study generation pipeline reads only from `bible_bsb` table; the verse-swap engine is purely mechanical (markdown string substitution after generation completes)
+
+**12. Audit cooperation** — ToS §16, Biblica §XIV
+- Maintain FUMS logs + display-event records for ≥12 months
+- Organization info (legal name, address, purpose) documented in `founders-files/abs-compliance-checklist.md`
+- Ability to provide reasonable access to records on request
 
 #### Download/Export Flow
 
@@ -284,12 +357,13 @@ the generous permissions of their respective publishers."
 **Implementation:** Part of Brief 07 (reader) or Brief 10 (onboarding) — simple static page with Sage & Stone styling, Bodoni Moda headings, and anchor IDs for each translation. No API calls needed.
 
 #### Required Pre-Launch Steps for Tier 2/3
-- [ ] Register for ESV API key at api.esv.org
-- [ ] Register for NLT API key at api.nlt.to
-- [ ] Contact support@api.bible to request NASB access approval
-- [ ] Contact support@api.bible to request NIV access approval (display-only)
-- [ ] Verify NASB is available on api.bible for non-commercial use
-- [ ] Consider contacting Tyndale to confirm PDF export is acceptable for NLT
+- [x] Accept ABS Acceptable Use, Non-commercial, Orthodoxy, and Terms of Service agreements *(April 15, 2026)*
+- [x] Accept Biblica NIV Content License Agreement *(April 15, 2026)*
+- [x] Obtain API.Bible Starter plan key (serves NLT, NIV, NASB 1995) *(April 15, 2026 — stored in `app/.env` as `API_BIBLE_KEY`)*
+- [x] Verify NLT, NIV, and NASB 1995 Bible IDs via `/v1/bibles` endpoint *(to confirm during Brief 13 execution)*
+- [ ] Apply for ESV API key at api.esv.org (Crossway approval required). Not blocking V1 — code paths feature-gated by `ESV_API_KEY`. If approved before V1 ship, include; otherwise defer.
+- [ ] Complete FUMS tracker implementation and verify events are reaching API.Bible (part of Brief 13)
+- [ ] Draft termination purge runbook at `founders-files/runbooks/abs-termination-purge.md` (part of Brief 13)
 
 ### Invite System & Email (Confirmed April 9, 2026)
 
@@ -471,12 +545,15 @@ These briefs need updates based on the confirmed decisions above:
 4. Update cost estimation for both Pro and Max tiers
 
 ### Brief 13 (Translation API Layer) — Major rewrite needed:
-1. **Re-add NASB** to the translation registry (was removed earlier, now confirmed as most permissive licensed translation)
-2. **Restructure into 3 tiers** instead of 2:
+1. **Path convention:** This project uses `app/` (no `src/` prefix) — all file paths in the brief must reflect this (e.g., `app/lib/translations/...` not `src/lib/translations/...`)
+2. **Re-add NASB 1995** to the translation registry
+3. **Restructure into 3 tiers** instead of 2:
    - Tier 1: BSB/KJV/WEB (public domain, local DB, launch)
-   - Tier 2: NASB/ESV/NLT (licensed, display + export, post-launch)
+   - Tier 2: NASB 1995/ESV/NLT (licensed, display + export, post-launch)
    - Tier 3: NIV (licensed, display only, post-launch)
-3. **DHCP-lease rolling cache system:**
+4. **Unified API.Bible client** — one auth, one base URL, one FUMS integration serves NLT, NIV, and NASB 1995. Bible IDs resolved from `/v1/bibles` metadata and stored in config. Drop the separate `api.nlt.to` client entirely.
+5. **ESV remains separately clienteled** via api.esv.org, feature-gated by `ESV_API_KEY`
+6. **DHCP-lease rolling cache system:**
    - `verse_cache` table with `cached_at`, `lease_duration_hours`, `last_accessed_at`, `access_count`
    - ESV: 24-hour lease, renew at 18h, ≤500 verse cap
    - NASB: 7-day lease, renew at 5d 6h, ≤1,000 verse cap
@@ -484,16 +561,17 @@ These briefs need updates based on the confirmed decisions above:
    - NIV: 7-day lease, renew at 5d 6h, ≤500 verse cap (display only)
    - Background renewal job on custom server (runs hourly)
    - LRU eviction when approaching per-translation storage caps
-4. **Per-translation API clients:**
-   - ESV: `api.esv.org` with `Authorization: Token` header
-   - NLT: `api.nlt.to` with `key` query parameter (returns HTML — must strip tags)
-   - NASB: `api.bible` REST API (requires prior access approval from support@api.bible)
-   - NIV: `api.bible` REST API (display-only, requires prior access approval)
-5. **Export permission matrix:** NIV grayed out in export dialog with explanation
-6. **Copyright notice registry:** Each translation has its own required notice, stored as constants. Used by reader, export engine, and attributions page.
-7. **ESV/NASB link requirements:** Translation abbreviations in reader link to `/attributions#esv` and `/attributions#nasb` respectively
-8. Update `TranslationId` type to include `'nasb'` again
-9. **Attributions page** (`/attributions`): Static page with all copyright notices, publisher links, and acknowledgements. Editorial Sage & Stone design. Anchor IDs per translation for deep linking.
+7. **FUMS tracker** (`lib/bible/fums-tracker.ts`): reports every api.bible-sourced verse view; `fums_events` table with 12-month retention
+8. **DRM copy-cap** (`components/reader/CopyGuard.tsx`): intercepts clipboard `copy` events; caps payload at 100 verses of licensed text with an omission notice
+9. **NIV per-view display guard**: enforces ≤2 chapters OR ≤25 verses per single rendered view; falls back to BSB for the excess with a user-visible banner
+10. **Starter plan attribution**: global footer includes visible "Powered by API.Bible" link to `https://api.bible`
+11. **NIV Biblica-specific elements**: one-step link to biblica.com in reader footer when NIV is active; NIV® typeset with ® on first display
+12. **Export permission matrix**: NIV grayed out in export dialog with explanation ("NIV is available for in-app reading only per Biblica's licensing terms")
+13. **Copyright notice registry**: long and short forms per Appendix A, including the Creative-Commons-prohibition clause in long form. Used by reader footer, export engine, and `/about#scripture-translations`
+14. **Termination runbook**: `founders-files/runbooks/abs-termination-purge.md` documents the 72-hour content purge procedure; kill-switch env flag wipes licensed rows from `verse_cache` and removes options from the UI
+15. **Audit retention policy**: FUMS logs retained ≥12 months; organization info documented in compliance checklist
+16. **Attributions section at `/about#scripture-translations`** (not standalone `/attributions`): all copyright notices, publisher links, acknowledgements. Editorial Sage & Stone design. Anchor IDs per translation for deep linking. Full Appendix-A copyright strings.
+17. **Compliance boundary — enforced architecturally**: licensed translation text never enters a Claude prompt. Study generation reads only from `bible_bsb`. Verse-swap is post-generation string substitution.
 
 ### Brief 07 (Immersive Reader) — Addition:
 1. Translation abbreviations after verses (e.g., "(ESV)") link to `/attributions#[translation]`
@@ -890,9 +968,9 @@ Completion notes (07f — April 14, 2026):
 | **08a — Annotations Backend** ✅ | **Sonnet** | Plan Mode | Custom `server.ts` wrapping Next.js, WebSocket server with per-study rooms, REST CRUD for annotations, `data-offset-start/end` attribute system for markdown-to-HTML offset mapping, database queries. Pure architecture. |
 | **08b — Annotations UI** ✅ | **Opus** | Direct Execution | Text selection detection, highlight rendering overlay, annotation popovers, community toggle, real-time sync visual feedback. Use `frontend-design` skill. **Opus: selection UX and popover design need real taste.** |
 | **11 — Flux Images** ✅ | **Sonnet** | Direct Execution | Flux Pro + Max, admin preview workflow, R2 upload. Pure API integration — no user-facing design. |
-| **09 — Admin Panel** | **Sonnet** | Direct Execution | Dashboard, gift codes, waitlist, users, studies, images, analytics. Functional admin UI — Shadcn defaults, no custom design needed. |
+| **09 — Admin Panel** ✅ | **Sonnet** | Direct Execution | Dashboard, gift codes, waitlist, users, studies, images, analytics. Functional admin UI — Shadcn defaults, no custom design needed. |
 
-**Execution order:** 08a ✅ → 08b ✅ → **11 (next)** → 09. 11 before 09 because admin panel's image section triggers Flux — building 11 first means 09 integrates directly.
+**Execution order:** 08a ✅ → 08b ✅ → 11 ✅ → 09 ✅. All complete.
 
 **Critical files:**
 - `briefs/08-annotations-and-websockets.md` — ✅ COMPLETE
@@ -948,8 +1026,36 @@ Completion notes (07f — April 14, 2026):
 
 **Known issue:** Custom server (`tsx watch server.ts`) crashes on Node.js 24 with `AsyncLocalStorage` error — tsx + Next.js 16 compatibility. Use Node.js 22 LTS for now.
 - Admin preview: 2-3 variations generated, admin selects one, selected image uploads to R2
-- Admin panel: CRUD for invite codes, **gift codes**, waitlist, users, studies, images, analytics
 - Docker build succeeds with custom server
+
+### 09 — Admin Panel ✅ COMPLETE
+**Completed:** 2026-04-15 | **Model:** Sonnet | **Mode:** Direct Execution
+
+**Delivered:**
+- Admin layout with server-side auth guard + sidebar navigation (8 sections)
+- Dashboard: stat cards (users, studies, waitlist, images), recent activity feed
+- Users page: paginated table, search, approve/ban/admin actions with confirmation dialogs
+- Waitlist page: approve/deny with confirmation, triggers Resend approval email
+- Invite codes page: read-only paginated table with copy-to-clipboard
+- Gift codes page: paginated table + create dialog with user selector, format, expiry
+- Studies page: paginated table, search, feature/publish toggles, delete with cascade warning
+- Analytics page: studies-per-week and most-favorited tables (server component)
+- Shared `parsePagination` + `paginatedResponse` helpers (`lib/admin/pagination.ts`)
+- `logAdminAction` helper with `AdminTargetType` union (`lib/admin/actions.ts`)
+- Schema v6 migration: `users.is_banned INTEGER NOT NULL DEFAULT 0`
+- shadcn `table` + `alert-dialog` primitives installed
+
+**Review fixes (security hardening):**
+- Replaced `SELECT *` with explicit column SELECT + shaped DTO in gift-codes POST
+- Fixed self-protection: rejects ANY `is_admin`/`is_banned` mutation on self (not just demotion)
+- Replaced Zod `.error.flatten()` with generic `"Invalid input"` in 3 routes (CLAUDE.md §6)
+- Added `res.ok` guard on all 6 admin page fetch calls
+- Stripped internal `aa.id` and `target_id` from stats activity feed response
+- Extracted shared pagination helper — DRY across 4 list routes
+- Shaped all API responses explicitly — no raw DB rows returned (CLAUDE.md §3)
+- Removed `recipient_id` from gift-code DTO (was leaking internal user ID to client)
+
+**Phase 4 Status: ✅ ALL COMPLETE (April 14–15, 2026). Briefs 08a, 08b, 11, 09 done.**
 
 ---
 

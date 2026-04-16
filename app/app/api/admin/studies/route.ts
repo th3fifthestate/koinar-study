@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
+import { parsePagination, paginatedResponse } from '@/lib/admin/pagination';
+
+interface StudyRow {
+  id: number;
+  title: string;
+  slug: string;
+  is_public: number;
+  is_featured: number;
+  created_at: string;
+  created_by_username: string;
+  category_name: string | null;
+  tags: string | null;
+  favorite_count: number;
+  annotation_count: number;
+}
 
 export async function GET(request: NextRequest) {
   const { response } = await requireAdmin();
@@ -8,9 +23,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const search = searchParams.get('search')?.trim() ?? '';
-  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
-  const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') ?? '50', 10)));
-  const offset = (page - 1) * pageSize;
+  const pg = parsePagination(searchParams);
 
   const db = getDb();
 
@@ -50,10 +63,21 @@ export async function GET(request: NextRequest) {
        ORDER BY s.created_at DESC
        LIMIT ? OFFSET ?`
     )
-    .all(...queryParams, pageSize, offset);
+    .all(...queryParams, pg.pageSize, pg.offset) as StudyRow[];
 
-  const total = countRow.total;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const items = rows.map((s) => ({
+    id: s.id,
+    title: s.title,
+    slug: s.slug,
+    is_public: s.is_public,
+    is_featured: s.is_featured,
+    created_at: s.created_at,
+    created_by_username: s.created_by_username,
+    category_name: s.category_name,
+    tags: s.tags,
+    favorite_count: s.favorite_count,
+    annotation_count: s.annotation_count,
+  }));
 
-  return NextResponse.json({ items: rows, page, pageSize, total, totalPages });
+  return NextResponse.json(paginatedResponse(items, countRow.total, pg));
 }

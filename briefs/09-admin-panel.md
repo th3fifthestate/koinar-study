@@ -7,28 +7,100 @@
 
 ---
 
-## ⚠️ Pre-Implementation Notes (April 15, 2026)
+## ⚠️ Pre-Implementation Notes (Updated April 15, 2026 — Readiness Audit)
 
-**Runs after Brief 11.** Expects the image generation API routes and admin image page (`app/admin/images/page.tsx`) to already exist — 09 integrates the image section, doesn't build it.
+> **READ THIS FIRST.** The body of this brief was written before Briefs 03, 04, 08, and 11 shipped. Several sections show outdated paths, helpers, or routes. Use this corrections list as the source of truth — when the body conflicts with what's below, the corrections win.
 
-**Auth pattern corrections:**
-- **Do NOT** define a local `requireAdmin()` helper (Section "Helper: requireAdmin" near line 861). One already exists at `lib/auth/middleware.ts`:
+### A. Path conventions
+
+- **Project uses `app/`, NOT `app/src/`.** Throughout this brief, every `/src/app/...`, `/src/components/...`, `/src/lib/...` path is wrong. Translate to `app/app/...`, `app/components/...`, `app/lib/...`.
+- **Route group convention:** the codebase uses `app/admin/`, NOT `app/(admin)/admin/`. The brief's `(admin)` parens are wrong. Mirror the existing structure (`app/admin/images/page.tsx` already lives there).
+
+### B. Auth pattern (mandatory rewrite)
+
+- **Do NOT** define a local `requireAdmin()` helper. **Section 11 of this brief is obsolete — skip it entirely.** One already exists at `app/lib/auth/middleware.ts`:
   ```ts
   import { requireAdmin } from "@/lib/auth/middleware";
   const auth = await requireAdmin();
   if (auth.response) return auth.response;
   // auth.user.userId, auth.user.username, auth.user.isAdmin
   ```
-- All route handlers shown with `getSession()?.user?.isAdmin` must be rewritten to use `requireAdmin()` from `@/lib/auth/middleware` (Section 1 CLAUDE.md rule).
-- Import path `@/lib/auth` does not exist — use `@/lib/auth/middleware` or `@/lib/auth/session`.
+- All route handlers in this brief that use `getSession()?.userId` + a manual `is_admin` SQL lookup must be rewritten to use `requireAdmin()`. (CLAUDE.md §2.)
+- Bare import `@/lib/auth` does **not** resolve — no barrel exists. Use `@/lib/auth/middleware` or `@/lib/auth/session`.
+- DB import: brief shows `import { db } from '@/lib/db'`. Actual export is `getDb()` from `@/lib/db/connection`.
 
-**Already-implemented routes (do NOT recreate — integrate with existing):**
-- `app/api/admin/waitlist/route.ts` and `app/api/admin/waitlist/[id]/route.ts` — waitlist approval (Brief 03)
-- `app/api/invites/route.ts` — invite code creation (Brief 03)
-- Annotation CRUD under `app/api/studies/[id]/annotations/*` (Brief 08a)
-- Image generation routes under `app/api/admin/images/*` (Brief 11, preceding)
+### C. Schema delta required (v5 → v6)
 
-**Schema note:** The existing users table already has `is_admin`, `is_approved`, `is_banned` columns — verify before adding CREATE TABLE statements. Don't drop/recreate.
+The brief assumes `users.is_banned` exists. **It does NOT.** Add a v6 migration in `app/lib/db/connection.ts` (and bump `SCHEMA_VERSION = 6`):
+
+```sql
+ALTER TABLE users ADD COLUMN is_banned INTEGER NOT NULL DEFAULT 0;
+```
+
+Verified to exist already (no migration needed): `users.is_admin`, `users.is_approved`, `waitlist`, `invite_codes`, `study_gift_codes`, `admin_actions`, `study_images`, `seasonal_images`, `annotations`, `favorites`, `study_tags`. Do **not** run any `CREATE TABLE` from this brief — the schema is already in place.
+
+### D. Field- and table-name corrections
+
+- `studies.author_id` (brief) → **`studies.created_by`** (actual).
+- `tags` table (brief) → **`study_tags`** (actual; columns are `study_id`, `tag_name`).
+- `studies.featured_image_url` (brief) is **NOT a stored column** — it's derived via subquery from `study_images` in `app/lib/library/queries.ts`. Brief 11 already designates the hero image via `study_images.is_hero = 1`. **Drop any `UPDATE studies SET featured_image_url = …` step** — set `is_hero = 1` on the chosen image instead.
+- `admin_actions` columns: `admin_id`, `action_type` (NOT `action`), `target_type`, `target_id`, `details` (JSON text). The waitlist flow already uses this — copy that pattern.
+
+### E. Already-implemented routes (do NOT recreate — wire to them)
+
+| Route | State |
+|-------|-------|
+| `app/app/api/admin/waitlist/route.ts` and `[id]/route.ts` | ✅ Functional (Brief 04) — approve generates token, sends Resend email, logs admin_actions. Wire the UI page to these. |
+| `app/app/api/admin/images/{generate,attach,reorder,suggest-prompt,seasonal,[id]}/route.ts` | ✅ Functional (Brief 11). **Section 8 of this brief — "Image Generation API Route" — is obsolete.** Do not duplicate. |
+| `app/app/api/admin/studies/route.ts` | ✅ Stub-ish: returns `id, title, content_markdown` only. Needs expansion to power the studies admin table (add filters, pagination, joined counts). |
+| `app/app/api/invites/route.ts` | User-facing (uses `requireAuth`), not admin. Don't touch. |
+| `app/app/api/studies/[id]/annotations/*` | ✅ Brief 08 — leave alone. |
+| `app/app/admin/images/page.tsx` | ✅ Full Brief 11 UI (~730 lines). The sidebar's "Images" link points here. |
+
+### F. Stub routes this brief OWNS (currently return 501)
+
+- `app/app/api/admin/users/route.ts` — implement GET (list, search, sort, paginate).
+- `app/app/api/admin/invite-codes/route.ts` — implement GET + POST (per Section 6).
+
+### G. Brief 11 contract — fixes needed before Brief 09 can import cleanly
+
+1. `app/lib/images/flux.ts` exports `generateImage`, **not** `generateFluxImage`. Update brief's references.
+2. `FluxGenerateRequest` is declared but **not exported** from `flux.ts`. **Add `export` to that interface as part of Brief 09 setup** (one-line change) so the admin code can import it.
+3. `estimateCost(count, model)` — verify arg order before invoking.
+
+### H. Missing shadcn primitives
+
+Run before starting UI work:
+
+```
+npx shadcn@latest add table alert-dialog
+```
+
+(All other shadcn components the brief uses — `dialog`, `select`, `textarea`, `badge`, `tabs` — are already installed.)
+
+### I. Admin shell is a placeholder today
+
+`app/app/admin/layout.tsx` is `<div>{children}</div>`; `app/app/admin/page.tsx` is `<div>Admin</div>`. Replace both as the very first task (Sections 1–3 of this brief).
+
+### J. Resend is already wired
+
+`app/lib/email/resend.ts` exports `sendApprovalEmail` (and `sendInviteEmail`, `sendVerificationCode`). The waitlist approve route already calls it. Don't introduce a parallel Resend client.
+
+### K. Recommended task order
+
+1. **Schema v6 migration** (`users.is_banned`).
+2. **Brief 11 export fix** (`export interface FluxGenerateRequest`).
+3. **Install shadcn primitives** (table, alert-dialog).
+4. **Admin shell** — real layout, sidebar, auth guard at `app/app/admin/layout.tsx`.
+5. **Dashboard** + stats query module + activity feed.
+6. **Users page** — UI + flesh out stub `GET` + new `PATCH /api/admin/users/[id]`.
+7. **Waitlist page** — UI only (routes exist).
+8. **Invite codes page** — UI + flesh out stub `GET`.
+9. **Gift codes page** — UI + new `GET/POST /api/admin/gift-codes` + `[id]/route.ts`.
+10. **Studies curation page** — UI + new `PATCH/DELETE /api/admin/studies/[id]` + expand existing `GET`.
+11. **Analytics page** — 4 simple queries.
+12. **Sidebar entry for Images** — link to existing `app/admin/images/page.tsx`.
+13. **Consolidate `logAdminAction`** into `app/lib/admin/actions.ts` (the waitlist route currently inlines this — refactor to use the shared helper).
 
 ---
 
@@ -59,6 +131,12 @@ Build a moderate-scope admin panel for managing users, waitlist applications, in
 ---
 
 ## Database Schema (Relevant Tables)
+
+> **🛑 DO NOT RUN ANY `CREATE TABLE` STATEMENTS BELOW.** All tables in this section already exist (verified 2026-04-15). The only schema work this brief requires is the v6 migration adding `users.is_banned` (see Pre-Implementation Notes §C). Treat the SQL below as documentation of current shape only — and note these column-name corrections vs. the actual schema:
+> - `admin_actions` uses `action_type`, NOT `action`.
+> - `studies` uses `created_by`, NOT `author_id`.
+> - `studies` has `category_id` (FK to `categories`), NOT a freeform `category` text column.
+> - Tags live in `study_tags` (`study_id`, `tag_name`), NOT a `tags` table.
 
 These should already exist from prior briefs. Verify they exist or create them.
 
@@ -125,6 +203,56 @@ CREATE TABLE IF NOT EXISTS admin_actions (
 ---
 
 ## File Structure
+
+> **🛑 The tree below uses obsolete `src/` paths and `(admin)` route group. The corrected tree (matches the actual codebase) is immediately after.** Strike-through entries are already implemented by Briefs 04 / 11.
+
+### Corrected file tree (USE THIS)
+
+```
+app/
+  app/
+    admin/                                # NOT (admin)
+      layout.tsx                          # CREATE — replace placeholder shell
+      page.tsx                            # CREATE — Dashboard (replace placeholder)
+      users/page.tsx                      # CREATE
+      waitlist/page.tsx                   # CREATE
+      invite-codes/page.tsx               # CREATE
+      gift-codes/page.tsx                 # CREATE
+      studies/page.tsx                    # CREATE
+      images/page.tsx                     # ✅ EXISTS (Brief 11) — link only
+      analytics/page.tsx                  # CREATE
+    api/
+      admin/
+        stats/route.ts                    # CREATE
+        users/route.ts                    # MODIFY — flesh out 501 stub (GET)
+        users/[id]/route.ts               # CREATE — PATCH (approve, ban, admin)
+        waitlist/route.ts                 # ✅ EXISTS (Brief 04)
+        waitlist/[id]/route.ts            # ✅ EXISTS (Brief 04)
+        invite-codes/route.ts             # MODIFY — flesh out 501 stub (GET)
+        gift-codes/route.ts               # CREATE — GET + POST
+        gift-codes/[id]/route.ts          # CREATE — GET
+        studies/route.ts                  # MODIFY — expand existing GET
+        studies/[id]/route.ts             # CREATE — PATCH + DELETE
+        images/**                         # ✅ EXISTS (Brief 11)
+  components/
+    admin/                                # CREATE directory
+      admin-sidebar.tsx
+      data-table.tsx
+      stat-card.tsx
+      activity-feed.tsx
+    ui/                                   # add table + alert-dialog (see §H)
+  lib/
+    admin/
+      actions.ts                          # CREATE — logAdminAction helper
+      # NO middleware.ts — use @/lib/auth/middleware (see §B)
+    auth/middleware.ts                    # ✅ EXISTS — requireAdmin()
+    db/connection.ts                      # MODIFY — bump SCHEMA_VERSION → 6
+    email/resend.ts                       # ✅ EXISTS — sendApprovalEmail
+    images/{flux,r2,queries,prompt-builder,seasonal}.ts  # ✅ EXISTS (Brief 11)
+    images/flux.ts                        # MODIFY — add `export` to FluxGenerateRequest
+```
+
+### Original (obsolete) tree — DO NOT FOLLOW
 
 ```
 src/
@@ -581,6 +709,17 @@ DELETE /api/admin/studies/[id]          -- Delete study (cascade)
 
 ## 8. Image Generation
 
+> **🛑 OBSOLETE — already shipped by Brief 11.**
+> The admin images page lives at `app/app/admin/images/page.tsx` (~730 lines) and the routes (`generate`, `attach`, `reorder`, `suggest-prompt`, `seasonal`, `[id]`) all exist under `app/app/api/admin/images/`. **Do not recreate any of this.** Brief 09's only remaining image work is:
+> 1. Add the **Images** entry to the admin sidebar pointing to `/admin/images`.
+> 2. Add an "Images" stat card on the dashboard (count from `study_images`).
+>
+> Skip the rest of this section. The R2 client (`app/lib/images/r2.ts`), Flux client (`app/lib/images/flux.ts`), and prompt builder are all in place and unchanged.
+
+---
+
+### Original (pre-Brief-11) section — kept for reference only
+
 **File**: `/src/app/(admin)/admin/images/page.tsx`
 
 This is the interface for generating Flux images and attaching them to studies.
@@ -877,6 +1016,20 @@ Features:
 ---
 
 ## 11. Admin Auth Middleware
+
+> **🛑 OBSOLETE — skip this entire section.**
+> `requireAdmin()` already exists at `app/lib/auth/middleware.ts` with the shape `{ user, response }`. Use it everywhere:
+> ```ts
+> import { requireAdmin } from "@/lib/auth/middleware";
+> const auth = await requireAdmin();
+> if (auth.response) return auth.response;
+> // auth.user.userId, auth.user.username, auth.user.isAdmin
+> ```
+> Do NOT create `app/lib/admin/middleware.ts`. Do NOT use `getSession()` + manual `is_admin` SQL lookups. The reference code below is wrong (uses non-existent `db` import and missing-barrel `@/lib/auth/session` import shape).
+
+---
+
+### Original (obsolete) section — kept for reference only
 
 **File**: `/src/lib/admin/middleware.ts`
 

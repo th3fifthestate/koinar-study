@@ -42,13 +42,11 @@ export async function GET() {
     db.prepare('SELECT COUNT(*) as n FROM study_images').get() as { n: number }
   ).n;
 
-  const recentActivity = db
+  const recentActivityRows = db
     .prepare(
       `SELECT
-         aa.id,
          aa.action_type,
          aa.target_type,
-         aa.target_id,
          aa.created_at,
          u.username as admin_username
        FROM admin_actions aa
@@ -57,13 +55,18 @@ export async function GET() {
        LIMIT 20`
     )
     .all() as {
-    id: number;
     action_type: string;
     target_type: string;
-    target_id: number | null;
     created_at: string;
     admin_username: string;
   }[];
+
+  const recentActivity = recentActivityRows.map((row) => ({
+    action_type: row.action_type,
+    target_type: row.target_type,
+    created_at: row.created_at,
+    admin_username: row.admin_username,
+  }));
 
   return NextResponse.json({
     users: { total: userCount, approved: approvedCount, banned: bannedCount },

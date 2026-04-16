@@ -1,15 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
+import { parsePagination, paginatedResponse } from '@/lib/admin/pagination';
+
+interface InviteCodeRow {
+  id: number;
+  code: string;
+  invitee_name: string;
+  invitee_email: string;
+  is_active: number;
+  used_at: string | null;
+  created_at: string;
+  linked_study_id: number | null;
+  created_by_username: string;
+  linked_study_title: string | null;
+}
 
 export async function GET(request: NextRequest) {
   const { response } = await requireAdmin();
   if (response) return response;
 
   const { searchParams } = new URL(request.url);
-  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
-  const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') ?? '50', 10)));
-  const offset = (page - 1) * pageSize;
+  const pg = parsePagination(searchParams);
 
   const db = getDb();
 
@@ -31,10 +43,20 @@ export async function GET(request: NextRequest) {
        ORDER BY ic.created_at DESC
        LIMIT ? OFFSET ?`
     )
-    .all(pageSize, offset);
+    .all(pg.pageSize, pg.offset) as InviteCodeRow[];
 
-  const total = countRow.total;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const items = rows.map((ic) => ({
+    id: ic.id,
+    code: ic.code,
+    invitee_name: ic.invitee_name,
+    invitee_email: ic.invitee_email,
+    is_active: ic.is_active,
+    used_at: ic.used_at,
+    created_at: ic.created_at,
+    linked_study_id: ic.linked_study_id,
+    created_by_username: ic.created_by_username,
+    linked_study_title: ic.linked_study_title,
+  }));
 
-  return NextResponse.json({ items: rows, page, pageSize, total, totalPages });
+  return NextResponse.json(paginatedResponse(items, countRow.total, pg));
 }

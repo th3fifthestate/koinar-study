@@ -26,7 +26,7 @@ export async function PATCH(
   const body = await request.json();
   const parsed = patchSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
   }
 
   const { is_approved, is_banned, is_admin } = parsed.data;
@@ -39,8 +39,8 @@ export async function PATCH(
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  // Self-protection: admins cannot revoke their own admin or ban themselves
-  if (targetId === user.userId && (is_admin === false || is_banned === true)) {
+  // Self-protection: admins cannot modify their own admin or banned status at all
+  if (targetId === user.userId && (is_admin !== undefined || is_banned !== undefined)) {
     return NextResponse.json(
       { error: 'Cannot modify your own admin or banned status' },
       { status: 400 }
@@ -94,10 +94,32 @@ export async function PATCH(
       `SELECT
          id, username, email, display_name,
          is_admin, is_approved, is_banned, created_at,
-         (SELECT COUNT(*) FROM studies s WHERE s.created_by = id) as study_count
+         (SELECT COUNT(*) FROM studies s WHERE s.created_by = users.id) as study_count
        FROM users WHERE id = ?`
     )
-    .get(targetId);
+    .get(targetId) as {
+    id: number;
+    username: string;
+    email: string;
+    display_name: string | null;
+    is_admin: number;
+    is_approved: number;
+    is_banned: number;
+    created_at: string;
+    study_count: number;
+  };
 
-  return NextResponse.json({ user: updated });
+  return NextResponse.json({
+    user: {
+      id: updated.id,
+      username: updated.username,
+      email: updated.email,
+      display_name: updated.display_name,
+      is_admin: updated.is_admin,
+      is_approved: updated.is_approved,
+      is_banned: updated.is_banned,
+      created_at: updated.created_at,
+      study_count: updated.study_count,
+    },
+  });
 }

@@ -58,6 +58,7 @@ export default function StudiesPage() {
       const p = new URLSearchParams({ page: String(page), pageSize: '50' });
       if (q) p.set('search', q);
       const res = await fetch(`/api/admin/studies?${p}`);
+      if (!res.ok) throw new Error('Failed to load studies');
       const data = await res.json();
       setStudies(data.items ?? []);
       setPagination({
