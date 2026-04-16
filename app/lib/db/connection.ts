@@ -71,7 +71,6 @@ function runMigration(database: Database.Database): void {
 
   database.transaction(() => {
     runStatements(database, CREATE_TABLES);
-    runStatements(database, CREATE_INDEXES);
 
     if (currentVersion === 0) {
       runStatements(database, SEED_CATEGORIES);
@@ -149,11 +148,12 @@ function runMigration(database: Database.Database): void {
           // Column already exists — safe to ignore
         }
       }
-      // New indexes for expanded study_images + seasonal_images (created above by CREATE_INDEXES)
+      // New indexes for is_hero and seasonal_images are created by CREATE_INDEXES below.
     }
 
     // v5 → v6: Add is_banned column to users for admin ban/unban feature.
-    if (currentVersion >= 5 && currentVersion < 6) {
+    // Condition is currentVersion < 6 (not >= 5) so DBs upgrading from v4 directly also get the column.
+    if (currentVersion < 6) {
       try {
         database
           .prepare('ALTER TABLE users ADD COLUMN is_banned INTEGER NOT NULL DEFAULT 0')
@@ -162,6 +162,10 @@ function runMigration(database: Database.Database): void {
         // Column already exists — safe to ignore
       }
     }
+
+    // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
+    // are applied before indexes that reference those columns are created.
+    runStatements(database, CREATE_INDEXES);
 
     database
       .prepare('INSERT OR REPLACE INTO schema_migrations (version) VALUES (?)')
