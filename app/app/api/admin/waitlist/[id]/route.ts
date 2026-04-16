@@ -7,6 +7,7 @@ import { approveWaitlistEntry, denyWaitlistEntry } from "@/lib/db/queries";
 import { sendApprovalEmail } from "@/lib/email/resend";
 import { config } from "@/lib/config";
 import { getDb } from "@/lib/db/connection";
+import { logAdminAction } from "@/lib/admin/actions";
 import type { WaitlistEntry } from "@/lib/db/types";
 
 const schema = z.object({
@@ -53,24 +54,23 @@ export async function PATCH(
         registrationLink,
       });
 
-      // Log admin action
-      getDb()
-        .prepare(
-          `INSERT INTO admin_actions (admin_id, action_type, target_type, target_id, details)
-           VALUES (?, 'approve_waitlist', 'waitlist', ?, ?)`
-        )
-        .run(user.userId, entryId, JSON.stringify({ email: entry.email }));
+      logAdminAction({
+        adminId: user.userId,
+        actionType: 'approve_waitlist',
+        targetType: 'waitlist',
+        targetId: entryId,
+      });
 
       return NextResponse.json({ success: true, action: "approved" });
     } else {
       denyWaitlistEntry(entryId, user.userId);
 
-      getDb()
-        .prepare(
-          `INSERT INTO admin_actions (admin_id, action_type, target_type, target_id, details)
-           VALUES (?, 'deny_waitlist', 'waitlist', ?, ?)`
-        )
-        .run(user.userId, entryId, JSON.stringify({ email: entry.email }));
+      logAdminAction({
+        adminId: user.userId,
+        actionType: 'deny_waitlist',
+        targetType: 'waitlist',
+        targetId: entryId,
+      });
 
       return NextResponse.json({ success: true, action: "denied" });
     }
