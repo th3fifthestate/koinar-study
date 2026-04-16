@@ -13,6 +13,97 @@ Public/community annotations have been deferred to V2 (Study Rooms). For V1, tre
 
 ---
 
+## ⚠️ Pre-Implementation Corrections (2026-04-15) — Codebase Audit
+
+The code samples in this brief were written against an earlier project structure. The corrections below reflect the ACTUAL codebase as of 2026-04-15 and MUST be followed during implementation. When a brief code snippet conflicts with these notes, these notes win.
+
+### A. Path Convention
+All `src/` paths in this brief are WRONG. The project uses:
+- Pages: `app/app/` (not `src/app/`)
+- Components: `app/components/` (not `src/components/`)
+- Lib: `app/lib/` (not `src/lib/`)
+
+Example: `src/app/(main)/onboarding/page.tsx` → `app/app/(main)/onboarding/page.tsx`
+
+### B. Database Import
+Every code block in this brief uses `import { db } from '@/lib/db'` — this is WRONG. Use:
+```ts
+import { getDb } from '@/lib/db/connection';
+const db = getDb();
+```
+
+### C. Auth Pattern
+The brief uses bare `getSession()` + manual user queries. Instead use the established pattern:
+```ts
+import { requireAuth } from '@/lib/auth/middleware';
+const { user, response } = await requireAuth();
+if (response) return response;
+```
+For the API route (`onboarding-complete`), use `requireAuth()`. For the server component page, `requireAuth()` also works (it returns a redirect response for unauthenticated users).
+
+### D. `invite_codes` Column Name
+**Line ~130 of Section 1** references `ic.study_id` — the actual column is `ic.linked_study_id`:
+```sql
+-- WRONG: JOIN studies s ON s.id = ic.study_id
+-- RIGHT: JOIN studies s ON s.id = ic.linked_study_id
+```
+
+### E. `OnboardingFlow` Props Mismatch
+Section 1 (server component) passes `inviterName`, `linkedStudySlug`, `linkedStudyTitle` to `<OnboardingFlow>`, but Section 2 (client component) defines the interface as only `{ username: string }`. The Section 1 interface is correct — Section 2's interface must include all four props:
+```ts
+interface OnboardingFlowProps {
+  username: string;
+  inviterName?: string;
+  linkedStudySlug?: string;
+  linkedStudyTitle?: string;
+}
+```
+These props flow down: `inviterName` → `StepWelcome`, `linkedStudySlug/Title` → `StepExperience` (or `StepStudy` per the Overview).
+
+### F. No `/library` Route Exists
+The brief redirects to `/library` after onboarding completes. **No `/library` route exists.** The study browsing page is at `/(main)/study`. Either:
+- Create a `/library` redirect route, OR
+- Change all `/library` references to the actual route (likely `/(main)/study` or wherever the main study listing lives)
+
+Decide during implementation based on David's preference.
+
+### G. No Seed Studies — Waitlist Path Fallback
+The waitlist path (Path 2, Step 3) expects a random seeded study: `SELECT slug, title FROM studies ORDER BY RANDOM() LIMIT 1`. In V1, **no seed studies exist** (Brief 15, Phase 6, creates seed content). The implementation MUST handle an empty library gracefully:
+- If no studies exist, skip Step 3 entirely (go from Step 2 → Step 4), OR
+- Show the hardcoded `SAMPLE_STUDY_MARKDOWN` sample instead of a real study link
+The Overview's dual-path architecture remains correct — just handle the empty-DB edge case.
+
+### H. `SessionData` Missing `onboardingCompleted`
+`SessionData` in `app/lib/auth/session.ts` currently has: `userId`, `username`, `isAdmin`, `isApproved`. It does NOT have `onboardingCompleted`. Two options:
+1. **Add to SessionData** — set it during login/registration, check in middleware. This is the brief's approach (middleware cookie check).
+2. **Query DB in the (main) layout** — skip SessionData changes, check `onboarding_completed` column directly in the server component layout. Simpler but adds a DB query per page load.
+
+Option 1 is recommended. Add `onboardingCompleted: boolean` to `SessionData`, set it in the login handler, and update middleware to redirect to `/onboarding` when false.
+
+### I. Middleware vs Layout for Onboarding Gate
+The existing middleware at `app/middleware.ts` already handles auth redirects (unauthenticated → `/`, unapproved → `/pending`, non-admin → block `/admin`). **Extend it** to add the onboarding redirect. Per CLAUDE.md §2, middleware is for redirects only (never the sole auth layer) — an onboarding redirect is a valid middleware use case.
+
+The brief's Section 12 "Route Guard" shows both a layout approach and a middleware approach. Use the **middleware approach** since middleware already exists and handles similar redirects. The onboarding page server component still does its own auth check via `requireAuth()`.
+
+### J. Route Group Placement
+The brief places onboarding under `(main)`. This is correct — `(main)` contains authenticated user pages (`favorites`, `generate`, `profile`, `study`). The `(auth)` group contains pre-auth pages (`login`, `register`, `join/[token]`, etc.). Note: `(main)` currently has NO `layout.tsx` — one will need to be created if the onboarding gate is implemented at the layout level (but per note I above, middleware is preferred).
+
+### K. Step Names Mismatch
+The Overview describes 4 steps: Welcome → Vision → Study immersion → "You're in". But the code sections use different names: Welcome → Experience → Role → Ready. The **Overview's step names** better match the intent. During implementation, reconcile: the "Vision reveal" step (Bodoni Moda typography, mission) is what the code calls "Experience", and the "Study immersion" step (embedded study viewer) is what the code calls "Role" (which shows role cards instead). The implementer should follow the Overview's flow and adapt the code accordingly.
+
+### L. Dependencies Already Installed
+Both `framer-motion` (^12.38.0) and `react-markdown` (^10.1.0) are already in `app/package.json`. Do NOT run `npm install` for these.
+
+### M. Error Handling on Completion API
+The `onboarding-complete` API route in Section 11 returns bare `Response.json()`. Per CLAUDE.md §6, use `NextResponse.json()` from `next/server` for consistency, and add proper error handling:
+```ts
+import { NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth/middleware';
+import { getDb } from '@/lib/db/connection';
+```
+
+---
+
 ## Overview
 
 Build a first-time user onboarding experience that introduces new members to the app's mission, shows them what a study looks like, and sends them to the library. This is the first meaningful interaction a user has after signing up — it must feel warm, personal, and purposeful.
@@ -59,57 +150,77 @@ ALTER TABLE users ADD COLUMN onboarding_completed INTEGER NOT NULL DEFAULT 0;
 
 ## File Structure
 
+> ⚠️ **DO NOT USE THESE PATHS** — see Pre-Implementation Correction A. Corrected tree below.
+
 ```
-src/
+ORIGINAL (WRONG — uses src/ prefix):
+src/app/... → app/app/...
+src/components/... → app/components/...
+src/lib/... → app/lib/...
+
+CORRECTED FILE TREE:
+app/
   app/
     (main)/
       onboarding/
-        page.tsx                -- Server Component: gate + render
+        page.tsx                -- [CREATE] Server Component: gate + render
   components/
     onboarding/
-      onboarding-flow.tsx       -- Client Component: multi-step controller
-      step-welcome.tsx          -- Step 1: Welcome (personal for invited, general for waitlist)
-      step-vision.tsx           -- Step 2: Vision reveal (Bodoni Moda typography, same for both paths)
-      step-study.tsx            -- Step 3: Study immersion (linked study for invited, random seeded for waitlist)
-      step-ready.tsx            -- Step 4: "You're in" — enter the library
-      onboarding-backdrop.tsx   -- Animated background
-      progress-dots.tsx         -- Step indicator dots
-      protocol-visual.tsx       -- Visual of the 7-step protocol
-      sample-study-embed.tsx    -- Embedded mini study viewer
+      onboarding-flow.tsx       -- [CREATE] Client Component: multi-step controller
+      step-welcome.tsx          -- [CREATE] Step 1: Welcome (personal for invited, general for waitlist)
+      step-vision.tsx           -- [CREATE] Step 2: Vision reveal (Bodoni Moda typography, same for both paths)
+      step-study.tsx            -- [CREATE] Step 3: Study immersion (linked study for invited, random seeded for waitlist)
+      step-ready.tsx            -- [CREATE] Step 4: "You're in" — enter the library
+      onboarding-backdrop.tsx   -- [CREATE] Animated background
+      progress-dots.tsx         -- [CREATE] Step indicator dots
+      protocol-visual.tsx       -- [CREATE] Visual of the 7-step protocol
+      sample-study-embed.tsx    -- [CREATE] Embedded mini study viewer
   lib/
     data/
-      sample-study.ts           -- Fallback sample study excerpt (markdown) for onboarding (used if API fetch fails)
+      sample-study.ts           -- [CREATE] Fallback sample study excerpt (markdown) for onboarding
   app/
     api/
       user/
         onboarding-complete/
-          route.ts              -- POST: mark onboarding as complete
+          route.ts              -- [CREATE] POST: mark onboarding as complete
+  middleware.ts                 -- [MODIFY] Add onboarding redirect check
+  lib/
+    auth/
+      session.ts                -- [MODIFY] Add onboardingCompleted to SessionData
 ```
 
 ---
 
 ## 1. Onboarding Page (Server Component)
 
-**File**: `/src/app/(main)/onboarding/page.tsx`
+> ⚠️ **CORRECTIONS REQUIRED** — see Pre-Implementation Corrections A (paths), B (db import), C (auth pattern), D (column name), F (no /library route), G (no seed studies).
+
+**File**: `app/app/(main)/onboarding/page.tsx` ← corrected path
 
 ```tsx
+// ⚠️ CORRECTIONS APPLIED IN THIS BLOCK:
+// - import getDb from '@/lib/db/connection' (not db from '@/lib/db') — Correction B
+// - ic.linked_study_id (not ic.study_id) — Correction D
+// - redirect('/library') → redirect to actual study listing route — Correction F
+// - Random study query needs empty-DB fallback — Correction G
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
-import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/auth/middleware';
+import { getDb } from '@/lib/db/connection';
 import { OnboardingFlow } from '@/components/onboarding/onboarding-flow';
 
 export default async function OnboardingPage() {
-  const session = await getSession();
-  if (!session?.userId) redirect('/');
+  const { user: sessionUser, response } = await requireAuth();
+  if (response) return response; // redirects unauthenticated
 
+  const db = getDb();
   const user = db.prepare(
     'SELECT id, username, invited_by, onboarding_completed FROM users WHERE id = ?'
-  ).get(session.userId) as { id: number; username: string; invited_by: number | null; onboarding_completed: number } | undefined;
+  ).get(sessionUser.userId) as { id: number; username: string; invited_by: number | null; onboarding_completed: number } | undefined;
 
   if (!user) redirect('/');
 
-  // If already completed, go to library
-  if (user.onboarding_completed) redirect('/library');
+  // If already completed, go to study listing (no /library route exists — see Correction F)
+  if (user.onboarding_completed) redirect('/');
 
   // Fetch inviter's display name (if user was invited)
   let inviterName: string | undefined;
@@ -127,7 +238,7 @@ export default async function OnboardingPage() {
     const invite = db.prepare(`
       SELECT s.slug, s.title
       FROM invite_codes ic
-      JOIN studies s ON s.id = ic.study_id
+      JOIN studies s ON s.id = ic.linked_study_id
       WHERE ic.used_by = ?
     `).get(user.id) as { slug: string; title: string } | undefined;
     linkedStudySlug = invite?.slug;
@@ -135,14 +246,16 @@ export default async function OnboardingPage() {
   }
 
   // For waitlist-approved users (no inviter), pick a random seeded study
+  // NOTE: In V1, no seed studies may exist (Brief 15 = Phase 6). Handle gracefully.
   let randomStudySlug: string | undefined;
   let randomStudyTitle: string | undefined;
   if (!user.invited_by) {
     const randomStudy = db.prepare(
-      'SELECT slug, title FROM studies ORDER BY RANDOM() LIMIT 1'
+      'SELECT slug, title FROM studies WHERE is_public = 1 ORDER BY RANDOM() LIMIT 1'
     ).get() as { slug: string; title: string } | undefined;
     randomStudySlug = randomStudy?.slug;
     randomStudyTitle = randomStudy?.title;
+    // If no studies exist, linkedStudySlug/Title stay undefined → Step 3 uses SAMPLE_STUDY_MARKDOWN fallback
   }
 
   return (
@@ -161,7 +274,7 @@ export default async function OnboardingPage() {
 In the main layout (from a prior brief), check if the user has completed onboarding:
 
 ```tsx
-// In /src/app/(main)/layout.tsx or a middleware
+// In middleware.ts (see Correction I — use middleware, not layout)
 // If user is logged in AND onboarding_completed = 0
 // AND current path is NOT /onboarding
 // redirect to /onboarding
@@ -173,7 +286,9 @@ This ensures users always see onboarding before accessing the library.
 
 ## 2. Onboarding Flow Controller
 
-**File**: `/src/components/onboarding/onboarding-flow.tsx`
+> ⚠️ **CORRECTIONS REQUIRED** — see Correction E (props mismatch), Correction A (path), Correction K (step names). The interface below only accepts `username` but must also accept `inviterName`, `linkedStudySlug`, `linkedStudyTitle` per Section 1. Step component names (Experience/Role) don't match the Overview (Vision/Study). Reconcile during implementation.
+
+**File**: `app/components/onboarding/onboarding-flow.tsx` ← corrected path
 
 ```tsx
 "use client";
@@ -282,7 +397,7 @@ export function OnboardingFlow({ username }: OnboardingFlowProps) {
 
 ## 3. Step 1 — Welcome (Mission)
 
-**File**: `/src/components/onboarding/step-welcome.tsx`
+**File**: `app/components/onboarding/step-welcome.tsx` ← corrected path
 
 ```tsx
 "use client";
@@ -356,7 +471,7 @@ export function StepWelcome({ username, onNext }: StepWelcomeProps) {
 
 ## 4. Protocol Visual
 
-**File**: `/src/components/onboarding/protocol-visual.tsx`
+**File**: `app/components/onboarding/protocol-visual.tsx` ← corrected path
 
 A visual representation of the 7-step analysis protocol. NOT text-heavy — use icons and short labels.
 
@@ -409,7 +524,7 @@ The 7th step ("Canonical Context") gets `sm:col-span-4 sm:max-w-[160px] sm:mx-au
 
 ## 5. Step 2 — The Experience (Show, Don't Tell)
 
-**File**: `/src/components/onboarding/step-experience.tsx`
+**File**: `app/components/onboarding/step-experience.tsx` ← corrected path (see Correction K: this is the "Vision reveal" step)
 
 This is the most important onboarding step. Show a real sample study excerpt so the user can see what the reading experience looks like.
 
@@ -494,7 +609,7 @@ export function StepExperience({ onNext, onBack }: StepExperienceProps) {
 
 ## 6. Sample Study Embed
 
-**File**: `/src/components/onboarding/sample-study-embed.tsx`
+**File**: `app/components/onboarding/sample-study-embed.tsx` ← corrected path
 
 A scrollable container showing a curated excerpt from a real study. Use `react-markdown` (same as Brief 07's markdown renderer) to render the sample content safely. Do NOT use `dangerouslySetInnerHTML`.
 
@@ -576,7 +691,7 @@ export function SampleStudyEmbed({ onScroll }: SampleStudyEmbedProps) {
 
 ### Sample Study Content (Markdown)
 
-**File**: `/src/lib/data/sample-study.ts`
+**File**: `app/lib/data/sample-study.ts` ← corrected path
 
 Create a curated markdown excerpt from the Acts 10 study or Peter study. This is HARDCODED, not fetched from the database. It should showcase:
 
@@ -621,7 +736,7 @@ The same man who, moments earlier, had received divine revelation about Jesus' i
 
 ## 7. Step 3 — Your Role
 
-**File**: `/src/components/onboarding/step-role.tsx`
+**File**: `app/components/onboarding/step-role.tsx` ← corrected path (see Correction K: this is the "Study immersion" step in the Overview)
 
 ```tsx
 "use client";
@@ -721,7 +836,7 @@ export function StepRole({ onNext, onBack }: StepRoleProps) {
 
 ## 8. Step 4 — Ready
 
-**File**: `/src/components/onboarding/step-ready.tsx`
+**File**: `app/components/onboarding/step-ready.tsx` ← corrected path
 
 ```tsx
 "use client";
@@ -792,7 +907,7 @@ export function StepReady({ onComplete, onBack }: StepReadyProps) {
 
 ## 9. Progress Dots
 
-**File**: `/src/components/onboarding/progress-dots.tsx`
+**File**: `app/components/onboarding/progress-dots.tsx` ← corrected path
 
 ```tsx
 "use client";
@@ -828,7 +943,7 @@ export function ProgressDots({ total, current }: ProgressDotsProps) {
 
 ## 10. Onboarding Backdrop
 
-**File**: `/src/components/onboarding/onboarding-backdrop.tsx`
+**File**: `app/components/onboarding/onboarding-backdrop.tsx` ← corrected path
 
 Similar to the library backdrop but tailored for onboarding — warmer, more inviting.
 
@@ -893,21 +1008,24 @@ export function OnboardingBackdrop() {
 
 ## 11. API Route
 
-**File**: `/src/app/api/user/onboarding-complete/route.ts`
+> ⚠️ **CORRECTIONS REQUIRED** — see Corrections A (path), B (db import), C (auth pattern), M (error handling).
+
+**File**: `app/app/api/user/onboarding-complete/route.ts` ← corrected path
 
 ```typescript
-import { getSession } from '@/lib/auth/session';
-import { db } from '@/lib/db';
+// ⚠️ CORRECTED — uses requireAuth + getDb + NextResponse per CLAUDE.md
+import { NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth/middleware';
+import { getDb } from '@/lib/db/connection';
 
 export async function POST() {
-  const session = await getSession();
-  if (!session?.userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { user, response } = await requireAuth();
+  if (response) return response;
 
-  db.prepare('UPDATE users SET onboarding_completed = 1 WHERE id = ?').run(session.userId);
+  const db = getDb();
+  db.prepare('UPDATE users SET onboarding_completed = 1 WHERE id = ?').run(user.userId);
 
-  return Response.json({ success: true });
+  return NextResponse.json({ success: true });
 }
 ```
 
@@ -915,9 +1033,11 @@ export async function POST() {
 
 ## 12. Route Guard (Main Layout Update)
 
+> ⚠️ **CORRECTION** — see Correction I. Use the **middleware approach** shown below (not the layout approach). The existing middleware at `app/middleware.ts` already handles auth/approval redirects — extend it with the onboarding check. Also see Correction H: add `onboardingCompleted` to `SessionData` and set it during login so middleware can check it without a DB query. No `(main)/layout.tsx` currently exists.
+
 Update the `(main)` layout to redirect users who haven't completed onboarding.
 
-**Recommended approach**: Check in the `(main)` layout Server Component, since it has access to the database:
+**Recommended approach**: Extend existing middleware (NOT layout — `(main)/layout.tsx` doesn't exist):
 
 ```tsx
 // /src/app/(main)/layout.tsx

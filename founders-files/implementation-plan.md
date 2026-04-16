@@ -1061,38 +1061,54 @@ Completion notes (07f — April 14, 2026):
 
 ## Phase 5: Onboarding + Translation (Briefs 10 → 13)
 
-**Goal:** First-time user experience and multi-translation support.
+**Goal:** First-time user experience and multi-translation support with ABS compliance.
+
+**Execution order:** Brief 10 first (no dependencies on 13), then Brief 13. They can overlap if needed — 10 is pure frontend, 13 is pure backend.
 
 | Brief | Model | Mode | Key Notes |
 |-------|-------|------|-----------|
 | **10 — Onboarding** | **Opus** | Direct Execution | 4-step Framer Motion flow, two paths (invited vs waitlist). Use `frontend-design` skill. **Opus: onboarding is the second impression after the teaser — animation pacing, copy warmth, and step transitions need real design sense.** |
-| **13 — Translation API** | **Sonnet** | Plan Mode | 3-tier translation system, 4 API clients, DHCP cache, export permissions. Pure backend — no design. Needs brief rewrite first. Use `context7` for API docs. |
+| **13 — Translation API** | **Sonnet** | Plan Mode | Unified api.bible client (NLT/NIV/NASB), feature-gated ESV, DHCP cache, FUMS tracking, DRM, NIV display guard, citations. **Brief fully rewritten 2026-04-15** to reflect signed ABS/Biblica agreements. See `briefs/13-translation-api-layer.md` and `founders-files/abs-compliance-checklist.md`. |
 
 **Critical files:**
-- `briefs/10-onboarding-journey.md` (984 lines)
-- `briefs/13-translation-api-layer.md` (1166 lines) — **needs major rewrite per "Brief Changes" section**
+- `briefs/10-onboarding-journey.md` (1160 lines) — **comprehensive pre-implementation corrections (A–M) added 2026-04-15**: path convention (`app/` not `src/`), db import (`getDb`), auth pattern (`requireAuth`), `linked_study_id` column fix, props mismatch fix, no `/library` route, no seed studies fallback, `SessionData` missing field, middleware vs layout decision, route group placement, step names reconciliation, dependencies already installed, API error handling.
+- `briefs/13-translation-api-layer.md` — ✅ **fully rewritten 2026-04-15** with 20 sections reflecting signed agreements. Covers: unified api.bible client, DHCP cache, FUMS, DRM, NIV guard, citations, termination runbook. **Schema migration corrected to v6→v7** (v6 already used by Brief 09).
+- `founders-files/abs-compliance-checklist.md` — 34-row obligation map; every Brief 13 feature traces to a row there.
 
-**Risks:**
-- **ESV rate limits:** 5,000 queries/day, 1,000/hr, 60/min. Since we don't cache ESV, every in-app swap and every export triggers live calls. Batch verse lookups (e.g., "Romans 8:1-39" as one call) are critical to stay within limits.
-- **api.bible access approval:** NASB and NIV require contacting support@api.bible for access. This is a blocking dependency — must be done before implementing these translations.
-- **NLT HTML stripping:** api.nlt.to returns HTML, not plain text. Need robust HTML-to-text conversion for clean verse swaps.
+**Translation architecture (updated 2026-04-15 after agreement signing):**
+- **API.Bible Starter plan** (single key, `API_BIBLE_KEY`) serves NLT, NIV, and NASB 1995 through one unified client.
+- **ESV** via Crossway (separate `ESV_API_KEY`) — feature-gated; ships only if key is set. David has not yet applied; remains in V1 scope but not a blocker.
+- **BSB, KJV, WEB** are public domain, served from local DB — no restrictions, no network.
+- **AI/LLM prohibition on licensed content:** Claude always generates from BSB. Verse swap is post-generation mechanical substitution. Licensed text never enters AI pipeline.
 
-**Verification:**
-- New user → onboarding flow triggers with all 4 animated steps
-- Inviter's name appears in welcome step
-- Sample study renders in immersion step
-- `onboarding_completed` flag set; returning users skip onboarding
-- **Translation selector in reader** shows all available translations grouped by tier
-- Switching BSB → ESV swaps verse text (first call fetches from API + caches with 24h lease; subsequent reads serve from cache)
-- Switching BSB → NASB swaps verse text (fetches + caches with 7-day lease)
-- Switching BSB → NLT swaps verse text (HTML stripped, cached with 7-day lease)
-- Switching BSB → NIV swaps verse text (display only — cached with 7-day lease)
-- **Cache renewal:** Background job renews ESV verses at 18h, others at 5d 6h. Verify by checking `cached_at` timestamps update without user action.
-- **Cache eviction:** Verses not accessed within their lease period expire and are pruned. Per-translation caps enforced (500 ESV, 1,000 NASB, 500 NLT/NIV).
-- **NIV export disabled** — export dialog grays out NIV with explanation
-- ESV/NASB/NLT exports work with correct copyright notices
-- Translation abbreviations in reader link to `/attributions#[translation]`
-- **Attributions page** renders with all copyright notices, publisher links, and anchor IDs
+**Risks (updated):**
+- ~~**api.bible access approval:** NASB and NIV require contacting support@api.bible for access.~~ ✅ Resolved — Starter plan key obtained and agreements signed (April 15, 2026).
+- ~~**NLT HTML stripping:** api.nlt.to returns HTML.~~ ✅ Resolved — NLT now served via api.bible (unified client), not api.nlt.to. Response format is JSON with verse structure.
+- **ESV application pending:** David to decide whether to apply to Crossway before V1 ship. Code path is feature-gated — no blocker.
+- **FUMS endpoint format:** Confirm actual endpoint + payload format from docs.api.bible during Brief 13 implementation.
+- **Bible ID lookup:** On first deploy, call `GET /v1/bibles` with the Starter key and record the UUIDs for NLT, NIV, NASB 1995 in env vars (`API_BIBLE_ID_NLT`, etc.).
+- **NIV display cap compliance:** Biblica §V.F requires ≤ 2 chapters OR ≤ 25 verses per user per view. The `niv-display-guard.ts` must be thoroughly tested — a violation risks the NIV license.
+- **No seed studies exist yet.** Brief 10's onboarding Step 2 shows a sample study excerpt (hardcoded markdown, not from DB). But the waitlist path picks a random seeded study for Step 3 — this needs at least one study in the DB, or a graceful fallback. Brief 15 (Seed Content) is in Phase 6; onboarding should handle the empty-DB case.
+
+**Verification (Brief 10 — Onboarding):**
+- New user (invited path) → onboarding flow triggers, inviter's name appears in welcome step, linked study rendered in immersion step
+- New user (waitlist path) → general welcome, random seeded study OR hardcoded sample excerpt
+- `onboarding_completed` flag set; returning users skip onboarding and go straight to library
+- Skip button works at any step
+- `prefers-reduced-motion` respected (static gradients, no slide animations)
+- Onboarding gate: authenticated users with `onboarding_completed = 0` are redirected to `/onboarding` from all main app pages
+
+**Verification (Brief 13 — Translation API):**
+- Translation selector in reader shows BSB, KJV, WEB (always) + NLT, NIV, NASB (when `API_BIBLE_KEY` set) + ESV (when `ESV_API_KEY` set)
+- Switching BSB → NLT/NIV/NASB fetches from api.bible, caches with 7-day DHCP lease, records FUMS event
+- NIV display guard caps at 2 chapters OR 25 verses per view — truncation banner shown when triggered
+- CopyGuard blocks >100 verses for licensed translations
+- "Powered by API.Bible" link visible in global footer
+- CitationFooter renders translation-specific copyright + publisher link (NIV® with ® on first display)
+- `/about#scripture-translations` renders full-form copyright notices
+- Cache renewal: hourly job refreshes verses past 75% of lease, flushes FUMS, prunes >13-month events
+- `ABS_PURGE_ENABLED=true` hides all licensed translations from UI and purges cache
+- BSB/KJV/WEB have no restrictions — no FUMS, no DRM, no display caps
 - Public domain translations (BSB/KJV/WEB) have no restrictions on display or export
 
 ---
