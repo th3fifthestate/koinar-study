@@ -1,6 +1,6 @@
 import { config } from "@/lib/config";
 
-interface FluxGenerateRequest {
+export interface FluxGenerateRequest {
   prompt: string;
   width?: number;
   height?: number;
