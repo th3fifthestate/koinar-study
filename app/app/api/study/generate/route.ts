@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
   // 2. Rate limit by user ID (generation is expensive)
   if (rateLimiter(String(auth.user.userId))) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { 'Retry-After': '300' } });
   }
 
   // 3. Parse and validate request body
@@ -129,6 +129,12 @@ export async function POST(request: Request) {
   const systemPrompt = getSystemPrompt(format);
   const startTime = Date.now();
   const userId = auth.user.userId;
+
+  // Terminal frame promise — resolved inside onFinish after the DB write
+  let terminalResolve!: (frame: { slug: string; saveOk: boolean; title: string }) => void;
+  const terminalPromise = new Promise<{ slug: string; saveOk: boolean; title: string }>(
+    (resolve) => { terminalResolve = resolve; }
+  );
 
   // 6. Stream generation
   // System prompt + tool definitions are cached (ephemeral, ~5 min TTL) —
@@ -222,8 +228,9 @@ export async function POST(request: Request) {
         (outputTokens / 1_000_000) * 25;
 
       // Save study to database
+      let slug = '';
       try {
-        const slug = generateSlug(title);
+        slug = generateSlug(title);
         const studyId = createStudy({
           title,
           slug,
@@ -310,12 +317,47 @@ export async function POST(request: Request) {
             `[generate/onFinish] No inline entity annotations found for study "${title}" (id: ${studyId})`
           );
         }
+
+        terminalResolve({ slug, saveOk: true, title });
       } catch (error) {
         console.error("[generate/onFinish] Failed to save study:", error);
+        terminalResolve({ slug: '', saveOk: false, title: prompt.slice(0, 100) });
       }
     },
   });
 
-  // 7. Return streaming text response
-  return result.toTextStreamResponse();
+  // 7. Return combined stream: model text + terminal JSON frame after DB write
+  // The terminal frame `<!-- koinar-complete:{...} -->` is appended after the text
+  // stream closes, once onFinish resolves. The client strips this marker and uses
+  // it to drive the completing → complete (or error-save-failed) transition.
+  const encoder = new TextEncoder();
+  const combinedStream = new ReadableStream({
+    async start(controller) {
+      const reader = result.textStream.getReader();
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          controller.enqueue(encoder.encode(value));
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      const terminal = await terminalPromise;
+      controller.enqueue(encoder.encode(`\n\n<!-- koinar-complete:${JSON.stringify(terminal)} -->`));
+      controller.close();
+    },
+    cancel() {
+      result.textStream.cancel?.();
+    },
+  });
+
+  return new Response(combinedStream, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-cache',
+      'Transfer-Encoding': 'chunked',
+    },
+  });
 }
