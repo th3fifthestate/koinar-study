@@ -1,7 +1,14 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
-import { getUserSettings, listUserInvitations } from "@/lib/db/queries";
+import {
+  getUserSettings,
+  listUserInvitations,
+  getInviteCountForUser,
+  getStudies,
+} from "@/lib/db/queries";
 import { SettingsShell } from "./settings-shell";
+
+const INVITE_LIMIT_PER_30_DAYS = 2;
 
 export const metadata = { title: "Settings — Koinar" };
 
@@ -26,6 +33,15 @@ export default async function SettingsPage(props: {
   if (!settings) redirect("/login");
 
   const invitations = listUserInvitations(user.userId);
+
+  const usedInvites = getInviteCountForUser(user.userId, 30);
+  const invitesRemaining = user.isAdmin
+    ? null // unlimited
+    : Math.max(0, INVITE_LIMIT_PER_30_DAYS - usedInvites);
+
+  const { studies } = getStudies({ userId: user.userId, limit: 50 });
+  const studyOptions = studies.map((s) => ({ id: s.id, title: s.title }));
+
   const sp = await props.searchParams;
 
   // Non-admin attempting ?tab=admin → silent redirect server-side (before shell sees it)
@@ -40,6 +56,8 @@ export default async function SettingsPage(props: {
       user={user}
       settings={settings}
       invitations={invitations}
+      invitesRemaining={invitesRemaining}
+      studyOptions={studyOptions}
       initialTab={initialTab}
     />
   );

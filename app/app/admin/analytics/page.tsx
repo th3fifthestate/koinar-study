@@ -23,7 +23,7 @@ interface PopularStudyRow {
 
 export default async function AnalyticsPage() {
   const session = await getSession();
-  if (!session.userId || !session.isAdmin) redirect('/library');
+  if (!session.userId || !session.isAdmin) redirect('/');
 
   const db = getDb();
 

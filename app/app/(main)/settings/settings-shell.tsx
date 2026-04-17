@@ -24,10 +24,19 @@ interface Props {
   user: SessionData;
   settings: UserSettings;
   invitations: InviteRow[];
+  invitesRemaining: number | null;
+  studyOptions: { id: number; title: string }[];
   initialTab: string;
 }
 
-export function SettingsShell({ user, settings, invitations, initialTab }: Props) {
+export function SettingsShell({
+  user,
+  settings,
+  invitations,
+  invitesRemaining,
+  studyOptions,
+  initialTab,
+}: Props) {
   const router = useRouter();
   const tabs = user.isAdmin
     ? [...BASE_TABS, { id: 'admin' as TabId, label: 'Admin' }]
@@ -104,7 +113,13 @@ export function SettingsShell({ user, settings, invitations, initialTab }: Props
               {activeTab === 'profile' && <ProfileTab settings={settings} />}
               {activeTab === 'account' && <AccountTab settings={settings} />}
               {activeTab === 'api-key' && <ApiKeyTab settings={settings} />}
-              {activeTab === 'invitations' && <InvitationsTab invitations={invitations} />}
+              {activeTab === 'invitations' && (
+                <InvitationsTab
+                  invitations={invitations}
+                  invitesRemaining={invitesRemaining}
+                  studyOptions={studyOptions}
+                />
+              )}
               {activeTab === 'admin' && user.isAdmin && <AdminTab />}
             </div>
           </div>
