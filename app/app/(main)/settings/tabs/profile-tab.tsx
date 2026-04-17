@@ -48,6 +48,7 @@ export function ProfileTab({ settings }: Props) {
           onChange={e => setDisplayName(e.target.value)}
           maxLength={80}
           required
+          aria-describedby={error ? 'profile-error' : undefined}
           className="w-full border border-stone-300 rounded px-3 py-2 font-body text-base text-stone-900 focus:outline-none focus:border-sage-500"
         />
       </div>
@@ -84,7 +85,7 @@ export function ProfileTab({ settings }: Props) {
       </div>
 
       {error && (
-        <p role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
+        <p id="profile-error" role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
           {error}
         </p>
       )}

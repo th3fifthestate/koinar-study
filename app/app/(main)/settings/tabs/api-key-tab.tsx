@@ -113,6 +113,7 @@ export function ApiKeyTab({ settings }: Props) {
               autoComplete="off"
               spellCheck={false}
               placeholder="sk-ant-…"
+              aria-describedby={saveError ? 'api-key-save-error' : undefined}
               className="w-full border border-stone-300 rounded px-3 py-2 font-body text-base font-mono text-stone-900 focus:outline-none focus:border-sage-500"
             />
           </div>
@@ -146,12 +147,12 @@ export function ApiKeyTab({ settings }: Props) {
           </div>
 
           {saveError && (
-            <p role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
+            <p id="api-key-save-error" role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
               {saveError}
             </p>
           )}
           {deleteError && (
-            <p role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
+            <p id="api-key-delete-error" role="alert" aria-live="assertive" className="font-body text-sm text-red-600">
               {deleteError}
             </p>
           )}
