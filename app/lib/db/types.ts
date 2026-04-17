@@ -333,3 +333,25 @@ export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_conte
   citations: EntityCitation[];
   relationships: (EntityRelationship & { related_entity_name: string; related_entity_type: string })[];
 }
+
+export interface UserSettings {
+  id: number;
+  username: string;
+  email: string;
+  displayName: string | null;
+  bio: string | null;
+  hasApiKey: boolean;
+  apiKeyTail: string | null;
+  apiKeyUpdatedAt: string | null;
+  createdAt: string;
+  isAdmin: boolean;
+}
+
+export interface InviteRow {
+  code: string;
+  inviteeName: string;
+  inviteeEmail: string;
+  // derived: used_by IS NOT NULL → 'accepted'; is_active = 0 → 'expired'; else 'pending'
+  status: 'pending' | 'accepted' | 'expired';
+  createdAt: string;
+}
