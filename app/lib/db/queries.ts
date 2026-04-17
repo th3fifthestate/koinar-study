@@ -511,7 +511,8 @@ export function getStudyDetail(slug: string, userId?: number): StudyDetail | nul
   const row = db.prepare(`
     SELECT
       s.id, s.title, s.slug, s.content_markdown, s.summary,
-      s.format_type, s.translation_used, s.is_public, s.is_featured,
+      s.format_type, s.translation_used, s.current_translation,
+      s.is_public, s.is_featured,
       s.created_by, s.category_id, s.generation_metadata, s.created_at, s.updated_at,
       c.name AS category_name, c.slug AS category_slug,
       u.display_name AS author_display_name, u.username AS author_username,

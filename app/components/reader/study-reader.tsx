@@ -34,6 +34,23 @@ interface StudyReaderProps {
   entities?: Entity[];
 }
 
+// Count individual verses referenced in blockquote citation lines. Used to
+// seed the FUMS display count on first render when the stored study is
+// already in a licensed translation (e.g. NIV from a prior session).
+// Matches the trailing `— Book C:V[–V] (TRANS)` markers emitted by swap-engine.
+const VERSE_CITATION_RE = /— [^\n]*?\s\d+:(\d+)(?:–(\d+))?\s\([A-Z]+\)/g;
+function countCitedVerses(markdown: string): number {
+  let total = 0;
+  for (const m of markdown.matchAll(VERSE_CITATION_RE)) {
+    const start = parseInt(m[1], 10);
+    const end = m[2] ? parseInt(m[2], 10) : start;
+    if (Number.isFinite(start) && Number.isFinite(end) && end >= start) {
+      total += end - start + 1;
+    }
+  }
+  return total;
+}
+
 function extractHeadings(markdown: string): HeadingItem[] {
   const headings: HeadingItem[] = [];
   const slugCounts = new Map<string, number>();
@@ -72,6 +89,11 @@ export function StudyReader({
   const [currentTranslation, setCurrentTranslation] = useState(
     study.current_translation ?? 'BSB',
   );
+  const [displayVerseCount, setDisplayVerseCount] = useState(() =>
+    (study.current_translation ?? 'BSB') === 'BSB'
+      ? 0
+      : countCitedVerses(study.content_markdown),
+  );
   const [translating, setTranslating] = useState(false);
 
   const handleTranslationSelect = async (translation: string) => {
@@ -91,11 +113,15 @@ export function StudyReader({
         content: string;
         translation: string;
         truncated: boolean;
+        versesSwapped: number;
       };
       setDisplayContent(data.content);
       setCurrentTranslation(data.translation);
+      setDisplayVerseCount(data.versesSwapped);
       if (data.truncated) {
-        toast.info(`Showing partial passage in ${data.translation}. View the full passage in BSB.`);
+        toast.info(
+          `Showing partial passage in ${data.translation}. Switch back to the Berean Standard Bible for the full passage.`,
+        );
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Could not load translation');
@@ -124,6 +150,7 @@ export function StudyReader({
         headingIds={headingIds}
         displayContent={displayContent}
         currentTranslation={currentTranslation}
+        displayVerseCount={displayVerseCount}
         translating={translating}
         onTranslationSelect={handleTranslationSelect}
       />
@@ -144,6 +171,7 @@ function StudyReaderContent({
   headingIds,
   displayContent,
   currentTranslation,
+  displayVerseCount,
   translating,
   onTranslationSelect,
 }: {
@@ -159,6 +187,7 @@ function StudyReaderContent({
   headingIds: string[];
   displayContent: string;
   currentTranslation: string;
+  displayVerseCount: number;
   translating: boolean;
   onTranslationSelect: (t: string) => void;
 }) {
@@ -271,6 +300,7 @@ function StudyReaderContent({
               <CitationFooter
                 currentTranslation={currentTranslation}
                 studyId={study.id}
+                verseCount={displayVerseCount}
               />
             </article>
 

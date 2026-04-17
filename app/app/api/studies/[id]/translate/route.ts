@@ -4,10 +4,15 @@ import { getStudyForTranslate, updateStudyTranslation } from '@/lib/db/queries';
 import { swapVerses } from '@/lib/translations/swap-engine';
 import { getAvailableTranslations } from '@/lib/translations/registry';
 import type { TranslationId } from '@/lib/translations/registry';
+import { createRateLimiter } from '@/lib/rate-limit';
 
 const BodySchema = z.object({
   translation: z.enum(['BSB', 'KJV', 'WEB', 'NLT', 'NIV', 'NASB', 'ESV'] as const),
 });
+
+// CLAUDE.md §5: rate-limit public endpoints. Translation invokes upstream
+// api.bible / ESV calls, so we key per-user to cap abuse and control spend.
+const isTranslateRateLimited = createRateLimiter({ windowMs: 60_000, max: 10 });
 
 export async function POST(
   request: Request,
@@ -15,6 +20,10 @@ export async function POST(
 ) {
   const { user, response } = await requireAuth();
   if (response) return response;
+
+  if (isTranslateRateLimited(`u:${user.userId}`)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 });
+  }
 
   const { id } = await params;
   const studyId = parseInt(id, 10);

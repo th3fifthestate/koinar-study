@@ -1,9 +1,18 @@
 import { AboutClient } from "./about-client";
 import { CITATIONS } from "@/lib/translations/citations";
+import { getAvailableTranslations } from "@/lib/translations/registry";
 import type { TranslationId } from "@/lib/translations/registry";
 
 export default function About() {
-  const citationEntries = Object.entries(CITATIONS) as [TranslationId, (typeof CITATIONS)[TranslationId]][];
+  // Only render citations for translations actually selectable right now —
+  // this filters ESV (TODO placeholder) and any purge-disabled licensed
+  // translations so we never show "[TODO: paste…]" to end users.
+  const availableIds = new Set(getAvailableTranslations().map((t) => t.id));
+  const citationEntries = (
+    Object.entries(CITATIONS) as [TranslationId, (typeof CITATIONS)[TranslationId]][]
+  ).filter(
+    ([id, c]) => availableIds.has(id) && !c.full.startsWith("[TODO"),
+  );
 
   return (
     <>

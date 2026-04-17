@@ -31,12 +31,20 @@ export function CopyGuard({ children, currentTranslation }: CopyGuardProps) {
       if (!selection || selection.isCollapsed) return;
       const selectedText = selection.toString();
 
+      // Only enforce the cap when the selection actually contains verse
+      // references. A selection of prose *within* a single verse (no inline
+      // ref) is almost always a sub-verse excerpt — line-counting that would
+      // penalize normal copy-paste of commentary text. When refs are present
+      // we can count them reliably; without refs, trust the user.
       const refMatches = [...selectedText.matchAll(VERSE_REF_RE)];
-      const count = refMatches.length || selectedText.split('\n').filter(Boolean).length;
-      if (count <= MAX) return;
+      if (refMatches.length === 0) return;
+      if (refMatches.length <= MAX) return;
 
       e.preventDefault();
-      const lines = selectedText.split('\n');
+      // Preserve whole blockquote verses when truncating. Each blockquote
+      // line in the rendered markdown is one verse, so keeping the first MAX
+      // non-empty lines yields MAX verses of scripture.
+      const lines = selectedText.split('\n').filter((l) => l.trim().length > 0);
       const truncated = lines.slice(0, MAX).join('\n');
       const citation = CITATIONS[translation]?.short ?? '';
       e.clipboardData?.setData('text/plain', `${truncated}\n\n${citation}`);

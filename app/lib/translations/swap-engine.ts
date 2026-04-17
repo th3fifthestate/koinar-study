@@ -187,7 +187,32 @@ export async function swapVerses(
   let result = studyContent;
   let versesSwapped = 0;
   const missingVerses: Array<{ book: string; chapter: number; verse: number }> = [];
-  const nivRefs: ViewVerseRef[] = [];
+
+  // NIV §V.F: compute the allowed-verse set BEFORE fetching so we never render
+  // past the cap. Skipped verses are replaced with a truncation marker; the
+  // original BSB block stays intact when a whole block is disallowed.
+  let allowedKey: Set<string> | null = null;
+  let truncated = false;
+  if (target === "NIV") {
+    const allRefs: ViewVerseRef[] = [];
+    for (const block of blocks) {
+      const refs = parseVerseRefs(block.text);
+      if (!refs.length) continue;
+      const ref = refs[0];
+      for (let v = ref.verseStart; v <= ref.verseEnd; v++) {
+        allRefs.push({ book: ref.book, chapter: ref.chapter, verse: v });
+      }
+    }
+    if (allRefs.length) {
+      const guard = enforceNivPerViewCap(allRefs);
+      truncated = guard.truncated;
+      if (guard.truncated) {
+        allowedKey = new Set(
+          guard.allowedVerses.map((r) => `${r.book}:${r.chapter}:${r.verse}`),
+        );
+      }
+    }
+  }
 
   for (const block of blocks) {
     const refs = parseVerseRefs(block.text);
@@ -196,8 +221,13 @@ export async function swapVerses(
     const ref = refs[0];
     const verseLines: string[] = [];
     let anyMissing = false;
+    let anyOverCap = false;
 
     for (let v = ref.verseStart; v <= ref.verseEnd; v++) {
+      if (allowedKey && !allowedKey.has(`${ref.book}:${ref.chapter}:${v}`)) {
+        anyOverCap = true;
+        continue;
+      }
       const fetched = await fetchVerse(target, ref.displayName, ref.book, ref.chapter, v, ctx);
       if (!fetched) {
         missingVerses.push({ book: ref.book, chapter: ref.chapter, verse: v });
@@ -205,29 +235,27 @@ export async function swapVerses(
       } else {
         verseLines.push(fetched.text);
         versesSwapped++;
-        if (target === "NIV") {
-          nivRefs.push({ book: ref.book, chapter: ref.chapter, verse: v });
-        }
       }
     }
 
+    // If any verse in this block is missing upstream, leave BSB in place.
     if (anyMissing) continue;
+    // If every verse in this block was trimmed by the NIV cap, leave BSB too.
+    if (!verseLines.length) continue;
 
     const verseLabel =
       ref.verseEnd > ref.verseStart
         ? `${ref.displayName} ${ref.chapter}:${ref.verseStart}\u2013${ref.verseEnd}`
         : `${ref.displayName} ${ref.chapter}:${ref.verseStart}`;
 
+    const capNote = anyOverCap
+      ? `\n> \u2014 Additional verses omitted per ${target} per-view cap.`
+      : "";
     const newBlock =
-      verseLines.map((t) => `> ${t}`).join("\n") + `\n> \u2014 ${verseLabel} (${target})\n`;
+      verseLines.map((t) => `> ${t}`).join("\n") +
+      `\n> \u2014 ${verseLabel} (${target})${capNote}\n`;
 
     result = replaceFirst(result, block.raw, newBlock);
-  }
-
-  let truncated = false;
-  if (target === "NIV" && nivRefs.length) {
-    const guard = enforceNivPerViewCap(nivRefs);
-    truncated = guard.truncated;
   }
 
   return { content: result, versesSwapped, missingVerses, truncated };

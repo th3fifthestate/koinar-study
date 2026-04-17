@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CITATIONS } from '@/lib/translations/citations';
 import { TRANSLATIONS } from '@/lib/translations/registry';
 import type { TranslationId } from '@/lib/translations/registry';
@@ -21,8 +21,16 @@ export function CitationFooter({
   const citation = CITATIONS[translation];
   const info = TRANSLATIONS[translation];
 
+  // One display event per (study, translation, count) view. React Strict Mode
+  // double-invokes effects in dev and any parent re-render would otherwise
+  // re-fire this — we want exactly one FUMS display per distinct view.
+  const lastFiredRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!info?.isLicensed || !verseCount) return;
+    const key = `${studyId}:${translation}:${verseCount}`;
+    if (lastFiredRef.current === key) return;
+    lastFiredRef.current = key;
     void recordDisplayEvent(translation, studyId, verseCount);
   }, [translation, studyId, verseCount, info?.isLicensed]);
 
