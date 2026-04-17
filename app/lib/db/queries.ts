@@ -7,6 +7,7 @@ import type {
   Category,
   EmailVerificationCode,
   InviteCode,
+  InviteRow,
   SafeUser,
   Session,
   Study,
@@ -16,6 +17,7 @@ import type {
   StudyListItem,
   StudySummary,
   User,
+  UserSettings,
   WaitlistEntry,
 } from './types';
 
@@ -82,6 +84,75 @@ export function setUserAdmin(userId: number, isAdmin: boolean): void {
   getDb()
     .prepare('UPDATE users SET is_admin = ? WHERE id = ?')
     .run(isAdmin ? 1 : 0, userId);
+}
+
+export function getUserSettings(userId: number): UserSettings | null {
+  const row = getDb()
+    .prepare(`
+      SELECT
+        id, username, email, display_name, bio,
+        api_key_encrypted IS NOT NULL AS has_api_key,
+        api_key_tail, api_key_updated_at, created_at, is_admin
+      FROM users WHERE id = ?
+    `)
+    .get(userId) as {
+      id: number; username: string; email: string;
+      display_name: string | null; bio: string | null;
+      has_api_key: number; api_key_tail: string | null;
+      api_key_updated_at: string | null; created_at: string; is_admin: number;
+    } | undefined;
+
+  if (!row) return null;
+  return {
+    id: row.id,
+    username: row.username,
+    email: row.email,
+    displayName: row.display_name,
+    bio: row.bio,
+    hasApiKey: row.has_api_key === 1,
+    apiKeyTail: row.api_key_tail,
+    apiKeyUpdatedAt: row.api_key_updated_at,
+    createdAt: row.created_at,
+    isAdmin: row.is_admin === 1,
+  };
+}
+
+/** Returns full User row by id, for password-change flow only. Never expose to API responses. */
+export function getUserForAuthById(userId: number): User | null {
+  return (
+    (getDb()
+      .prepare('SELECT * FROM users WHERE id = ?')
+      .get(userId) as User | undefined) ?? null
+  );
+}
+
+export function listUserInvitations(userId: number): InviteRow[] {
+  const rows = getDb()
+    .prepare(`
+      SELECT
+        code, invitee_name, invitee_email,
+        CASE
+          WHEN used_by IS NOT NULL THEN 'accepted'
+          WHEN is_active = 0 THEN 'expired'
+          ELSE 'pending'
+        END AS status,
+        created_at
+      FROM invite_codes
+      WHERE created_by = ?
+      ORDER BY created_at DESC
+    `)
+    .all(userId) as Array<{
+      code: string; invitee_name: string; invitee_email: string;
+      status: 'pending' | 'accepted' | 'expired'; created_at: string;
+    }>;
+
+  return rows.map(r => ({
+    code: r.code,
+    inviteeName: r.invitee_name,
+    inviteeEmail: r.invitee_email,
+    status: r.status,
+    createdAt: r.created_at,
+  }));
 }
 
 // ─── Session queries ─────────────────────────────────────────────────────────
