@@ -120,7 +120,7 @@ export interface Study {
 }
 
 /** Study row without large content fields. Safe for list/card views. */
-export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata'>;
+export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata' | 'original_content' | 'current_translation'>;
 
 /** Enriched study for library cards — includes derived fields from JOINs. */
 export interface StudyListItem {

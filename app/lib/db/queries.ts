@@ -572,11 +572,15 @@ export function getStudyFavoriteCount(studyId: number): number {
 export function getStudyForTranslate(
   studyId: number,
 ): { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number } | null {
-  const db = getDb();
-  return db.prepare(
-    `SELECT id, original_content, current_translation, created_by, is_public
-     FROM studies WHERE id = ?`,
-  ).get(studyId) as { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number } | null;
+  return (
+    (getDb()
+      .prepare(
+        `SELECT id, original_content, current_translation, created_by, is_public FROM studies WHERE id = ?`,
+      )
+      .get(studyId) as
+      | { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number }
+      | undefined) ?? null
+  );
 }
 
 /** Persist the active translation on a study row. */
