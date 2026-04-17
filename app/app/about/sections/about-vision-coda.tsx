@@ -40,7 +40,7 @@ export function AboutVisionCoda() {
           Koinar exists because Scripture was always meant to be read together. Not performed. Not scrolled past. Read with care, and with others who care. What you find here is not a product. It is a table.
         </p>
 
-        <p className="reveal reveal-d2 font-body text-[0.75rem] font-normal text-[rgba(247,246,243,0.4)] mt-10 leading-[1.8]">
+        <p className="reveal reveal-d2 font-body text-base font-normal text-[rgba(247,246,243,0.5)] mt-10 leading-[1.8]">
           Questions, corrections, or a passage you&apos;d like us to study?{" "}
           <a
             href="mailto:hello@koinar.app"

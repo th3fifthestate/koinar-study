@@ -130,10 +130,10 @@ export function FormatCard({
       </div>
 
       {/* Tagline */}
-      <p className="text-[var(--stone-700)] text-sm font-medium mb-2">{card.tagline}</p>
+      <p className="text-[var(--stone-700)] text-base font-medium mb-2">{card.tagline}</p>
 
       {/* Body */}
-      <p className="text-[var(--stone-700)] text-sm leading-relaxed mb-3">{card.body}</p>
+      <p className="text-[var(--stone-700)] text-base leading-relaxed mb-3">{card.body}</p>
 
       {/* Entitlement line */}
       <EntitlementLine format={format} entitlement={entitlement} />

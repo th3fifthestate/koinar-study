@@ -21,7 +21,7 @@ export function ContextLine({ entitlement, selectedFormat }: ContextLineProps) {
 
   if (entitlement.kind === 'byok') {
     return (
-      <p className="text-[var(--stone-700)]" style={{ fontSize: '0.8rem' }}>
+      <p className="text-[var(--stone-700)]" style={{ fontSize: '1rem' }}>
         Using your Anthropic key.{' '}
         <Link
           href="/settings?tab=api-key"
@@ -35,7 +35,7 @@ export function ContextLine({ entitlement, selectedFormat }: ContextLineProps) {
 
   if (entitlement.kind === 'admin') {
     return (
-      <p className="text-[var(--stone-700)]" style={{ fontSize: '0.8rem' }}>
+      <p className="text-[var(--stone-700)]" style={{ fontSize: '1rem' }}>
         Using the platform key.
       </p>
     );
@@ -47,7 +47,7 @@ export function ContextLine({ entitlement, selectedFormat }: ContextLineProps) {
 
   if (selectedCredits > 0) {
     return (
-      <p className="text-[var(--sage-700)]" style={{ fontSize: '0.8rem' }}>
+      <p className="text-[var(--sage-700)]" style={{ fontSize: '1rem' }}>
         One gift-code credit will be used.
       </p>
     );
@@ -62,7 +62,7 @@ export function ContextLine({ entitlement, selectedFormat }: ContextLineProps) {
     const otherFormat = otherFormats[0];
     const otherCount = credits[otherFormat] ?? 0;
     return (
-      <p className="text-[var(--stone-700)]" style={{ fontSize: '0.8rem' }}>
+      <p className="text-[var(--stone-700)]" style={{ fontSize: '1rem' }}>
         No credits for this depth. You have {otherCount} for {FORMAT_LABELS[otherFormat]}.
       </p>
     );

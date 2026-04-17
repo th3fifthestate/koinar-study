@@ -65,7 +65,7 @@ export function PromptField({ value, onChange, disabled, error, autoFocus }: Pro
       <p
         id="prompt-helper"
         className="text-[var(--stone-700)] italic"
-        style={{ fontSize: '0.85rem' }}
+        style={{ fontSize: '1rem' }}
       >
         A verse reference or a question. 10–2,000 characters.
       </p>

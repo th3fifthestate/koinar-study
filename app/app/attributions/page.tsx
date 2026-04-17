@@ -68,7 +68,7 @@ export default function Attributions() {
                     href={citation.publisherLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                    className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
                   >
                     {citation.publisherLink.label}
                   </a>
@@ -150,7 +150,7 @@ export default function Attributions() {
                 href="https://github.com/STEPBible/STEPBible-Data"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
               >
                 github.com/STEPBible/STEPBible-Data
               </a>
@@ -177,7 +177,7 @@ export default function Attributions() {
                 href="https://github.com/STEPBible/STEPBible-Data"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
               >
                 github.com/STEPBible/STEPBible-Data
               </a>
@@ -204,7 +204,7 @@ export default function Attributions() {
                 href="https://openbible.info/geo"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
               >
                 openbible.info/geo
               </a>
@@ -222,7 +222,7 @@ export default function Attributions() {
                 href="https://openbible.info/labs/cross-references"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
               >
                 openbible.info/labs/cross-references
               </a>
@@ -239,7 +239,7 @@ export default function Attributions() {
             </article>
           </div>
 
-          <p className="font-body text-sm leading-relaxed text-stone-400 mt-12 pt-8 border-t border-stone-200">
+          <p className="font-body text-base leading-relaxed text-stone-500 mt-12 pt-8 border-t border-stone-200">
             Derivative works in the Koinar knowledge graph (entity descriptions,
             summaries, relationship labels) are our own and were generated with AI
             assistance and editorial review.
