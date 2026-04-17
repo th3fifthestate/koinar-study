@@ -41,7 +41,13 @@ export async function PATCH(request: Request) {
 
   const { currentPassword, newPassword } = parsed.data;
 
-  const userRow = getUserForAuthById(auth.user.userId);
+  let userRow: ReturnType<typeof getUserForAuthById>;
+  try {
+    userRow = getUserForAuthById(auth.user.userId);
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+
   if (!userRow) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
@@ -52,10 +58,15 @@ export async function PATCH(request: Request) {
   }
 
   const newHash = await hashPassword(newPassword);
-  updateUserPassword(auth.user.userId, newHash);
 
-  // Belt-and-suspenders: invalidate DB sessions table + destroy iron-session cookie
-  deleteUserSessions(auth.user.userId);
+  try {
+    updateUserPassword(auth.user.userId, newHash);
+    deleteUserSessions(auth.user.userId);
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+
+  // Belt-and-suspenders: invalidate iron-session cookie server-side
   const session = await getSession();
   await session.destroy();
 
