@@ -22,11 +22,11 @@ interface FluxTaskResponse {
 }
 
 const FLUX_API_URLS = {
-  "flux-2-pro": "https://api.bfl.ml/v1/flux-2-pro",
-  "flux-2-max": "https://api.bfl.ml/v1/flux-2-max",
+  "flux-2-pro": "https://api.bfl.ai/v1/flux-2-pro",
+  "flux-2-max": "https://api.bfl.ai/v1/flux-2-max",
 } as const;
 
-const FLUX_RESULT_URL = "https://api.bfl.ml/v1/get_result";
+const FLUX_RESULT_URL_FALLBACK = "https://api.bfl.ai/v1/get_result";
 const MAX_POLL_ATTEMPTS = 120; // 2 minutes at 1-second intervals
 const POLL_INTERVAL_MS = 1000;
 
@@ -71,7 +71,9 @@ async function withConcurrencyGuard<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-async function submitGenerationTask(request: FluxGenerateRequest): Promise<string> {
+async function submitGenerationTask(
+  request: FluxGenerateRequest
+): Promise<{ id: string; pollingUrl: string }> {
   const apiKey = config.ai.fluxApiKey;
   if (!apiKey) {
     // Generic user-facing message; details (env var name) stay in server logs.
@@ -125,14 +127,16 @@ async function submitGenerationTask(request: FluxGenerateRequest): Promise<strin
     throw new FluxApiError("Flux API did not return a task ID");
   }
 
-  return data.id as string;
+  const pollingUrl =
+    (data.polling_url as string | undefined) ?? `${FLUX_RESULT_URL_FALLBACK}?id=${data.id}`;
+  return { id: data.id as string, pollingUrl };
 }
 
-async function pollForResult(taskId: string): Promise<string> {
+async function pollForResult(pollingUrl: string): Promise<string> {
   const apiKey = config.ai.fluxApiKey;
 
   for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
-    const response = await fetch(`${FLUX_RESULT_URL}?id=${taskId}`, {
+    const response = await fetch(pollingUrl, {
       headers: {
         "x-key": apiKey,
       },
@@ -196,8 +200,8 @@ export async function generateImage(
   request: FluxGenerateRequest
 ): Promise<{ buffer: Buffer; taskId: string }> {
   return withConcurrencyGuard(async () => {
-    const taskId = await submitGenerationTask(request);
-    const imageUrl = await pollForResult(taskId);
+    const { id: taskId, pollingUrl } = await submitGenerationTask(request);
+    const imageUrl = await pollForResult(pollingUrl);
     const buffer = await downloadImage(imageUrl);
     return { buffer, taskId };
   });
