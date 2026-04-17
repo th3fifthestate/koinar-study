@@ -3,6 +3,7 @@ import { Bodoni_Moda, Literata, Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { PageTransition } from "./components/page-transition";
+import { FooterGate } from "@/components/layout/footer-gate";
 import { ApiBibleCredit } from "@/components/global/ApiBibleCredit";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,7 @@ export default function RootLayout({
       <body className="min-h-dvh font-body">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <PageTransition>{children}</PageTransition>
+          <FooterGate />
           <Toaster position="bottom-right" richColors />
           <footer>
             <ApiBibleCredit />

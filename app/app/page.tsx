@@ -2,7 +2,6 @@
 import { getSession } from '@/lib/auth/session';
 import { getStudies, getAllCategories, getUserFavoriteIds } from '@/lib/db/queries';
 import { CornerNav } from '@/components/layout/corner-nav';
-import { Footer } from '@/components/layout/footer';
 import { HeroSection } from '@/components/library/hero-section';
 import { StudyGrid } from '@/components/library/study-grid';
 import { LibrarySearch } from '@/components/library/library-search';
@@ -121,8 +120,6 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* Zone 4: Footer */}
-      <Footer />
     </div>
   );
 }
