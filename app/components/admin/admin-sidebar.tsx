@@ -56,10 +56,10 @@ export function AdminSidebar() {
       </nav>
       <div className="pt-4 border-t">
         <Link
-          href="/"
+          href="/settings"
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← Back to Library
+          ← Back to Settings
         </Link>
       </div>
     </aside>

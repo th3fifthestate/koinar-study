@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type { SessionData } from '@/lib/auth/session';
@@ -69,6 +70,12 @@ export function SettingsShell({
   return (
     <div className="min-h-screen bg-stone-50">
       <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">
+        <Link
+          href="/"
+          className="inline-block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-6"
+        >
+          ← Back to Library
+        </Link>
         <h1 className="font-display text-3xl md:text-4xl font-normal text-stone-900 mb-10">
           Settings
         </h1>
