@@ -36,12 +36,18 @@ function TocList({ headings, activeId, onItemClick }: TableOfContentsProps & { o
                   document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' });
                   onItemClick?.();
                 }}
-                className={`block w-full truncate rounded px-2 py-1 text-left text-sm transition-colors ${indent} ${
+                className={`relative block w-full truncate rounded px-2 py-1 text-left text-sm transition-all duration-300 ease-out ${indent} ${
                   isActive
-                    ? 'font-medium text-[var(--sage-500)]'
+                    ? 'font-medium text-[var(--sage-500)] translate-x-0.5'
                     : 'text-[var(--stone-300)] hover:text-[var(--stone-700)] dark:hover:text-[var(--stone-200)]'
                 }`}
               >
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[var(--sage-500)] transition-all duration-300 ease-out ${
+                    isActive ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-50'
+                  }`}
+                />
                 {h.text}
               </button>
             </li>

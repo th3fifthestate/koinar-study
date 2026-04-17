@@ -27,7 +27,7 @@ export default function About() {
           <h2 className="font-display text-2xl font-normal text-stone-900 mb-2">
             Scripture Translations
           </h2>
-          <p className="font-body text-sm text-stone-500 mb-12">
+          <p className="font-body text-base text-stone-500 mb-12">
             Koinar uses multiple Bible translations. Full copyright notices are
             listed below as required by each publisher.
           </p>
@@ -36,7 +36,7 @@ export default function About() {
             {citationEntries.map(([id, citation]) => (
               <div key={id} className="border-t border-stone-200 pt-8">
                 <h3 className="font-display text-lg font-medium text-stone-900 mb-3">{id}</h3>
-                <p className="font-body text-sm leading-relaxed text-stone-600 mb-3">
+                <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
                   {citation.full}
                 </p>
                 {citation.publisherLink && (

@@ -59,6 +59,15 @@ export function StudyGrid({
     return <EmptyState />;
   }
 
+  // Editorial layout: on the unfiltered first page, promote the first card to
+  // a full-width "lead" so the grid never reads as uniform (UI-GUIDELINES.md).
+  const hasFilters =
+    !!searchParams.get('q') ||
+    !!searchParams.get('category') ||
+    !!searchParams.get('format_type') ||
+    (searchParams.get('sort') && searchParams.get('sort') !== 'newest');
+  const leadIndex = !hasFilters && currentPage === 1 ? 0 : -1;
+
   return (
     <div>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -69,6 +78,7 @@ export function StudyGrid({
             isFavorited={favoriteIds.has(study.id)}
             index={index}
             isLoggedIn={isLoggedIn}
+            variant={index === leadIndex ? 'lead' : 'default'}
           />
         ))}
         {loading &&

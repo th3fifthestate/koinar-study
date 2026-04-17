@@ -20,6 +20,8 @@ app/data/
 !app/data/tipnr/**
 !app/data/seeds/
 !app/data/seeds/**
+!app/lib/data/
+!app/lib/data/**
 
 # Build output
 app/dist/

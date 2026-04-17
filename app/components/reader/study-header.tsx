@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, type ReactNode } from 'react';
 import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +36,7 @@ interface StudyHeaderProps {
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
   onOpenMap: () => void;
+  translationSelector?: ReactNode;
 }
 
 const FORMAT_LABELS: Record<string, string> = {
@@ -68,6 +69,7 @@ export function StudyHeader({
   onEntityAnnotationsToggle,
   entityAnnotationCount,
   onOpenMap,
+  translationSelector,
 }: StudyHeaderProps) {
   const handleShare = useCallback(async () => {
     try {
@@ -138,7 +140,7 @@ export function StudyHeader({
           <span>Share</span>
         </button>
 
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex flex-wrap items-center gap-4">
           <BranchMapIndicator onOpenMap={onOpenMap} />
           <EntityToggle
             enabled={showEntityAnnotations}
@@ -152,6 +154,7 @@ export function StudyHeader({
             annotationCount={communityAnnotationCount ?? annotationCount}
             activeReaders={activeReaders}
           />
+          {translationSelector}
         </div>
       </div>
     </header>

@@ -13,6 +13,7 @@ interface StudyCardProps {
   isFavorited: boolean;
   index: number;
   isLoggedIn: boolean;
+  variant?: 'default' | 'lead';
 }
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
@@ -24,33 +25,35 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   'book-studies': 'from-[var(--stone-200)]/30 to-[var(--sage-300)]/20',
 };
 
-export function StudyCard({ study, isFavorited, index, isLoggedIn }: StudyCardProps) {
+export function StudyCard({ study, isFavorited, index, isLoggedIn, variant = 'default' }: StudyCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const gradientClass =
     CATEGORY_GRADIENTS[study.category_slug ?? ''] ?? 'from-[var(--stone-200)]/30 to-[var(--sage-300)]/15';
+  const isLead = variant === 'lead';
 
   return (
     <motion.div
       initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: index * 0.05 }}
+      className={isLead ? 'xl:col-span-2' : ''}
     >
       <Link href={`/study/${study.slug}`} className="block group">
-        <div className="flex gap-5 p-7 border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[#faf9f7] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]">
+        <div className={`flex ${isLead ? 'flex-col md:flex-row gap-8 md:gap-10 p-8 md:p-10' : 'gap-5 p-7'} border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[#faf9f7] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]`}>
           {/* Text side */}
           <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center gap-2.5 mb-3.5">
-              <div className="h-px bg-[var(--sage-500)] w-6 transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:w-10" />
-              <span className="text-[9px] uppercase tracking-[0.25em] text-[var(--sage-500)]">
-                {study.category_name ?? 'Uncategorized'}
+              <div className={`h-px bg-[var(--sage-500)] ${isLead ? 'w-10' : 'w-6'} transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${isLead ? 'group-hover:w-16' : 'group-hover:w-10'}`} />
+              <span className={`uppercase tracking-[0.25em] text-[var(--sage-500)] ${isLead ? 'text-[10px]' : 'text-[9px]'}`}>
+                {isLead ? 'Featured Study · ' : ''}{study.category_name ?? 'Uncategorized'}
               </span>
             </div>
 
-            <h3 className="font-display text-[21px] font-normal leading-[1.25] text-[var(--stone-900)] mb-2.5 line-clamp-2">
+            <h3 className={`font-display font-normal leading-[1.15] text-[var(--stone-900)] mb-3 line-clamp-3 ${isLead ? 'text-[34px] md:text-[40px] italic' : 'text-[21px] leading-[1.25] line-clamp-2 mb-2.5'}`}>
               {study.title}
             </h3>
 
-            <p className="text-[13px] leading-relaxed text-[var(--stone-300)] line-clamp-3 flex-1 transition-colors duration-500 group-hover:text-[var(--stone-700)]">
+            <p className={`leading-relaxed text-[var(--stone-300)] flex-1 transition-colors duration-500 group-hover:text-[var(--stone-700)] ${isLead ? 'text-base line-clamp-4 max-w-prose' : 'text-[13px] line-clamp-3'}`}>
               {study.summary}
             </p>
 
@@ -82,10 +85,10 @@ export function StudyCard({ study, isFavorited, index, isLoggedIn }: StudyCardPr
           </div>
 
           {/* Image side */}
-          <div className="w-[150px] shrink-0 relative">
+          <div className={`${isLead ? 'w-full md:w-[52%]' : 'w-[150px]'} shrink-0 relative`}>
             <div className="absolute -inset-1.5 border border-transparent transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:border-[var(--stone-900)]/[0.06]" />
 
-            <div className="w-full h-[190px] overflow-hidden relative rounded-[2px]">
+            <div className={`w-full ${isLead ? 'h-[260px] md:h-[380px]' : 'h-[190px]'} overflow-hidden relative rounded-[2px]`}>
               {study.featured_image_url ? (
                 <img
                   src={study.featured_image_url}

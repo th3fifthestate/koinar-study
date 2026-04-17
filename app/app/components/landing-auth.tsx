@@ -22,6 +22,14 @@ const shimmerStyle = {
 const backLinkClass =
   "font-body text-[0.7rem] font-medium uppercase tracking-[0.15em] text-[rgba(247,246,243,0.4)] cursor-pointer transition-colors duration-200 hover:text-[rgba(247,246,243,0.7)] bg-transparent border-0 mt-2";
 
+// Visible micro-label — satisfies UI-GUIDELINES.md "no placeholder-only labels"
+// rule while keeping the centered editorial layout. Sighted users see the
+// field name even after filling in; screen readers keep the aria-label path.
+const labelClass =
+  "font-body text-[0.65rem] font-medium uppercase tracking-[0.18em] text-[rgba(247,246,243,0.5)] text-center block mb-1.5";
+
+const fieldWrapClass = "w-full flex flex-col";
+
 /** Wrapper that plays entrance animation on mount */
 function AnimatedView({ children }: { children: React.ReactNode }) {
   return (
@@ -82,14 +90,24 @@ function JoinForm({ onBack }: { onBack: () => void }) {
   if (status === "success") {
     return (
       <AnimatedView>
-        <p
+        <div
           ref={statusRef}
           tabIndex={-1}
-          className="font-body text-[0.85rem] font-medium text-[rgba(247,246,243,0.7)] text-center outline-none"
+          role="status"
+          aria-live="polite"
+          className="flex flex-col items-center gap-4 text-center outline-none max-w-[360px]"
           style={{ animation: "sageGlow 1.5s ease-out" }}
         >
-          Your request has been submitted. We&rsquo;ll be in touch.
-        </p>
+          <div className="h-px w-10 bg-[rgba(168,184,160,0.5)]" />
+          <p className="font-display text-[1.6rem] italic font-normal leading-[1.25] text-[rgba(247,246,243,0.92)]">
+            Your request has been received.
+          </p>
+          <p className="font-body text-[0.9rem] leading-relaxed text-[rgba(247,246,243,0.55)]">
+            We review every request by hand. When a seat opens, we&rsquo;ll send
+            a signup link to your inbox within a few days.
+          </p>
+          <div className="h-px w-10 bg-[rgba(168,184,160,0.5)] mt-1" />
+        </div>
       </AnimatedView>
     );
   }
@@ -111,65 +129,73 @@ function JoinForm({ onBack }: { onBack: () => void }) {
       />
 
       <div className="flex gap-4 w-full">
+        <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}>
+          <label htmlFor="waitlist-first-name" className={labelClass}>First name</label>
+          <input
+            id="waitlist-first-name"
+            ref={firstInputRef}
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Jane"
+            required
+            minLength={1}
+            maxLength={50}
+            autoComplete="given-name"
+            disabled={status === "loading"}
+            className={inputClass}
+          />
+        </div>
+        <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "60ms" }}>
+          <label htmlFor="waitlist-last-name" className={labelClass}>Last name</label>
+          <input
+            id="waitlist-last-name"
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Doe"
+            required
+            minLength={1}
+            maxLength={50}
+            autoComplete="family-name"
+            disabled={status === "loading"}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "120ms" }}>
+        <label htmlFor="waitlist-email" className={labelClass}>Email</label>
         <input
-          ref={firstInputRef}
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder="First name"
-          aria-label="First name"
+          id="waitlist-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
           required
-          minLength={1}
-          maxLength={50}
-          autoComplete="given-name"
+          maxLength={254}
+          autoComplete="email"
+          spellCheck={false}
           disabled={status === "loading"}
           className={inputClass}
-          style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}
-        />
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          placeholder="Last name"
-          aria-label="Last name"
-          required
-          minLength={1}
-          maxLength={50}
-          autoComplete="family-name"
-          disabled={status === "loading"}
-          className={inputClass}
-          style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "60ms" }}
         />
       </div>
 
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Your email"
-        aria-label="Email address"
-        required
-        maxLength={254}
-        autoComplete="email"
-        spellCheck={false}
-        disabled={status === "loading"}
-        className={inputClass}
-        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "120ms" }}
-      />
-
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Why do you want to join?"
-        aria-label="Message"
-        required
-        minLength={10}
-        maxLength={500}
-        rows={3}
-        disabled={status === "loading"}
-        className={`${inputClass} resize-none`}
-        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "180ms" }}
-      />
+      <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "180ms" }}>
+        <label htmlFor="waitlist-message" className={labelClass}>Why do you want to join?</label>
+        <textarea
+          id="waitlist-message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Share a sentence or two"
+          required
+          minLength={10}
+          maxLength={500}
+          rows={3}
+          disabled={status === "loading"}
+          className={`${inputClass} resize-none`}
+        />
+      </div>
 
       <button
         type="submit"
@@ -256,34 +282,40 @@ function SignInForm({ onBack }: { onBack: () => void }) {
       onSubmit={handleSubmit}
       className="flex flex-col items-center gap-4 w-full max-w-[320px] md:max-w-[340px]"
     >
-      <input
-        ref={firstInputRef}
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Your email"
-        aria-label="Email address"
-        required
-        maxLength={254}
-        autoComplete="email"
-        spellCheck={false}
-        disabled={loading}
-        className={inputClass}
-        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}
-      />
+      <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}>
+        <label htmlFor="signin-email" className={labelClass}>Email</label>
+        <input
+          id="signin-email"
+          ref={firstInputRef}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+          maxLength={254}
+          autoComplete="email"
+          spellCheck={false}
+          disabled={loading}
+          aria-describedby={error ? "signin-error" : undefined}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        aria-label="Password"
-        required
-        autoComplete="current-password"
-        disabled={loading}
-        className={inputClass}
-        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "80ms" }}
-      />
+      <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "80ms" }}>
+        <label htmlFor="signin-password" className={labelClass}>Password</label>
+        <input
+          id="signin-password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+          required
+          autoComplete="current-password"
+          disabled={loading}
+          aria-describedby={error ? "signin-error" : undefined}
+          className={inputClass}
+        />
+      </div>
 
       <button
         type="submit"
@@ -299,7 +331,11 @@ function SignInForm({ onBack }: { onBack: () => void }) {
       </button>
 
       {error && (
-        <p className="font-body text-[0.7rem] font-medium text-warmth outline-none">
+        <p
+          id="signin-error"
+          role="alert"
+          className="font-body text-[0.7rem] font-medium text-warmth outline-none"
+        >
           {error}
         </p>
       )}

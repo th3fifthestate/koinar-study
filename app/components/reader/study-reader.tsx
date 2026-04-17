@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import type { StudyDetail, StudyEntityAnnotation, Entity } from '@/lib/db/types';
 import type { AnnotationPayload } from '@/lib/ws/types';
 import type { HighlightColor } from './highlight-layer';
@@ -82,8 +82,30 @@ export function StudyReader({
   entityAnnotations = [],
   entities = [],
 }: StudyReaderProps) {
-  const [fontSize, setFontSize] = useState<FontSize>('medium');
+  const [fontSize, setFontSizeState] = useState<FontSize>('medium');
   const [showCommunityAnnotations, setShowCommunityAnnotations] = useState(false);
+
+  // Persist font-size preference across sessions. Read once on mount (avoids
+  // SSR mismatch) and write on every change.
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('koinar:reader:fontSize');
+      if (saved === 'small' || saved === 'medium' || saved === 'large') {
+        setFontSizeState(saved);
+      }
+    } catch {
+      // localStorage may be unavailable (private mode / SSR) — use default.
+    }
+  }, []);
+
+  const setFontSize = useCallback((size: FontSize) => {
+    setFontSizeState(size);
+    try {
+      localStorage.setItem('koinar:reader:fontSize', size);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const [displayContent, setDisplayContent] = useState(study.content_markdown);
   const [currentTranslation, setCurrentTranslation] = useState(
@@ -257,17 +279,16 @@ function StudyReaderContent({
           onEntityAnnotationsToggle={setShowAnnotations}
           entityAnnotationCount={entityAnnotationCount}
           onOpenMap={() => setBranchMapOpen(true)}
+          translationSelector={
+            isLoggedIn ? (
+              <TranslationSelector
+                currentTranslation={currentTranslation}
+                onSelect={onTranslationSelect}
+                disabled={translating}
+              />
+            ) : undefined
+          }
         />
-
-        {isLoggedIn && (
-          <div className="flex justify-end py-2">
-            <TranslationSelector
-              currentTranslation={currentTranslation}
-              onSelect={onTranslationSelect}
-              disabled={translating}
-            />
-          </div>
-        )}
 
         <div className="flex gap-8 lg:gap-12">
           {/* Desktop TOC */}
