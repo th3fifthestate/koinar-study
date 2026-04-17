@@ -37,7 +37,7 @@ export async function POST(
 
   const available = getAvailableTranslations().map((t) => t.id);
   if (!available.includes(translation as TranslationId)) {
-    return Response.json({ error: 'Translation not available' }, { status: 404 });
+    return Response.json({ error: 'Translation not available' }, { status: 400 });
   }
 
   const study = getStudyForTranslate(studyId);
@@ -64,7 +64,12 @@ export async function POST(
     return Response.json({ error: 'Translation service error' }, { status: 502 });
   }
 
-  updateStudyTranslation(studyId, translation);
+  try {
+    updateStudyTranslation(studyId, translation);
+  } catch (persistErr) {
+    console.error('[POST /api/studies/translate] failed to persist translation', persistErr);
+    // Swap succeeded — return content even if persistence failed
+  }
 
   // CLAUDE.md §3: Never return fums_token, original_content, or internal IDs
   return Response.json({
