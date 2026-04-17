@@ -55,9 +55,15 @@ function parseVerseRefs(text: string): ParsedRef[] {
   return refs;
 }
 
+function replaceFirst(haystack: string, needle: string, replacement: string): string {
+  const idx = haystack.indexOf(needle);
+  if (idx === -1) return haystack;
+  return haystack.slice(0, idx) + replacement + haystack.slice(idx + needle.length);
+}
+
 function findBlockquotes(content: string): Array<{ raw: string; text: string }> {
   const results: Array<{ raw: string; text: string }> = [];
-  const pattern = /^((?:>[ \t]?.+\n?)+)/gm;
+  const pattern = /^((?:>[ \t]?.*\n?)+)/gm;
   for (const m of content.matchAll(pattern)) {
     const raw = m[1];
     const text = raw
@@ -119,6 +125,7 @@ async function fetchVerse(
         text: r.text,
         fumsToken: null,
       });
+      enforceStorageCap(target);
       recordFumsEvent({
         translation: target,
         fumsToken: null,
@@ -214,7 +221,7 @@ export async function swapVerses(
     const newBlock =
       verseLines.map((t) => `> ${t}`).join("\n") + `\n> \u2014 ${verseLabel} (${target})\n`;
 
-    result = result.replace(block.raw, newBlock);
+    result = replaceFirst(result, block.raw, newBlock);
   }
 
   let truncated = false;

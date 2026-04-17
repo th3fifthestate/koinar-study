@@ -52,6 +52,7 @@ describe('swapVerses', () => {
     expect(result.content).toContain('only begotten Son');
     expect(result.content).toContain('John 1:1');
     expect(result.content).toContain('John 3:16');
+    expect(result.content).toContain('(KJV)');
     expect(result.missingVerses).toHaveLength(0);
   });
 
