@@ -3,7 +3,7 @@
 // Short + full copyright text per translation.
 //
 //   - `short` is rendered in the reader footer on every licensed display.
-//   - `full` is rendered on /about#scripture-translations (PR 2).
+//   - `full` is rendered on /attributions#scripture-translations.
 //   - NIV MUST include `NIV®` (Biblica §VIII.B).
 //
 // The `full` strings below follow the Appendix A §A (Licensed) and §B (Public

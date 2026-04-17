@@ -1114,6 +1114,70 @@ Completion notes (07f — April 14, 2026):
 
 ---
 
+## Phase 5a: Pre-Phase-6 Polish & Missing Surfaces (Briefs 16 → 22b)
+
+**Goal:** Close out missing/stub pages, apply Ritz-Carlton / Four Seasons / Rumpus editorial direction to home + library, unify footer + attributions, split `/about` into guest vs member experiences, and surface admin access before Phase 6 seeding & export.
+
+**Context:** Pre-Phase-6 review (see `founders-files/pre-phase-6-review.md`) resolved critical UI-Guidelines violations (C3 uniform library grid, C4 sub-16px About text) and reader polish (H1–H5, H6–H8). The remaining work is **scope, not polish**: pages that are stubs (`/generate`, `/settings`), pages that don't exist (`/contact`, `/attributions`), a home + library that read flat against reference aesthetics, a footer audit, admin-panel access from settings, and a language pass on `/about` with a logged-in variant explaining how the app works.
+
+### Execution order (9 briefs, 4 waves)
+
+| Wave | Briefs | Rationale |
+|------|--------|-----------|
+| **Wave 1** | 16 — Footer audit | Cheapest; surfaces the link inventory (/attributions, /contact, /generate) that downstream briefs depend on. Runs alone first so later briefs know what the footer expects. |
+| **Wave 2** (parallel) | 17 — About split + language pass · 18 — Attributions page · 19 — Contact page · 20 — Settings + profile + admin link | Four independent surfaces; no shared files. Ship in parallel. 17 removes Scripture Translations from /about → 18 creates it as its own page. 20 introduces admin-panel link gated by `role === 'admin'`. |
+| **Wave 3** (serial) | 21a — Generate page design (plan mode) → 21b — Generate implementation | Full overhaul of `/generate`. Design must finalize copy, layout, cost/API-key disclosure, and type selection before implementation; split prevents rework. |
+| **Wave 4** (serial) | 22a — Home + library editorial direction (plan mode) → 22b — Home + library implementation | Largest visual lift in Phase 5a. 22a locks hierarchy, rhythm, and time-of-day treatment against Ritz-Carlton / Four Seasons / Rumpus refs; 22b executes. Runs last so layout decisions can account for new surfaces (attributions, contact, generate, settings). |
+
+### Per-brief model + mode
+
+| Brief | Model | Mode | Reasoning |
+|-------|-------|------|-----------|
+| **16 — Footer audit** | Sonnet | Direct | Mechanical audit — link inventory, dead-link check, tonal polish. No design-judgment delta. |
+| **17 — About split + language pass** | Sonnet | Direct | Structural split (guest vs member) + language tightening on existing sections + new "How Koinar works" member section (**Generate → Read → Explore → Invite**) and vision coda. Not a layout redesign. |
+| **18 — Attributions page** | Sonnet | Direct | New page, pattern-matches existing about/waitlist structure. Content sourced from existing `CITATIONS` registry. |
+| **19 — Contact page** | Sonnet | Direct | Form UI + email send to hello@koinar.app. Auth-form patterns already established. |
+| **20 — Settings + profile + admin link** | Sonnet | Direct | Tabbed sections; conditional admin entry point. Pattern-matches existing auth'd pages. |
+| **21a — Generate page design** | **Opus** | **Plan mode** | `/generate` is the single reason users invite others — the onboarding promise made concrete. Copy, cost disclosure, type selection, and tonal warmth need design judgment. |
+| **21b — Generate implementation** | Sonnet | Direct | Execute finalized design. Wires existing Brief 05 engine to UI. |
+| **22a — Home + library editorial direction** | **Opus** | **Plan mode** | Largest design lift in V1 outside the reader. Editorial hierarchy + time-of-day + image curation against three reference anchors — biggest Opus-vs-Sonnet quality delta in the phase. |
+| **22b — Home + library implementation** | Sonnet | Direct | Execute finalized direction. Grid, motion, image pipeline are mechanical once design is locked. |
+
+### Critical files (new)
+- `briefs/16-footer-audit.md`
+- `briefs/17-about-split.md`
+- `briefs/18-attributions-page.md`
+- `briefs/19-contact-page.md`
+- `briefs/20-settings-profile-merge.md`
+- `briefs/21a-generate-design.md`
+- `briefs/21b-generate-implementation.md`
+- `briefs/22a-home-library-direction.md`
+- `briefs/22b-home-library-implementation.md`
+
+### Pre-launch tracking (deferred out of Phase 5a)
+
+Items surfaced while scoping Phase 5a that are intentionally **not** shipping in this phase but **must land before public launch**. Track here so they don't get lost; revisit during Phase 6 deploy prep (Brief 14-final) at the latest.
+
+| Item | Source | Owner | Target |
+|------|--------|-------|--------|
+| `/privacy` policy page | Brief 16 audit — removed broken footer link | David (legal copy) + eng (static page) | Before Phase 6 deploy |
+| `/terms` of service page | Brief 16 audit — removed broken footer link | David (legal copy) + eng (static page) | Before Phase 6 deploy |
+| Footer re-links to Privacy & Terms once pages exist | Brief 16 deliberately omitted them | Small follow-up PR (10 min) | Same PR as the pages |
+| Cookie / consent notice (if required for target jurisdictions) | Adjacent to Privacy | David decides scope | Before Phase 6 deploy |
+
+**Note:** any new deferrals uncovered during Phase 5a briefs should append rows here rather than create one-off TODOs in code.
+
+### Verification
+- All footer links resolve to real pages (no `#` stubs).
+- `/about` renders the guest variant for logged-out users (with existing editorial hero + CTA) and the member variant for logged-in users (hero + "How Koinar works: Generate → Read → Explore → Invite" + vision coda, no CTA).
+- `/attributions`, `/contact`, `/settings`, `/generate` render correctly for their intended audiences.
+- Admin user sees "Admin panel" entry in `/settings`; non-admin does not.
+- Home + library pass a side-by-side visual diff against Ritz-Carlton, Four Seasons, and Rumpus reference screenshots.
+- Body text ≥ 16px everywhere (UI-Guidelines hard rule).
+- 150/150 tests still green; typecheck clean; Lighthouse a11y ≥ 95 on `/`, `/library`, `/generate`.
+
+---
+
 ## Phase 6: Export + Seed + Final Deploy (Briefs 12 → 15 → 14-final)
 
 **Goal:** Export functionality, seed content, and production launch.
