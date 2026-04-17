@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { AnnotationPayload } from '@/lib/ws/types';
@@ -26,7 +26,10 @@ export function AnnotationNotes({ annotations, contentRef, onDelete }: Annotatio
   const [positions, setPositions] = useState<NotePosition[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  const noteAnnotations = annotations.filter((a) => a.type === 'note');
+  const noteAnnotations = useMemo(
+    () => annotations.filter((a) => a.type === 'note'),
+    [annotations],
+  );
 
   // Calculate vertical positions of notes based on their mark elements in the DOM
   const updatePositions = useCallback(() => {
@@ -47,7 +50,18 @@ export function AnnotationNotes({ annotations, contentRef, onDelete }: Annotatio
       }
     });
 
-    setPositions(newPositions);
+    setPositions((prev) => {
+      if (
+        prev.length === newPositions.length &&
+        prev.every(
+          (p, i) =>
+            p.annotation.id === newPositions[i].annotation.id && p.top === newPositions[i].top,
+        )
+      ) {
+        return prev;
+      }
+      return newPositions;
+    });
   }, [noteAnnotations, contentRef]);
 
   useEffect(() => {
