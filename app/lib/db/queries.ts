@@ -155,6 +155,40 @@ export function listUserInvitations(userId: number): InviteRow[] {
   }));
 }
 
+export function updateUserProfile(
+  userId: number,
+  opts: { displayName: string; bio: string | null }
+): void {
+  getDb()
+    .prepare('UPDATE users SET display_name = ?, bio = ? WHERE id = ?')
+    .run(opts.displayName, opts.bio, userId);
+}
+
+export function updateUserPassword(userId: number, newHash: string): void {
+  getDb()
+    .prepare(
+      'UPDATE users SET password_hash = ?, failed_login_attempts = 0, locked_until = NULL WHERE id = ?'
+    )
+    .run(newHash, userId);
+}
+
+export function setUserApiKey(userId: number, encrypted: string, tail: string): void {
+  const updatedAt = new Date().toISOString();
+  getDb()
+    .prepare(
+      'UPDATE users SET api_key_encrypted = ?, api_key_tail = ?, api_key_updated_at = ? WHERE id = ?'
+    )
+    .run(encrypted, tail, updatedAt, userId);
+}
+
+export function clearUserApiKey(userId: number): void {
+  getDb()
+    .prepare(
+      'UPDATE users SET api_key_encrypted = NULL, api_key_tail = NULL, api_key_updated_at = NULL WHERE id = ?'
+    )
+    .run(userId);
+}
+
 // ─── Session queries ─────────────────────────────────────────────────────────
 
 export function createSession(userId: number, token: string, expiresAt: string): number {
