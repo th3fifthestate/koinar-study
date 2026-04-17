@@ -86,3 +86,23 @@ export function bookToOsis(slug: string): string | null {
 export function allBookSlugs(): string[] {
   return Object.keys(SLUG_TO_OSIS);
 }
+
+/** Aliases for display names that don't map 1:1 to slugs. */
+const DISPLAY_ALIASES: Record<string, string> = {
+  "psalm": "psalms",
+  "song of songs": "song-of-solomon",
+};
+
+/**
+ * Maps a Bible book display name as it appears in prose ("John",
+ * "1 Corinthians", "Song of Solomon") to the internal hyphenated lowercase
+ * slug used in local DB queries and api.bible calls.
+ *
+ * Returns null if the name is not a known canonical book.
+ */
+export function displayNameToSlug(name: string): string | null {
+  const normalized = name.toLowerCase().trim();
+  if (DISPLAY_ALIASES[normalized]) return DISPLAY_ALIASES[normalized];
+  const slug = normalized.replace(/\s+/g, '-');
+  return SLUG_TO_OSIS[slug] !== undefined ? slug : null;
+}
