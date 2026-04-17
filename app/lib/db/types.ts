@@ -113,6 +113,8 @@ export interface Study {
   created_by: number;
   category_id: number | null;
   generation_metadata: string | null;
+  original_content: string | null;        // BSB source — never overwritten by swap
+  current_translation: string;           // last-applied translation, default 'BSB'
   created_at: string;
   updated_at: string;
 }

@@ -568,6 +568,25 @@ export function getStudyFavoriteCount(studyId: number): number {
   return row.count;
 }
 
+/** Fetch minimal study fields needed by the translate route. */
+export function getStudyForTranslate(
+  studyId: number,
+): { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number } | null {
+  const db = getDb();
+  return db.prepare(
+    `SELECT id, original_content, current_translation, created_by, is_public
+     FROM studies WHERE id = ?`,
+  ).get(studyId) as { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number } | null;
+}
+
+/** Persist the active translation on a study row. */
+export function updateStudyTranslation(studyId: number, translation: string): void {
+  const db = getDb();
+  db.prepare(
+    `UPDATE studies SET current_translation = ?, updated_at = datetime('now') WHERE id = ?`,
+  ).run(translation, studyId);
+}
+
 // ─── Category queries ─────────────────────────────────────────────────────────
 
 export function getAllCategories(): Category[] {
