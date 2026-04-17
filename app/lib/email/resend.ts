@@ -57,3 +57,46 @@ export async function sendApprovalEmail(options: {
     `,
   });
 }
+
+export async function sendContactMessage(options: {
+  topic: "feedback" | "bug" | "factcheck";
+  subject: string;
+  message: string;
+  senderName: string;
+  senderEmail: string;
+  studyContext: string | null;
+  authenticatedUserId: number | null;
+  authenticatedUsername: string | null;
+  ip: string;
+}): Promise<void> {
+  const topicLabel = {
+    feedback: "General feedback",
+    bug: "Bug report",
+    factcheck: "Fact-check flag",
+  }[options.topic];
+
+  const memberLabel = options.authenticatedUserId
+    ? `Member #${options.authenticatedUserId} (${options.authenticatedUsername ?? "unknown"})`
+    : "Guest";
+
+  const e = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  await resend.emails.send({
+    from: "Koinar Contact <noreply@koinar.app>",
+    to: "hello@koinar.app",
+    replyTo: options.senderEmail,
+    subject: `[${topicLabel}] ${options.subject}`,
+    html: `
+      <h2>${topicLabel}</h2>
+      <p><strong>From:</strong> ${e(options.senderName)} &lt;${e(options.senderEmail)}&gt;</p>
+      <p><strong>Account:</strong> ${e(memberLabel)}</p>
+      ${options.studyContext ? `<p><strong>Study:</strong> ${e(options.studyContext)}</p>` : ""}
+      <hr />
+      <p><strong>Subject:</strong> ${e(options.subject)}</p>
+      <p style="white-space: pre-wrap;">${e(options.message)}</p>
+      <hr />
+      <p style="color:#999;font-size:12px;">IP: ${e(options.ip)}</p>
+    `,
+  });
+}
