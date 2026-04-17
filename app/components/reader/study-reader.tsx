@@ -19,6 +19,10 @@ import { AnnotationNotes } from './annotation-notes';
 import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
 import { EntityDrawer } from './entity-drawer';
 import { BranchMapOverlay } from './branch-map-overlay';
+import { toast } from 'sonner';
+import { TranslationSelector } from './TranslationSelector';
+import { CopyGuard } from './CopyGuard';
+import { CitationFooter } from './CitationFooter';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -64,6 +68,42 @@ export function StudyReader({
   const [fontSize, setFontSize] = useState<FontSize>('medium');
   const [showCommunityAnnotations, setShowCommunityAnnotations] = useState(false);
 
+  const [displayContent, setDisplayContent] = useState(study.content_markdown);
+  const [currentTranslation, setCurrentTranslation] = useState(
+    study.current_translation ?? 'BSB',
+  );
+  const [translating, setTranslating] = useState(false);
+
+  const handleTranslationSelect = async (translation: string) => {
+    if (translation === currentTranslation) return;
+    setTranslating(true);
+    try {
+      const res = await fetch(`/api/studies/${study.id}/translate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ translation }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(err.error ?? 'Translation failed');
+      }
+      const data = await res.json() as {
+        content: string;
+        translation: string;
+        truncated: boolean;
+      };
+      setDisplayContent(data.content);
+      setCurrentTranslation(data.translation);
+      if (data.truncated) {
+        toast.info('Showing partial passage in NIV. View the full passage in BSB.');
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not load translation');
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   const headings = useMemo(() => extractHeadings(study.content_markdown), [study.content_markdown]);
   const headingIds = useMemo(() => headings.map((h) => h.id), [headings]);
 
@@ -82,6 +122,10 @@ export function StudyReader({
         setShowCommunityAnnotations={setShowCommunityAnnotations}
         headings={headings}
         headingIds={headingIds}
+        displayContent={displayContent}
+        currentTranslation={currentTranslation}
+        translating={translating}
+        onTranslationSelect={handleTranslationSelect}
       />
     </EntityLayerProvider>
   );
@@ -98,6 +142,10 @@ function StudyReaderContent({
   setShowCommunityAnnotations,
   headings,
   headingIds,
+  displayContent,
+  currentTranslation,
+  translating,
+  onTranslationSelect,
 }: {
   study: StudyDetail;
   isFavorited: boolean;
@@ -109,6 +157,10 @@ function StudyReaderContent({
   setShowCommunityAnnotations: (v: boolean) => void;
   headings: HeadingItem[];
   headingIds: string[];
+  displayContent: string;
+  currentTranslation: string;
+  translating: boolean;
+  onTranslationSelect: (t: string) => void;
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
@@ -178,6 +230,16 @@ function StudyReaderContent({
           onOpenMap={() => setBranchMapOpen(true)}
         />
 
+        {isLoggedIn && (
+          <div className="flex justify-end py-2">
+            <TranslationSelector
+              currentTranslation={currentTranslation}
+              onSelect={onTranslationSelect}
+              disabled={translating}
+            />
+          </div>
+        )}
+
         <div className="flex gap-8 lg:gap-12">
           {/* Desktop TOC */}
           <aside className="hidden w-64 shrink-0 lg:block">
@@ -187,13 +249,15 @@ function StudyReaderContent({
           {/* Main content */}
           <main className="relative min-w-0 flex-1">
             <article className="relative rounded-lg bg-[rgba(247,246,243,0.92)] p-6 backdrop-blur-sm dark:bg-[rgba(58,54,47,0.92)] md:p-10">
-              <div ref={contentRef}>
-                <MarkdownRenderer
-                  content={study.content_markdown}
-                  images={study.images}
-                  fontSize={fontSize}
-                />
-              </div>
+              <CopyGuard currentTranslation={currentTranslation}>
+                <div ref={contentRef}>
+                  <MarkdownRenderer
+                    content={displayContent}
+                    images={study.images}
+                    fontSize={fontSize}
+                  />
+                </div>
+              </CopyGuard>
 
               {/* Margin notes for annotations with type 'note' */}
               {isLoggedIn && (
@@ -203,6 +267,11 @@ function StudyReaderContent({
                   onDelete={deleteAnnotation}
                 />
               )}
+
+              <CitationFooter
+                currentTranslation={currentTranslation}
+                studyId={study.id}
+              />
             </article>
 
             {/* Annotation popover on text selection */}
