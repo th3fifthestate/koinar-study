@@ -1,11 +1,15 @@
-// app/components/library/study-grid.tsx
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { StudyCard, StudyCardSkeleton } from '@/components/library/study-card';
-import { EmptyState } from '@/components/library/empty-state';
 import type { StudyListItem } from '@/lib/db/types';
+
+interface InterruptionCard {
+  index: number;
+  component: React.ReactNode;
+}
 
 interface StudyGridProps {
   initialStudies: StudyListItem[];
@@ -14,6 +18,57 @@ interface StudyGridProps {
   currentPage: number;
   limit: number;
   isLoggedIn: boolean;
+  interruptionCards?: InterruptionCard[];
+}
+
+function NoResults({ hasFilters }: { hasFilters: boolean }) {
+  const searchParams = useSearchParams();
+  if (hasFilters) {
+    return (
+      <div className="py-24 text-center">
+        <p
+          className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3"
+        >
+          <em>Nothing answers that refine.</em>
+        </p>
+        <p className="font-body text-[1rem] text-[var(--stone-300)] mb-6">
+          Clear a filter or widen the search.
+        </p>
+        <a
+          href={`/?q=${searchParams.get('q') ?? ''}`}
+          className="font-body text-[0.9375rem] text-[var(--warmth)] underline-offset-4 hover:underline"
+        >
+          Clear all refinements
+        </a>
+      </div>
+    );
+  }
+  return (
+    <div className="py-24 text-center">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3">
+        <em>No studies found.</em>
+      </p>
+    </div>
+  );
+}
+
+function NoFavorites() {
+  return (
+    <div className="py-24 text-center">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3">
+        <em>No favorites yet.</em>
+      </p>
+      <p className="font-body text-[1rem] text-[var(--stone-300)] mb-6">
+        Tap the heart on any reading to save it here.
+      </p>
+      <a
+        href="/"
+        className="font-body text-[0.9375rem] text-[var(--warmth)] underline-offset-4 hover:underline"
+      >
+        Browse the library
+      </a>
+    </div>
+  );
 }
 
 export function StudyGrid({
@@ -23,77 +78,85 @@ export function StudyGrid({
   currentPage,
   limit,
   isLoggedIn,
+  interruptionCards = [],
 }: StudyGridProps) {
+  const prefersReducedMotion = useReducedMotion();
   const searchParams = useSearchParams();
-  const [studies, setStudies] = useState(initialStudies);
-  const [page, setPage] = useState(currentPage);
-  const [loading, setLoading] = useState(false);
+  const [studies] = useState(initialStudies);
   const [favoriteIds] = useState(() => new Set(userFavoriteIds));
 
-  const hasMore = studies.length < totalCount;
-
-  const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-
-    try {
-      const nextPage = page + 1;
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('page', String(nextPage));
-      params.set('limit', String(limit));
-
-      const res = await fetch(`/api/studies?${params.toString()}`);
-      if (!res.ok) throw new Error('Failed to load');
-      const data = await res.json();
-
-      setStudies((prev) => [...prev, ...data.studies]);
-      setPage(nextPage);
-    } catch {
-      // Silently fail — user can try again
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, hasMore, page, searchParams, limit]);
-
-  if (studies.length === 0) {
-    return <EmptyState />;
-  }
-
-  // Editorial layout: on the unfiltered first page, promote the first card to
-  // a full-width "lead" so the grid never reads as uniform (UI-GUIDELINES.md).
   const hasFilters =
     !!searchParams.get('q') ||
     !!searchParams.get('category') ||
     !!searchParams.get('format_type') ||
-    (searchParams.get('sort') && searchParams.get('sort') !== 'newest');
-  const leadIndex = !hasFilters && currentPage === 1 ? 0 : -1;
+    (searchParams.get('sort') !== null && searchParams.get('sort') !== 'newest');
+  const favoritesActive = searchParams.get('favorites') === 'true';
+
+  const leadIndex = !hasFilters && !favoritesActive && currentPage === 1 ? 0 : -1;
+
+  if (studies.length === 0) {
+    if (favoritesActive) return <NoFavorites />;
+    return <NoResults hasFilters={hasFilters || favoritesActive} />;
+  }
+
+  // Build the merged cell sequence (studies + interruption cards at their indices)
+  const interruptionMap = new Map(interruptionCards.map((c) => [c.index, c.component]));
+  const totalCells = studies.length + interruptionCards.length;
+  const cells: Array<
+    | { type: 'study'; study: StudyListItem; studyIndex: number }
+    | { type: 'interruption'; key: number; component: React.ReactNode }
+  > = [];
+  let studyIdx = 0;
+  for (let i = 0; i < totalCells; i++) {
+    const interruption = interruptionMap.get(i);
+    if (interruption != null) {
+      cells.push({ type: 'interruption', key: i, component: interruption });
+    } else if (studyIdx < studies.length) {
+      cells.push({ type: 'study', study: studies[studyIdx], studyIndex: studyIdx });
+      studyIdx++;
+    }
+  }
 
   return (
-    <div>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {studies.map((study, index) => (
-          <StudyCard
-            key={study.id}
-            study={study}
-            isFavorited={favoriteIds.has(study.id)}
-            index={index}
-            isLoggedIn={isLoggedIn}
-            variant={index === leadIndex ? 'lead' : 'default'}
-          />
-        ))}
-        {loading &&
-          Array.from({ length: 4 }).map((_, i) => (
-            <StudyCardSkeleton key={`skel-${i}`} />
-          ))}
+    <div aria-live="polite" aria-label="Study library results">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {cells.map((cell, cellIndex) => {
+          if (cell.type === 'interruption') {
+            return (
+              <motion.div
+                key={`interruption-${cell.key}`}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: Math.min(cellIndex * 0.05, 0.3) }}
+              >
+                {cell.component}
+              </motion.div>
+            );
+          }
+
+          const isLead = cell.studyIndex === leadIndex;
+          return (
+            <StudyCard
+              key={cell.study.id}
+              study={cell.study}
+              isFavorited={favoriteIds.has(cell.study.id)}
+              index={cell.studyIndex}
+              isLoggedIn={isLoggedIn}
+              variant={isLead ? 'lead' : 'default'}
+            />
+          );
+        })}
       </div>
-      {hasMore && !loading && (
-        <div className="text-center mt-12">
-          <button
-            onClick={loadMore}
-            className="inline-flex items-center gap-2.5 px-7 py-3 border border-[var(--stone-200)] rounded-md font-body text-[11px] uppercase tracking-[0.15em] text-[var(--stone-700)] bg-transparent hover:border-[var(--stone-700)] hover:bg-[var(--stone-100)] transition-all duration-300"
+
+      {/* At 11 studies, pagination never triggers. Skeleton placeholder kept for future growth. */}
+      {studies.length < totalCount && studies.length >= limit && (
+        <div className="text-center mt-16">
+          <a
+            href={`/?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), page: String(currentPage + 1) }).toString()}`}
+            className="font-display font-normal italic text-[1.25rem] text-[var(--warmth)] hover:text-[var(--stone-700)] transition-colors"
           >
-            Load More Studies
-          </button>
+            Continue the library →
+          </a>
         </div>
       )}
     </div>

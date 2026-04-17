@@ -1,14 +1,27 @@
 // app/app/page.tsx
 import { getSession } from '@/lib/auth/session';
-import { getStudies, getAllCategories, getUserFavoriteIds } from '@/lib/db/queries';
+import { getStudies, getAllCategories, getUserFavoriteIds, getFeaturedStudies } from '@/lib/db/queries';
 import { CornerNav } from '@/components/layout/corner-nav';
-import { HeroSection } from '@/components/library/hero-section';
+import { Hero } from '@/components/home/hero';
+import { LibraryThreshold } from '@/components/home/library-threshold';
+import { RefineBand } from '@/components/home/refine-band';
 import { StudyGrid } from '@/components/library/study-grid';
-import { LibrarySearch } from '@/components/library/library-search';
-import { LibraryFilters } from '@/components/library/library-filters';
+import { GenerateInvitationCard } from '@/components/home/generate-invitation-card';
+import { TranslatorsNoteCard } from '@/components/home/translators-note-card';
+import { EditorialAside } from '@/components/home/editorial-aside';
+import { FooterExhale } from '@/components/home/footer-exhale';
 import { Footer } from '@/components/layout/footer';
 import { TeaserClient } from './teaser-client';
-import type { StudyListItem } from '@/lib/db/types';
+import { getFeaturedForToday } from '@/lib/home/featured-rotation';
+import { getQuoteForToday } from '@/lib/home/quote-rotation';
+
+// Allowlist to prevent untrusted values reaching getStudies
+const VALID_SORTS = ['newest', 'oldest', 'popular'] as const;
+type ValidSort = typeof VALID_SORTS[number];
+
+function parseSort(raw: string | undefined): ValidSort {
+  return VALID_SORTS.includes(raw as ValidSort) ? (raw as ValidSort) : 'newest';
+}
 
 export default async function HomePage({
   searchParams,
@@ -19,108 +32,98 @@ export default async function HomePage({
   try {
     session = await getSession();
   } catch {
-    // Session unavailable (e.g. missing secret) — show teaser
+    // Session unavailable — show teaser
   }
-  const isLoggedIn = !!session?.userId;
 
-  // Unauthenticated users see the landing/teaser page
-  if (!isLoggedIn) {
+  if (!session?.userId) {
     return <TeaserClient />;
   }
 
   const params = await searchParams;
 
-  // Parse search params
+  // Parse + validate URL params (security: allowlist before passing to query layer)
   const category = typeof params.category === 'string' ? params.category : undefined;
   const q = typeof params.q === 'string' ? params.q : undefined;
-  const sort = typeof params.sort === 'string' ? params.sort : 'newest';
+  const sort = parseSort(typeof params.sort === 'string' ? params.sort : undefined);
   const format_type = typeof params.format_type === 'string' ? params.format_type : undefined;
+  const favoritesOnly = params.favorites === 'true';
   const page = typeof params.page === 'string' ? Math.max(1, parseInt(params.page, 10) || 1) : 1;
   const limit = 24;
 
-  // Validate sort
-  const validSorts = ['newest', 'oldest', 'popular'] as const;
-  const sortValue = validSorts.includes(sort as typeof validSorts[number])
-    ? (sort as typeof validSorts[number])
-    : 'newest';
+  // Parallel data fetches
+  const [{ studies, totalCount }, categories, featured] = await Promise.all([
+    Promise.resolve(
+      getStudies({
+        page,
+        limit,
+        category,
+        q,
+        sort,
+        format_type,
+        userId: session.userId,
+        ...(favoritesOnly ? { favoritesOfUserId: session.userId } : {}),
+      })
+    ),
+    Promise.resolve(getAllCategories()),
+    Promise.resolve(getFeaturedStudies(3)),
+  ]);
 
-  // Fetch studies
-  const { studies, totalCount } = getStudies({
-    page,
-    limit,
-    category,
-    q,
-    sort: sortValue,
-    format_type,
-    userId: session!.userId || undefined,
-  });
+  // Day-of-year deterministic featured rotation
+  const featuredStudy = getFeaturedForToday(featured);
 
-  // Fetch categories for filter dropdown
-  const categories = getAllCategories();
+  // User's favorited IDs for optimistic client state
+  const favIdSet = getUserFavoriteIds(session.userId);
+  const userFavoriteIds = studies.filter((s) => favIdSet.has(s.id)).map((s) => s.id);
 
-  // Featured study: extract from first page results when unfiltered, otherwise separate query
-  let featuredStudy: StudyListItem | null = null;
-  if (!category && !q && !format_type && sortValue === 'newest' && page === 1) {
-    featuredStudy = studies.find((s) => s.is_featured) ?? studies[0] ?? null;
-  } else {
-    const featuredResult = getStudies({ page: 1, limit: 1, sort: 'newest' });
-    featuredStudy = featuredResult.studies[0] ?? null;
-  }
+  // Today's editorial aside quote
+  const quote = getQuoteForToday();
 
-  // User's favorite IDs for initial client state (lightweight query, no content)
-  let userFavoriteIds: number[] = [];
-  if (session!.userId) {
-    const favIdSet = getUserFavoriteIds(session!.userId);
-    userFavoriteIds = studies.filter((s) => favIdSet.has(s.id)).map((s) => s.id);
-  }
+  // User display
+  const username = session.username ?? undefined;
+  const firstName = username; // No separate firstName field; username serves as display name
 
-  // User info for display
-  const username = session!.username ?? undefined;
-  const displayName = username;
+  // Editorial interruption cards inserted into the masonry
+  const interruptionCards = [
+    { index: 5, component: <GenerateInvitationCard /> },
+    { index: 9, component: <TranslatorsNoteCard /> },
+  ];
 
   return (
-    <div className="relative min-h-dvh">
-      <CornerNav username={username} displayName={displayName} />
+    <div className="relative min-h-dvh bg-[var(--stone-50)]">
+      <CornerNav username={username} displayName={username} />
 
-      {/* Zone 1: Hero */}
-      <HeroSection
-        username={username}
-        displayName={displayName}
+      {/* Zone 1 — Hero */}
+      <Hero
+        firstName={firstName}
         featuredStudy={featuredStudy}
+        categories={categories}
       />
 
-      {/* Zone 2: Atmospheric Transition + Zone 3: Library */}
-      <section className="relative bg-gradient-to-b from-[var(--warmth)]/[0.06] via-transparent to-transparent">
-        <div className="mx-auto max-w-[1280px] px-6 md:px-10 pt-12 pb-20">
-          {/* Library header */}
-          <div className="mb-8">
-            <h2 className="font-display text-[28px] font-normal">Study Library</h2>
-            <p className="text-[13px] text-[var(--stone-300)]">
-              Explore studies crafted with contextual rigor
-            </p>
-          </div>
+      {/* Zone 2 — Library proper */}
+      <section>
+        <LibraryThreshold />
 
-          {/* Search + Filters */}
-          <div className="flex flex-wrap items-center gap-3 mb-2">
-            <LibrarySearch />
-            <LibraryFilters categories={categories} isLoggedIn={isLoggedIn} />
-          </div>
+        <RefineBand categories={categories} />
 
-          {/* Study Grid */}
-          <div className="mt-6">
-            <StudyGrid
-              key={`${q ?? ''}-${category ?? ''}-${sortValue}-${format_type ?? ''}-${page}`}
-              initialStudies={studies}
-              totalCount={totalCount}
-              userFavoriteIds={userFavoriteIds}
-              currentPage={page}
-              limit={limit}
-              isLoggedIn={isLoggedIn}
-            />
-          </div>
+        <div className="mx-auto max-w-[1400px] px-6 md:px-10 lg:px-24 pt-10 pb-24">
+          <StudyGrid
+            key={`${q ?? ''}-${category ?? ''}-${sort}-${format_type ?? ''}-${page}-${favoritesOnly}`}
+            initialStudies={studies}
+            totalCount={totalCount}
+            userFavoriteIds={userFavoriteIds}
+            currentPage={page}
+            limit={limit}
+            isLoggedIn={true}
+            interruptionCards={interruptionCards}
+          />
         </div>
       </section>
 
+      {/* Zone 3 — Editorial aside */}
+      <EditorialAside quote={quote} />
+
+      {/* Zone 4 — Footer exhale + footer */}
+      <FooterExhale />
       <Footer />
     </div>
   );
