@@ -108,7 +108,7 @@ export function InvitationsTab({ invitations, invitesRemaining, studyOptions }: 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={formDisabled}
-                className="w-full font-body text-base px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
+                className="w-full font-body text-base text-stone-900 px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
               />
             </div>
 
@@ -126,7 +126,7 @@ export function InvitationsTab({ invitations, invitesRemaining, studyOptions }: 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={formDisabled}
-                className="w-full font-body text-base px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
+                className="w-full font-body text-base text-stone-900 px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
               />
             </div>
 
@@ -142,7 +142,7 @@ export function InvitationsTab({ invitations, invitesRemaining, studyOptions }: 
                 value={studyId}
                 onChange={(e) => setStudyId(e.target.value)}
                 disabled={formDisabled}
-                className="w-full font-body text-base px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
+                className="w-full font-body text-base text-stone-900 px-3 py-2 border border-stone-300 rounded bg-white focus:border-sage-500 focus:outline-none disabled:bg-stone-100 disabled:text-stone-400"
               >
                 {studyOptions.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -156,7 +156,7 @@ export function InvitationsTab({ invitations, invitesRemaining, studyOptions }: 
               type="submit"
               disabled={formDisabled}
               aria-describedby={error ? 'invite-error' : undefined}
-              className="font-body text-base px-4 py-2 bg-sage-600 text-white rounded hover:bg-sage-700 transition-colors disabled:bg-stone-300 disabled:text-stone-500"
+              className="font-body text-base text-sage-700 underline underline-offset-2 hover:text-sage-900 transition-colors disabled:opacity-50"
             >
               {submitting || isPending ? 'Sending…' : 'Send invitation'}
             </button>

@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/library/hero-section';
 import { StudyGrid } from '@/components/library/study-grid';
 import { LibrarySearch } from '@/components/library/library-search';
 import { LibraryFilters } from '@/components/library/library-filters';
+import { Footer } from '@/components/layout/footer';
 import { TeaserClient } from './teaser-client';
 import type { StudyListItem } from '@/lib/db/types';
 
@@ -120,6 +121,7 @@ export default async function HomePage({
         </div>
       </section>
 
+      <Footer />
     </div>
   );
 }
