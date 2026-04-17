@@ -15,7 +15,7 @@ export default async function ContactPage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href={user ? "/" : "/about"}
-          className="inline-block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
+          className="block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
         >
           ← {user ? "Back to Library" : "Back to Koinar"}
         </Link>

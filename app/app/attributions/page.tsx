@@ -24,7 +24,7 @@ export default function Attributions() {
         <div className="max-w-3xl">
           <Link
             href="/"
-            className="inline-block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
+            className="block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
           >
             ← Back to Library
           </Link>
