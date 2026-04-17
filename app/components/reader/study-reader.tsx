@@ -95,7 +95,7 @@ export function StudyReader({
       setDisplayContent(data.content);
       setCurrentTranslation(data.translation);
       if (data.truncated) {
-        toast.info('Showing partial passage in NIV. View the full passage in BSB.');
+        toast.info(`Showing partial passage in ${data.translation}. View the full passage in BSB.`);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Could not load translation');
