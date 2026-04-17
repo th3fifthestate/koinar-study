@@ -136,22 +136,23 @@ All under `app/app/api/user/`. Every route handler:
 | `PATCH /api/user/password` | 3 per 10 min |
 | `PATCH /api/user/api-key` | 3 per 10 min (shared bucket with DELETE) |
 | `DELETE /api/user/api-key` | shared bucket with PATCH |
-| `GET /api/user/invitations` | 30 per min |
+| `GET /api/user/invitations` | 30 per min (API route exists; UI uses server-fetch — see §4) |
 | `PATCH /api/user/profile` | 10 per min |
 
 The shared PATCH+DELETE bucket for api-key is intentional — both are key-state mutations and should consume the same budget.
 
 ### `PATCH /api/user/profile`
 
-Body: `{ displayName: string, bio: string | null }`  
-Validation: `displayName` 1–80 chars, `bio` 0–280 chars or null.  
+Body: `{ displayName: string, bio: string }`  
+Validation: `displayName` 1–80 chars, `bio` 0–280 chars.  
+Bio coercion: route handler converts `bio === ""` → `null` before calling `updateUserProfile`. The query helper signature accepts `string | null`; the route is the coercion boundary.  
 Calls `updateUserProfile`.  
 Response: `{ success: true }`
 
 ### `PATCH /api/user/password`
 
 Body: `{ currentPassword: string, newPassword: string }`  
-Validation: `newPassword` ≥ 10 chars.  
+Validation: `newPassword` ≥ 8 chars — mirrors `register/route.ts` Zod schema exactly (`z.string().min(8)`). Do not re-derive; if register tightens its rules, update both.  
 Server: fetch full user row (`getUserForAuth`), `bcrypt.compare(currentPassword, user.password_hash)` — return 400 on mismatch.  
 On success: `updateUserPassword` + `deleteUserSessions(userId)` in a transaction.  
 Response: `{ success: true }` — client handles redirect to `/login?message=password-updated`.  
@@ -186,7 +187,7 @@ Never returns another user's invitations — query always scoped to session `use
 
 ### `SettingsShell` (`use client`)
 
-Receives: `user: SessionData`, `settings: UserSettings`, `initialTab: string`.
+Receives: `user: SessionData`, `settings: UserSettings`, `invitations: InviteRow[]`, `initialTab: string`.
 
 Tab nav: left-rail on `md:` and up, horizontal pills on mobile. Hand-rolled — no shadcn `<Tabs>`. Active tab read from `initialTab` prop; switches push to URL via `router.push("/settings?tab=…")`.
 
@@ -246,7 +247,7 @@ Inline "Saved." microcopy fades after 3s (`setTimeout` clears the success state)
 ### Invitations tab
 
 - Read-only table: code, invitee name, invitee email, status (pending/accepted/expired), issued date
-- Data from `GET /api/user/invitations`
+- Data: fetched server-side in `page.tsx` via `listUserInvitations(userId)` and passed as a prop — consistent with how `UserSettings` is fetched. No client-side loading state needed. The `GET /api/user/invitations` route is still built (per the brief) but the tab does not call it; it consumes the prop.
 - Empty state: one-line editorial message + link to the invite flow entry point (Brief 04)
 
 ### Admin tab
