@@ -102,7 +102,8 @@ const DISPLAY_ALIASES: Record<string, string> = {
  */
 export function displayNameToSlug(name: string): string | null {
   const normalized = name.toLowerCase().trim();
-  if (DISPLAY_ALIASES[normalized]) return DISPLAY_ALIASES[normalized];
+  const alias = DISPLAY_ALIASES[normalized];
+  if (alias !== undefined) return alias;
   const slug = normalized.replace(/\s+/g, '-');
   return SLUG_TO_OSIS[slug] !== undefined ? slug : null;
 }
