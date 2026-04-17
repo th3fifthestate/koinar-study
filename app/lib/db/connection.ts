@@ -220,6 +220,16 @@ function runMigration(database: Database.Database): void {
         .run();
     }
 
+    // v8 → v9: Settings surface — add api_key_tail and api_key_updated_at to users.
+    if (currentVersion < 9) {
+      for (const sql of [
+        'ALTER TABLE users ADD COLUMN api_key_tail TEXT',
+        'ALTER TABLE users ADD COLUMN api_key_updated_at TEXT',
+      ]) {
+        try { database.prepare(sql).run(); } catch { /* column already exists */ }
+      }
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);
