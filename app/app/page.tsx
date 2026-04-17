@@ -104,21 +104,25 @@ export default async function HomePage({
         <RefineBand categories={categories} />
 
         <div
-          className="bg-[var(--stone-100)] border-b border-[var(--stone-200)] dark:bg-[var(--stone-900)] dark:border-[var(--stone-700)]"
+          className="border-b border-[var(--stone-200)] dark:border-[var(--stone-700)] relative"
           style={{
+            backgroundColor: '#f5f2ea',
             backgroundImage: `
-              radial-gradient(circle at 13% 22%, rgba(92,86,74,0.055) 1.6px, transparent 3px),
-              radial-gradient(circle at 71% 48%, rgba(92,86,74,0.04) 1.1px, transparent 2.6px),
-              radial-gradient(circle at 38% 78%, rgba(107,128,96,0.04) 1.3px, transparent 2.5px),
-              radial-gradient(circle at 89% 31%, rgba(92,86,74,0.03) 0.9px, transparent 2px),
-              radial-gradient(circle at 24% 63%, rgba(196,154,108,0.035) 1px, transparent 2.4px),
-              linear-gradient(to bottom, transparent 0, transparent calc(100% - 1px), rgba(120,113,100,0.09) calc(100% - 1px), rgba(120,113,100,0.09) 100%)
+              radial-gradient(ellipse 1400px 900px at 8% 12%, rgba(196,154,108,0.08), transparent 65%),
+              radial-gradient(ellipse 1600px 1100px at 96% 38%, rgba(168,184,160,0.07), transparent 60%),
+              radial-gradient(ellipse 1200px 800px at 30% 82%, rgba(221,217,208,0.35), transparent 70%),
+              radial-gradient(ellipse 1000px 700px at 82% 90%, rgba(196,154,108,0.05), transparent 65%),
+              radial-gradient(circle at 13% 22%, rgba(92,86,74,0.04) 1.3px, transparent 2.6px),
+              radial-gradient(circle at 71% 48%, rgba(92,86,74,0.03) 1px, transparent 2.3px),
+              radial-gradient(circle at 38% 78%, rgba(107,128,96,0.035) 1.2px, transparent 2.4px),
+              linear-gradient(to bottom, transparent 0, transparent calc(100% - 1px), rgba(120,113,100,0.07) calc(100% - 1px), rgba(120,113,100,0.07) 100%)
             `,
             backgroundSize:
-              '520px 380px, 640px 460px, 480px 520px, 720px 340px, 560px 420px, 100% 360px',
+              '100% 100%, 100% 100%, 100% 100%, 100% 100%, 520px 380px, 640px 460px, 480px 520px, 100% 360px',
             backgroundPosition:
-              '0 0, 140px 90px, 60px 220px, 380px 160px, 210px 310px, 0 0',
-            backgroundRepeat: 'repeat, repeat, repeat, repeat, repeat, repeat',
+              '0 0, 0 0, 0 0, 0 0, 0 0, 140px 90px, 60px 220px, 0 0',
+            backgroundRepeat:
+              'no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, repeat',
           }}
         >
           <div className="mx-auto max-w-[1400px] px-6 md:px-10 lg:px-24 pt-10 pb-24">
