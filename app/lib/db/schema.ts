@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 8;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -102,6 +102,8 @@ CREATE TABLE IF NOT EXISTS studies (
   created_by INTEGER NOT NULL REFERENCES users(id),
   category_id INTEGER REFERENCES categories(id),
   generation_metadata TEXT,
+  original_content TEXT,
+  current_translation TEXT NOT NULL DEFAULT 'BSB',
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -167,18 +169,33 @@ CREATE TABLE IF NOT EXISTS seasonal_images (
 );
 
 CREATE TABLE IF NOT EXISTS verse_cache (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  translation TEXT NOT NULL,
-  book TEXT NOT NULL,
-  chapter INTEGER NOT NULL,
-  verse_start INTEGER NOT NULL,
-  verse_end INTEGER NOT NULL,
-  text TEXT NOT NULL,
-  cached_at TEXT NOT NULL DEFAULT (datetime('now')),
-  lease_duration_hours INTEGER NOT NULL,
-  last_accessed_at TEXT NOT NULL DEFAULT (datetime('now')),
-  access_count INTEGER NOT NULL DEFAULT 0,
-  UNIQUE(translation, book, chapter, verse_start, verse_end)
+  translation    TEXT    NOT NULL,
+  book           TEXT    NOT NULL,
+  chapter        INTEGER NOT NULL,
+  verse          INTEGER NOT NULL,
+  text           TEXT    NOT NULL,
+  fetched_at     INTEGER NOT NULL,
+  lease_expires  INTEGER NOT NULL,
+  last_access    INTEGER NOT NULL,
+  fums_token     TEXT,
+  PRIMARY KEY (translation, book, chapter, verse)
+);
+
+CREATE TABLE IF NOT EXISTS fums_events (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  translation   TEXT    NOT NULL,
+  fums_token    TEXT,
+  event_type    TEXT    NOT NULL CHECK (event_type IN ('fetch', 'display')),
+  study_id      INTEGER,
+  user_id       INTEGER,
+  verse_count   INTEGER NOT NULL,
+  created_at    INTEGER NOT NULL,
+  flushed_at    INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS renewal_meta (
+  key         TEXT PRIMARY KEY,
+  value_int   INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS admin_actions (
@@ -374,8 +391,10 @@ CREATE INDEX IF NOT EXISTS idx_study_images_study ON study_images(study_id, sort
 CREATE INDEX IF NOT EXISTS idx_study_images_hero ON study_images(study_id, is_hero);
 CREATE INDEX IF NOT EXISTS idx_seasonal_images_season ON seasonal_images(season);
 CREATE INDEX IF NOT EXISTS idx_seasonal_images_active ON seasonal_images(is_active);
-CREATE INDEX IF NOT EXISTS idx_verse_cache_cached_at ON verse_cache(cached_at);
-CREATE INDEX IF NOT EXISTS idx_verse_cache_last_accessed ON verse_cache(last_accessed_at);
+CREATE INDEX IF NOT EXISTS idx_verse_cache_lease ON verse_cache(translation, lease_expires);
+CREATE INDEX IF NOT EXISTS idx_verse_cache_access ON verse_cache(translation, last_access);
+CREATE INDEX IF NOT EXISTS idx_fums_events_flushed ON fums_events(flushed_at);
+CREATE INDEX IF NOT EXISTS idx_fums_events_created ON fums_events(created_at);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON admin_actions(admin_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_target ON admin_actions(target_type, target_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions(created_at);

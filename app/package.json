@@ -2,6 +2,9 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0 <24.0.0"
+  },
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "next build",
@@ -18,7 +21,9 @@
     "test": "vitest run",
     "map:entities:deterministic": "tsx scripts/map-entities-deterministic.ts",
     "map:entities:disambiguate": "tsx scripts/map-entities-disambiguate.ts",
-    "map:entities:validate": "tsx scripts/map-entities-validate.ts"
+    "map:entities:validate": "tsx scripts/map-entities-validate.ts",
+    "renew": "tsx scripts/renew-cache.ts",
+    "abs:purge": "tsx scripts/abs-purge.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.69",

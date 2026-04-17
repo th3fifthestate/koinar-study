@@ -27,6 +27,7 @@ export async function requireAuth(): Promise<
       username: session.username,
       isAdmin: session.isAdmin,
       isApproved: session.isApproved,
+      onboardingCompleted: session.onboardingCompleted,
     },
     response: null,
   };

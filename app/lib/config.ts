@@ -18,6 +18,36 @@ export const config = {
   },
   bible: {
     esvApiKey: env.ESV_API_KEY,
+    apiBibleKey: env.API_BIBLE_KEY,
+    /** Starter plan Bible IDs — populate after first deploy via GET /v1/bibles. */
+    translationIds: {
+      NLT: env.API_BIBLE_ID_NLT,
+      NIV: env.API_BIBLE_ID_NIV,
+      NASB: env.API_BIBLE_ID_NASB,
+    },
+    cache: {
+      /** DHCP lease in seconds — 7 days. ToS requires cache recency ≤ 30 days. */
+      leaseSeconds: 7 * 24 * 60 * 60,
+      /** Renewal threshold — refetch when ≥ 75% of lease has elapsed. */
+      renewalRatio: 0.75,
+      /** LRU cap per translation — enforced on insert. */
+      perTranslationVerseCap: 25_000,
+    },
+    copy: {
+      /** DRM cap per copy action. Applies to licensed translations only. */
+      maxVersesPerCopy: 100,
+    },
+    niv: {
+      /** Biblica §V.F: 2 chapters OR 25 verses per user per view, whichever greater. */
+      maxChaptersPerView: 2,
+      maxVersesPerView: 25,
+    },
+    retention: {
+      /** FUMS event retention — 13-month buffer on a 12-month floor. */
+      fumsEventMonths: 13,
+    },
+    /** 72-hour termination kill-switch. Hides licensed translations app-wide. */
+    purgeEnabled: env.ABS_PURGE_ENABLED,
   },
   r2: {
     accountId: env.R2_ACCOUNT_ID,

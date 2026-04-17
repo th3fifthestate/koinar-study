@@ -101,6 +101,7 @@ export async function POST(request: NextRequest) {
     session.username = username;
     session.isAdmin = false;
     session.isApproved = true;
+    session.onboardingCompleted = false;
     await session.save();
 
     return NextResponse.json({

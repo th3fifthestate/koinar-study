@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
     session.username = user.username;
     session.isAdmin = user.is_admin === 1;
     session.isApproved = user.is_approved === 1;
+    session.onboardingCompleted = user.onboarding_completed === 1;
     await session.save();
 
     return NextResponse.json({

@@ -45,6 +45,16 @@ const envSchema = z.object({
 
   // Bible APIs
   ESV_API_KEY: z.string().default(""),
+  API_BIBLE_KEY: z.string().default(""),
+  API_BIBLE_ID_NLT: z.string().default(""),
+  API_BIBLE_ID_NIV: z.string().default(""),
+  API_BIBLE_ID_NASB: z.string().default(""),
+  // ABS termination kill-switch — when true, getAvailableTranslations() hides
+  // every licensed translation. Operational flag; see runbooks/abs-termination-purge.md.
+  ABS_PURGE_ENABLED: z
+    .string()
+    .default("")
+    .transform((v) => v === "true"),
 
   // Image generation
   FLUX_API_KEY: z.string().default(""),
@@ -70,6 +80,7 @@ const productionSchema = z.object({
   RESEND_AUDIENCE_ID: z.string().min(1, "RESEND_AUDIENCE_ID is required in production"),
   FLUX_API_KEY: z.string().min(1, "FLUX_API_KEY is required in production"),
   ENCRYPTION_KEY: z.string().min(64, "ENCRYPTION_KEY must be at least 64 characters in production"),
+  API_BIBLE_KEY: z.string().min(1, "API_BIBLE_KEY is required in production"),
 });
 
 // --- Parse (always succeeds — uses defaults for missing values) ---

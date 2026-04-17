@@ -131,14 +131,29 @@ export async function POST(request: Request) {
   const userId = auth.user.userId;
 
   // 6. Stream generation
+  // System prompt + tool definitions are cached (ephemeral, ~5 min TTL) —
+  // setting cacheControl on the system message caches everything before the
+  // breakpoint, including tool definitions. Saves ~90% on input tokens for
+  // repeat generations within the cache window.
   const result = streamText({
     model: provider(model ?? "claude-opus-4-6"),
-    system: systemPrompt,
-    prompt,
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+        providerOptions: {
+          anthropic: { cacheControl: { type: "ephemeral" } },
+        },
+      },
+      { role: "user", content: prompt },
+    ],
     tools: studyTools,
     stopWhen: stepCountIs(30),
-    onFinish: async ({ text, totalUsage, steps }) => {
+    onFinish: async ({ text, totalUsage, steps, providerMetadata }) => {
       const duration = Date.now() - startTime;
+      const anthropicMeta = providerMetadata?.anthropic as
+        | { cacheCreationInputTokens?: number; cacheReadInputTokens?: number }
+        | undefined;
 
       // Parse json-metadata block
       interface EntityAnnotationMeta {
@@ -194,11 +209,17 @@ export async function POST(request: Request) {
       ];
 
       // Estimated cost (Opus 4.6: $5/MTok input, $25/MTok output)
-      // totalUsage aggregates across all steps; usage is last step only
+      // Cache reads are 10% of base input; cache writes are 125% of base input.
+      // totalUsage aggregates across all steps; usage is last step only.
       const inputTokens = totalUsage?.inputTokens ?? 0;
       const outputTokens = totalUsage?.outputTokens ?? 0;
+      const cacheReadTokens = anthropicMeta?.cacheReadInputTokens ?? 0;
+      const cacheWriteTokens = anthropicMeta?.cacheCreationInputTokens ?? 0;
       const estimatedCost =
-        (inputTokens / 1_000_000) * 5 + (outputTokens / 1_000_000) * 25;
+        (inputTokens / 1_000_000) * 5 +
+        (cacheReadTokens / 1_000_000) * 0.5 +
+        (cacheWriteTokens / 1_000_000) * 6.25 +
+        (outputTokens / 1_000_000) * 25;
 
       // Save study to database
       try {
@@ -215,6 +236,8 @@ export async function POST(request: Request) {
             model: model ?? "claude-opus-4-6",
             input_tokens: inputTokens,
             output_tokens: outputTokens,
+            cache_read_tokens: cacheReadTokens,
+            cache_write_tokens: cacheWriteTokens,
             estimated_cost: estimatedCost,
             duration_ms: duration,
             tools_called: toolsCalled,

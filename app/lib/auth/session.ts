@@ -8,6 +8,7 @@ export interface SessionData {
   username: string;
   isAdmin: boolean;
   isApproved: boolean;
+  onboardingCompleted: boolean;
 }
 
 export const sessionOptions = {
@@ -37,5 +38,6 @@ export async function getCurrentUser(): Promise<SessionData | null> {
     username: session.username,
     isAdmin: session.isAdmin,
     isApproved: session.isApproved,
+    onboardingCompleted: session.onboardingCompleted,
   };
 }

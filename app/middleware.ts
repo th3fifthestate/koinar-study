@@ -32,14 +32,32 @@ function isPublicPath(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isPublicPath(pathname)) return NextResponse.next();
-
   const response = NextResponse.next();
   const session = await getIronSession<SessionData>(
     request,
     response,
     sessionOptions
   );
+
+  // Onboarding gate runs before the public-path shortcut so that a logged-in user
+  // hitting the logged-in library at "/" is still redirected into onboarding.
+  // Exempt: the onboarding page, the completion API, logout, and auth-related routes.
+  // Only redirect when the flag is explicitly false — legacy sessions (undefined)
+  // predate this field and are treated as already onboarded.
+  const isOnboardingExempt =
+    pathname === "/onboarding" ||
+    pathname.startsWith("/api/user/onboarding-complete") ||
+    pathname.startsWith("/api/auth/logout") ||
+    pathname.startsWith("/api/auth/me") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/fonts") ||
+    pathname.startsWith("/images") ||
+    pathname === "/favicon.ico";
+  if (session.userId && session.isApproved && session.onboardingCompleted === false && !isOnboardingExempt) {
+    return NextResponse.redirect(new URL("/onboarding", request.url));
+  }
+
+  if (isPublicPath(pathname)) return response;
 
   if (!session.userId) {
     // Logged-out user hitting protected route → landing page

@@ -163,6 +163,63 @@ function runMigration(database: Database.Database): void {
       }
     }
 
+    // v6 → v7: Add onboarding_completed column to users for Brief 10 onboarding gate.
+    if (currentVersion < 7) {
+      try {
+        database
+          .prepare('ALTER TABLE users ADD COLUMN onboarding_completed INTEGER NOT NULL DEFAULT 0')
+          .run();
+      } catch {
+        // Column already exists (fresh DB created by CREATE TABLE) — safe to ignore
+      }
+    }
+
+    // v7 → v8: Brief 13 translation layer.
+    //   - Drop legacy verse_cache (different column shape, confirmed empty on disk);
+    //     CREATE_TABLES recreates it with the new PK + fetched_at/lease_expires shape.
+    //   - Create fums_events + renewal_meta (CREATE_TABLES handles idempotently).
+    //   - Add studies.original_content + studies.current_translation for verse-swap
+    //     audit. Backfill original_content from content_markdown on existing rows.
+    if (currentVersion < 8) {
+      if (currentVersion >= 1) {
+        // Pre-existing install: legacy verse_cache has the old shape. Drop it so
+        // CREATE_TABLES (which runs before this block in the transaction) can...
+        // Note: because CREATE_TABLES already ran above, we must DROP + recreate here.
+        database.prepare('DROP TABLE IF EXISTS verse_cache').run();
+        runStatements(
+          database,
+          `CREATE TABLE IF NOT EXISTS verse_cache (
+             translation    TEXT    NOT NULL,
+             book           TEXT    NOT NULL,
+             chapter        INTEGER NOT NULL,
+             verse          INTEGER NOT NULL,
+             text           TEXT    NOT NULL,
+             fetched_at     INTEGER NOT NULL,
+             lease_expires  INTEGER NOT NULL,
+             last_access    INTEGER NOT NULL,
+             fums_token     TEXT,
+             PRIMARY KEY (translation, book, chapter, verse)
+           );`,
+        );
+      }
+      const studiesColumns = [
+        "ALTER TABLE studies ADD COLUMN original_content TEXT",
+        "ALTER TABLE studies ADD COLUMN current_translation TEXT NOT NULL DEFAULT 'BSB'",
+      ];
+      for (const sql of studiesColumns) {
+        try {
+          database.prepare(sql).run();
+        } catch {
+          // Column already exists — safe to ignore.
+        }
+      }
+      database
+        .prepare(
+          "UPDATE studies SET original_content = content_markdown WHERE original_content IS NULL",
+        )
+        .run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

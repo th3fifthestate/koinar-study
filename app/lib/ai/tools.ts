@@ -14,6 +14,7 @@ import {
   searchStrongs,
   getCrossReferences,
 } from "@/lib/db/bible/queries";
+import { searchEntities } from "@/lib/db/entities/queries";
 
 export const queryVerse = tool({
   description:
@@ -257,10 +258,58 @@ export const lookupCrossReferences = tool({
   },
 });
 
+export const entitySearch = tool({
+  description:
+    "Search the entity knowledge base (people, places, cultures, time periods, concepts) by name. Returns matching entities with their Strong's-suffixed IDs for annotation markers. Use when a name is ambiguous (e.g., multiple Herods, multiple Jameses) to resolve the correct canonical entity_id before citing.",
+  inputSchema: z.object({
+    query: z
+      .string()
+      .min(1)
+      .max(100)
+      .describe("Name or phrase to search (e.g., 'Herod', 'Bethlehem', 'Pharisees')"),
+    type: z
+      .enum(["person", "place", "culture", "time_period", "concept", "custom"])
+      .optional()
+      .describe("Optional entity type filter"),
+    limit: z
+      .number()
+      .int()
+      .min(1)
+      .max(20)
+      .optional()
+      .default(10)
+      .describe("Max results to return (default 10)"),
+  }),
+  execute: async ({ query, type, limit }) => {
+    try {
+      const entities = searchEntities(query, type, limit);
+      if (entities.length === 0)
+        return { error: `No entities found for: "${query}"` };
+      return {
+        count: entities.length,
+        entities: entities.map((e) => ({
+          id: e.id,
+          entity_type: e.entity_type,
+          canonical_name: e.canonical_name,
+          aliases: e.aliases ? (JSON.parse(e.aliases) as string[]) : [],
+          disambiguation_note: e.disambiguation_note,
+          hebrew_name: e.hebrew_name,
+          greek_name: e.greek_name,
+          quick_glance: e.quick_glance,
+        })),
+      };
+    } catch (err) {
+      console.error("[entitySearch] DB error:", err);
+      return { error: "Database error during entity search." };
+    }
+  },
+});
+
 export const studyTools = {
   query_verse: queryVerse,
   search_keyword: searchKeyword,
   lookup_strongs: lookupStrongsNumber,
   original_language: originalLanguage,
   lookup_cross_references: lookupCrossReferences,
+  entity_search: entitySearch,
 };
