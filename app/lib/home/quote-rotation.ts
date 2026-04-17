@@ -11,7 +11,7 @@ const QUOTES: Quote[] = [
   { body: 'Weeping may endure for a night, but joy cometh in the morning.', attribution: '— Psalm 30:5, KJV' },
   { body: 'In the beginning was the Word, and the Word was with God, and the Word was God.', attribution: '— John 1:1, BSB' },
   { body: 'Come unto me, all ye that labour and are heavy laden, and I will give you rest.', attribution: '— Matthew 11:28, KJV' },
-  { body: 'A soft answer turneth away wrath: but grievous words stir up anger.', attribution: '— Proverbs 15:1, KJV' },
+  { body: 'Finally, brothers, whatever is true, whatever is honorable, whatever is right, whatever is pure, whatever is lovely, whatever is admirable — if anything is excellent or praiseworthy — think on these things.', attribution: '— Philippians 4:8, BSB' },
 ];
 
 function dayOfYear(date: Date): number {

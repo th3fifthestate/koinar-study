@@ -35,19 +35,21 @@ export const TOD_IMAGES: Record<TodBucket, { src: string; alt: string }> = {
   },
 };
 
-/** Days 0=Sun … 6=Sat */
-const DAY_EYEBROWS: Record<number, string | ((bucket: TodBucket) => string)> = {
-  0: 'A Sunday reading.',
-  1: 'Monday. The week begins.',
-  2: (bucket) =>
-    bucket === 'evening' || bucket === 'night'
-      ? 'A Tuesday evening.'
-      : 'A Tuesday morning reading.',
-  3: 'Midweek.',
-  4: 'A Thursday reading.',
-  5: 'Before the weekend.',
-  6: 'A Saturday reading.',
-};
+/** Mon–Thu neutral cycle, rotated by ISO week number for slight variety. */
+const MID_WEEK_CYCLE = [
+  'A quiet hour.',
+  'A passage for today.',
+  'Something to sit with.',
+  'A reading, chosen.',
+];
+
+function getISOWeek(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7);
+}
 
 export function bucketForHour(hour: number): TodBucket {
   if (hour >= 5 && hour < 7) return 'dawn';
@@ -70,7 +72,19 @@ export function greetingForBucket(bucket: TodBucket, firstName: string | undefin
   }
 }
 
-export function eyebrowForDay(day: number, bucket: TodBucket): string {
-  const entry = DAY_EYEBROWS[day] ?? 'A reading.';
-  return typeof entry === 'function' ? entry(bucket) : entry;
+export function eyebrowForDay(day: number, _bucket: TodBucket, now: Date = new Date()): string {
+  if (day === 0) return 'A Sunday reading.';
+  if (day === 5) return 'Before the weekend.';
+  if (day === 6) return 'A Saturday reading.';
+  const isoWeek = getISOWeek(now);
+  return MID_WEEK_CYCLE[(isoWeek - 1) % MID_WEEK_CYCLE.length];
 }
+
+export const GRADIENT_OPACITY: Record<TodBucket, number> = {
+  dawn: 0.4,
+  morning: 0.45,
+  midday: 0.3,
+  golden: 0.4,
+  evening: 0.2,
+  night: 0,
+};

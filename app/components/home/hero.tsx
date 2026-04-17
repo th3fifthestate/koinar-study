@@ -8,6 +8,7 @@ import {
   greetingForBucket,
   eyebrowForDay,
   TOD_IMAGES,
+  GRADIENT_OPACITY,
   type TodBucket,
 } from '@/lib/home/tod-bucket';
 import type { StudySummary } from '@/lib/db/types';
@@ -39,8 +40,7 @@ export function Hero({ username: _username, firstName, featuredStudy, categories
       ? (categories.find((c) => c.id === featuredStudy.category_id)?.name ?? null)
       : null;
 
-  // Lighter buckets need the bottom gradient for text legibility
-  const needsGradient = bucket === 'dawn' || bucket === 'morning' || bucket === 'midday' || bucket === 'golden';
+  const gradientOpacity = GRADIENT_OPACITY[bucket];
 
   return (
     <section
@@ -58,11 +58,16 @@ export function Hero({ username: _username, firstName, featuredStudy, categories
         sizes="100vw"
       />
 
-      {/* Bottom gradient for text legibility */}
-      <div
-        className={`absolute inset-0 bg-gradient-to-t from-[var(--stone-900)]/60 via-[var(--stone-900)]/10 to-transparent pointer-events-none ${needsGradient ? 'opacity-100' : 'opacity-70'}`}
-        aria-hidden="true"
-      />
+      {/* Per-bucket bottom gradient (Amendment 5) — rgba stone-900 over bottom 40% */}
+      {gradientOpacity > 0 && (
+        <div
+          className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
+          style={{
+            background: `linear-gradient(to top, rgba(28, 25, 23, ${gradientOpacity}), rgba(28, 25, 23, 0))`,
+          }}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Editorial lockup — bottom-left */}
       <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row items-end md:items-end justify-between px-6 md:px-12 pb-10 md:pb-12 gap-6 md:gap-0">

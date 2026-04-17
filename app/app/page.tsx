@@ -7,7 +7,6 @@ import { LibraryThreshold } from '@/components/home/library-threshold';
 import { RefineBand } from '@/components/home/refine-band';
 import { StudyGrid } from '@/components/library/study-grid';
 import { GenerateInvitationCard } from '@/components/home/generate-invitation-card';
-import { TranslatorsNoteCard } from '@/components/home/translators-note-card';
 import { EditorialAside } from '@/components/home/editorial-aside';
 import { FooterExhale } from '@/components/home/footer-exhale';
 import { Footer } from '@/components/layout/footer';
@@ -85,7 +84,6 @@ export default async function HomePage({
   // Editorial interruption cards inserted into the masonry
   const interruptionCards = [
     { index: 5, component: <GenerateInvitationCard /> },
-    { index: 9, component: <TranslatorsNoteCard /> },
   ];
 
   return (
