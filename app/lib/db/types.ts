@@ -13,6 +13,8 @@ export interface User {
   is_approved: number;
   invited_by: number | null;
   api_key_encrypted: string | null;
+  api_key_tail: string | null;
+  api_key_updated_at: string | null;
   onboarding_completed: number;
   failed_login_attempts: number;
   locked_until: string | null;
