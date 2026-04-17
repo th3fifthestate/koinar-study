@@ -16,7 +16,7 @@ export async function PATCH(request: Request) {
   if (auth.response) return auth.response;
 
   if (limiter(`user-${auth.user.userId}`)) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': '60' } });
   }
 
   let body: unknown;
