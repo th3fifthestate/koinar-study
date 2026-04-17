@@ -1,3 +1,4 @@
-export default function ProfilePage() {
-  return <div>Profile</div>;
+import { redirect } from "next/navigation";
+export default function ProfileRedirect() {
+  redirect("/settings");
 }
