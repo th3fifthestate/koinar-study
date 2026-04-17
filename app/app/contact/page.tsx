@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth/session";
 import { ContactForm } from "./contact-form";
 
@@ -12,6 +13,12 @@ export default async function ContactPage() {
   return (
     <main className="bg-stone-50 min-h-screen px-8 py-16 md:px-14 md:py-24 xl:px-[100px]">
       <div className="max-w-2xl mx-auto">
+        <Link
+          href={user ? "/" : "/about"}
+          className="inline-block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
+        >
+          ← {user ? "Back to Library" : "Back to Koinar"}
+        </Link>
         <span className="font-body text-[0.75rem] font-semibold uppercase tracking-[0.3em] text-stone-400">
           Contact
         </span>

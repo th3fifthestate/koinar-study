@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, type ReactNode } from 'react';
+import Link from 'next/link';
 import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -88,6 +89,12 @@ export function StudyHeader({
 
   return (
     <header className="mb-8 pt-8">
+      <Link
+        href="/"
+        className="inline-block font-body text-sm text-[var(--stone-500)] hover:text-[var(--stone-700)] dark:text-[var(--stone-300)] dark:hover:text-[var(--stone-50)] transition-colors mb-6"
+      >
+        ← Back to Library
+      </Link>
       <h1 className="font-display text-4xl font-normal leading-[1.15] text-[var(--stone-900)] dark:text-[var(--stone-50)] md:text-5xl">
         {title}
       </h1>

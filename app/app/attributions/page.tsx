@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CITATIONS } from "@/lib/translations/citations";
 import { getAvailableTranslations } from "@/lib/translations/registry";
 import type { TranslationId } from "@/lib/translations/registry";
@@ -21,6 +22,12 @@ export default function Attributions() {
       {/* Hero */}
       <header className="bg-stone-50 px-8 py-16 md:px-14 md:py-24 xl:px-[100px]">
         <div className="max-w-3xl">
+          <Link
+            href="/"
+            className="inline-block font-body text-sm text-stone-500 hover:text-stone-700 transition-colors mb-8"
+          >
+            ← Back to Library
+          </Link>
           <span className="font-body text-[0.75rem] font-semibold uppercase tracking-[0.3em] text-stone-400">
             Attributions
           </span>
