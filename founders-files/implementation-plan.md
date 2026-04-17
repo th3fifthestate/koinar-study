@@ -1122,12 +1122,12 @@ Completion notes (07f — April 14, 2026):
 
 ### Execution order (9 briefs, 4 waves)
 
-| Wave | Briefs | Rationale |
-|------|--------|-----------|
-| **Wave 1** | 16 — Footer audit | Cheapest; surfaces the link inventory (/attributions, /contact, /generate) that downstream briefs depend on. Runs alone first so later briefs know what the footer expects. |
-| **Wave 2** (parallel) | 17 — About split + language pass · 18 — Attributions page · 19 — Contact page · 20 — Settings + profile + admin link | Four independent surfaces; no shared files. Ship in parallel. 17 removes Scripture Translations from /about → 18 creates it as its own page. 20 introduces admin-panel link gated by `role === 'admin'`. |
-| **Wave 3** (serial) | 21a — Generate page design (plan mode) → 21b — Generate implementation | Full overhaul of `/generate`. Design must finalize copy, layout, cost/API-key disclosure, and type selection before implementation; split prevents rework. |
-| **Wave 4** (serial) | 22a — Home + library editorial direction (plan mode) → 22b — Home + library implementation | Largest visual lift in Phase 5a. 22a locks hierarchy, rhythm, and time-of-day treatment against Ritz-Carlton / Four Seasons / Rumpus refs; 22b executes. Runs last so layout decisions can account for new surfaces (attributions, contact, generate, settings). |
+| Wave | Briefs | Status | Rationale |
+|------|--------|--------|-----------|
+| **Wave 1** | 16 — Footer audit | ✅ Shipped | Cheapest; surfaces the link inventory (/attributions, /contact, /generate) that downstream briefs depend on. Runs alone first so later briefs know what the footer expects. |
+| **Wave 2** (parallel) | 17 — About split + language pass · 18 — Attributions page · 19 — Contact page · 20 — Settings + profile + admin link | ✅ Shipped (Brief 20 landed `56878ed`; follow-up fixes `4a05983`, `a9ef75d`, `a96bf3b` added invite-creation form in Invitations tab, corrected admin→settings return path, added back-to-library link on /settings, fixed homepage footer, fixed form text colors.) | Four independent surfaces; no shared files. Shipped in parallel. 17 removed Scripture Translations from /about → 18 created it as its own page. 20 introduces admin-panel link gated by `isAdmin`. |
+| **Wave 3** (serial) | 21a — Generate page design (plan mode) → 21b — Generate implementation | ◻️ Next | Full overhaul of `/generate`. Design must finalize copy, layout, cost/API-key disclosure, and type selection before implementation; split prevents rework. |
+| **Wave 4** (serial) | 22a — Home + library editorial direction (plan mode) → 22b — Home + library implementation | ◻️ Pending Wave 3 | Largest visual lift in Phase 5a. 22a locks hierarchy, rhythm, and time-of-day treatment against Ritz-Carlton / Four Seasons / Rumpus refs; 22b executes. Runs last so layout decisions can account for new surfaces (attributions, contact, generate, settings). |
 
 ### Per-brief model + mode
 
@@ -1164,6 +1164,7 @@ Items surfaced while scoping Phase 5a that are intentionally **not** shipping in
 | `/terms` of service page | Brief 16 audit — removed broken footer link | David (legal copy) + eng (static page) | Before Phase 6 deploy |
 | Footer re-links to Privacy & Terms once pages exist | Brief 16 deliberately omitted them | Small follow-up PR (10 min) | Same PR as the pages |
 | Cookie / consent notice (if required for target jurisdictions) | Adjacent to Privacy | David decides scope | Before Phase 6 deploy |
+| `npm run dev` tsx + Node 24 crash (`AsyncLocalStorage accessed in runtime where it is not available`) | Brief 20 verification — custom `server.ts` + WebSocket server crashes under tsx/Node 24; workaround is `npx next dev` (no WS) | eng | Before Phase 6 deploy — pin Node via `.nvmrc`, switch to `node --import tsx server.ts`, or compile `server.ts` |
 
 **Note:** any new deferrals uncovered during Phase 5a briefs should append rows here rather than create one-off TODOs in code.
 
