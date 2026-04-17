@@ -5,7 +5,6 @@ interface CompletionCardProps {
   title: string;
   slug: string;
   onOpen: () => void;
-  onCancel: () => void;
   autoRedirectMs?: number;
 }
 
@@ -13,7 +12,6 @@ export function CompletionCard({
   title,
   slug: _slug,
   onOpen,
-  onCancel,
   autoRedirectMs = 3000,
 }: CompletionCardProps) {
   const initialSeconds = Math.round(autoRedirectMs / 1000);
@@ -45,7 +43,6 @@ export function CompletionCard({
   const handleCancel = () => {
     cancelledRef.current = true;
     setCancelled(true);
-    onCancel();
   };
 
   return (

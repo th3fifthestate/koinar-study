@@ -178,7 +178,6 @@ export interface UseGenerateStreamReturn {
   state: GenerateState;
   submit: (prompt: string, format: Format) => void;
   retry: (prompt: string, format: Format) => void;
-  cancelRedirect: () => void;
 }
 
 export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamReturn {
@@ -191,7 +190,6 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
   const abortRef = useRef<AbortController | null>(null);
   const entitlementRef = useRef(entitlement);
   entitlementRef.current = entitlement;
-  const cancelledRef = useRef(false);
   const phraseIndexRef = useRef(0);
 
   const submit = useCallback(async (prompt: string, format: Format) => {
@@ -341,9 +339,5 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
     });
   }, []);
 
-  const cancelRedirect = useCallback(() => {
-    cancelledRef.current = true;
-  }, []);
-
-  return { state, submit, retry, cancelRedirect };
+  return { state, submit, retry };
 }

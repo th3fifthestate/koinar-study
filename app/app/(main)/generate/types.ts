@@ -27,22 +27,3 @@ export type GenerateState =
   | { kind: 'error-invalid-key'; prompt: string; format: Format }
   | { kind: 'error-stream-aborted'; prompt: string; format: Format }
   | { kind: 'error-save-failed'; prompt: string; format: Format; markdown: string };
-
-export interface GenerateAction {
-  type:
-    | 'submit'
-    | 'validate-fail'
-    | 'stream-start'
-    | 'stream-chunk'
-    | 'stream-tool-call'
-    | 'stream-complete'
-    | 'save-ok'
-    | 'save-failed'
-    | 'error-rate-limited'
-    | 'error-invalid-key'
-    | 'error-stream-aborted'
-    | 'retry'
-    | 'open-study'
-    | 'cancel-redirect';
-  payload?: Record<string, unknown>;
-}

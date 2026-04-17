@@ -30,7 +30,7 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
   const [prompt, setPrompt] = useState('');
   const [format, setFormat] = useState<Format>('standard');
 
-  const { state, submit, retry, cancelRedirect } = useGenerateStream(entitlement);
+  const { state, submit, retry } = useGenerateStream(entitlement);
 
   const handleSubmit = () => {
     submit(prompt, format);
@@ -75,7 +75,6 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
         title={title}
         slug={slug}
         onOpen={() => handleOpenStudy(slug)}
-        onCancel={cancelRedirect}
         autoRedirectMs={3000}
       />
     );
