@@ -1179,6 +1179,73 @@ Items surfaced while scoping Phase 5a that are intentionally **not** shipping in
 
 ---
 
+## Phase 5b: Pre-Phase-6 Bug & Polish Sweep (Briefs 23 → 29)
+
+**Goal:** Close out the critical bugs and polish items surfaced by the 2026-04-17 QA walkthrough. Phase 5a left the app feature-complete but the QA pass surfaced (a) a generation pipeline that returns 404 from Anthropic via the AI SDK (the model id `claude-opus-4-6` is confirmed valid against a direct curl; the 404 is an SDK handshake issue), (b) a fragile dev-env dotenv load, (c) a Railway build break from a missing module, (d) small but real home-hero bugs, (e) an accessibility / hard-rule cluster on `/about` + auth, and (f) reader polish H1–H5. Phase 5b ships these as scoped briefs so Phase 6 (export, seed, deploy) starts from a clean baseline.
+
+**Model decision confirmed 2026-04-17:** Stay on `claude-opus-4-6` ($5/$25 per MTok, 1M context, 128k max output, Extended thinking: Yes). Listed under "Legacy models (still available)" on the Anthropic models page but fully supported; a direct `/v1/messages` curl with the same key returns HTTP 200. Opus 4.7 is available at the same price tier but with a different capability profile (Jan 2026 cutoff, step-change agentic reasoning, no Extended thinking) — track as a post-Phase-6 upgrade consideration.
+
+**Context doc:** `founders-files/plans/users-davidgeorge-desktop-study-app-fou-majestic-grove.md` (original pre-Phase-6 review) + this section supersedes it with the updated critical list.
+
+### Execution order (7 briefs, 4 waves)
+
+| Wave | Briefs | Parallel? | Rationale |
+|------|--------|-----------|-----------|
+| **Wave 1 — Critical unblockers** | **23** — AI SDK 404 diagnosis + AI_MODEL_ID plumbing · **24** — Env hardening · **25** — Sample-study module (`app/lib/data/sample-study.ts`) / Railway build | ✅ All 3 parallel | Each lives in a non-overlapping file set. 23 touches `generate/route.ts`, `env.ts`, `config.ts`, adds an integration test. 24 touches `env.ts` (additive — `env-guard.ts`), routes pre-flight, runbook. 25 creates `app/lib/data/sample-study.ts` + edits one import. No merge conflicts expected. Ship all three before any Wave 2 work — they unblock the generate pipeline, dev reliability, and staging deploys. |
+| **Wave 2 — Bug fixes** | **26** — Home hero · **27** — /about + a11y sweep | ✅ 2 parallel | Independent file sets (home hero vs about/auth). Ship together. Depends on Wave 1 only in the sense that dev + generation must work during verification. |
+| **Wave 3 — Reader polish** | **28a** (plan) → **28b** (implement) | ❌ Serial | 28a produces `founders-files/brief-28a-plan.md` (Opus, plan mode). David signs off. 28b executes mechanically (Sonnet, direct). Do **not** start 28b without the plan. |
+| **Wave 4 — Optional** | **29** — middleware → proxy | ✅ Anywhere in the queue | Deprecation cleanup, non-blocking. Slot in when a polish sprint has capacity or before the next Next major upgrade, whichever comes first. |
+
+### Per-brief model + mode
+
+| Brief | Model | Mode | Reasoning |
+|-------|-------|------|-----------|
+| **23 — AI SDK 404 diagnosis + AI_MODEL_ID plumbing** | Sonnet | Direct | Two parts: (A) diagnose why `@ai-sdk/anthropic` v3.0.69 gets a 404 on `claude-opus-4-6` when a direct curl with the same key + model succeeds, (B) add `config.ai.modelId` + plumb through the route. Model id stays `claude-opus-4-6`. Mechanical after §A delta is identified. |
+| **24 — Env hardening** | Sonnet | Direct | Diagnostic + isolation work. The only judgment call (which dotenv isolation step fixes root cause) is an A/B exercise, not a design call. |
+| **25 — Sample-study module** | Sonnet | Direct | Module extraction. Trivial. |
+| **26 — Home hero bugfixes** | Sonnet | Direct | Two bugs, root causes are prescriptive. No design pass needed — the intended behavior is "match the already-correct `/` render". |
+| **27 — /about + a11y sweep** | Sonnet | Direct | Hard-rule compliance + WCAG fixes. The correct outcomes are dictated by UI-Guidelines and WCAG — no taste call. |
+| **28a — Reader polish direction** | **Opus** | **Plan mode** | Five tonal / placement decisions (H1 persistence model, H2 TOD reader hero, H3 selector home, H4 popover motion curve, H5 TOC glide). These are the same class of judgment calls where Opus outperformed Sonnet in Briefs 06 / 06a / 07 / 07c. One voice decides. |
+| **28b — Reader polish implementation** | Sonnet | Direct | Pure execution of 28a spec. Includes Vitest for H1 persistence. No new design calls. |
+| **29 — middleware → proxy** | Sonnet | Direct | Framework API migration. Mechanical. |
+
+### Where Opus genuinely matters in Phase 5b
+
+Only **Brief 28a**. The other six briefs are mechanical — Sonnet ships them faster, cheaper, with no quality delta that a reader would notice. 28a is the opposite: it specifies five micro-aesthetic values (animation durations, placement picks, TOD tinting rules) that compound into the reader's felt quality. The 120ms-vs-200ms popover decision and the "where does the translation selector live" decision are the ones where Opus's taste shows up. If budget is tight, Opus-on-28a is the single non-negotiable call; everything else can be Sonnet without regret.
+
+### Critical files (new)
+
+- `briefs/23-model-id-unblocker.md`
+- `briefs/24-env-hardening.md`
+- `briefs/25-sample-study-module.md`
+- `briefs/26-home-hero-bugfixes.md`
+- `briefs/27-about-accessibility-sweep.md`
+- `briefs/28a-reader-polish-direction.md`
+- `briefs/28b-reader-polish-implementation.md`
+- `briefs/29-middleware-to-proxy.md`
+- `founders-files/brief-28a-plan.md` (produced by Brief 28a)
+- `founders-files/runbooks/env-dev-loading.md` (produced by Brief 24)
+
+### Verification (Phase 5b exit)
+
+- `POST /api/study/generate` completes end-to-end: stream opens, `<!-- koinar-complete:{…, saveOk:true} -->` frame terminates, study row saved, reader renders the new slug. (Brief 23)
+- Cold `npx next dev -p 3002` — no env-guard warnings for required runtime secrets; generate pipeline works without `set -a && source .env`. (Brief 24)
+- `cd app && npx next build` completes locally. Railway staging build succeeds. (Brief 25)
+- `/` and `/?favorites=true` are pixel-identical above the fold; greeting uses `display_name`. (Brief 26)
+- `/about`, `/login`, `/register` pass Lighthouse a11y ≥ 95; deep-linking to mid-page `/about` sections renders immediately. (Brief 27)
+- Reader passes the 28a plan's motion-vocabulary checklist on a long seed study at dawn / day / dusk / night. (Brief 28b)
+- No Next deprecation warnings in the dev log. (Brief 29 — if landed)
+- Test suite ≥ 150/150 green throughout.
+
+### Not in Phase 5b (deferred or already covered)
+
+- **C3 library editorial layout** — already tracked in Brief 22a/22b.
+- **C4 /about body ≥ 16px** — absorbed into Brief 27 §1.
+- **H7 landing↔auth visual continuity** and **H8 waitlist post-submit editorial moment** — aesthetic passes that warrant their own Opus plan if scheduled; **not Phase-6 blockers**. Track for post-launch polish.
+- **M1–M11, L1–L8** from the pre-Phase-6 review — carry forward in `founders-files/pre-phase-6-review.md`; schedule against a later polish sprint.
+
+---
+
 ## Phase 6: Export + Seed + Final Deploy (Briefs 12 → 15 → 14-final)
 
 **Goal:** Export functionality, seed content, and production launch.
@@ -1270,8 +1337,10 @@ Features deferred beyond V1 launch. Not in scope for Phases 0-6. Listed here to 
 | 3a | ~~07a, 07b, 07c, 07d, 07e, 07f~~ | 07c, 07d, 07e | 07a, 07b, 07f | 5-7 | Contextual knowledge layer | ✅ |
 | 4 | 08a, 08b, 11, 09 | 08b (annotation UI) | 08a, 11, 09 | 3-4 | Annotations, images, admin | 08a ✅, 08b ✅ |
 | 5 | 10, 13 | 10 (onboarding) | 13 | 2-3 | Onboarding + translations | Pending |
+| 5a | 16–22b (9 briefs) | 21a, 22a | 16, 17, 18, 19, 20, 21b, 22b | 6-8 | Footer / about / attributions / contact / settings / generate / home-library | ◻️ 22a, 22b remaining |
+| 5b | 23–29 (8 briefs) | 28a | 23, 24, 25, 26, 27, 28b, 29 | 3-4 | Pre-Phase-6 bug + polish sweep | ◻️ New |
 | 6 | 12, 15, 14 | — | All 3 | 2-3 | Export, seed, launch | Pending |
-| **Total** | **26 prompts** | **10 Opus** | **16 Sonnet** | **~21-29** | **Production launch** | |
+| **Total** | **~43 prompts** | **12 Opus** | **31 Sonnet** | **~30-41** | **Production launch** | |
 
 ---
 
