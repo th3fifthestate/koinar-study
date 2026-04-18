@@ -293,7 +293,10 @@ function StudyReaderContent({
               pathological line lengths on extra-wide displays. */}
           <main className="relative min-w-0 flex-1">
             <article className="relative max-w-[95ch] py-4 md:py-6">
-              <CopyGuard currentTranslation={currentTranslation}>
+              <CopyGuard
+                currentTranslation={currentTranslation}
+                surface={{ kind: 'reader', studyId: String(study.id) }}
+              >
                 <div ref={contentRef}>
                   <MarkdownRenderer
                     content={displayContent}
