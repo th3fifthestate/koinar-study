@@ -14,6 +14,8 @@ interface UseCopyCapOptions {
   currentTranslation: string;
 }
 
+// surface is accepted for API consistency with future FUMS copy-event tracking,
+// but clipboard cap enforcement is translation-only (no per-surface variation needed).
 export function useCopyCap({ surface: _surface, currentTranslation }: UseCopyCapOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
 

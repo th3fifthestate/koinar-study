@@ -128,7 +128,7 @@ async function renewRow(row: CachedVerse): Promise<void> {
         fumsToken: v.fumsToken,
         eventType: "fetch",
         verseCount: 1,
-        surface: { kind: 'reader', studyId: 'unknown' },
+        surface: { kind: 'reader', studyId: 'system:renew-cache' },
       });
     }
     return;

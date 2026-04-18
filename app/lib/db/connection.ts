@@ -307,7 +307,6 @@ function runMigration(database: Database.Database): void {
       } catch {
         // Column already exists on fresh DBs where CREATE_TABLES already added it
       }
-      database.pragma('user_version = 12');
     }
 
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
