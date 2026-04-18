@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -63,6 +63,30 @@ export function StudyHeader({
   onOpenMap,
   translationSelector,
 }: StudyHeaderProps) {
+  // Dissolving chrome: reading-controls cluster dims when the reader is idle
+  // (no mousemove / scroll / focus for 2.5s) and restores on any movement.
+  // Respects prefers-reduced-motion by staying fully visible.
+  const [idle, setIdle] = useState(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const wake = () => {
+      setIdle(false);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = setTimeout(() => setIdle(true), 2500);
+    };
+    wake();
+    const events: Array<keyof WindowEventMap> = ['mousemove', 'scroll', 'keydown', 'touchstart', 'focusin'];
+    events.forEach((e) => window.addEventListener(e, wake, { passive: true }));
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      events.forEach((e) => window.removeEventListener(e, wake));
+    };
+  }, []);
+
   const handleShare = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -121,7 +145,10 @@ export function StudyHeader({
       )}
 
       {/* Actions */}
-      <div className="mt-5 flex flex-wrap items-center gap-4 border-b border-[var(--stone-200)] pb-5 dark:border-[var(--stone-700)]">
+      <div
+        className="mt-5 flex flex-wrap items-center gap-4 border-b pb-5"
+        style={{ borderColor: 'var(--reader-rule, var(--stone-200))' }}
+      >
         <FavoriteButton
           studyId={studyId}
           initialFavorited={isFavorited}
@@ -138,7 +165,11 @@ export function StudyHeader({
           <span>Share</span>
         </button>
 
-        <div className="ml-auto flex flex-wrap items-center gap-4">
+        <div
+          className="ml-auto flex flex-wrap items-center gap-4 transition-opacity duration-[600ms] ease-out hover:!opacity-100 focus-within:!opacity-100"
+          style={{ opacity: idle ? 0.32 : 1 }}
+          aria-label="Reading controls"
+        >
           <BranchMapIndicator onOpenMap={onOpenMap} />
           <EntityToggle
             enabled={showEntityAnnotations}

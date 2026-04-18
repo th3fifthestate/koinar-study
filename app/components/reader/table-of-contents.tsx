@@ -21,38 +21,78 @@ interface TableOfContentsProps {
   activeId: string;
 }
 
-function TocList({ headings, activeId, onItemClick }: TableOfContentsProps & { onItemClick?: () => void }) {
+/**
+ * Dot-spine TOC: a vertical rail with a dot per heading. The active
+ * section gets a filled sage dot + revealed label; inactive sections are
+ * small hollow marks that expand their label on hover. Sub-headings are
+ * offset left with smaller dots so nesting reads without indentation.
+ *
+ * The spine itself is a hairline running the full height of the TOC.
+ */
+function DotSpineList({
+  headings,
+  activeId,
+  onItemClick,
+}: TableOfContentsProps & { onItemClick?: () => void }) {
   return (
-    <nav aria-label="Table of contents">
-      <ul className="space-y-1">
+    <nav aria-label="Table of contents" className="relative">
+      {/* Spine rail */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[5px] top-2 bottom-2 w-px"
+        style={{ backgroundColor: 'var(--reader-rule, var(--stone-200))' }}
+      />
+
+      <ul className="space-y-2">
         {headings.map((h) => {
-          const indent = h.level === 3 ? 'pl-4' : h.level === 4 ? 'pl-8' : '';
           const isActive = h.id === activeId;
+          const isSub = h.level >= 3;
+          const dotSize = isSub ? 5 : 7;
+          // Dots center on the spine (which sits at left 5px). A size-7 dot
+          // needs -1px to align; a size-5 dot needs +0px.
+          const dotOffset = isSub ? 3 : 2;
 
           return (
-            <li key={h.id}>
+            <li key={h.id} className="group/item relative">
               <button
                 onClick={() => {
                   document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' });
                   onItemClick?.();
                 }}
-                className={`relative block w-full truncate rounded px-2 py-1 text-left text-sm transition-all duration-300 ease-out ${indent} ${
-                  isActive ? 'font-medium translate-x-0.5' : ''
-                }`}
+                className="relative flex w-full items-center gap-3 pl-6 pr-2 py-1 text-left text-sm transition-all duration-300 ease-out"
                 style={{
                   color: isActive
-                    ? 'var(--reader-accent-sage, var(--sage-500))'
+                    ? 'var(--reader-display, var(--stone-700))'
                     : 'var(--reader-ink-soft, var(--stone-500))',
                 }}
               >
+                {/* Dot */}
                 <span
                   aria-hidden="true"
-                  className={`pointer-events-none absolute -left-5 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full transition-all duration-300 ease-out ${
-                    isActive ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-50'
-                  }`}
-                  style={{ backgroundColor: 'var(--reader-accent-sage, var(--sage-500))' }}
+                  className="absolute top-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out"
+                  style={{
+                    left: `${dotOffset}px`,
+                    width: `${dotSize}px`,
+                    height: `${dotSize}px`,
+                    backgroundColor: isActive
+                      ? 'var(--reader-accent-sage, var(--sage-500))'
+                      : 'transparent',
+                    border: isActive
+                      ? 'none'
+                      : `1px solid var(--reader-ink-soft, var(--stone-400))`,
+                    opacity: isActive ? 1 : 0.55,
+                    transform: `translateY(-50%) scale(${isActive ? 1.1 : 1})`,
+                  }}
                 />
-                {h.text}
+
+                {/* Label — always visible, weight+color shift on active */}
+                <span
+                  className={`truncate transition-all duration-300 ease-out ${
+                    isActive ? 'font-medium' : ''
+                  } ${isSub ? 'text-[0.78rem]' : ''}`}
+                >
+                  {h.text}
+                </span>
               </button>
             </li>
           );
@@ -62,22 +102,19 @@ function TocList({ headings, activeId, onItemClick }: TableOfContentsProps & { o
   );
 }
 
-/** Desktop sticky sidebar TOC */
+/** Desktop sticky sidebar TOC (dot-spine style) */
 export function TableOfContents({ headings, activeId }: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
-    <div
-      className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto border-l pl-5 pr-4"
-      style={{ borderColor: 'var(--reader-rule, var(--stone-200))' }}
-    >
+    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
       <p
-        className="mb-3 text-xs font-medium uppercase tracking-wider"
+        className="mb-4 pl-6 text-[0.65rem] font-medium uppercase tracking-[0.2em]"
         style={{ color: 'var(--reader-ink-soft, var(--stone-500))' }}
       >
         Contents
       </p>
-      <TocList headings={headings} activeId={activeId} />
+      <DotSpineList headings={headings} activeId={activeId} />
     </div>
   );
 }
@@ -99,7 +136,7 @@ export function MobileTocButton({ headings, activeId }: TableOfContentsProps) {
           <SheetTitle>Contents</SheetTitle>
         </SheetHeader>
         <div className="mt-2">
-          <TocList headings={headings} activeId={activeId} onItemClick={() => setOpen(false)} />
+          <DotSpineList headings={headings} activeId={activeId} onItemClick={() => setOpen(false)} />
         </div>
       </SheetContent>
     </Sheet>
