@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 10;
+export const SCHEMA_VERSION = 11;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -367,6 +367,17 @@ CREATE TABLE IF NOT EXISTS cross_refs (
   source TEXT NOT NULL DEFAULT 'tsk'
 );
 
+CREATE TABLE IF NOT EXISTS lexicon_entries (
+  strongs_id TEXT PRIMARY KEY,
+  language TEXT NOT NULL,
+  lemma TEXT NOT NULL,
+  transliteration TEXT,
+  gloss TEXT NOT NULL,
+  definition TEXT,
+  morphology TEXT,
+  source TEXT NOT NULL DEFAULT 'stepbible',
+  source_version TEXT
+);
 `;
 
 export const CREATE_INDEXES = `
@@ -429,6 +440,7 @@ CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_user ON saved_branch_maps(user_
 CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_study ON saved_branch_maps(study_id, user_id);
 CREATE INDEX IF NOT EXISTS idx_cross_refs_from ON cross_refs(from_book, from_chapter, from_verse);
 CREATE INDEX IF NOT EXISTS idx_cross_refs_to ON cross_refs(to_book, to_chapter, to_verse_start);
+CREATE INDEX IF NOT EXISTS idx_lexicon_language ON lexicon_entries(language);
 `;
 
 export const SEED_CATEGORIES = `

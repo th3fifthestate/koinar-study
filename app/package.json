@@ -11,6 +11,7 @@
     "start": "tsx server.ts",
     "import:tipnr": "tsx scripts/import-tipnr.ts",
     "ingest:tsk": "tsx scripts/import-tsk.ts",
+    "ingest:stepbible": "tsx scripts/import-stepbible-lexicon.ts",
     "seed:entities": "tsx scripts/seed-entities.ts",
     "backfill:annotations": "tsx scripts/backfill-annotations.ts",
     "generate:entities": "tsx scripts/generate-entity-content.ts",

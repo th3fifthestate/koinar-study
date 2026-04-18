@@ -237,6 +237,13 @@ function runMigration(database: Database.Database): void {
       // No-op: new table is created by runStatements(database, CREATE_TABLES) above.
     }
 
+    // v10 → v11: STEPBible lexicon entries table (Brief 31b).
+    // No data backfill needed — table starts empty; populated by npm run ingest:stepbible.
+    // CREATE TABLE IF NOT EXISTS in CREATE_TABLES handles creation on fresh DBs.
+    if (currentVersion < 11) {
+      // No-op: new table is created by runStatements(database, CREATE_TABLES) above.
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

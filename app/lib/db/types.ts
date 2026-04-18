@@ -354,6 +354,22 @@ export interface CrossRef {
   source: string;                // default 'tsk'
 }
 
+// ============================================================
+// STEPBible Lexicon Layer (Brief 31b)
+// ============================================================
+
+export interface LexiconEntry {
+  strongs_id: string;       // e.g. 'H0001', 'G3056'
+  language: 'hebrew' | 'greek';
+  lemma: string;            // original-script form (אָב, λόγος)
+  transliteration: string | null;
+  gloss: string;            // short English gloss
+  definition: string | null;
+  morphology: string | null;
+  source: string;           // default 'stepbible'
+  source_version: string | null;
+}
+
 export interface UserSettings {
   id: number;
   username: string;
