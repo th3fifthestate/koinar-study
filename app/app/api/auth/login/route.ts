@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
     const session = await getSession();
     session.userId = user.id;
     session.username = user.username;
+    session.displayName = user.display_name ?? undefined;
     session.isAdmin = user.is_admin === 1;
     session.isApproved = user.is_approved === 1;
     session.onboardingCompleted = user.onboarding_completed === 1;

@@ -78,7 +78,7 @@ export default async function HomePage({
 
   // User display
   const username = session.username ?? undefined;
-  const firstName = username; // No separate firstName field; username serves as display name
+  const firstName = (session.displayName?.trim() || session.username) ?? undefined;
 
   // Editorial interruption cards inserted into the masonry
   const interruptionCards = [
@@ -87,7 +87,7 @@ export default async function HomePage({
 
   return (
     <div className="relative min-h-dvh bg-[var(--stone-50)]">
-      <CornerNav username={username} displayName={username} />
+      <CornerNav username={username} displayName={session.displayName ?? username} />
 
       {/* Zone 1 — Hero */}
       <Hero

@@ -6,6 +6,7 @@ import { config } from "@/lib/config";
 export interface SessionData {
   userId: number;
   username: string;
+  displayName?: string;
   isAdmin: boolean;
   isApproved: boolean;
   onboardingCompleted: boolean;
@@ -36,6 +37,7 @@ export async function getCurrentUser(): Promise<SessionData | null> {
   return {
     userId: session.userId,
     username: session.username,
+    displayName: session.displayName,
     isAdmin: session.isAdmin,
     isApproved: session.isApproved,
     onboardingCompleted: session.onboardingCompleted,
