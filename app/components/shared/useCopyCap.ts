@@ -16,7 +16,6 @@ interface UseCopyCapOptions {
 
 export function useCopyCap({ surface: _surface, currentTranslation }: UseCopyCapOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const translationId = currentTranslation as TranslationId;
 
   useEffect(() => {
     const el = containerRef.current;
