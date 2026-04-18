@@ -24,9 +24,10 @@ const ENTITY_TYPE_LABELS = {
 interface EntityPopoverProps {
   entity: Entity;
   onExplore: () => void;
+  onClipToBench?: () => void;
 }
 
-export function EntityPopover({ entity, onExplore }: EntityPopoverProps) {
+export function EntityPopover({ entity, onExplore, onClipToBench }: EntityPopoverProps) {
   const Icon = ENTITY_TYPE_ICONS[entity.entity_type] || Tag;
   const typeLabel = ENTITY_TYPE_LABELS[entity.entity_type] || 'Reference';
 
@@ -61,16 +62,29 @@ export function EntityPopover({ entity, onExplore }: EntityPopoverProps) {
         </p>
       )}
 
-      {/* Explore link */}
-      {entity.quick_glance && (
-        <button
-          onClick={onExplore}
-          className="flex items-center gap-1 text-sm font-medium text-[var(--sage-500)] transition-colors hover:text-[var(--sage-700)]"
-        >
-          Explore
-          <span aria-hidden="true">&rarr;</span>
-        </button>
-      )}
+      {/* Explore link + Clip to Bench */}
+      <div className="flex items-center gap-3">
+        {entity.quick_glance && (
+          <button
+            onClick={onExplore}
+            className="flex items-center gap-1 text-sm font-medium text-[var(--sage-500)] transition-colors hover:text-[var(--sage-700)]"
+          >
+            Explore
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+        )}
+        {onClipToBench && (
+          <button
+            onClick={onClipToBench}
+            className="flex items-center gap-1.5 text-sm text-sage-600 hover:text-sage-700 transition-colors"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+            </svg>
+            Clip
+          </button>
+        )}
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover';
+import { toast } from 'sonner';
 import { useEntityLayer } from './entity-layer-context';
 import { EntityPopover } from './entity-popover';
 
@@ -25,6 +26,29 @@ export function EntityTerm({ entityId, children }: EntityTermProps) {
     openDrawer(entityId);
   }, [entityId, openDrawer]);
 
+  const handleClipToBench = useCallback(async () => {
+    if (!entity) return
+    const payload = {
+      type: 'entity',
+      source_ref: { type: 'entity', entity_id: entity.id, tier: 'quick_glance' },
+    }
+    try {
+      await fetch('/api/bench/recent-clips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payload: JSON.stringify(payload),
+          clipped_from_route: window.location.pathname,
+        }),
+      })
+      toast.success('Entity clipped to Bench', {
+        action: { label: 'View', onClick: () => window.open('/bench', '_blank') },
+      })
+    } catch {
+      toast.error('Failed to clip to Bench')
+    }
+  }, [entity]);
+
   if (!showAnnotations) {
     return <>{children}</>;
   }
@@ -41,7 +65,7 @@ export function EntityTerm({ entityId, children }: EntityTermProps) {
       </PopoverTrigger>
       <PopoverContent className="max-w-[320px] p-4" side="bottom" sideOffset={6}>
         {entity ? (
-          <EntityPopover entity={entity} onExplore={handleExplore} />
+          <EntityPopover entity={entity} onExplore={handleExplore} onClipToBench={handleClipToBench} />
         ) : (
           <p className="text-xs italic text-muted-foreground">
             Context not yet available for this reference.
