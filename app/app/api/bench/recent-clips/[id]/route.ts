@@ -8,13 +8,13 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { user, response } = await requireAuth()
+  if (response) return response
+
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
-
-  const { user, response } = await requireAuth()
-  if (response) return response
 
   const { id } = await params
 

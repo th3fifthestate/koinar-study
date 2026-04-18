@@ -1,3 +1,4 @@
+import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getLexiconEntry } from '@/lib/db/lexicon/queries'
 
@@ -7,6 +8,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ strongsId: string }> }
 ) {
+  const { response } = await requireAuth()
+  if (response) return response
+
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })

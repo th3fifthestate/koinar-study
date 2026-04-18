@@ -16,7 +16,7 @@ interface EntityRow {
 }
 
 interface NoteRow {
-  id: string
+  annotation_id: number
   note_text: string | null
   selected_text: string | null
 }
@@ -378,14 +378,14 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                   <div className="divide-y divide-border">
                     {notesResults.map((note) => (
                       <div
-                        key={note.id}
+                        key={note.annotation_id}
                         draggable
                         onDragStart={(e) =>
                           e.dataTransfer.setData(
                             'application/bench-clip',
                             JSON.stringify({
                               clipping_type: 'note',
-                              source_ref: { type: 'note', annotation_id: note.id },
+                              source_ref: { type: 'note', annotation_id: note.annotation_id },
                             })
                           )
                         }

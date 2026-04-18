@@ -5,13 +5,13 @@ import { getDb } from '@/lib/db/connection'
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
 export async function GET(request: Request) {
+  const { user, response } = await requireAuth()
+  if (response) return response
+
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
-
-  const { user, response } = await requireAuth()
-  if (response) return response
 
   const url = new URL(request.url)
   const q = url.searchParams.get('q') ?? ''
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   const escaped = q.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_')
   const pattern = `%${escaped}%`
 
-  const notes = getDb()
+  const rows = getDb()
     .prepare(
       `SELECT id, study_id, note_text, selected_text, color, created_at
        FROM annotations
@@ -32,7 +32,23 @@ export async function GET(request: Request) {
        ORDER BY created_at DESC
        LIMIT 25`
     )
-    .all(String(user.userId), pattern, pattern)
+    .all(user.userId, pattern, pattern) as Array<{
+      id: number
+      study_id: number
+      note_text: string | null
+      selected_text: string
+      color: string
+      created_at: string
+    }>
+
+  const notes = rows.map((r) => ({
+    annotation_id: r.id,
+    study_id: r.study_id,
+    note_text: r.note_text,
+    selected_text: r.selected_text,
+    color: r.color,
+    created_at: r.created_at,
+  }))
 
   return Response.json({ notes })
 }

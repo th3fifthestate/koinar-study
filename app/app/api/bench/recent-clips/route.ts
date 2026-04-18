@@ -17,13 +17,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const { user, response } = await requireAuth()
+  if (response) return response
+
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
-
-  const { user, response } = await requireAuth()
-  if (response) return response
 
   let body: unknown
   try {

@@ -93,6 +93,13 @@ export async function POST(request: Request) {
   const { board_id, clipping_type, source_ref, x, y, width, height, color, user_label } =
     parsed.data
 
+  if (source_ref.type !== clipping_type) {
+    return Response.json(
+      { error: 'clipping_type must match source_ref.type' },
+      { status: 400 }
+    )
+  }
+
   if (!getBenchBoard(board_id, user.userId)) {
     return Response.json({ error: 'Not found' }, { status: 404 })
   }

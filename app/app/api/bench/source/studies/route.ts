@@ -5,13 +5,13 @@ import { getStudies } from '@/lib/db/queries'
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
 export async function GET(request: Request) {
+  const { user, response } = await requireAuth()
+  if (response) return response
+
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
-
-  const { user, response } = await requireAuth()
-  if (response) return response
 
   const url = new URL(request.url)
   const q = url.searchParams.get('q') ?? ''
