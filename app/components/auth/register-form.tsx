@@ -57,24 +57,24 @@ export function RegisterForm({ name, email, inviteToken, welcomeToken }: Registe
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label htmlFor="register-name" className="block text-sm font-medium text-stone-700 mb-1.5">Name</label>
+        <label htmlFor="register-name" className="block text-base font-medium text-stone-700 mb-1.5">Name</label>
         <input
           id="register-name"
           type="text"
           value={name}
           readOnly
-          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-500 text-sm cursor-not-allowed"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-500 text-base cursor-not-allowed"
         />
       </div>
 
       <div>
-        <label htmlFor="register-email" className="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
+        <label htmlFor="register-email" className="block text-base font-medium text-stone-700 mb-1.5">Email</label>
         <input
           id="register-email"
           type="email"
           value={email}
           readOnly
-          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-500 text-sm cursor-not-allowed"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-500 text-base cursor-not-allowed"
         />
       </div>
 
@@ -89,15 +89,16 @@ export function RegisterForm({ name, email, inviteToken, welcomeToken }: Registe
           required
           minLength={8}
           autoComplete="new-password"
-          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-transparent text-sm"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-transparent text-base"
           placeholder="8 characters minimum"
           aria-describedby={error ? "password-error" : undefined}
           aria-invalid={error ? "true" : undefined}
+          showToggle
         />
       </div>
 
       {error && (
-        <p id="password-error" className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3.5 py-2.5">
+        <p id="password-error" className="text-base text-red-600 bg-red-50 border border-red-100 rounded-lg px-3.5 py-2.5">
           {error}
         </p>
       )}
@@ -105,12 +106,12 @@ export function RegisterForm({ name, email, inviteToken, welcomeToken }: Registe
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-2.5 rounded-lg bg-stone-800 text-white text-sm font-medium hover:bg-stone-700 disabled:opacity-50 transition-colors"
+        className="w-full py-2.5 rounded-lg bg-stone-800 text-white text-base font-medium hover:bg-stone-700 disabled:opacity-50 transition-colors"
       >
         {loading ? "Creating account…" : "Create account"}
       </button>
 
-      <p className="text-center text-sm text-stone-500">
+      <p className="text-center text-base text-stone-500">
         Already have an account?{" "}
         <Link href="/login" className="underline underline-offset-2 hover:text-stone-700">
           Sign in
