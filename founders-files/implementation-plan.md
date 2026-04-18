@@ -1304,7 +1304,7 @@ Four briefs: **30, 32a, 34a, 35a**. Each of the four authors a design or directi
 - `briefs/34b-study-bench-templates-meter-implementation.md`
 - `briefs/35a-study-bench-onboarding-design.md`
 - `briefs/35b-study-bench-polish-implementation.md`
-- `founders-files/brief-30-plan.md` through `founders-files/brief-35b-plan.md` (one per plan-mode brief)
+- `founders-files/plans/brief-30-plan.md` through `founders-files/plans/brief-35b-plan.md` (one per plan-mode brief)
 
 **App surface (from brief 30 §Critical files):**
 - `app/app/(main)/bench/page.tsx` — dashboard
