@@ -164,6 +164,26 @@ export function useBenchBoard(
     [connections]
   )
 
+  const updateSourceRef = useCallback(
+    async (id: string, newSourceRef: string) => {
+      const prev = clippings
+      setClippings((cs) =>
+        cs.map((c) => (c.id === id ? { ...c, source_ref: newSourceRef } : c))
+      )
+      try {
+        const res = await fetch(`/api/bench/clippings/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source_ref: newSourceRef }),
+        })
+        if (!res.ok) throw new Error('server error')
+      } catch {
+        setClippings(prev)
+      }
+    },
+    [clippings]
+  )
+
   return {
     clippings,
     connections,
@@ -171,6 +191,7 @@ export function useBenchBoard(
     moveClipping,
     resizeClipping,
     deleteClipping,
+    updateSourceRef,
     addConnection,
     deleteConnection,
   }

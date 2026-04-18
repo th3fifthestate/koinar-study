@@ -9,6 +9,16 @@ import { useBenchCanvas } from './canvas-camera'
 import { VerseClipping } from './clippings/verse-clipping'
 import { EntityClipping } from './clippings/entity-clipping'
 import { NoteClipping } from './clippings/note-clipping'
+import { TranslationCompareClipping } from './clippings/translation-compare-clipping'
+import { CrossRefChainClipping } from './clippings/cross-ref-chain-clipping'
+import { LexiconClipping } from './clippings/lexicon-clipping'
+import { StudySectionClipping } from './clippings/study-section-clipping'
+import type { BenchClippingSourceRef } from '@/lib/db/types'
+
+type TranslationCompareRef = Extract<BenchClippingSourceRef, { type: 'translation-compare' }>
+
+// These types manage their own internal padding and fill the card edge-to-edge
+const FULL_BLEED_TYPES = new Set(['translation-compare', 'cross-ref-chain', 'lexicon', 'study-section'])
 
 interface ClippingCardProps {
   clipping: BenchClipping
@@ -17,6 +27,7 @@ interface ClippingCardProps {
   onResize: (id: string, w: number, h: number) => void
   onDelete: (id: string) => void
   onAddConnection: (fromId: string, toId: string, label: string | null) => void
+  onUpdateSourceRef?: (clippingId: string, newSourceRef: string) => void
 }
 
 export function ClippingCard({
@@ -25,6 +36,7 @@ export function ClippingCard({
   onMove,
   onDelete,
   onAddConnection,
+  onUpdateSourceRef,
 }: ClippingCardProps) {
   const { camera } = useBenchCanvas()
   const cardRef = useRef<HTMLDivElement>(null)
@@ -183,12 +195,31 @@ export function ClippingCard({
         />
       ))}
 
-      {/* Card content */}
-      <div className="h-full overflow-hidden rounded-[10px] p-3">
+      {/* Card content — full-bleed types manage their own padding */}
+      <div
+        className={`h-full overflow-hidden rounded-[10px] ${
+          FULL_BLEED_TYPES.has(clipping.clipping_type) ? '' : 'p-3'
+        }`}
+      >
         {clipping.clipping_type === 'verse' && <VerseClipping sourceRef={sourceRef} />}
         {clipping.clipping_type === 'entity' && <EntityClipping sourceRef={sourceRef} />}
         {clipping.clipping_type === 'note' && (
           <NoteClipping clippingId={clipping.id} sourceRef={sourceRef} />
+        )}
+        {clipping.clipping_type === 'translation-compare' && (
+          <TranslationCompareClipping
+            sourceRef={sourceRef}
+            onUpdateSourceRef={(next: TranslationCompareRef) =>
+              onUpdateSourceRef?.(clipping.id, JSON.stringify(next))
+            }
+          />
+        )}
+        {clipping.clipping_type === 'cross-ref-chain' && (
+          <CrossRefChainClipping sourceRef={sourceRef} />
+        )}
+        {clipping.clipping_type === 'lexicon' && <LexiconClipping sourceRef={sourceRef} />}
+        {clipping.clipping_type === 'study-section' && (
+          <StudySectionClipping sourceRef={sourceRef} />
         )}
       </div>
 

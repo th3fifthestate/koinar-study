@@ -30,7 +30,7 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
   const { camera, pan, zoomAtPoint, transformStyle } = camControls
 
   const boardState = useBenchBoard(board.id, initialClippings, initialConnections)
-  const { clippings, connections, addClipping } = boardState
+  const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
 
   // Persist camera on change (debounced 1500ms)
   useEffect(() => {
@@ -148,17 +148,21 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
         const payload = JSON.parse(raw) as {
           clipping_type: BenchClipping['clipping_type']
           source_ref: unknown
+          recent_clip_id?: string
         }
         const rect = viewportRef.current!.getBoundingClientRect()
         const worldX = (e.clientX - rect.left - camera.x) / camera.zoom
         const worldY = (e.clientY - rect.top - camera.y) / camera.zoom
-        void addClipping({
+        await addClipping({
           clipping_type: payload.clipping_type,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           source_ref: payload.source_ref as any,
           x: worldX,
           y: worldY,
         })
+        if (payload.recent_clip_id) {
+          void fetch(`/api/bench/recent-clips/${payload.recent_clip_id}`, { method: 'DELETE' })
+        }
       } catch {
         // malformed drag payload — ignore
       }
@@ -205,7 +209,7 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
           <ConnectionLayer
             connections={connections}
             clippings={clippings}
-            onDelete={boardState.deleteConnection}
+            onDelete={deleteConnection}
           />
 
           {/* Clipping cards */}
@@ -214,10 +218,11 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
               key={clipping.id}
               clipping={clipping}
               boardId={board.id}
-              onMove={boardState.moveClipping}
-              onResize={boardState.resizeClipping}
-              onDelete={boardState.deleteClipping}
-              onAddConnection={boardState.addConnection}
+              onMove={moveClipping}
+              onResize={resizeClipping}
+              onDelete={deleteClipping}
+              onAddConnection={addConnection}
+              onUpdateSourceRef={updateSourceRef}
             />
           ))}
         </div>
