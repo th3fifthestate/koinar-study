@@ -19,6 +19,7 @@ import { fetchEsvPassage } from "./esv-client";
 import { ApiBibleError, EsvApiError, TranslationNotAvailableError } from "./errors";
 import { recordFumsEvent } from "./fums-tracker";
 import { enforceNivPerViewCap, type ViewVerseRef } from "./niv-display-guard";
+import type { DisplaySurface } from "@/lib/bench/types";
 import { displayNameToSlug } from "./osis-book-map";
 
 // Re-exported from ./swap-failure so existing server-side call sites can keep
@@ -255,7 +256,8 @@ export async function swapVerses(
       }
     }
     if (allRefs.length) {
-      const guard = enforceNivPerViewCap(allRefs);
+      const readerSurface: DisplaySurface = { kind: 'reader', studyId: String(ctx.studyId) };
+      const guard = enforceNivPerViewCap(allRefs, readerSurface);
       truncated = guard.truncated;
       if (guard.truncated) {
         allowedKey = new Set(

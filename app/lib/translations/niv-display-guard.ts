@@ -5,6 +5,7 @@
 // exceeds BOTH caps, otherwise the more permissive cap wins.
 
 import { config } from "@/lib/config";
+import type { DisplaySurface } from "@/lib/bench/types";
 
 export interface ViewVerseRef {
   book: string;
@@ -18,7 +19,10 @@ export interface NivGuardResult {
   reason?: "chapter-cap" | "verse-cap";
 }
 
-export function enforceNivPerViewCap(refs: ViewVerseRef[]): NivGuardResult {
+export function enforceNivPerViewCap(
+  refs: ViewVerseRef[],
+  surface: DisplaySurface,
+): NivGuardResult {
   const { maxChaptersPerView, maxVersesPerView } = config.bible.niv;
   const uniqueChapters = new Set(refs.map((r) => `${r.book} ${r.chapter}`));
 
@@ -66,6 +70,12 @@ export function enforceNivPerViewCap(refs: ViewVerseRef[]): NivGuardResult {
       chapterLimitReachedAt >= verseLimitReachedAt)
       ? "chapter-cap"
       : "verse-cap";
+
+  console.warn('[niv-guard] cap hit', {
+    surface,
+    cap_hit_at: refs.length,
+    translation: 'niv',
+  });
 
   return { allowedVerses: allowed, truncated: true, reason };
 }
