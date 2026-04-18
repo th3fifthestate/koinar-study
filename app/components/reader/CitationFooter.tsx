@@ -49,6 +49,19 @@ export function CitationFooter({
           {citation.publisherLink.label}
         </a>
       )}
+      {info?.source === 'api-bible' && (
+        <p className="mt-3 text-muted-foreground/70">
+          Scripture text provided by{' '}
+          <a
+            href="https://scripture.api.bible"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+          >
+            API.Bible
+          </a>
+        </p>
+      )}
     </footer>
   );
 }

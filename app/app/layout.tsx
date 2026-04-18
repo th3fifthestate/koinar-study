@@ -4,7 +4,6 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { PageTransition } from "./components/page-transition";
 import { FooterGate } from "@/components/layout/footer-gate";
-import { ApiBibleCredit } from "@/components/global/ApiBibleCredit";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -75,9 +74,6 @@ export default function RootLayout({
           <PageTransition>{children}</PageTransition>
           <FooterGate />
           <Toaster position="bottom-right" richColors />
-          <footer>
-            <ApiBibleCredit />
-          </footer>
         </ThemeProvider>
       </body>
     </html>
