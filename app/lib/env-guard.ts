@@ -13,21 +13,25 @@ const RUNTIME_REQUIRED = [
 
 type VarStatus = "present" | "empty" | "short";
 
-function inspect(name: string): VarStatus {
-  const val = process.env[name];
+// Inspect the parsed env when provided so zod defaults count as "present"
+// (e.g., DATABASE_PATH/BIBLE_DB_PATH have defaults that don't appear in
+// process.env). Fall back to process.env for names not in the parsed object.
+function inspect(name: string, parsed?: Record<string, unknown>): VarStatus {
+  const raw = parsed && name in parsed ? parsed[name] : process.env[name];
+  const val = typeof raw === "string" ? raw : raw == null ? "" : String(raw);
   if (!val) return "empty";
   if (val.length < 10) return "short";
   return "present";
 }
 
-export function assertEnvPresence(): void {
+export function assertEnvPresence(parsed?: Record<string, unknown>): void {
   const nodeEnv = process.env.NODE_ENV;
   if (nodeEnv === "test") return;
 
   const isProduction = nodeEnv === "production";
   const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
 
-  const checks = RUNTIME_REQUIRED.map((name) => ({ name, status: inspect(name) }));
+  const checks = RUNTIME_REQUIRED.map((name) => ({ name, status: inspect(name, parsed) }));
   const issues = checks.filter((c) => c.status !== "present");
 
   if (isProduction && !isBuildPhase) {

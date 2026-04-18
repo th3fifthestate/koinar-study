@@ -120,4 +120,4 @@ if (strictValidation) {
  */
 export const env = parsed;
 
-assertEnvPresence();
+assertEnvPresence(parsed);
