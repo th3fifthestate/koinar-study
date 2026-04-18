@@ -1,0 +1,227 @@
+'use client'
+
+import { useRef, useEffect, useCallback } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import { BenchCanvasContext, useCanvasCamera } from './canvas-camera'
+import { ConnectionLayer } from './connection'
+import { ClippingCard } from './clipping-card'
+import { useBenchBoard } from '@/lib/hooks/use-bench-board'
+import { scheduleCameraSave } from '@/lib/bench/camera-persistence'
+import type { BenchBoard, BenchClipping, BenchConnection } from '@/lib/db/types'
+
+interface BenchCanvasProps {
+  board: BenchBoard
+  initialClippings: BenchClipping[]
+  initialConnections: BenchConnection[]
+}
+
+export function BenchCanvas({ board, initialClippings, initialConnections }: BenchCanvasProps) {
+  const prefersReduced = useReducedMotion()
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const isPanning = useRef(false)
+  const lastPointer = useRef({ x: 0, y: 0 })
+  const spaceHeld = useRef(false)
+
+  const camControls = useCanvasCamera({
+    x: board.camera_x,
+    y: board.camera_y,
+    zoom: board.camera_zoom,
+  })
+  const { camera, pan, zoomAtPoint, transformStyle } = camControls
+
+  const boardState = useBenchBoard(board.id, initialClippings, initialConnections)
+  const { clippings, connections, addClipping } = boardState
+
+  // Persist camera on change (debounced 1500ms)
+  useEffect(() => {
+    scheduleCameraSave(board.id, camera)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [board.id, camera.x, camera.y, camera.zoom])
+
+  // Keyboard: Space = pan mode, Cmd+0 = reset
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+      if (e.code === 'Space') {
+        e.preventDefault()
+        spaceHeld.current = true
+        viewportRef.current?.classList.add('cursor-grab')
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === '0') {
+        e.preventDefault()
+        camControls.reset()
+      }
+    }
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        spaceHeld.current = false
+        if (!isPanning.current) {
+          viewportRef.current?.classList.remove('cursor-grab')
+        }
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
+    }
+  }, [camControls])
+
+  // Pointer: pan when Space held
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!spaceHeld.current) return
+      isPanning.current = true
+      lastPointer.current = { x: e.clientX, y: e.clientY }
+      viewportRef.current?.setPointerCapture(e.pointerId)
+      viewportRef.current?.classList.replace('cursor-grab', 'cursor-grabbing')
+    },
+    []
+  )
+
+  const onPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isPanning.current) return
+      const dx = e.clientX - lastPointer.current.x
+      const dy = e.clientY - lastPointer.current.y
+      lastPointer.current = { x: e.clientX, y: e.clientY }
+      pan(camera.x + dx, camera.y + dy)
+    },
+    [camera.x, camera.y, pan]
+  )
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isPanning.current) return
+    isPanning.current = false
+    viewportRef.current?.releasePointerCapture(e.pointerId)
+    if (spaceHeld.current) {
+      viewportRef.current?.classList.replace('cursor-grabbing', 'cursor-grab')
+    } else {
+      viewportRef.current?.classList.remove('cursor-grabbing')
+    }
+  }, [])
+
+  // Wheel: Ctrl/Meta+wheel = zoom, bare wheel = pan when zoomed in
+  const onWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault()
+      const vp = viewportRef.current
+      if (!vp) return
+      const rect = vp.getBoundingClientRect()
+      const vpX = e.clientX - rect.left
+      const vpY = e.clientY - rect.top
+
+      if (e.ctrlKey || e.metaKey) {
+        const factor = 1 - e.deltaY * 0.005
+        zoomAtPoint(vpX, vpY, camera.zoom * factor)
+      } else if (camera.zoom !== 1) {
+        pan(camera.x - e.deltaX, camera.y - e.deltaY)
+      }
+      // bare wheel at zoom=1 → let page scroll naturally (do nothing)
+    },
+    [camera.zoom, camera.x, camera.y, zoomAtPoint, pan]
+  )
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [onWheel])
+
+  // Drop target: accept bench-clip drags from SourceDrawer
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes('application/bench-clip')) {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'copy'
+    }
+  }, [])
+
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      const raw = e.dataTransfer.getData('application/bench-clip')
+      if (!raw) return
+      try {
+        const payload = JSON.parse(raw) as {
+          clipping_type: BenchClipping['clipping_type']
+          source_ref: unknown
+        }
+        const rect = viewportRef.current!.getBoundingClientRect()
+        const worldX = (e.clientX - rect.left - camera.x) / camera.zoom
+        const worldY = (e.clientY - rect.top - camera.y) / camera.zoom
+        void addClipping({
+          clipping_type: payload.clipping_type,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          source_ref: payload.source_ref as any,
+          x: worldX,
+          y: worldY,
+        })
+      } catch {
+        // malformed drag payload — ignore
+      }
+    },
+    [camera, addClipping]
+  )
+
+  // Dot grid opacity based on zoom (per 32a §1.2)
+  const dotOpacity =
+    camera.zoom >= 1 ? 0.1 : camera.zoom <= 0.6 ? 0 : ((camera.zoom - 0.6) / 0.4) * 0.1
+
+  return (
+    <BenchCanvasContext.Provider value={{ ...camControls, boardId: board.id }}>
+      <div
+        ref={viewportRef}
+        className="relative overflow-hidden w-full h-full select-none"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        aria-label="Study bench canvas"
+        role="region"
+      >
+        {/* Transform plane */}
+        <div
+          className="absolute top-0 left-0 origin-top-left"
+          style={{ transform: transformStyle }}
+        >
+          {/* Dot grid */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              inset: '-5000px',
+              opacity: dotOpacity,
+              backgroundImage:
+                'radial-gradient(circle, var(--stone-300, #c7bfb0) 1px, transparent 1px)',
+              backgroundSize: '32px 32px',
+            }}
+            aria-hidden
+          />
+
+          {/* SVG connection layer (below cards) */}
+          <ConnectionLayer
+            connections={connections}
+            clippings={clippings}
+            onDelete={boardState.deleteConnection}
+          />
+
+          {/* Clipping cards */}
+          {clippings.map((clipping) => (
+            <ClippingCard
+              key={clipping.id}
+              clipping={clipping}
+              boardId={board.id}
+              onMove={boardState.moveClipping}
+              onResize={boardState.resizeClipping}
+              onDelete={boardState.deleteClipping}
+              onAddConnection={boardState.addConnection}
+            />
+          ))}
+        </div>
+      </div>
+    </BenchCanvasContext.Provider>
+  )
+}
