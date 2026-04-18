@@ -152,6 +152,15 @@ const TEMPLATES = `## Study Format Templates
 
 const OUTPUT_FORMAT = `## Output Format
 
+**CRITICAL — No conversational preamble.** Your response is rendered verbatim as the published study. Do NOT emit any conversational lead-in before the study begins. Forbidden opener examples:
+- "Excellent. I now have everything I need. Let me compose the study."
+- "Here is the study you requested."
+- "Let me begin."
+- "Now I'll write the study."
+- Any filler acknowledging the research phase, tool use, or the user's prompt.
+
+The very first character of your response MUST be \`#\` (the H1 title). No blank lines, no separator rules (\`---\`), no prose, nothing before the H1. Similarly, do not sign off or add commentary after the final code fence — the \`json-metadata\` block is the last thing in your response.
+
 Write the study in well-formatted markdown. Use:
 - # for the study title
 - ## for major sections

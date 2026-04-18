@@ -20,6 +20,7 @@ import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
 import crypto from 'crypto';
 import { stripEntityAnnotations } from '@/lib/entities/strip-annotations';
+import { stripPreamble } from '@/lib/ai/strip-preamble';
 import { insertStudyAnnotations } from '@/lib/db/entities/queries';
 
 // 5 generations per 5-minute window per user
@@ -169,8 +170,19 @@ export async function POST(request: Request) {
     ],
     tools: studyTools,
     stopWhen: stepCountIs(30),
-    onFinish: async ({ text, totalUsage, steps, providerMetadata }) => {
+    onFinish: async ({ text: rawText, totalUsage, steps, providerMetadata }) => {
       const duration = Date.now() - startTime;
+
+      // Strip any conversational preamble the model emitted before the H1
+      // (e.g., "Excellent. Let me compose the study."). System prompt tells
+      // the model not to do this; this is the persistence-layer backstop so
+      // the stored markdown always starts with the study title.
+      const { cleaned: text, stripped: strippedPreamble } = stripPreamble(rawText);
+      if (strippedPreamble) {
+        console.warn(
+          `[generate/onFinish] Stripped preamble before H1 (${strippedPreamble.length} chars): ${JSON.stringify(strippedPreamble.slice(0, 120))}`,
+        );
+      }
       const anthropicMeta = providerMetadata?.anthropic as
         | { cacheCreationInputTokens?: number; cacheReadInputTokens?: number }
         | undefined;
