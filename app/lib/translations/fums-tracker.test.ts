@@ -19,7 +19,8 @@ function seedSchema(d: Database.Database) {
        user_id       INTEGER,
        verse_count   INTEGER NOT NULL,
        created_at    INTEGER NOT NULL,
-       flushed_at    INTEGER
+       flushed_at    INTEGER,
+       surface       TEXT    NOT NULL DEFAULT 'reader'
      )`,
   ).run();
 }
