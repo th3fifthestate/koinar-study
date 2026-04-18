@@ -391,3 +391,68 @@ export interface InviteRow {
   status: 'pending' | 'accepted' | 'expired';
   createdAt: string;
 }
+
+// ============================================================
+// Study Bench Layer (Brief 31c)
+// ============================================================
+
+export interface BenchBoard {
+  id: string;
+  user_id: string;
+  title: string;
+  question: string;
+  camera_x: number;
+  camera_y: number;
+  camera_zoom: number;
+  is_archived: 0 | 1;
+  created_at: string;
+  updated_at: string;
+}
+
+export type BenchClippingSourceRef =
+  | { type: 'verse'; book: string; chapter: number; verse: number; translation: string }
+  | { type: 'entity'; entity_id: string }
+  | { type: 'translation-compare'; book: string; chapter: number; verse: number; translations: string[] }
+  | { type: 'cross-ref-chain'; from_book: string; from_chapter: number; from_verse: number }
+  | { type: 'lexicon'; strongs_id: string }
+  | { type: 'note'; annotation_id: number }
+  | { type: 'study-section'; study_id: number; section_heading: string };
+
+export interface BenchClipping {
+  id: string;
+  board_id: string;
+  clipping_type:
+    | 'verse'
+    | 'entity'
+    | 'translation-compare'
+    | 'cross-ref-chain'
+    | 'lexicon'
+    | 'note'
+    | 'study-section';
+  source_ref: string;  // JSON — parse to BenchClippingSourceRef
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string | null;
+  user_label: string | null;
+  z_index: number;
+  created_at: string;
+}
+
+export interface BenchConnection {
+  id: string;
+  board_id: string;
+  from_clipping_id: string;
+  to_clipping_id: string;
+  label: string | null;
+  created_at: string;
+}
+
+export interface BenchRecentClip {
+  id: string;
+  user_id: string;
+  payload: string;  // JSON — same shape as would become a BenchClipping
+  clipped_from_route: string | null;
+  created_at: string;
+}
