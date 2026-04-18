@@ -122,11 +122,13 @@ async function renewRow(row: CachedVerse): Promise<void> {
         text: v.text,
         fumsToken: v.fumsToken,
       });
+      // TODO: renew-cache runs outside a request context — no studyId available.
       recordFumsEvent({
         translation: row.translation,
         fumsToken: v.fumsToken,
         eventType: "fetch",
         verseCount: 1,
+        surface: { kind: 'reader', studyId: 'unknown' },
       });
     }
     return;

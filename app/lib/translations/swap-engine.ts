@@ -132,7 +132,7 @@ async function fetchVerse(
   book: string,
   chapter: number,
   verse: number,
-  ctx: { studyId: number; userId: number },
+  ctx: { studyId: number; userId: number; surface: DisplaySurface },
 ): Promise<FetchVerseResult> {
   const info = TRANSLATIONS[target];
 
@@ -184,6 +184,7 @@ async function fetchVerse(
         studyId: ctx.studyId,
         userId: ctx.userId,
         verseCount: 1,
+        surface: ctx.surface,
       });
       return { ok: true, text: r.text, fumsToken: null };
     } catch (err) {
@@ -217,6 +218,7 @@ async function fetchVerse(
       studyId: ctx.studyId,
       userId: ctx.userId,
       verseCount: 1,
+      surface: ctx.surface,
     });
     enforceStorageCap(target);
     return { ok: true, text: r.text, fumsToken: r.fumsToken };
@@ -228,7 +230,7 @@ async function fetchVerse(
 export async function swapVerses(
   studyContent: string,
   target: TranslationId,
-  ctx: { studyId: number; userId: number },
+  ctx: { studyId: number; userId: number; surface?: DisplaySurface },
 ): Promise<SwapResult> {
   if (target === "BSB") {
     return { content: studyContent, versesSwapped: 0, missingVerses: [], truncated: false };
@@ -239,6 +241,9 @@ export async function swapVerses(
   let versesSwapped = 0;
   const missingVerses: Array<{ book: string; chapter: number; verse: number }> = [];
   let failureReason: SwapFailureReason | undefined;
+
+  // Resolve the effective surface for this swap (defaults to reader context).
+  const effectiveSurface: DisplaySurface = ctx.surface ?? { kind: 'reader', studyId: String(ctx.studyId) };
 
   // NIV §V.F: compute the allowed-verse set BEFORE fetching so we never render
   // past the cap. Skipped verses are replaced with a truncation marker; the
@@ -256,8 +261,7 @@ export async function swapVerses(
       }
     }
     if (allRefs.length) {
-      const readerSurface: DisplaySurface = { kind: 'reader', studyId: String(ctx.studyId) };
-      const guard = enforceNivPerViewCap(allRefs, readerSurface);
+      const guard = enforceNivPerViewCap(allRefs, effectiveSurface);
       truncated = guard.truncated;
       if (guard.truncated) {
         allowedKey = new Set(
@@ -281,7 +285,7 @@ export async function swapVerses(
         anyOverCap = true;
         continue;
       }
-      const fetched = await fetchVerse(target, ref.displayName, ref.book, ref.chapter, v, ctx);
+      const fetched = await fetchVerse(target, ref.displayName, ref.book, ref.chapter, v, { ...ctx, surface: effectiveSurface });
       if (!fetched.ok) {
         missingVerses.push({ book: ref.book, chapter: ref.chapter, verse: v });
         anyMissing = true;

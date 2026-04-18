@@ -1,6 +1,7 @@
 // app/lib/translations/fums-tracker.test.ts
 import Database from "better-sqlite3";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { DisplaySurface } from "@/lib/bench/types";
 
 let db: Database.Database;
 
@@ -40,6 +41,7 @@ describe("fums-tracker", () => {
       fumsToken: "tok-1",
       eventType: "fetch",
       verseCount: 2,
+      surface: { kind: 'reader', studyId: 'study-1' },
     });
     recordFumsEvent({
       translation: "NIV",
@@ -48,6 +50,7 @@ describe("fums-tracker", () => {
       studyId: 5,
       userId: 7,
       verseCount: 2,
+      surface: { kind: 'reader', studyId: '5' },
     });
     const rows = db
       .prepare(`SELECT event_type, verse_count FROM fums_events ORDER BY id`)
@@ -67,6 +70,7 @@ describe("fums-tracker", () => {
         fumsToken: null,
         eventType: "display",
         verseCount: 1,
+        surface: { kind: 'reader', studyId: 'study-1' },
       });
     }
     const { flushed, attempted } = await flushFumsEvents();
@@ -96,5 +100,44 @@ describe("fums-tracker", () => {
       .prepare(`SELECT COUNT(*) AS n FROM fums_events`)
       .get() as { n: number };
     expect(remaining.n).toBe(1);
+  });
+});
+
+describe('surface field', () => {
+  beforeEach(() => {
+    db = new Database(':memory:');
+    seedSchema(db);
+    vi.resetModules();
+  });
+  afterEach(() => db.close());
+
+  it('stores surface=reader for reader events', async () => {
+    const { recordFumsEvent } = await import('./fums-tracker');
+    recordFumsEvent({
+      translation: 'NIV',
+      fumsToken: null,
+      eventType: 'display',
+      verseCount: 1,
+      surface: { kind: 'reader', studyId: 'study-1' },
+    });
+    const row = db
+      .prepare('SELECT surface FROM fums_events ORDER BY id DESC LIMIT 1')
+      .get() as { surface: string };
+    expect(row.surface).toBe('reader');
+  });
+
+  it('stores surface as bench:board-1 for bench events', async () => {
+    const { recordFumsEvent } = await import('./fums-tracker');
+    recordFumsEvent({
+      translation: 'NIV',
+      fumsToken: null,
+      eventType: 'display',
+      verseCount: 1,
+      surface: { kind: 'bench', boardId: 'board-1' },
+    });
+    const row = db
+      .prepare('SELECT surface FROM fums_events ORDER BY id DESC LIMIT 1')
+      .get() as { surface: string };
+    expect(row.surface).toBe('bench:board-1');
   });
 });

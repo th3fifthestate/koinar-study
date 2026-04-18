@@ -12,6 +12,7 @@
 
 import { getDb } from "@/lib/db/connection";
 import { config } from "@/lib/config";
+import type { DisplaySurface } from "@/lib/bench/types";
 
 export interface FumsEventInput {
   translation: string;
@@ -20,14 +21,19 @@ export interface FumsEventInput {
   studyId?: number;
   userId?: number;
   verseCount: number;
+  surface: DisplaySurface;
+}
+
+function serializeSurface(surface: DisplaySurface): string {
+  return surface.kind === 'reader' ? 'reader' : `bench:${surface.boardId}`;
 }
 
 export function recordFumsEvent(ev: FumsEventInput): void {
   const db = getDb();
   db.prepare(
     `INSERT INTO fums_events
-       (translation, fums_token, event_type, study_id, user_id, verse_count, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+       (translation, fums_token, event_type, study_id, user_id, verse_count, created_at, surface)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     ev.translation,
     ev.fumsToken,
@@ -36,6 +42,7 @@ export function recordFumsEvent(ev: FumsEventInput): void {
     ev.userId ?? null,
     ev.verseCount,
     nowSeconds(),
+    serializeSurface(ev.surface),
   );
 }
 

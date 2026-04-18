@@ -24,5 +24,6 @@ export async function recordDisplayEvent(
     studyId,
     userId: session?.userId,
     verseCount,
+    surface: { kind: 'reader', studyId: String(studyId) },
   });
 }
