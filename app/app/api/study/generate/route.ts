@@ -137,7 +137,9 @@ export async function POST(request: Request) {
   }
 
   // 5. Build provider, system prompt, and start timer
-  const provider = createAnthropic({ apiKey });
+  // Explicit baseURL prevents ANTHROPIC_BASE_URL shell var (set to "https://api.anthropic.com"
+  // for @anthropic-ai/sdk) from stripping the /v1 prefix → Cloudflare 404.
+  const provider = createAnthropic({ apiKey, baseURL: 'https://api.anthropic.com/v1' });
   const systemPrompt = getSystemPrompt(format);
   const startTime = Date.now();
   const userId = auth.user.userId;
@@ -154,7 +156,7 @@ export async function POST(request: Request) {
   // breakpoint, including tool definitions. Saves ~90% on input tokens for
   // repeat generations within the cache window.
   const result = streamText({
-    model: provider(model ?? "claude-opus-4-6"),
+    model: provider(model ?? config.ai.modelId),
     messages: [
       {
         role: "system",
@@ -252,7 +254,7 @@ export async function POST(request: Request) {
           translation_used: translation.toUpperCase(),
           created_by: userId,
           generation_metadata: JSON.stringify({
-            model: model ?? "claude-opus-4-6",
+            model: model ?? config.ai.modelId,
             input_tokens: inputTokens,
             output_tokens: outputTokens,
             cache_read_tokens: cacheReadTokens,
