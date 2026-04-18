@@ -62,7 +62,7 @@ export const READER_MOTION_POPOVER_ENTER: MotionSpec = {
  */
 export const READER_MOTION_POPOVER_EXIT: MotionSpec = {
   duration: 120,
-  easing: 'ease-out',
+  easing: 'cubic-bezier(0.4, 0, 1, 1)',
 };
 
 /**
