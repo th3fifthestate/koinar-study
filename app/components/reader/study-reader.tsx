@@ -290,7 +290,7 @@ function StudyReaderContent({
               without a dead right band. A soft upper cap prevents
               pathological line lengths on extra-wide displays. */}
           <main className="relative min-w-0 flex-1">
-            <article className="relative max-w-[95ch] py-4 md:py-6">
+            <article className="relative max-w-[95ch] xl:max-w-[78ch] py-4 md:py-6">
               <CopyGuard currentTranslation={currentTranslation}>
                 <div ref={contentRef}>
                   <MarkdownRenderer
