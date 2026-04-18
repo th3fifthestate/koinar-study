@@ -81,16 +81,22 @@ export function ReaderSurface({ children }: ReaderSurfaceProps) {
       className="relative min-h-screen transition-colors duration-[1200ms]"
       style={surfaceStyle}
     >
-      {/* Tonal wash layer — warmth glow + sage drift sitting over the paper.
-          Placed behind content via z-index; pointer-events disabled. */}
+      {/* Tonal wash layer — warmth glow + sage drift sitting over the
+          paper. Uses `fixed` positioning so the washes stay locked to
+          the viewport as the reader scrolls, reading like ambient light
+          coming through a window rather than a single top-of-page
+          vignette. The grain (which IS tied to content) drifts across
+          it, preserving the sense of paper movement. Pointer-events
+          disabled; sits behind z-10 content. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[90vh]"
+        className="pointer-events-none fixed inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 1400px 700px at 18% 0%, ${p.washWarmth}, transparent 62%),
-            radial-gradient(ellipse 1300px 900px at 88% 12%, ${p.washSage}, transparent 65%),
-            radial-gradient(ellipse 1100px 800px at 40% 55%, ${p.washWarmth}, transparent 70%)
+            radial-gradient(ellipse 70vw 55vh at 14% 8%, ${p.washWarmth}, transparent 62%),
+            radial-gradient(ellipse 65vw 70vh at 92% 22%, ${p.washSage}, transparent 65%),
+            radial-gradient(ellipse 60vw 65vh at 30% 75%, ${p.washWarmth}, transparent 70%),
+            radial-gradient(ellipse 55vw 60vh at 85% 92%, ${p.washSage}, transparent 70%)
           `,
         }}
       />
