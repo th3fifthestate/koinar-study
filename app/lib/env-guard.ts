@@ -36,13 +36,13 @@ export function assertEnvPresence(): void {
     throw new Error(`[env] Missing or invalid env vars in production:\n${lines}`);
   }
 
-  // Development: grouped warning (non-fatal)
+  // Development: grouped warning (non-fatal).
+  // Avoid console.group / console.groupEnd — unsupported in Next's edge runtime
+  // where this module is loaded via lib/env.ts → lib/config.ts import chains.
   if (issues.length > 0) {
-    console.group("[env] Dev startup — missing/short env vars:");
-    for (const { name, status } of issues) {
-      console.warn(`  ${name}: ${status}`);
-    }
-    console.warn("  → See founders-files/runbooks/env-dev-loading.md");
-    console.groupEnd();
+    const lines = issues.map((c) => `  ${c.name}: ${c.status}`).join("\n");
+    console.warn(
+      `[env] Dev startup — missing/short env vars:\n${lines}\n  → See founders-files/runbooks/env-dev-loading.md`,
+    );
   }
 }
