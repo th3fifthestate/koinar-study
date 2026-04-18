@@ -72,31 +72,41 @@ export function useBenchBoard(
     [boardId]
   )
 
-  const moveClipping = useCallback(async (id: string, x: number, y: number) => {
-    setClippings((prev) => prev.map((c) => (c.id === id ? { ...c, x, y } : c)))
-    try {
-      await fetch(`/api/bench/clippings/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ x, y }),
-      })
-    } catch {
-      // non-fatal — position will sync on next move
-    }
-  }, [])
+  const moveClipping = useCallback(
+    async (id: string, x: number, y: number) => {
+      const prev = clippings
+      setClippings((cs) => cs.map((c) => (c.id === id ? { ...c, x, y } : c)))
+      try {
+        const res = await fetch(`/api/bench/clippings/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ x, y }),
+        })
+        if (!res.ok) throw new Error('server error')
+      } catch {
+        setClippings(prev)
+      }
+    },
+    [clippings]
+  )
 
-  const resizeClipping = useCallback(async (id: string, width: number, height: number) => {
-    setClippings((prev) => prev.map((c) => (c.id === id ? { ...c, width, height } : c)))
-    try {
-      await fetch(`/api/bench/clippings/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ width, height }),
-      })
-    } catch {
-      // non-fatal
-    }
-  }, [])
+  const resizeClipping = useCallback(
+    async (id: string, width: number, height: number) => {
+      const prev = clippings
+      setClippings((cs) => cs.map((c) => (c.id === id ? { ...c, width, height } : c)))
+      try {
+        const res = await fetch(`/api/bench/clippings/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ width, height }),
+        })
+        if (!res.ok) throw new Error('server error')
+      } catch {
+        setClippings(prev)
+      }
+    },
+    [clippings]
+  )
 
   const deleteClipping = useCallback(
     async (id: string) => {

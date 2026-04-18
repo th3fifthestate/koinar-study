@@ -7,22 +7,27 @@ import type { BenchClipping } from '@/lib/db/types'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 240 })
 
+// source_ref is intentionally not patchable — it is the typed payload set at
+// creation and later mutations would require re-validating the discriminated
+// union. Clients should delete + recreate the clipping instead.
 const patchSchema = z.object({
-  x: z.number().optional(),
-  y: z.number().optional(),
-  width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  color: z.string().nullable().optional(),
+  x: z.number().finite().optional(),
+  y: z.number().finite().optional(),
+  width: z.number().positive().finite().optional(),
+  height: z.number().positive().finite().optional(),
+  color: z.string().max(32).nullable().optional(),
   user_label: z.string().max(80).nullable().optional(),
   z_index: z.number().int().optional(),
-  source_ref: z.string().optional(),
 })
+
+const CLIPPING_COLS_JOIN =
+  'c.id, c.board_id, c.clipping_type, c.source_ref, c.x, c.y, c.width, c.height, c.color, c.user_label, c.z_index, c.created_at'
 
 function getClippingForUser(clippingId: string, userId: number): BenchClipping | null {
   return (
     (getDb()
       .prepare(
-        `SELECT c.* FROM bench_clippings c
+        `SELECT ${CLIPPING_COLS_JOIN} FROM bench_clippings c
          JOIN bench_boards b ON c.board_id = b.id
          WHERE c.id = ? AND b.user_id = ?`
       )

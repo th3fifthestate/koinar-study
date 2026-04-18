@@ -1,7 +1,11 @@
 import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { z } from 'zod'
-import { getBenchBoard, createBenchConnection } from '@/lib/db/bench/queries'
+import {
+  getBenchBoard,
+  createBenchConnection,
+  getBenchClippingBoardId,
+} from '@/lib/db/bench/queries'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
@@ -39,6 +43,13 @@ export async function POST(request: Request) {
   const { board_id, from_clipping_id, to_clipping_id, label } = parsed.data
 
   if (!getBenchBoard(board_id, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  if (
+    getBenchClippingBoardId(from_clipping_id) !== board_id ||
+    getBenchClippingBoardId(to_clipping_id) !== board_id
+  ) {
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
