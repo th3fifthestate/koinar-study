@@ -8,7 +8,6 @@ import { RefineBand } from '@/components/home/refine-band';
 import { StudyGrid } from '@/components/library/study-grid';
 import { GenerateInvitationCard } from '@/components/home/generate-invitation-card';
 import { EditorialAside } from '@/components/home/editorial-aside';
-import { FooterExhale } from '@/components/home/footer-exhale';
 import { Footer } from '@/components/layout/footer';
 import { TeaserClient } from './teaser-client';
 import { getFeaturedForToday } from '@/lib/home/featured-rotation';
@@ -146,8 +145,7 @@ export default async function HomePage({
       {/* Zone 3 — Editorial aside */}
       <EditorialAside quote={quote} />
 
-      {/* Zone 4 — Footer exhale + footer */}
-      <FooterExhale />
+      {/* Zone 4 — Footer */}
       <Footer />
     </div>
   );
