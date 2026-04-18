@@ -244,7 +244,7 @@ function StudyReaderContent({
         <StudyHero imageUrl={study.featured_image_url} title={study.title} />
       )}
 
-      <div className="relative mx-auto max-w-6xl px-4">
+      <div className="relative mx-auto max-w-7xl px-4">
         <StudyHeader
           title={study.title}
           summary={study.summary}
@@ -276,10 +276,11 @@ function StudyReaderContent({
           }
         />
 
-        <div className="flex gap-6 lg:gap-10">
-          {/* Desktop TOC — narrow gutter. Dot-spine doesn't need a full
-              text column; labels truncate under the dots. */}
-          <aside className="hidden w-40 shrink-0 lg:block">
+        <div className="flex gap-8 lg:gap-20 xl:gap-28">
+          {/* Desktop TOC — sits out in the left gutter, away from the
+              reading column so labels don't crowd the text. Dot-spine
+              doesn't need a full text column; labels truncate. */}
+          <aside className="hidden w-44 shrink-0 lg:block">
             <TableOfContents headings={headings} activeId={activeId} />
           </aside>
 
