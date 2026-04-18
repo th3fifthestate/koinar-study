@@ -184,6 +184,9 @@ export const READER_PALETTE_DARK: Record<TodBucket, ReaderPalette> = {
   },
 };
 
-export function getReaderPalette(bucket: TodBucket, dark: boolean): ReaderPalette {
-  return (dark ? READER_PALETTE_DARK : READER_PALETTE_LIGHT)[bucket];
+export function getReaderPalette(bucket: TodBucket, mode: 'dark' | 'light' | 'sepia'): ReaderPalette {
+  if (mode === 'dark') return READER_PALETTE_DARK[bucket];
+  if (mode === 'light') return READER_PALETTE_LIGHT[bucket];
+  // 'sepia': 28c will add READER_PALETTE_SEPIA; fall through to dark for now
+  return READER_PALETTE_DARK[bucket];
 }

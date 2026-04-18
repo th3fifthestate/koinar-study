@@ -57,7 +57,7 @@ export function ReaderSurface({ children }: ReaderSurfaceProps) {
     };
   }, []);
 
-  const p = getReaderPalette(bucket, isDark);
+  const p = getReaderPalette(bucket, isDark ? 'dark' : 'light');
 
   const surfaceStyle: CSSProperties = {
     '--reader-paper': p.paper,

@@ -4,13 +4,11 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FeaturedAnchorCard } from '@/components/home/featured-anchor-card';
 import {
-  bucketForHour,
   greetingForBucket,
   eyebrowForDay,
   TOD_IMAGES,
-  GRADIENT_OPACITY,
-  type TodBucket,
 } from '@/lib/home/tod-bucket';
+import { useTodPalette } from '@/lib/reader/use-tod-palette';
 import type { StudySummary } from '@/lib/db/types';
 import type { Category } from '@/lib/db/types';
 
@@ -23,13 +21,11 @@ interface HeroProps {
 
 export function Hero({ username: _username, firstName, featuredStudy, categories }: HeroProps) {
   // Hydrate with Evening to avoid SSR/client mismatch; update on mount to client time.
-  const [bucket, setBucket] = useState<TodBucket>('evening');
+  const { bucket, gradientOpacity } = useTodPalette('dark');
   const [dayOfWeek, setDayOfWeek] = useState(0);
 
   useEffect(() => {
-    const now = new Date();
-    setBucket(bucketForHour(now.getHours()));
-    setDayOfWeek(now.getDay());
+    setDayOfWeek(new Date().getDay());
   }, []);
 
   const image = TOD_IMAGES[bucket];
@@ -39,8 +35,6 @@ export function Hero({ username: _username, firstName, featuredStudy, categories
     featuredStudy?.category_id != null
       ? (categories.find((c) => c.id === featuredStudy.category_id)?.name ?? null)
       : null;
-
-  const gradientOpacity = GRADIENT_OPACITY[bucket];
 
   return (
     <section
