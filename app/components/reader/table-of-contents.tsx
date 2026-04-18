@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { List } from 'lucide-react';
 import {
   Sheet,
@@ -29,11 +29,36 @@ interface TableOfContentsProps {
  *
  * The spine itself is a hairline running the full height of the TOC.
  */
+/**
+ * Click-to-scroll that is resilient to heading-id mismatches between the
+ * extracted TOC model (parsed from raw markdown) and the rendered DOM
+ * (where duplicate-slug counters may diverge under chunked / concurrent
+ * rendering). Strategy:
+ *   1. Try direct id lookup.
+ *   2. Fall back to matching a heading by its trimmed text content.
+ *   3. Give up silently.
+ */
+function useHeadingScroll() {
+  return useCallback((id: string, text: string) => {
+    const byId = document.getElementById(id);
+    if (byId) {
+      byId.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const needle = text.trim();
+    const match = Array.from(
+      document.querySelectorAll('article h1, article h2, article h3, article h4'),
+    ).find((el) => el.textContent?.trim() === needle);
+    match?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+}
+
 function DotSpineList({
   headings,
   activeId,
   onItemClick,
 }: TableOfContentsProps & { onItemClick?: () => void }) {
+  const scrollToHeading = useHeadingScroll();
   return (
     <nav aria-label="Table of contents" className="relative">
       {/* Spine rail */}
@@ -55,11 +80,12 @@ function DotSpineList({
           return (
             <li key={h.id} className="group/item relative">
               <button
+                type="button"
                 onClick={() => {
-                  document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' });
+                  scrollToHeading(h.id, h.text);
                   onItemClick?.();
                 }}
-                className="relative flex w-full items-center gap-3 pl-6 pr-2 py-1 text-left text-sm transition-all duration-300 ease-out"
+                className="relative flex w-full cursor-pointer items-center gap-3 pl-6 pr-2 py-1 text-left text-sm transition-all duration-300 ease-out hover:opacity-100"
                 style={{
                   color: isActive
                     ? 'var(--reader-display, var(--stone-700))'

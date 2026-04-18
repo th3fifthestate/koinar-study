@@ -282,14 +282,11 @@ function StudyReaderContent({
             <TableOfContents headings={headings} activeId={activeId} />
           </aside>
 
-          {/* Main content */}
+          {/* Main content — text sits directly on the paper surface, no
+              card container. A max-width keeps the reading measure to
+              ~65ch for comfortable scan length. */}
           <main className="relative min-w-0 flex-1">
-            <article
-              className="relative rounded-lg p-6 backdrop-blur-sm md:p-10"
-              style={{
-                backgroundColor: 'color-mix(in srgb, var(--reader-paper-deep) 92%, transparent)',
-              }}
-            >
+            <article className="relative max-w-[68ch] py-4 md:py-6">
               <CopyGuard currentTranslation={currentTranslation}>
                 <div ref={contentRef}>
                   <MarkdownRenderer
