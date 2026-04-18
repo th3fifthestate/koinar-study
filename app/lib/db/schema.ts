@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 11;
+export const SCHEMA_VERSION = 12;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -190,7 +190,8 @@ CREATE TABLE IF NOT EXISTS fums_events (
   user_id       INTEGER,
   verse_count   INTEGER NOT NULL,
   created_at    INTEGER NOT NULL,
-  flushed_at    INTEGER
+  flushed_at    INTEGER,
+  surface       TEXT    NOT NULL DEFAULT 'reader'
 );
 
 CREATE TABLE IF NOT EXISTS renewal_meta (
@@ -378,6 +379,55 @@ CREATE TABLE IF NOT EXISTS lexicon_entries (
   source TEXT NOT NULL DEFAULT 'stepbible',
   source_version TEXT
 );
+
+CREATE TABLE IF NOT EXISTS bench_boards (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  question TEXT NOT NULL DEFAULT '',
+  camera_x REAL NOT NULL DEFAULT 0,
+  camera_y REAL NOT NULL DEFAULT 0,
+  camera_zoom REAL NOT NULL DEFAULT 1,
+  is_archived INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_bench_boards_user ON bench_boards(user_id, updated_at DESC);
+
+CREATE TABLE IF NOT EXISTS bench_clippings (
+  id TEXT PRIMARY KEY,
+  board_id TEXT NOT NULL REFERENCES bench_boards(id) ON DELETE CASCADE,
+  clipping_type TEXT NOT NULL,
+  source_ref TEXT NOT NULL,
+  x REAL NOT NULL,
+  y REAL NOT NULL,
+  width REAL NOT NULL,
+  height REAL NOT NULL,
+  color TEXT,
+  user_label TEXT,
+  z_index INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_bench_clippings_board ON bench_clippings(board_id);
+
+CREATE TABLE IF NOT EXISTS bench_connections (
+  id TEXT PRIMARY KEY,
+  board_id TEXT NOT NULL REFERENCES bench_boards(id) ON DELETE CASCADE,
+  from_clipping_id TEXT NOT NULL REFERENCES bench_clippings(id) ON DELETE CASCADE,
+  to_clipping_id TEXT NOT NULL REFERENCES bench_clippings(id) ON DELETE CASCADE,
+  label TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_bench_connections_board ON bench_connections(board_id);
+
+CREATE TABLE IF NOT EXISTS bench_recent_clips (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  payload TEXT NOT NULL,
+  clipped_from_route TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_bench_recent_user ON bench_recent_clips(user_id, created_at DESC);
 `;
 
 export const CREATE_INDEXES = `

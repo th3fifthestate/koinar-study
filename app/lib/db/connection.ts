@@ -244,6 +244,72 @@ function runMigration(database: Database.Database): void {
       // No-op: new table is created by runStatements(database, CREATE_TABLES) above.
     }
 
+    // v11 → v12: Study Bench tables + fums_events.surface (Brief 31c).
+    // Four new bench_* tables for the canvas-based study bench feature.
+    // fums_events.surface tracks which surface triggered a FUMS event (default 'reader').
+    // ALTER TABLE must be a separate statement — SQLite does not allow it in a multi-statement exec.
+    if (currentVersion < 12) {
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS bench_boards (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          question TEXT NOT NULL DEFAULT '',
+          camera_x REAL NOT NULL DEFAULT 0,
+          camera_y REAL NOT NULL DEFAULT 0,
+          camera_zoom REAL NOT NULL DEFAULT 1,
+          is_archived INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_bench_boards_user ON bench_boards(user_id, updated_at DESC)').run();
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS bench_clippings (
+          id TEXT PRIMARY KEY,
+          board_id TEXT NOT NULL REFERENCES bench_boards(id) ON DELETE CASCADE,
+          clipping_type TEXT NOT NULL,
+          source_ref TEXT NOT NULL,
+          x REAL NOT NULL,
+          y REAL NOT NULL,
+          width REAL NOT NULL,
+          height REAL NOT NULL,
+          color TEXT,
+          user_label TEXT,
+          z_index INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_bench_clippings_board ON bench_clippings(board_id)').run();
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS bench_connections (
+          id TEXT PRIMARY KEY,
+          board_id TEXT NOT NULL REFERENCES bench_boards(id) ON DELETE CASCADE,
+          from_clipping_id TEXT NOT NULL REFERENCES bench_clippings(id) ON DELETE CASCADE,
+          to_clipping_id TEXT NOT NULL REFERENCES bench_clippings(id) ON DELETE CASCADE,
+          label TEXT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_bench_connections_board ON bench_connections(board_id)').run();
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS bench_recent_clips (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          payload TEXT NOT NULL,
+          clipped_from_route TEXT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+      database.prepare('CREATE INDEX IF NOT EXISTS idx_bench_recent_user ON bench_recent_clips(user_id, created_at DESC)').run();
+      try {
+        database.prepare("ALTER TABLE fums_events ADD COLUMN surface TEXT NOT NULL DEFAULT 'reader'").run();
+      } catch {
+        // Column already exists on fresh DBs where CREATE_TABLES already added it
+      }
+      database.pragma('user_version = 12');
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);
