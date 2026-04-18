@@ -337,6 +337,23 @@ export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_conte
   relationships: (EntityRelationship & { related_entity_name: string; related_entity_type: string })[];
 }
 
+// ============================================================
+// TSK Cross-Reference Layer (Brief 31a)
+// ============================================================
+
+export interface CrossRef {
+  id: number;
+  from_book: string;
+  from_chapter: number;
+  from_verse: number;
+  to_book: string;
+  to_chapter: number;
+  to_verse_start: number;
+  to_verse_end: number | null;   // null = single verse; non-null = range end
+  votes: number | null;          // TSK relevance score from openbible.info
+  source: string;                // default 'tsk'
+}
+
 export interface UserSettings {
   id: number;
   username: string;

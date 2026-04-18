@@ -230,6 +230,13 @@ function runMigration(database: Database.Database): void {
       }
     }
 
+    // v9 → v10: TSK cross-reference table (Brief 31a).
+    // No data backfill needed — table starts empty; populated by npm run ingest:tsk.
+    // CREATE TABLE IF NOT EXISTS in CREATE_TABLES handles creation on fresh DBs.
+    if (currentVersion < 10) {
+      // No-op: new table is created by runStatements(database, CREATE_TABLES) above.
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

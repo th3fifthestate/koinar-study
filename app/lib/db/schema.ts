@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 9;
+export const SCHEMA_VERSION = 10;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -353,6 +353,20 @@ CREATE TRIGGER IF NOT EXISTS entities_fts_delete AFTER DELETE ON entities BEGIN
   INSERT INTO entities_fts(entities_fts, rowid, canonical_name, aliases, quick_glance, summary)
   VALUES ('delete', old.rowid, old.canonical_name, old.aliases, old.quick_glance, old.summary);
 END;
+
+CREATE TABLE IF NOT EXISTS cross_refs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  from_book TEXT NOT NULL,
+  from_chapter INTEGER NOT NULL,
+  from_verse INTEGER NOT NULL,
+  to_book TEXT NOT NULL,
+  to_chapter INTEGER NOT NULL,
+  to_verse_start INTEGER NOT NULL,
+  to_verse_end INTEGER,
+  votes INTEGER,
+  source TEXT NOT NULL DEFAULT 'tsk'
+);
+
 `;
 
 export const CREATE_INDEXES = `
@@ -413,6 +427,8 @@ CREATE INDEX IF NOT EXISTS idx_study_entity_annot_study ON study_entity_annotati
 CREATE INDEX IF NOT EXISTS idx_study_entity_annot_entity ON study_entity_annotations(entity_id);
 CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_user ON saved_branch_maps(user_id);
 CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_study ON saved_branch_maps(study_id, user_id);
+CREATE INDEX IF NOT EXISTS idx_cross_refs_from ON cross_refs(from_book, from_chapter, from_verse);
+CREATE INDEX IF NOT EXISTS idx_cross_refs_to ON cross_refs(to_book, to_chapter, to_verse_start);
 `;
 
 export const SEED_CATEGORIES = `
