@@ -25,7 +25,7 @@ import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
 import type { TranslationAvailability } from '@/lib/translations/registry';
-import type { SwapFailureReason } from '@/lib/translations/swap-engine';
+import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-engine';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -112,12 +112,11 @@ export function StudyReader({
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({})) as { error?: string };
-        const reason = err.error as SwapFailureReason | undefined;
-        // Surface toast for non-reason errors as safety net
-        if (!reason) {
-          toast.error('Could not load translation');
-        }
-        throw reason ?? 'network';
+        const rawReason = (err as { error?: string }).error;
+        const reason: SwapFailureReason = (rawReason && rawReason in SWAP_FAILURE_HINT)
+          ? (rawReason as SwapFailureReason)
+          : 'network';
+        throw reason;
       }
       const data = await res.json() as {
         content: string;

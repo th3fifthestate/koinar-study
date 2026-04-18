@@ -63,9 +63,11 @@ export default async function StudyPage({ params }: Props) {
     }),
   );
 
-  const translationAvailability: TranslationAvailability[] = availabilityResults
-    .filter((r): r is PromiseFulfilledResult<TranslationAvailability> => r.status === 'fulfilled')
-    .map((r) => r.value);
+  const translationAvailability: TranslationAvailability[] = availabilityResults.map((r, i) =>
+    r.status === 'fulfilled'
+      ? r.value
+      : { id: availableTranslations[i].id, name: availableTranslations[i].name, state: 'uncached' as const }
+  );
 
   return (
     <StudyReader

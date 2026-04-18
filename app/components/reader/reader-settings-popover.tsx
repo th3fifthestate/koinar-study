@@ -317,7 +317,7 @@ function TranslationListView({
           const isCurrent = t.id === currentTranslation;
           const isVerifying = rowState === 'verifying';
           const isUnavailable = rowState === 'unavailable';
-          const isDisabled = isUnavailable || (isAnyVerifying && !isVerifying);
+          const isDisabled = isUnavailable || isAnyVerifying;
 
           return (
             <div key={t.id}>
