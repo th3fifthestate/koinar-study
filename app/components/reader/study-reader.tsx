@@ -351,6 +351,28 @@ function StudyReaderContent({
                   clearSelection();
                 }}
                 onClose={clearSelection}
+                onClipToBench={async () => {
+                  const headingSlug = activeId ?? 'introduction'
+                  const payload = {
+                    type: 'study-section',
+                    source_ref: { type: 'study-section', study_id: study.id, section_heading: headingSlug },
+                  }
+                  try {
+                    await fetch('/api/bench/recent-clips', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        payload: JSON.stringify(payload),
+                        clipped_from_route: window.location.pathname,
+                      }),
+                    })
+                    toast.success('Section clipped to Bench', {
+                      action: { label: 'View', onClick: () => window.open('/bench', '_blank') },
+                    })
+                  } catch {
+                    toast.error('Failed to clip to Bench')
+                  }
+                }}
                 annotationFullContextHeight={annotationFullContextHeight}
                 onAnnotationFullContextHeightChange={onAnnotationFullContextHeightChange}
               />

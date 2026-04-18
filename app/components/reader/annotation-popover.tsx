@@ -16,6 +16,8 @@ interface AnnotationPopoverProps {
   onHighlight: (color: HighlightColor, isPublic: boolean) => void;
   onNote: (color: HighlightColor, noteText: string, isPublic: boolean) => void;
   onClose: () => void;
+  /** Called when the user clips this selection to the Bench. */
+  onClipToBench?: () => void;
   /** Persisted height for full-context mode (px). */
   annotationFullContextHeight?: number;
   /** Called when the user resizes the full-context panel. */
@@ -37,6 +39,7 @@ export function AnnotationPopover({
   onHighlight,
   onNote,
   onClose,
+  onClipToBench,
   annotationFullContextHeight,
   onAnnotationFullContextHeightChange,
 }: AnnotationPopoverProps) {
@@ -263,6 +266,16 @@ export function AnnotationPopover({
                   >
                     Context
                   </button>
+
+                  {onClipToBench && (
+                    <button
+                      onClick={() => { onClipToBench(); onClose(); }}
+                      className="rounded-md px-2.5 py-1 text-xs font-medium text-sage-700 transition-colors hover:bg-sage-50 border border-sage-200"
+                      title="Clip to Bench"
+                    >
+                      Clip
+                    </button>
+                  )}
                 </div>
 
                 <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground select-none">
