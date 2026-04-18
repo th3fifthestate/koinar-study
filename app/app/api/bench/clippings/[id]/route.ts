@@ -18,7 +18,7 @@ const patchSchema = z.object({
   source_ref: z.string().optional(),
 })
 
-function getClippingForUser(clippingId: string, userId: string): BenchClipping | null {
+function getClippingForUser(clippingId: string, userId: number): BenchClipping | null {
   return (
     (getDb()
       .prepare(

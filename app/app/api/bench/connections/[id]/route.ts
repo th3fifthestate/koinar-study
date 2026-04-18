@@ -11,7 +11,7 @@ const patchSchema = z.object({
   label: z.string().max(60).nullable(),
 })
 
-function getConnectionForUser(id: string, userId: string): BenchConnection | null {
+function getConnectionForUser(id: string, userId: number): BenchConnection | null {
   return (
     (getDb()
       .prepare(

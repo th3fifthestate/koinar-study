@@ -3,7 +3,7 @@ import type { BenchBoard, BenchClipping, BenchConnection } from '@/lib/db/types'
 
 // ── Boards ──────────────────────────────────────────────────────────────────
 
-export function getBenchBoards(userId: string): BenchBoard[] {
+export function getBenchBoards(userId: number): BenchBoard[] {
   return getDb()
     .prepare(
       'SELECT * FROM bench_boards WHERE user_id = ? AND is_archived = 0 ORDER BY updated_at DESC'
@@ -11,7 +11,7 @@ export function getBenchBoards(userId: string): BenchBoard[] {
     .all(userId) as BenchBoard[]
 }
 
-export function getBenchBoard(boardId: string, userId: string): BenchBoard | null {
+export function getBenchBoard(boardId: string, userId: number): BenchBoard | null {
   return (
     (getDb()
       .prepare('SELECT * FROM bench_boards WHERE id = ? AND user_id = ?')
@@ -19,7 +19,7 @@ export function getBenchBoard(boardId: string, userId: string): BenchBoard | nul
   )
 }
 
-export function createBenchBoard(userId: string, title: string): BenchBoard {
+export function createBenchBoard(userId: number, title: string): BenchBoard {
   const db = getDb()
   const id = crypto.randomUUID()
   db.prepare(
@@ -31,7 +31,7 @@ export function createBenchBoard(userId: string, title: string): BenchBoard {
 
 export function updateBenchBoard(
   boardId: string,
-  userId: string,
+  userId: number,
   patch: Partial<
     Pick<BenchBoard, 'title' | 'question' | 'camera_x' | 'camera_y' | 'camera_zoom' | 'is_archived'>
   >
@@ -47,7 +47,7 @@ export function updateBenchBoard(
   return getBenchBoard(boardId, userId)
 }
 
-export function deleteBenchBoard(boardId: string, userId: string): void {
+export function deleteBenchBoard(boardId: string, userId: number): void {
   getDb()
     .prepare('DELETE FROM bench_boards WHERE id = ? AND user_id = ?')
     .run(boardId, userId)
@@ -177,7 +177,7 @@ export function deleteBenchConnection(connectionId: string, boardId: string): vo
 // ── Source drawer seeds ──────────────────────────────────────────────────────
 
 export function getRecentVerseSeeds(
-  userId: string,
+  userId: number,
   limit: number
 ): Array<{ source_ref: string; created_at: string }> {
   return getDb()
