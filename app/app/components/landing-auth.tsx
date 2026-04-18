@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/password-input";
 
 type View = "buttons" | "join" | "signin";
 type FormStatus = "idle" | "loading" | "success" | "error";
@@ -26,7 +27,7 @@ const backLinkClass =
 // rule while keeping the centered editorial layout. Sighted users see the
 // field name even after filling in; screen readers keep the aria-label path.
 const labelClass =
-  "font-body text-[0.65rem] font-medium uppercase tracking-[0.18em] text-[rgba(247,246,243,0.5)] text-center block mb-1.5";
+  "font-body text-base font-normal text-[rgba(247,246,243,0.8)] text-center block mb-1.5";
 
 const fieldWrapClass = "w-full flex flex-col";
 
@@ -297,22 +298,23 @@ function SignInForm({ onBack }: { onBack: () => void }) {
           spellCheck={false}
           disabled={loading}
           aria-describedby={error ? "signin-error" : undefined}
+          aria-invalid={error ? "true" : undefined}
           className={inputClass}
         />
       </div>
 
       <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "80ms" }}>
         <label htmlFor="signin-password" className={labelClass}>Password</label>
-        <input
+        <PasswordInput
           id="signin-password"
-          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+          placeholder="••••••••"
           required
           autoComplete="current-password"
           disabled={loading}
           aria-describedby={error ? "signin-error" : undefined}
+          aria-invalid={error ? "true" : undefined}
           className={inputClass}
         />
       </div>
