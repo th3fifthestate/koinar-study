@@ -179,8 +179,8 @@ function StudyReaderContent({
   fontSize,
   setFontSize,
   resetPrefs,
-  annotationFullContextHeight: _annotationFullContextHeight,
-  onAnnotationFullContextHeightChange: _onAnnotationFullContextHeightChange,
+  annotationFullContextHeight,
+  onAnnotationFullContextHeightChange,
   headings,
   headingIds,
   displayContent,
@@ -197,9 +197,9 @@ function StudyReaderContent({
   fontSize: FontSize;
   setFontSize: (s: FontSize) => void;
   resetPrefs: () => void;
-  /** Reserved for Task 7 — annotation panel height persistence */
+  /** Persisted height for annotation full-context panel (px). */
   annotationFullContextHeight?: number;
-  /** Reserved for Task 7 — annotation panel height persistence */
+  /** Called when the user resizes the annotation full-context panel. */
   onAnnotationFullContextHeightChange?: (px: number) => void;
   headings: HeadingItem[];
   headingIds: string[];
@@ -317,9 +317,12 @@ function StudyReaderContent({
               />
             </article>
 
-            {/* Annotation popover on text selection */}
+            {/* Annotation popover on text selection.
+                Key forces instant remount on new selection (kill-and-restart
+                interruption behaviour — no cross-fade with exiting popover). */}
             {selection && (
               <AnnotationPopover
+                key={`${selection.startOffset}-${selection.endOffset}`}
                 selection={selection}
                 onHighlight={(color: HighlightColor, isPublic: boolean) => {
                   createAnnotation({
@@ -345,6 +348,8 @@ function StudyReaderContent({
                   clearSelection();
                 }}
                 onClose={clearSelection}
+                annotationFullContextHeight={annotationFullContextHeight}
+                onAnnotationFullContextHeightChange={onAnnotationFullContextHeightChange}
               />
             )}
           </main>
