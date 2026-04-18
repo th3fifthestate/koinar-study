@@ -8,8 +8,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import type { TranslationAvailability } from '@/lib/translations/registry';
-import type { SwapFailureReason } from '@/lib/translations/swap-engine';
-import { SWAP_FAILURE_HINT } from '@/lib/translations/swap-engine';
+import type { SwapFailureReason } from '@/lib/translations/swap-failure';
+import { SWAP_FAILURE_HINT } from '@/lib/translations/swap-failure';
 
 type FontSize = 'small' | 'medium' | 'large';
 type PopoverView = 'main' | 'translation-list';

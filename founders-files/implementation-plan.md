@@ -1246,6 +1246,139 @@ Only **Brief 28a**. The other six briefs are mechanical — Sonnet ships them fa
 
 ---
 
+## Phase 5c: Study Bench (Briefs 30 → 35b)
+
+**Goal:** Ship a neutral, desktop-first canvas workbench (`/bench` + `/bench/[boardId]`) where users arrange typed Clippings — verses, entities, lexicon, cross-refs, translation-compares, user notes, study sections — with free-form labeled arrows. The Bench is Koinar's "library-table" surface: the app organizes and surfaces resources, the user does all interpretation. No AI in the Bench at v1. Desktop-first; mobile view-only. Each board counts as one Biblica §V.F "view" so the NIV 25-verse / 2-chapter cap applies per board.
+
+**Why Phase 5c (before V1 launch):** Koinar's differentiated pitch is "context-aware Bible study" — the Bench is where that context becomes *usable as a tool*, not just a sidebar. Shipping it inside V1 anchors the differentiation at launch and compounds the value of the entity + translations systems already built. Deferring to post-launch risks Koinar reading as "YouVersion with better footnotes."
+
+**Guardrails set by David (2026-04-18):**
+- The app never leans the user. Presents information only.
+- Deterministic-only at launch. V2 may add a Gemma-family model for pure lookup assistance.
+- Desktop-first (canvas needs space); mobile view-only.
+- Many named boards per user; each tied to a question.
+- All ABS / Biblica / Crossway compliance already in place must continue to hold, extended per-board.
+
+### Execution order (11 briefs, 5 waves)
+
+| Wave | Briefs | Parallel? | Rationale |
+|------|--------|-----------|-----------|
+| **Wave 0 — Direction** | **30** — Study Bench direction (master plan) | n/a | Single Opus plan-mode brief. Produces `founders-files/brief-30-plan.md`, the direction doc all subsequent briefs cite. Must land and be approved before any other 5c brief begins. |
+| **Wave 1 — Foundations** | **31a** — TSK ingestion · **31b** — STEPBible lexicon ingestion · **31c** — Schema + compliance surface | `31a \|\| 31b` run in parallel; `31c` is serial after both | 31a + 31b are mechanical ingestion scripts touching disjoint tables (`cross_refs`, `lexicon_entries`). 31c extends compliance code (`niv-display-guard`, `fums-tracker`, `CopyGuard`) and adds the four `bench_*` tables. No user-visible surface ships in Wave 1. |
+| **Wave 2 — Canvas MVP** | **32a** — Canvas design spec · **32b** — Canvas MVP implementation | `32a` runs in parallel with the entire Wave 1 group; `32b` is serial after both `31c` and `32a` | 32a is the largest pure-design surface in 5c (Opus plan mode). 32b executes the design mechanically (Sonnet plan mode) and ships `/bench` dashboard, pan/zoom canvas, 3 clipping types (verse, entity, note), drag-to-connect, API routes. No reader integration yet. |
+| **Wave 3 — Clipping suite + reader rail** | **33** — Remaining 4 clipping types + source-drawer search + Recent Clips + reader "Clip to Bench" | Serial after 32b | Completes the 7-type clipping suite (translation-compare, cross-ref chain, lexicon, study-section), wires the full source-drawer search (6 tabs), implements Recent Clips tray, adds Clip-to-Bench to all three reader popovers. |
+| **Wave 4 — Templates + meter + compliance wiring** | **34a** — Templates + meter design · **34b** — Templates + meter implementation + compliance wiring | `34a` can run in parallel with `33`; `34b` is serial after both `33` and `34a` | 34a designs the 3 starter templates (Word / Character / Passage Study) + the license-meter chip visual + cap-modal copy. 34b implements all of that and wires the extended `niv-display-guard`, `trackFumsEvent` (`surface: 'bench'`), `useCopyCap`, and `prewarmBoard` into live canvas paths. |
+| **Wave 5 — Onboarding + polish** | **35a** — Onboarding + empty-states design · **35b** — Onboarding implementation + a11y + keyboard + cross-browser + mobile-readonly | `35a` can run in parallel with `34b`; `35b` is serial after both `34b` and `35a` | 35a is the Opus voice pass: first-run coach-marks, every empty-state copy block, the single celebratory micro-moment (first-connection aura), keyboard cheat-sheet. 35b implements that + Phase-5c exit gates (a11y sweep, keyboard taxonomy, Lighthouse, mobile banner, cross-browser QA). |
+
+### Per-brief model + mode
+
+| Brief | Model | Mode | Reasoning |
+|-------|-------|------|-----------|
+| **30 — Study Bench direction** | **Opus** | **Plan mode** | Master direction doc. Philosophy, Clipping primitive shape, canvas model, compliance architecture, phased rollout. Every other 5c brief cites this. Opus because direction-setting voice + taste is the highest-leverage quality lever in the whole phase. |
+| **31a — Treasury of Scripture Knowledge ingestion** | Sonnet | Direct | Mechanical ingestion of a PD dataset into a new `cross_refs` table. Shape is clear; no taste call. |
+| **31b — STEPBible lexicon ingestion** | Sonnet | Direct | Mechanical ingestion of a CC BY 4.0 dataset into a new `lexicon_entries` table. Shape is clear; no taste call. |
+| **31c — Schema + compliance surface** | Sonnet | **Plan mode** | Touches compliance-critical code (niv-display-guard, fums-tracker, CopyGuard → useCopyCap). Not a taste call, but the wiring diagram must be agreed before code ships — a missed path silently breaks the per-board cap. |
+| **32a — Canvas design spec** | **Opus** | **Plan mode** | The single largest design surface in 5c. Every design decision (paper grain, zoom curve, card anatomy, arrow routing, motion table, empty-state voice, a11y story) compounds into how the canvas *feels*. This is one of the two briefs (with 34a) where Opus's premium shows up most. |
+| **32b — Canvas MVP implementation** | Sonnet | **Plan mode** | Fully specified by 32a. Plan mode only to confirm file tree + state-management choices before writing code. |
+| **33 — Clipping suite + reader rail** | Sonnet | **Plan mode** | All seven clipping types specified by 30 + 32a. Reader rail uses existing popovers. Plan mode ensures the source-drawer search surface (touches 6 data sources) is agreed before coding. |
+| **34a — Templates + meter design** | **Opus** | **Plan mode** | Templates are the most-seen artifact a new user meets — the layout decides whether the surface reads editorial or tutorial-y. Layered on top of 32a's grammar. Opus because one voice decides. |
+| **34b — Templates + meter implementation + compliance wiring** | Sonnet | **Plan mode** | Fully specified by 34a. Plan mode because this brief wires the compliance surface into live canvas paths — a missed wire silently breaks the cap. |
+| **35a — Onboarding + empty-states design** | **Opus** | **Plan mode** | The piece most at risk of feeling tutorial-y. Every copy block + the one celebratory micro-moment either reinforces or dilutes the library-table metaphor. Opus voice is the right call — same reason 28a was Opus. |
+| **35b — Onboarding implementation + polish** | Sonnet | **Plan mode** | Fully specified by 35a + 32a. Plan mode agrees the keyboard taxonomy and a11y audit scope before code ships, so the QA checklist is unambiguous at review time. |
+
+### Where Opus genuinely matters in Phase 5c
+
+Four briefs: **30, 32a, 34a, 35a**. Each of the four authors a design or direction surface where one-voice-deciding is the quality lever. The pattern is the same as Phase 5b's 28a: a design brief that an implementation brief executes mechanically. If budget is tight, those four are the non-negotiable Opus calls; everything else is Sonnet with no meaningful quality delta. Of the four, **30 and 32a are the two I'd triple-check** — 30 governs the direction of the entire phase and 32a governs the feel of the canvas itself, which the user spends all their time inside.
+
+### Critical files (new)
+
+**Briefs package:**
+- `briefs/30-study-bench-direction.md`
+- `briefs/31a-study-bench-ingest-tsk.md`
+- `briefs/31b-study-bench-ingest-stepbible.md`
+- `briefs/31c-study-bench-schema-and-compliance-surface.md`
+- `briefs/32a-study-bench-canvas-design.md`
+- `briefs/32b-study-bench-canvas-mvp-implementation.md`
+- `briefs/33-study-bench-clippings-and-reader-rail.md`
+- `briefs/34a-study-bench-templates-design.md`
+- `briefs/34b-study-bench-templates-meter-implementation.md`
+- `briefs/35a-study-bench-onboarding-design.md`
+- `briefs/35b-study-bench-polish-implementation.md`
+- `founders-files/brief-30-plan.md` through `founders-files/brief-35b-plan.md` (one per plan-mode brief)
+
+**App surface (from brief 30 §Critical files):**
+- `app/app/(main)/bench/page.tsx` — dashboard
+- `app/app/(main)/bench/[boardId]/page.tsx` — canvas page
+- `app/components/bench/canvas.tsx`, `clipping-card.tsx`, `connection.tsx`, `source-drawer.tsx`, `recent-clips-tray.tsx`, `board-top-bar.tsx`, `board-dashboard.tsx`
+- `app/components/bench/clippings/{verse,entity,translation-compare,cross-ref-chain,lexicon,note,study-section}-clipping.tsx`
+- `app/components/bench/templates/{blank,word-study,character-study,passage-study}.ts` + `instantiate-template.ts`
+- `app/components/bench/license-meter.tsx`, `license-cap-modal.tsx`
+- `app/components/bench/onboarding/*` — walkthrough, empty states, keyboard cheat-sheet, first-connection aura
+- `app/app/api/bench/boards/*`, `clippings/*`, `connections/*`, `recent-clips/*`, `user-flags/*` — CRUD routes, each calls `requireAuth()` first
+- `app/lib/db/bench/queries.ts`, `app/lib/db/cross-refs/queries.ts`, `app/lib/db/lexicon/queries.ts`
+- `app/lib/bench/prewarm.ts`, `camera-persistence.ts`, `clipping-id.ts`, `license-counts.ts`, `guard-drop.ts`, `user-flags.ts`
+- `app/scripts/import-tsk.ts`, `app/scripts/import-stepbible-lexicon.ts`
+
+**App surface (modified):**
+- `app/components/reader/annotation-popover.tsx` — add "Clip to Bench" as third action
+- `app/components/reader/entity-popover.tsx` — add "Clip to Bench" near "Explore →"
+- `app/components/reader/cross-ref-tooltip.tsx` — add small clip-icon button
+- `app/lib/bible/niv-display-guard.ts` — accept `DisplaySurface = { kind: 'reader', studyId } | { kind: 'bench', boardId }`
+- `app/lib/bible/fums-tracker.ts` — include `surface` in event payload; add `surface` column to `fums_events`
+- `app/components/reader/CopyGuard.tsx` — refactor into `useCopyCap({ surface })` hook at `app/components/shared/useCopyCap.ts`
+- `app/app/(main)/layout.tsx` — add `/bench` entry to primary nav
+- `app/app/attributions/page.tsx` — ensure anchor targets for meter-chip click-throughs
+
+### Compliance surface extensions (brief 31c)
+
+- **NIV display cap is per-board.** Each `bench_boards` row counts as one Biblica §V.F view. The 25-verse / 2-chapter cap is enforced per board via the extended `niv-display-guard`. Users can own many boards; each independently obeys the cap.
+- **Clippings store references, not text.** The global `verse_cache` LRU (≤500 NIV / ≤1000 NASB / ≤500 NLT / ≤500 ESV) remains bounded app-wide. Older boards re-fetch on open within the DHCP 7-day lease. `prewarmBoard(boardId)` batches the re-fetch server-side.
+- **FUMS events** fire once per licensed-verse clipping mount with `surface: 'bench'`. The `fums_events.surface` column distinguishes reader vs bench for audit.
+- **Clipboard cap** (100 verses) extended to bench via the shared `useCopyCap` hook.
+- **No export in v1.** Sidesteps the NIV export prohibition.
+
+### New ingestion tables (Wave 1)
+
+- `lexicon_entries` (keyed by Strong's id, ~14k rows, STEPBible CC BY 4.0) — see brief 31b.
+- `cross_refs` (~340k rows, Treasury of Scripture Knowledge, public domain) — see brief 31a.
+- `bench_boards`, `bench_clippings`, `bench_connections`, `bench_recent_clips` — see brief 31c.
+
+### Verification (Phase 5c exit)
+
+1. **Reader → Bench clipping flow** — highlight a verse → "Clip to Bench" → Recent Clips → drag to canvas → reload → position persists.
+2. **Many-boards NIV compliance test** — 5 boards × 25 NIV verses = 125 verses referenced. Each board renders; 26th NIV verse on any board blocks with modal; `verse_cache` NIV rows stay ≤500 (LRU working); FUMS events fire with `surface: 'bench'`.
+3. **Pre-warm latency** — open a board with 25 NIV verses whose cache entries have been LRU-evicted → all render <1.5s.
+4. **Template instantiation** — each of the 3 templates creates the expected board layout; save; reload; placeholders + arrows persist.
+5. **Connection + label flow** — drag between two clippings → free-text label → save → reload → persists.
+6. **Source drawer 6-tab search** — each tab returns results; drag-to-canvas creates the correct typed clipping.
+7. **TSK ingestion smoke** — `import-tsk.ts` on fresh DB → ~340k rows → query a random verse <10ms.
+8. **STEPBible ingestion smoke** — `import-stepbible-lexicon.ts` → H0001 + G1 both resolve → lexicon clipping renders them.
+9. **Copy guard** — select/copy 120 NIV verses from a bench board → clipboard receives exactly 100 + cap-hit banner.
+10. **Auth + trust boundaries** — every `/api/bench/*` route calls `requireAuth()`; another user's board returns 404 (not 403).
+11. **Canvas UX** — pan (Space+drag), zoom (Cmd+wheel), multi-select, delete, undo/redo in Chrome + Safari + Firefox with no jank.
+12. **Mobile view-only** — <900px renders read-only with banner; reader's Clip-to-Bench still works on mobile.
+13. **End-to-end walkthrough** — new user → `/bench` → create board → 3 clippings → 1 connection → close tab → return next day → everything where they left it; intro walkthrough does **not** re-run.
+14. **Lighthouse** — performance ≥ 90, a11y ≥ 95 on `/bench` and on a 25-clipping `/bench/[boardId]`.
+15. **Test suite** green throughout; `axe-core` reports 0 violations on both routes.
+
+### Not in Phase 5c (deferred)
+
+- **Any AI in the Bench** — deferred to V2 (Gemma-family lookup assistant).
+- **Sharing / collaboration** — "send board to partner" V2; small-group mode V3.
+- **Export (PDF/PNG)** — deferred to v1.1. NIV export remains prohibited; decision review needed if ever un-deferred.
+- **Mobile canvas editing** — view-only at launch.
+- **Geography / map card, ISBE / Tyndale / Sefaria ingestion, PD commentary sediment** — v1.1+ ingestion work.
+- **Version history / board time-travel** — not scoped.
+
+### Phase 5c acceptance
+
+- Every brief's individual acceptance block satisfied.
+- All 15 verification items pass.
+- Smoke narrative (§13) replayed end-to-end in at least Chrome and Safari.
+- No regression in reader, entity, or generation surfaces.
+
+---
+
 ## Phase 6: Export + Seed + Final Deploy (Briefs 12 → 15 → 14-final)
 
 **Goal:** Export functionality, seed content, and production launch.

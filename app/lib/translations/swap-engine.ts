@@ -21,14 +21,12 @@ import { recordFumsEvent } from "./fums-tracker";
 import { enforceNivPerViewCap, type ViewVerseRef } from "./niv-display-guard";
 import { displayNameToSlug } from "./osis-book-map";
 
-export type SwapFailureReason = 'network' | 'rate-limit' | 'licensing' | 'offline';
-
-export const SWAP_FAILURE_HINT: Record<SwapFailureReason, string> = {
-  'network': 'Translation source unreachable',
-  'rate-limit': 'Quota reached — try again later',
-  'licensing': 'Unavailable for this study',
-  'offline': "You're offline",
-};
+// Re-exported from ./swap-failure so existing server-side call sites can keep
+// a single import from swap-engine. Client Components should import from
+// ./swap-failure directly to avoid pulling the server-only pipeline.
+export type { SwapFailureReason } from './swap-failure';
+export { SWAP_FAILURE_HINT } from './swap-failure';
+import type { SwapFailureReason } from './swap-failure';
 
 export interface SwapResult {
   content: string;

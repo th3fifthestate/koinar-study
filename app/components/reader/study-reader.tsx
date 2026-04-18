@@ -25,7 +25,7 @@ import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
 import type { TranslationAvailability } from '@/lib/translations/registry';
-import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-engine';
+import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-failure';
 
 type FontSize = 'small' | 'medium' | 'large';
 
