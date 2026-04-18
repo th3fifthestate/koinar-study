@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { assertEnvPresence } from "./env-guard";
 
 // ---------------------------------------------------------------------------
 // Environment variable validation
@@ -118,3 +119,5 @@ if (strictValidation) {
  * During build and in development, missing variables fall back to empty defaults.
  */
 export const env = parsed;
+
+assertEnvPresence();

@@ -91,7 +91,13 @@ export async function POST(request: Request) {
     const platformKey = config.ai.anthropicApiKey;
     if (!platformKey) {
       return NextResponse.json(
-        { error: "AI service not configured" },
+        {
+          error: "AI service not configured",
+          ...(process.env.NODE_ENV === "development" && {
+            details:
+              "Missing ANTHROPIC_API_KEY in app/.env — see founders-files/runbooks/env-dev-loading.md",
+          }),
+        },
         { status: 503 }
       );
     }
@@ -117,7 +123,13 @@ export async function POST(request: Request) {
     const platformKey = config.ai.anthropicApiKey;
     if (!platformKey) {
       return NextResponse.json(
-        { error: "AI service not configured" },
+        {
+          error: "AI service not configured",
+          ...(process.env.NODE_ENV === "development" && {
+            details:
+              "Missing ANTHROPIC_API_KEY in app/.env — see founders-files/runbooks/env-dev-loading.md",
+          }),
+        },
         { status: 503 }
       );
     }
