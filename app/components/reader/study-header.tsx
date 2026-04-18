@@ -1,14 +1,15 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { FavoriteButton } from '@/components/library/favorite-button';
-import { FontControls } from './font-controls';
 import { EntityToggle } from './entity-toggle';
 import { BranchMapIndicator } from './branch-map-indicator';
+import { ReaderSettingsPopover } from './reader-settings-popover';
+import type { TranslationAvailability } from '@/lib/translations/registry';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -25,14 +26,17 @@ interface StudyHeaderProps {
   createdAt: string;
   studyId: number;
   isFavorited: boolean;
-  isLoggedIn: boolean;
   fontSize: FontSize;
   onFontSizeChange: (size: FontSize) => void;
+  onResetPrefs: () => void;
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
   onOpenMap: () => void;
-  translationSelector?: ReactNode;
+  translations: TranslationAvailability[];
+  currentTranslation: string;
+  onTranslationSelect: (id: string) => Promise<void>;
+  translating: boolean;
 }
 
 const FORMAT_LABELS: Record<string, string> = {
@@ -54,14 +58,17 @@ export function StudyHeader({
   createdAt,
   studyId,
   isFavorited,
-  isLoggedIn,
   fontSize,
   onFontSizeChange,
+  onResetPrefs,
   showEntityAnnotations,
   onEntityAnnotationsToggle,
   entityAnnotationCount,
   onOpenMap,
-  translationSelector,
+  translations,
+  currentTranslation,
+  onTranslationSelect,
+  translating,
 }: StudyHeaderProps) {
   // Dissolving chrome: reading-controls cluster dims when the reader is idle
   // (no mousemove / scroll / focus for 2.5s) and restores on any movement.
@@ -101,6 +108,9 @@ export function StudyHeader({
     month: 'long',
     day: 'numeric',
   }).format(new Date(createdAt));
+
+  // annotationCount is retained in props for future use (e.g., badges)
+  void annotationCount;
 
   return (
     <header className="mb-8 pt-8">
@@ -153,7 +163,7 @@ export function StudyHeader({
           studyId={studyId}
           initialFavorited={isFavorited}
           initialCount={favoriteCount}
-          isLoggedIn={isLoggedIn}
+          isLoggedIn={true}
         />
 
         <button
@@ -176,8 +186,15 @@ export function StudyHeader({
             onToggle={onEntityAnnotationsToggle}
             entityCount={entityAnnotationCount}
           />
-          <FontControls fontSize={fontSize} onFontSizeChange={onFontSizeChange} />
-          {translationSelector}
+          <ReaderSettingsPopover
+            fontSize={fontSize}
+            onFontSizeChange={onFontSizeChange}
+            onResetPrefs={onResetPrefs}
+            translations={translations}
+            currentTranslation={currentTranslation}
+            onTranslationSelect={onTranslationSelect}
+            translating={translating}
+          />
         </div>
       </div>
     </header>

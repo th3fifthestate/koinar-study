@@ -21,17 +21,18 @@ import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
 import { EntityDrawer } from './entity-drawer';
 import { BranchMapOverlay } from './branch-map-overlay';
 import { toast } from 'sonner';
-import { TranslationSelector } from './TranslationSelector';
 import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
+import type { TranslationAvailability } from '@/lib/translations/registry';
+import type { SwapFailureReason } from '@/lib/translations/swap-engine';
 
 type FontSize = 'small' | 'medium' | 'large';
 
 interface StudyReaderProps {
   study: StudyDetail;
   isFavorited: boolean;
-  isLoggedIn: boolean;
+  translations: TranslationAvailability[];
   entityAnnotations?: StudyEntityAnnotation[];
   entities?: Entity[];
   heroNeedsScrim?: boolean;
@@ -81,12 +82,12 @@ function extractHeadings(markdown: string): HeadingItem[] {
 export function StudyReader({
   study,
   isFavorited,
-  isLoggedIn,
+  translations,
   entityAnnotations = [],
   entities = [],
   heroNeedsScrim,
 }: StudyReaderProps) {
-  const { prefs, setFontSize, setAnnotationFullContextHeight } = useReaderPrefs();
+  const { prefs, setFontSize, setAnnotationFullContextHeight, resetPrefs } = useReaderPrefs();
   const fontSize = prefs.fontSize;
 
   const [displayContent, setDisplayContent] = useState(study.content_markdown);
@@ -100,7 +101,7 @@ export function StudyReader({
   );
   const [translating, setTranslating] = useState(false);
 
-  const handleTranslationSelect = async (translation: string) => {
+  const handleTranslationSelect = useCallback(async (translation: string): Promise<void> => {
     if (translation === currentTranslation) return;
     setTranslating(true);
     try {
@@ -111,7 +112,12 @@ export function StudyReader({
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({})) as { error?: string };
-        throw new Error(err.error ?? 'Translation failed');
+        const reason = err.error as SwapFailureReason | undefined;
+        // Surface toast for non-reason errors as safety net
+        if (!reason) {
+          toast.error('Could not load translation');
+        }
+        throw reason ?? 'network';
       }
       const data = await res.json() as {
         content: string;
@@ -128,11 +134,13 @@ export function StudyReader({
         );
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not load translation');
+      // Re-throw so the popover can set the row state.
+      // err is already a SwapFailureReason string or an unknown error.
+      throw err;
     } finally {
       setTranslating(false);
     }
-  };
+  }, [currentTranslation, study.id]);
 
   const headings = useMemo(() => extractHeadings(study.content_markdown), [study.content_markdown]);
   const headingIds = useMemo(() => headings.map((h) => h.id), [headings]);
@@ -144,10 +152,11 @@ export function StudyReader({
       <StudyReaderContent
         study={study}
         isFavorited={isFavorited}
-        isLoggedIn={isLoggedIn}
+        translations={translations}
         entityAnnotationCount={entityAnnotations.length}
         fontSize={fontSize}
         setFontSize={setFontSize}
+        resetPrefs={resetPrefs}
         annotationFullContextHeight={prefs.annotationFullContextHeight}
         onAnnotationFullContextHeightChange={setAnnotationFullContextHeight}
         headings={headings}
@@ -166,10 +175,11 @@ export function StudyReader({
 function StudyReaderContent({
   study,
   isFavorited,
-  isLoggedIn,
+  translations,
   entityAnnotationCount,
   fontSize,
   setFontSize,
+  resetPrefs,
   annotationFullContextHeight: _annotationFullContextHeight,
   onAnnotationFullContextHeightChange: _onAnnotationFullContextHeightChange,
   headings,
@@ -183,10 +193,11 @@ function StudyReaderContent({
 }: {
   study: StudyDetail;
   isFavorited: boolean;
-  isLoggedIn: boolean;
+  translations: TranslationAvailability[];
   entityAnnotationCount: number;
   fontSize: FontSize;
   setFontSize: (s: FontSize) => void;
+  resetPrefs: () => void;
   /** Reserved for Task 7 — annotation panel height persistence */
   annotationFullContextHeight?: number;
   /** Reserved for Task 7 — annotation panel height persistence */
@@ -197,14 +208,14 @@ function StudyReaderContent({
   currentTranslation: string;
   displayVerseCount: number;
   translating: boolean;
-  onTranslationSelect: (t: string) => void;
+  onTranslationSelect: (t: string) => Promise<void>;
   heroNeedsScrim?: boolean;
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
   const [branchMapOpen, setBranchMapOpen] = useState(false);
 
-  // Annotation system
+  // Annotation system — all readers are authenticated
   const contentRef = useRef<HTMLDivElement>(null);
   const {
     annotations,
@@ -213,7 +224,7 @@ function StudyReaderContent({
     deleteAnnotation,
   } = useStudyAnnotations({
     studyId: study.id,
-    isLoggedIn,
+    isLoggedIn: true,
     showCommunity: false,
   });
 
@@ -255,22 +266,17 @@ function StudyReaderContent({
           createdAt={study.created_at}
           studyId={study.id}
           isFavorited={isFavorited}
-          isLoggedIn={isLoggedIn}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
+          onResetPrefs={resetPrefs}
           showEntityAnnotations={showAnnotations}
           onEntityAnnotationsToggle={setShowAnnotations}
           entityAnnotationCount={entityAnnotationCount}
           onOpenMap={() => setBranchMapOpen(true)}
-          translationSelector={
-            isLoggedIn ? (
-              <TranslationSelector
-                currentTranslation={currentTranslation}
-                onSelect={onTranslationSelect}
-                disabled={translating}
-              />
-            ) : undefined
-          }
+          translations={translations}
+          currentTranslation={currentTranslation}
+          onTranslationSelect={onTranslationSelect}
+          translating={translating}
         />
 
         <div className="flex gap-8 lg:gap-20 xl:gap-28">
@@ -299,13 +305,11 @@ function StudyReaderContent({
               </CopyGuard>
 
               {/* Margin notes for annotations with type 'note' */}
-              {isLoggedIn && (
-                <AnnotationNotes
-                  annotations={annotations}
-                  contentRef={contentRef}
-                  onDelete={deleteAnnotation}
-                />
-              )}
+              <AnnotationNotes
+                annotations={annotations}
+                contentRef={contentRef}
+                onDelete={deleteAnnotation}
+              />
 
               <CitationFooter
                 currentTranslation={currentTranslation}
@@ -315,10 +319,10 @@ function StudyReaderContent({
             </article>
 
             {/* Annotation popover on text selection */}
-            {isLoggedIn && selection && (
+            {selection && (
               <AnnotationPopover
                 selection={selection}
-                onHighlight={(color, isPublic) => {
+                onHighlight={(color: HighlightColor, isPublic: boolean) => {
                   createAnnotation({
                     type: 'highlight',
                     color,
@@ -329,7 +333,7 @@ function StudyReaderContent({
                   });
                   clearSelection();
                 }}
-                onNote={(color, noteText, isPublic) => {
+                onNote={(color: HighlightColor, noteText: string, isPublic: boolean) => {
                   createAnnotation({
                     type: 'note',
                     color,

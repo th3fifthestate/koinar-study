@@ -4,6 +4,13 @@ import { config } from "@/lib/config";
 export type TranslationId = "BSB" | "KJV" | "WEB" | "NLT" | "NIV" | "NASB" | "ESV";
 export type TranslationSource = "local" | "api-bible" | "esv-api";
 
+export interface TranslationAvailability {
+  id: TranslationId;
+  name: string;
+  /** 'cached' = instant swap. 'uncached' = first swap will verify inline. */
+  state: 'cached' | 'uncached';
+}
+
 export interface TranslationInfo {
   id: TranslationId;
   name: string;
