@@ -73,6 +73,12 @@ export async function POST(
     return Response.json({ error: 'Translation service error' }, { status: 502 });
   }
 
+  // If every verse fetch failed with a deterministic reason, surface it so the
+  // UI can transition rows to 'unavailable' rather than just showing a toast.
+  if (swapResult.failureReason && swapResult.versesSwapped === 0) {
+    return Response.json({ error: swapResult.failureReason }, { status: 422 });
+  }
+
   try {
     updateStudyTranslation(studyId, translation);
   } catch (persistErr) {
@@ -87,5 +93,6 @@ export async function POST(
     missingVerses: swapResult.missingVerses,
     truncated: swapResult.truncated,
     translation,
+    ...(swapResult.failureReason ? { failureReason: swapResult.failureReason } : {}),
   });
 }

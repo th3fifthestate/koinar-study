@@ -16,15 +16,62 @@ import { getLocalPassage } from "./local-queries";
 import { getCachedVerse, setCachedVerse, enforceStorageCap } from "./cache";
 import { fetchApiBiblePassage } from "./api-bible-client";
 import { fetchEsvPassage } from "./esv-client";
+import { ApiBibleError, EsvApiError, TranslationNotAvailableError } from "./errors";
 import { recordFumsEvent } from "./fums-tracker";
 import { enforceNivPerViewCap, type ViewVerseRef } from "./niv-display-guard";
 import { displayNameToSlug } from "./osis-book-map";
+
+export type SwapFailureReason = 'network' | 'rate-limit' | 'licensing' | 'offline';
+
+export const SWAP_FAILURE_HINT: Record<SwapFailureReason, string> = {
+  'network': 'Translation source unreachable',
+  'rate-limit': 'Quota reached — try again later',
+  'licensing': 'Unavailable for this study',
+  'offline': "You're offline",
+};
 
 export interface SwapResult {
   content: string;
   versesSwapped: number;
   missingVerses: Array<{ book: string; chapter: number; verse: number }>;
   truncated: boolean;
+  failureReason?: SwapFailureReason; // set when the swap failed for a deterministic reason
+}
+
+// Priority order for combining failure reasons (higher index = higher severity)
+const REASON_PRIORITY: SwapFailureReason[] = ['network', 'rate-limit', 'licensing', 'offline'];
+
+function worstReason(
+  a: SwapFailureReason | undefined,
+  b: SwapFailureReason,
+): SwapFailureReason {
+  if (a === undefined) return b;
+  return REASON_PRIORITY.indexOf(b) > REASON_PRIORITY.indexOf(a) ? b : a;
+}
+
+function classifyError(err: unknown): SwapFailureReason {
+  // Offline check first (browser environment)
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return 'offline';
+  }
+
+  if (err instanceof ApiBibleError || err instanceof EsvApiError) {
+    const status = err.statusCode;
+    if (status === 429) return 'rate-limit';
+    if (status === 403 || status === 451) return 'licensing';
+    // 503 is thrown for network-level failures (fetch threw, no response)
+    if (status === 503) return 'network';
+    return 'network';
+  }
+
+  if (err instanceof TranslationNotAvailableError) {
+    return 'licensing';
+  }
+
+  // Generic network error (TypeError from fetch, etc.)
+  if (err instanceof TypeError) return 'offline';
+
+  return 'network';
 }
 
 interface ParsedRef {
@@ -76,6 +123,10 @@ function findBlockquotes(content: string): Array<{ raw: string; text: string }> 
   return results;
 }
 
+type FetchVerseResult =
+  | { ok: true; text: string; fumsToken: string | null }
+  | { ok: false; reason: SwapFailureReason };
+
 async function fetchVerse(
   target: TranslationId,
   displayName: string,
@@ -83,12 +134,12 @@ async function fetchVerse(
   chapter: number,
   verse: number,
   ctx: { studyId: number; userId: number },
-): Promise<{ text: string; fumsToken: string | null } | null> {
+): Promise<FetchVerseResult> {
   const info = TRANSLATIONS[target];
 
   if (info.isLicensed) {
     const cached = getCachedVerse(target, book, chapter, verse);
-    if (cached) return { text: cached.text, fumsToken: cached.fumsToken };
+    if (cached) return { ok: true, text: cached.text, fumsToken: cached.fumsToken };
   }
 
   if (target === "BSB" || target === "KJV" || target === "WEB") {
@@ -100,9 +151,10 @@ async function fetchVerse(
         verse,
         verse,
       );
-      return rows.length ? { text: rows[0].text, fumsToken: null } : null;
-    } catch {
-      return null;
+      if (!rows.length) return { ok: false, reason: 'network' };
+      return { ok: true, text: rows[0].text, fumsToken: null };
+    } catch (err) {
+      return { ok: false, reason: classifyError(err) };
     }
   }
 
@@ -115,7 +167,7 @@ async function fetchVerse(
         verseStart: verse,
         verseEnd: verse,
       });
-      if (!rows.length) return null;
+      if (!rows.length) return { ok: false, reason: 'network' };
       const r = rows[0];
       setCachedVerse({
         translation: target,
@@ -134,9 +186,9 @@ async function fetchVerse(
         userId: ctx.userId,
         verseCount: 1,
       });
-      return { text: r.text, fumsToken: null };
-    } catch {
-      return null;
+      return { ok: true, text: r.text, fumsToken: null };
+    } catch (err) {
+      return { ok: false, reason: classifyError(err) };
     }
   }
 
@@ -149,7 +201,7 @@ async function fetchVerse(
       verseStart: verse,
       verseEnd: verse,
     });
-    if (!rows.length) return null;
+    if (!rows.length) return { ok: false, reason: 'network' };
     const r = rows[0];
     setCachedVerse({
       translation: target,
@@ -168,9 +220,9 @@ async function fetchVerse(
       verseCount: 1,
     });
     enforceStorageCap(target);
-    return { text: r.text, fumsToken: r.fumsToken };
-  } catch {
-    return null;
+    return { ok: true, text: r.text, fumsToken: r.fumsToken };
+  } catch (err) {
+    return { ok: false, reason: classifyError(err) };
   }
 }
 
@@ -187,6 +239,7 @@ export async function swapVerses(
   let result = studyContent;
   let versesSwapped = 0;
   const missingVerses: Array<{ book: string; chapter: number; verse: number }> = [];
+  let failureReason: SwapFailureReason | undefined;
 
   // NIV §V.F: compute the allowed-verse set BEFORE fetching so we never render
   // past the cap. Skipped verses are replaced with a truncation marker; the
@@ -229,9 +282,10 @@ export async function swapVerses(
         continue;
       }
       const fetched = await fetchVerse(target, ref.displayName, ref.book, ref.chapter, v, ctx);
-      if (!fetched) {
+      if (!fetched.ok) {
         missingVerses.push({ book: ref.book, chapter: ref.chapter, verse: v });
         anyMissing = true;
+        failureReason = worstReason(failureReason, fetched.reason);
       } else {
         verseLines.push(fetched.text);
         versesSwapped++;
@@ -258,5 +312,5 @@ export async function swapVerses(
     result = replaceFirst(result, block.raw, newBlock);
   }
 
-  return { content: result, versesSwapped, missingVerses, truncated };
+  return { content: result, versesSwapped, missingVerses, truncated, failureReason };
 }
