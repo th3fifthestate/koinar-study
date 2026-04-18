@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { List } from 'lucide-react';
 import {
   Sheet,
@@ -9,6 +9,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  READER_TRANSITION_TOC_GLIDE,
+  READER_MOTION_TOC_GLIDER_FADE_IN,
+  READER_TRANSITION_TOC_FADEIN,
+} from '@/lib/motion/reader';
 
 export interface HeadingItem {
   id: string;
@@ -20,6 +25,9 @@ interface TableOfContentsProps {
   headings: HeadingItem[];
   activeId: string;
 }
+
+/** Size (px) of the glider dot — matches h2 active dot size */
+const GLIDER_SIZE = 7;
 
 /**
  * Dot-spine TOC: a vertical rail with a dot per heading. The active
@@ -53,12 +61,79 @@ function useHeadingScroll() {
   }, []);
 }
 
+/** Returns true when the user prefers reduced motion */
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  return reduced;
+}
+
 function DotSpineList({
   headings,
   activeId,
   onItemClick,
-}: TableOfContentsProps & { onItemClick?: () => void }) {
+  disableGlider = false,
+}: TableOfContentsProps & { onItemClick?: () => void; disableGlider?: boolean }) {
   const scrollToHeading = useHeadingScroll();
+  const reducedMotion = useReducedMotion();
+
+  const ulRef = useRef<HTMLUListElement>(null);
+  const [activeOffset, setActiveOffset] = useState(0);
+  const [hasPositioned, setHasPositioned] = useState(false);
+
+  // Compute glider position whenever activeId or headings change
+  useEffect(() => {
+    if (disableGlider || !activeId || !ulRef.current) return;
+    const items = ulRef.current.querySelectorAll('li');
+    const activeIndex = headings.findIndex((h) => h.id === activeId);
+    if (activeIndex === -1) return;
+    const item = items[activeIndex];
+    if (!item) return;
+    const offset = item.offsetTop + item.offsetHeight / 2 - GLIDER_SIZE / 2;
+    if (!hasPositioned) {
+      // First position: jump without transition, then fade in
+      setActiveOffset(offset);
+      requestAnimationFrame(() => setHasPositioned(true));
+    } else {
+      setActiveOffset(offset);
+    }
+  }, [activeId, headings, hasPositioned, disableGlider]);
+
+  // Recompute on resize (e.g. font size change)
+  useEffect(() => {
+    if (disableGlider || !ulRef.current) return;
+    const el = ulRef.current;
+    const observer = new ResizeObserver(() => {
+      if (!activeId) return;
+      const items = el.querySelectorAll('li');
+      const activeIndex = headings.findIndex((h) => h.id === activeId);
+      if (activeIndex === -1) return;
+      const item = items[activeIndex];
+      if (!item) return;
+      setActiveOffset(item.offsetTop + item.offsetHeight / 2 - GLIDER_SIZE / 2);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [activeId, headings, disableGlider]);
+
+  // Glider transition: fade-in only on first mount, then transform-only
+  const gliderTransition = reducedMotion
+    ? READER_TRANSITION_TOC_FADEIN // only fade, no transform motion
+    : hasPositioned
+      ? READER_TRANSITION_TOC_GLIDE
+      : READER_TRANSITION_TOC_FADEIN;
+
   return (
     <nav aria-label="Table of contents" className="relative">
       {/* Spine rail */}
@@ -68,7 +143,7 @@ function DotSpineList({
         style={{ backgroundColor: 'var(--reader-rule, var(--stone-200))' }}
       />
 
-      <ul className="space-y-2">
+      <ul ref={ulRef} className="relative space-y-2">
         {headings.map((h) => {
           const isActive = h.id === activeId;
           const isSub = h.level >= 3;
@@ -92,7 +167,9 @@ function DotSpineList({
                     : 'var(--reader-ink-soft, var(--stone-500))',
                 }}
               >
-                {/* Dot */}
+                {/* Rail marker dot — hollow, always visible at low opacity.
+                    When glider is active: hide the marker under the glider.
+                    When glider is disabled (mobile): use the old filled-dot behavior. */}
                 <span
                   aria-hidden="true"
                   className="absolute top-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out"
@@ -100,14 +177,22 @@ function DotSpineList({
                     left: `${dotOffset}px`,
                     width: `${dotSize}px`,
                     height: `${dotSize}px`,
-                    backgroundColor: isActive
-                      ? 'var(--reader-accent-sage, var(--sage-500))'
+                    backgroundColor: disableGlider
+                      ? isActive
+                        ? 'var(--reader-accent-sage, var(--sage-500))'
+                        : 'transparent'
                       : 'transparent',
-                    border: isActive
-                      ? 'none'
+                    border: disableGlider
+                      ? isActive
+                        ? 'none'
+                        : `1px solid var(--reader-ink-soft, var(--stone-400))`
                       : `1px solid var(--reader-ink-soft, var(--stone-400))`,
-                    opacity: isActive ? 1 : 0.55,
-                    transform: `translateY(-50%) scale(${isActive ? 1.1 : 1})`,
+                    opacity: disableGlider
+                      ? isActive ? 1 : 0.55
+                      : 0.4,
+                    transform: disableGlider
+                      ? `translateY(-50%) scale(${isActive ? 1.1 : 1})`
+                      : 'translateY(-50%)',
                   }}
                 />
 
@@ -123,6 +208,25 @@ function DotSpineList({
             </li>
           );
         })}
+
+        {/* Single gliding indicator — only rendered when glider is enabled */}
+        {!disableGlider && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute"
+            style={{
+              left: '2px',
+              width: `${GLIDER_SIZE}px`,
+              height: `${GLIDER_SIZE}px`,
+              borderRadius: '50%',
+              backgroundColor: 'var(--reader-accent-sage, var(--sage-500))',
+              top: 0,
+              transform: `translateY(${activeOffset}px)`,
+              transition: gliderTransition,
+              opacity: hasPositioned ? 1 : 0,
+            }}
+          />
+        )}
       </ul>
     </nav>
   );
@@ -162,7 +266,12 @@ export function MobileTocButton({ headings, activeId }: TableOfContentsProps) {
           <SheetTitle>Contents</SheetTitle>
         </SheetHeader>
         <div className="mt-2">
-          <DotSpineList headings={headings} activeId={activeId} onItemClick={() => setOpen(false)} />
+          <DotSpineList
+            headings={headings}
+            activeId={activeId}
+            onItemClick={() => setOpen(false)}
+            disableGlider={true}
+          />
         </div>
       </SheetContent>
     </Sheet>
