@@ -22,11 +22,41 @@ const sourceRefSchema = z.discriminatedUnion('type', [
     type: z.literal('note'),
     content: z.string().max(10000).optional().default(''),
   }),
+  z.object({
+    type: z.literal('translation-compare'),
+    book: z.string().min(1),
+    chapter: z.number().int().positive(),
+    verse: z.number().int().positive(),
+    translations: z.array(z.string().min(1)).min(2).max(4),
+  }),
+  z.object({
+    type: z.literal('cross-ref-chain'),
+    from_book: z.string().min(1),
+    from_chapter: z.number().int().positive(),
+    from_verse: z.number().int().positive(),
+  }),
+  z.object({
+    type: z.literal('lexicon'),
+    strongs_id: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal('study-section'),
+    study_id: z.number().int().positive(),
+    section_heading: z.string().min(1).max(200),
+  }),
 ])
 
 const createSchema = z.object({
   board_id: z.string().min(1),
-  clipping_type: z.enum(['verse', 'entity', 'note']),
+  clipping_type: z.enum([
+    'verse',
+    'entity',
+    'note',
+    'translation-compare',
+    'cross-ref-chain',
+    'lexicon',
+    'study-section',
+  ]),
   source_ref: sourceRefSchema,
   x: z.number(),
   y: z.number(),
