@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
 import type { StudyDetail, StudyEntityAnnotation, Entity } from '@/lib/db/types';
 import type { AnnotationPayload } from '@/lib/ws/types';
 import type { HighlightColor } from './highlight-layer';
@@ -83,29 +84,8 @@ export function StudyReader({
   entityAnnotations = [],
   entities = [],
 }: StudyReaderProps) {
-  const [fontSize, setFontSizeState] = useState<FontSize>('medium');
-
-  // Persist font-size preference across sessions. Read once on mount (avoids
-  // SSR mismatch) and write on every change.
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('koinar:reader:fontSize');
-      if (saved === 'small' || saved === 'medium' || saved === 'large') {
-        setFontSizeState(saved);
-      }
-    } catch {
-      // localStorage may be unavailable (private mode / SSR) — use default.
-    }
-  }, []);
-
-  const setFontSize = useCallback((size: FontSize) => {
-    setFontSizeState(size);
-    try {
-      localStorage.setItem('koinar:reader:fontSize', size);
-    } catch {
-      // ignore
-    }
-  }, []);
+  const { prefs, setFontSize, setAnnotationFullContextHeight } = useReaderPrefs();
+  const fontSize = prefs.fontSize;
 
   const [displayContent, setDisplayContent] = useState(study.content_markdown);
   const [currentTranslation, setCurrentTranslation] = useState(
@@ -166,6 +146,8 @@ export function StudyReader({
         entityAnnotationCount={entityAnnotations.length}
         fontSize={fontSize}
         setFontSize={setFontSize}
+        annotationFullContextHeight={prefs.annotationFullContextHeight}
+        onAnnotationFullContextHeightChange={setAnnotationFullContextHeight}
         headings={headings}
         headingIds={headingIds}
         displayContent={displayContent}
@@ -185,6 +167,8 @@ function StudyReaderContent({
   entityAnnotationCount,
   fontSize,
   setFontSize,
+  annotationFullContextHeight: _annotationFullContextHeight,
+  onAnnotationFullContextHeightChange: _onAnnotationFullContextHeightChange,
   headings,
   headingIds,
   displayContent,
@@ -199,6 +183,10 @@ function StudyReaderContent({
   entityAnnotationCount: number;
   fontSize: FontSize;
   setFontSize: (s: FontSize) => void;
+  /** Reserved for Task 7 — annotation panel height persistence */
+  annotationFullContextHeight?: number;
+  /** Reserved for Task 7 — annotation panel height persistence */
+  onAnnotationFullContextHeightChange?: (px: number) => void;
   headings: HeadingItem[];
   headingIds: string[];
   displayContent: string;
