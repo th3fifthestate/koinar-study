@@ -152,6 +152,7 @@ export interface StudyDetail extends Study {
   author_display_name: string | null;
   author_username: string;
   featured_image_url: string | null;
+  hero_needs_scrim?: boolean | null;
   favorite_count: number;
   annotation_count: number;
   tags: string[];

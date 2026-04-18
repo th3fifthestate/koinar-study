@@ -34,6 +34,7 @@ interface StudyReaderProps {
   isLoggedIn: boolean;
   entityAnnotations?: StudyEntityAnnotation[];
   entities?: Entity[];
+  heroNeedsScrim?: boolean;
 }
 
 // Count individual verses referenced in blockquote citation lines. Used to
@@ -83,6 +84,7 @@ export function StudyReader({
   isLoggedIn,
   entityAnnotations = [],
   entities = [],
+  heroNeedsScrim,
 }: StudyReaderProps) {
   const { prefs, setFontSize, setAnnotationFullContextHeight } = useReaderPrefs();
   const fontSize = prefs.fontSize;
@@ -155,6 +157,7 @@ export function StudyReader({
         displayVerseCount={displayVerseCount}
         translating={translating}
         onTranslationSelect={handleTranslationSelect}
+        heroNeedsScrim={heroNeedsScrim}
       />
     </EntityLayerProvider>
   );
@@ -176,6 +179,7 @@ function StudyReaderContent({
   displayVerseCount,
   translating,
   onTranslationSelect,
+  heroNeedsScrim,
 }: {
   study: StudyDetail;
   isFavorited: boolean;
@@ -194,6 +198,7 @@ function StudyReaderContent({
   displayVerseCount: number;
   translating: boolean;
   onTranslationSelect: (t: string) => void;
+  heroNeedsScrim?: boolean;
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
@@ -229,7 +234,11 @@ function StudyReaderContent({
       <ReadingProgress />
 
       {study.featured_image_url && (
-        <StudyHero imageUrl={study.featured_image_url} title={study.title} />
+        <StudyHero
+          imageUrl={study.featured_image_url}
+          title={study.title}
+          heroNeedsScrim={heroNeedsScrim}
+        />
       )}
 
       <div className="relative mx-auto max-w-7xl px-4">

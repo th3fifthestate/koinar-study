@@ -48,6 +48,7 @@ export default async function StudyPage({ params }: Props) {
       isLoggedIn={!!session}
       entityAnnotations={entityAnnotations}
       entities={entities}
+      heroNeedsScrim={!!study.hero_needs_scrim}
     />
   );
 }
