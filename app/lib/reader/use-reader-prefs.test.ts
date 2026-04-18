@@ -39,10 +39,8 @@ describe('useReaderPrefs', () => {
       result.current.setFontSize('large');
     });
 
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      PREFS_KEY,
-      JSON.stringify({ fontSize: 'large' }),
-    );
+    const written = JSON.parse(localStorage.getItem(PREFS_KEY) as string);
+    expect(written.fontSize).toBe('large');
     expect(result.current.prefs.fontSize).toBe('large');
   });
 
@@ -103,5 +101,24 @@ describe('useReaderPrefs', () => {
       PREFS_KEY,
       expect.stringContaining('"fontSize":"large"'),
     );
+  });
+
+  it('resetPrefs removes the prefs key from localStorage', async () => {
+    localStorage.setItem('koinar:reader:prefs', JSON.stringify({ fontSize: 'large' }));
+    const { result } = renderHook(() => useReaderPrefs());
+    // wait for mount effect
+    await act(async () => {});
+    act(() => result.current.resetPrefs());
+    expect(localStorage.getItem('koinar:reader:prefs')).toBeNull();
+    expect(result.current.prefs.fontSize).toBe('medium');
+  });
+
+  it('when both old and new keys are present, new key value wins', async () => {
+    localStorage.setItem('koinar:reader:fontSize', 'small');
+    localStorage.setItem('koinar:reader:prefs', JSON.stringify({ fontSize: 'large' }));
+    const { result } = renderHook(() => useReaderPrefs());
+    await act(async () => {});
+    expect(result.current.prefs.fontSize).toBe('large'); // new key wins
+    expect(localStorage.getItem('koinar:reader:fontSize')).toBeNull(); // old key deleted
   });
 });

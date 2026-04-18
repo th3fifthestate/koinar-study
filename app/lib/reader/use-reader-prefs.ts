@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 const PREFS_KEY = 'koinar:reader:prefs';
 const LEGACY_FONT_SIZE_KEY = 'koinar:reader:fontSize';
@@ -15,25 +15,20 @@ const DEFAULT_PREFS: ReaderPrefs = { fontSize: 'medium' };
 
 const VALID_FONT_SIZES = new Set<string>(['small', 'medium', 'large']);
 
-let _storageErrorLogged = false;
-
-function readPrefsFromStorage(): ReaderPrefs | null {
+function readPrefsFromStorage(onError: (err: unknown) => void): ReaderPrefs | null {
   try {
     // Migrate legacy fontSize key if present
     const legacySize = localStorage.getItem(LEGACY_FONT_SIZE_KEY);
     if (legacySize !== null) {
-      const migratedPrefs: ReaderPrefs = {
-        ...DEFAULT_PREFS,
-        ...(VALID_FONT_SIZES.has(legacySize)
-          ? { fontSize: legacySize as ReaderPrefs['fontSize'] }
-          : {}),
-      };
-      // Read existing new prefs first (if any) and merge
+      const migratedPrefs: Partial<ReaderPrefs> = VALID_FONT_SIZES.has(legacySize)
+        ? { fontSize: legacySize as ReaderPrefs['fontSize'] }
+        : {};
+      // Read existing new prefs first (if any) and merge — new key wins over legacy
       const existingRaw = localStorage.getItem(PREFS_KEY);
       const existing: Partial<ReaderPrefs> = existingRaw
         ? (JSON.parse(existingRaw) as Partial<ReaderPrefs>)
         : {};
-      const merged: ReaderPrefs = { ...DEFAULT_PREFS, ...existing, ...migratedPrefs };
+      const merged: ReaderPrefs = { ...DEFAULT_PREFS, ...migratedPrefs, ...existing };
       localStorage.setItem(PREFS_KEY, JSON.stringify(merged));
       localStorage.removeItem(LEGACY_FONT_SIZE_KEY);
       return merged;
@@ -50,22 +45,16 @@ function readPrefsFromStorage(): ReaderPrefs | null {
 
     return { ...DEFAULT_PREFS, ...parsed, fontSize };
   } catch (err) {
-    if (!_storageErrorLogged) {
-      console.warn('[useReaderPrefs] localStorage read failed:', err);
-      _storageErrorLogged = true;
-    }
+    onError(err);
     return null;
   }
 }
 
-function writePrefsToStorage(prefs: ReaderPrefs): void {
+function writePrefsToStorage(prefs: ReaderPrefs, onError: (err: unknown) => void): void {
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
   } catch (err) {
-    if (!_storageErrorLogged) {
-      console.warn('[useReaderPrefs] localStorage write failed:', err);
-      _storageErrorLogged = true;
-    }
+    onError(err);
   }
 }
 
@@ -76,14 +65,22 @@ export function useReaderPrefs(): {
   resetPrefs: () => void;
 } {
   const [prefs, setPrefs] = useState<ReaderPrefs>(DEFAULT_PREFS);
+  const storageErrorLoggedRef = useRef(false);
+
+  const handleStorageError = useCallback((err: unknown) => {
+    if (!storageErrorLoggedRef.current) {
+      console.warn('[useReaderPrefs] localStorage error:', err);
+      storageErrorLoggedRef.current = true;
+    }
+  }, []);
 
   // Read from localStorage on first client mount only (avoids SSR mismatch).
   useEffect(() => {
-    const stored = readPrefsFromStorage();
+    const stored = readPrefsFromStorage(handleStorageError);
     if (stored !== null) {
       setPrefs(stored);
     }
-  }, []);
+  }, [handleStorageError]);
 
   // Cross-tab sync: listen for storage events from other tabs.
   useEffect(() => {
@@ -112,18 +109,18 @@ export function useReaderPrefs(): {
   const setFontSize = useCallback((size: 'small' | 'medium' | 'large') => {
     setPrefs((prev) => {
       const next = { ...prev, fontSize: size };
-      writePrefsToStorage(next);
+      writePrefsToStorage(next, handleStorageError);
       return next;
     });
-  }, []);
+  }, [handleStorageError]);
 
   const setAnnotationFullContextHeight = useCallback((px: number) => {
     setPrefs((prev) => {
       const next = { ...prev, annotationFullContextHeight: px };
-      writePrefsToStorage(next);
+      writePrefsToStorage(next, handleStorageError);
       return next;
     });
-  }, []);
+  }, [handleStorageError]);
 
   const resetPrefs = useCallback(() => {
     try {
