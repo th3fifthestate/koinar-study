@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { FavoriteButton } from '@/components/library/favorite-button';
 import { FontControls } from './font-controls';
-import { CommunityToggle } from './community-toggle';
 import { EntityToggle } from './entity-toggle';
 import { BranchMapIndicator } from './branch-map-indicator';
 
@@ -29,10 +28,6 @@ interface StudyHeaderProps {
   isLoggedIn: boolean;
   fontSize: FontSize;
   onFontSizeChange: (size: FontSize) => void;
-  showCommunityAnnotations: boolean;
-  onCommunityToggle: (enabled: boolean) => void;
-  communityAnnotationCount?: number;
-  activeReaders?: number;
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
@@ -62,10 +57,6 @@ export function StudyHeader({
   isLoggedIn,
   fontSize,
   onFontSizeChange,
-  showCommunityAnnotations,
-  onCommunityToggle,
-  communityAnnotationCount,
-  activeReaders,
   showEntityAnnotations,
   onEntityAnnotationsToggle,
   entityAnnotationCount,
@@ -155,12 +146,6 @@ export function StudyHeader({
             entityCount={entityAnnotationCount}
           />
           <FontControls fontSize={fontSize} onFontSizeChange={onFontSizeChange} />
-          <CommunityToggle
-            enabled={showCommunityAnnotations}
-            onToggle={onCommunityToggle}
-            annotationCount={communityAnnotationCount ?? annotationCount}
-            activeReaders={activeReaders}
-          />
           {translationSelector}
         </div>
       </div>

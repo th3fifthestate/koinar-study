@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { TranslationSelector } from './TranslationSelector';
 import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
+import { ReaderSurface } from './reader-surface';
 
 type FontSize = 'small' | 'medium' | 'large';
 
@@ -83,7 +84,6 @@ export function StudyReader({
   entities = [],
 }: StudyReaderProps) {
   const [fontSize, setFontSizeState] = useState<FontSize>('medium');
-  const [showCommunityAnnotations, setShowCommunityAnnotations] = useState(false);
 
   // Persist font-size preference across sessions. Read once on mount (avoids
   // SSR mismatch) and write on every change.
@@ -166,8 +166,6 @@ export function StudyReader({
         entityAnnotationCount={entityAnnotations.length}
         fontSize={fontSize}
         setFontSize={setFontSize}
-        showCommunityAnnotations={showCommunityAnnotations}
-        setShowCommunityAnnotations={setShowCommunityAnnotations}
         headings={headings}
         headingIds={headingIds}
         displayContent={displayContent}
@@ -187,8 +185,6 @@ function StudyReaderContent({
   entityAnnotationCount,
   fontSize,
   setFontSize,
-  showCommunityAnnotations,
-  setShowCommunityAnnotations,
   headings,
   headingIds,
   displayContent,
@@ -203,8 +199,6 @@ function StudyReaderContent({
   entityAnnotationCount: number;
   fontSize: FontSize;
   setFontSize: (s: FontSize) => void;
-  showCommunityAnnotations: boolean;
-  setShowCommunityAnnotations: (v: boolean) => void;
   headings: HeadingItem[];
   headingIds: string[];
   displayContent: string;
@@ -222,13 +216,12 @@ function StudyReaderContent({
   const {
     annotations,
     loading: annotationsLoading,
-    activeReaders,
     createAnnotation,
     deleteAnnotation,
   } = useStudyAnnotations({
     studyId: study.id,
     isLoggedIn,
-    showCommunity: showCommunityAnnotations,
+    showCommunity: false,
   });
 
   const { selection, clearSelection } = useTextSelection(contentRef);
@@ -243,11 +236,8 @@ function StudyReaderContent({
   // Apply highlights to the DOM when annotations change
   useHighlightLayer(contentRef, annotations, annotationsLoading, handleAnnotationClick);
 
-  // Community annotation count (public annotations from others)
-  const communityCount = annotations.filter((a) => !a.is_own && a.is_public).length;
-
   return (
-    <>
+    <ReaderSurface>
       <ReadingProgress />
 
       {study.featured_image_url && (
@@ -271,10 +261,6 @@ function StudyReaderContent({
           isLoggedIn={isLoggedIn}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
-          showCommunityAnnotations={showCommunityAnnotations}
-          onCommunityToggle={setShowCommunityAnnotations}
-          communityAnnotationCount={communityCount}
-          activeReaders={activeReaders}
           showEntityAnnotations={showAnnotations}
           onEntityAnnotationsToggle={setShowAnnotations}
           entityAnnotationCount={entityAnnotationCount}
@@ -298,7 +284,12 @@ function StudyReaderContent({
 
           {/* Main content */}
           <main className="relative min-w-0 flex-1">
-            <article className="relative rounded-lg bg-[rgba(247,246,243,0.92)] p-6 backdrop-blur-sm dark:bg-[rgba(58,54,47,0.92)] md:p-10">
+            <article
+              className="relative rounded-lg p-6 backdrop-blur-sm md:p-10"
+              style={{
+                backgroundColor: 'color-mix(in srgb, var(--reader-paper-deep) 92%, transparent)',
+              }}
+            >
               <CopyGuard currentTranslation={currentTranslation}>
                 <div ref={contentRef}>
                   <MarkdownRenderer
@@ -371,6 +362,6 @@ function StudyReaderContent({
         onClose={() => setBranchMapOpen(false)}
         studyTitle={study.title}
       />
-    </>
+    </ReaderSurface>
   );
 }

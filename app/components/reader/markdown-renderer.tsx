@@ -230,8 +230,21 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
         return (
-          <h2 id={id} className="scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 border-b border-[var(--stone-200)] pb-2 dark:border-[var(--stone-700)]" {...props}>
-            {children}
+          <h2
+            id={id}
+            className="scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 pb-2 border-b flex items-baseline gap-3"
+            style={{
+              borderColor: 'var(--reader-rule, var(--stone-200))',
+              color: 'var(--reader-display, inherit)',
+            }}
+            {...props}
+          >
+            <span
+              aria-hidden="true"
+              className="inline-block h-[0.55em] w-[0.55em] translate-y-[-0.15em] rounded-full"
+              style={{ backgroundColor: 'var(--reader-accent-sage, currentColor)', opacity: 0.85 }}
+            />
+            <span className="flex-1">{children}</span>
           </h2>
         );
       },

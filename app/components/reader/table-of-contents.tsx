@@ -37,16 +37,20 @@ function TocList({ headings, activeId, onItemClick }: TableOfContentsProps & { o
                   onItemClick?.();
                 }}
                 className={`relative block w-full truncate rounded px-2 py-1 text-left text-sm transition-all duration-300 ease-out ${indent} ${
-                  isActive
-                    ? 'font-medium text-[var(--sage-500)] translate-x-0.5'
-                    : 'text-[var(--stone-300)] hover:text-[var(--stone-700)] dark:hover:text-[var(--stone-200)]'
+                  isActive ? 'font-medium translate-x-0.5' : ''
                 }`}
+                style={{
+                  color: isActive
+                    ? 'var(--reader-accent-sage, var(--sage-500))'
+                    : 'var(--reader-ink-soft, var(--stone-500))',
+                }}
               >
                 <span
                   aria-hidden="true"
-                  className={`pointer-events-none absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[var(--sage-500)] transition-all duration-300 ease-out ${
+                  className={`pointer-events-none absolute -left-5 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full transition-all duration-300 ease-out ${
                     isActive ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-50'
                   }`}
+                  style={{ backgroundColor: 'var(--reader-accent-sage, var(--sage-500))' }}
                 />
                 {h.text}
               </button>
@@ -63,8 +67,14 @@ export function TableOfContents({ headings, activeId }: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
-      <p className="mb-3 text-xs font-medium uppercase tracking-wider text-[var(--stone-300)]">
+    <div
+      className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto border-l pl-5 pr-4"
+      style={{ borderColor: 'var(--reader-rule, var(--stone-200))' }}
+    >
+      <p
+        className="mb-3 text-xs font-medium uppercase tracking-wider"
+        style={{ color: 'var(--reader-ink-soft, var(--stone-500))' }}
+      >
         Contents
       </p>
       <TocList headings={headings} activeId={activeId} />
