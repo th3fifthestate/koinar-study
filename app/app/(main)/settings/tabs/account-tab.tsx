@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { UserSettings } from '@/lib/db/types';
+import { PasswordInput } from '@/components/ui/password-input';
 
 interface Props { settings: UserSettings; }
 
@@ -62,9 +63,8 @@ export function AccountTab({ settings }: Props) {
           <label htmlFor="currentPassword" className="block font-body text-base text-stone-700 mb-1">
             Current password
           </label>
-          <input
+          <PasswordInput
             id="currentPassword"
-            type="password"
             value={currentPassword}
             onChange={e => setCurrentPassword(e.target.value)}
             required
@@ -77,14 +77,12 @@ export function AccountTab({ settings }: Props) {
           <label htmlFor="newPassword" className="block font-body text-base text-stone-700 mb-1">
             New password
           </label>
-          <input
+          <PasswordInput
             id="newPassword"
-            type="password"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
             required
             autoComplete="new-password"
-            aria-describedby={error ? 'password-error' : undefined}
             className="w-full border border-stone-300 rounded px-3 py-2 font-body text-base text-stone-900 focus:outline-none focus:border-sage-500"
           />
         </div>
@@ -93,13 +91,14 @@ export function AccountTab({ settings }: Props) {
           <label htmlFor="confirmPassword" className="block font-body text-base text-stone-700 mb-1">
             Confirm new password
           </label>
-          <input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
             required
             autoComplete="new-password"
+            aria-describedby={error ? 'password-error' : undefined}
+            aria-invalid={error ? "true" : undefined}
             className="w-full border border-stone-300 rounded px-3 py-2 font-body text-base text-stone-900 focus:outline-none focus:border-sage-500"
           />
         </div>
