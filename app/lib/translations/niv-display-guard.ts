@@ -73,7 +73,7 @@ export function enforceNivPerViewCap(
 
   console.warn('[niv-guard] cap hit', {
     surface,
-    cap_hit_at: refs.length,
+    cap_hit_at: allowed.length,
     translation: 'niv',
   });
 
