@@ -244,7 +244,7 @@ function StudyReaderContent({
         <StudyHero imageUrl={study.featured_image_url} title={study.title} />
       )}
 
-      <div className="relative mx-auto max-w-7xl px-4">
+      <div className="relative mx-auto max-w-6xl px-4">
         <StudyHeader
           title={study.title}
           summary={study.summary}
@@ -276,17 +276,20 @@ function StudyReaderContent({
           }
         />
 
-        <div className="flex gap-8 lg:gap-12">
-          {/* Desktop TOC */}
-          <aside className="hidden w-64 shrink-0 lg:block">
+        <div className="flex gap-6 lg:gap-10">
+          {/* Desktop TOC — narrow gutter. Dot-spine doesn't need a full
+              text column; labels truncate under the dots. */}
+          <aside className="hidden w-40 shrink-0 lg:block">
             <TableOfContents headings={headings} activeId={activeId} />
           </aside>
 
-          {/* Main content — text sits directly on the paper surface, no
-              card container. A max-width keeps the reading measure to
-              ~65ch for comfortable scan length. */}
+          {/* Main content — text sits directly on the paper surface. The
+              column flex-1's to fill the remaining width inside the
+              outer max-w-6xl frame, yielding a generous reading measure
+              without a dead right band. A soft upper cap prevents
+              pathological line lengths on extra-wide displays. */}
           <main className="relative min-w-0 flex-1">
-            <article className="relative max-w-[68ch] py-4 md:py-6">
+            <article className="relative max-w-[95ch] py-4 md:py-6">
               <CopyGuard currentTranslation={currentTranslation}>
                 <div ref={contentRef}>
                   <MarkdownRenderer
