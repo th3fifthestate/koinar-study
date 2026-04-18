@@ -153,7 +153,7 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
         const rect = viewportRef.current!.getBoundingClientRect()
         const worldX = (e.clientX - rect.left - camera.x) / camera.zoom
         const worldY = (e.clientY - rect.top - camera.y) / camera.zoom
-        await addClipping({
+        void addClipping({
           clipping_type: payload.clipping_type,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           source_ref: payload.source_ref as any,
