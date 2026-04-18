@@ -232,7 +232,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         return (
           <h2
             id={id}
-            className="xl:clear-right scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 pb-2 border-b flex items-baseline gap-3"
+            className="scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 pb-2 border-b flex items-baseline gap-3"
             style={{
               borderColor: 'var(--reader-rule, var(--stone-200))',
               color: 'var(--reader-display, inherit)',
@@ -253,7 +253,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
         return (
-          <h3 id={id} className="xl:clear-right scroll-mt-24 font-display text-2xl font-normal mt-8 mb-3" {...props}>
+          <h3 id={id} className="scroll-mt-24 font-display text-2xl font-normal mt-8 mb-3" {...props}>
             {children}
           </h3>
         );
