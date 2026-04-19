@@ -217,6 +217,7 @@ export function ClippingCard({
             {clipping.clipping_type === 'translation-compare' && (
               <TranslationCompareClipping
                 sourceRef={sourceRef}
+                boardId={boardId}
                 onUpdateSourceRef={(next: TranslationCompareRef) =>
                   onUpdateSourceRef?.(clipping.id, JSON.stringify(next))
                 }

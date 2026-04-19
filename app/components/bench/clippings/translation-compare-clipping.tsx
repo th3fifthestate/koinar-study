@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
+import { useBenchBoardContext } from '../bench-board-context'
+import { guardDrop } from '@/lib/bench/guard-drop'
+import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
+import { LicenseCapModal } from '../license-cap-modal'
 
 type TranslationCompareRef = Extract<BenchClippingSourceRef, { type: 'translation-compare' }>
 
@@ -14,6 +18,7 @@ interface TranslationResult {
 interface TranslationCompareClippingProps {
   sourceRef: TranslationCompareRef | Record<string, unknown>
   onUpdateSourceRef?: (next: TranslationCompareRef) => void
+  boardId: string
 }
 
 const ALL_TRANSLATIONS = ['bsb', 'kjv', 'web', 'nlt', 'niv', 'nasb', 'esv']
@@ -21,6 +26,7 @@ const ALL_TRANSLATIONS = ['bsb', 'kjv', 'web', 'nlt', 'niv', 'nasb', 'esv']
 export function TranslationCompareClipping({
   sourceRef,
   onUpdateSourceRef,
+  boardId,
 }: TranslationCompareClippingProps) {
   const ref = sourceRef as TranslationCompareRef
   const { book, chapter, verse } = ref
@@ -29,6 +35,9 @@ export function TranslationCompareClipping({
   const [results, setResults] = useState<TranslationResult[]>([])
   const [loading, setLoading] = useState(true)
   const [showMenu, setShowMenu] = useState(false)
+  const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
+
+  const { clippings } = useBenchBoardContext()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const translationKey = translations.join(',')
@@ -41,7 +50,7 @@ export function TranslationCompareClipping({
     let cancelled = false
     setLoading(true)
     fetch(
-      `/api/bench/translations?book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}&translations=${translationKey}`
+      `/api/bench/translations?book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}&translations=${translationKey}&boardId=${encodeURIComponent(boardId)}`
     )
       .then((r) => (r.ok ? r.json() : null))
       .then((data: { translations?: TranslationResult[] } | null) => {
@@ -54,13 +63,27 @@ export function TranslationCompareClipping({
     return () => {
       cancelled = true
     }
-  }, [book, chapter, verse, translationKey])
+  }, [book, chapter, verse, translationKey, boardId])
 
   const toggleTranslation = (t: string) => {
-    const next = translations.includes(t)
-      ? translations.filter((x) => x !== t)
-      : [...translations, t].slice(0, 4)
+    const isAdding = !translations.includes(t)
+    const next = isAdding
+      ? [...translations, t].slice(0, 4)
+      : translations.filter((x) => x !== t)
     if (next.length < 2) return
+
+    // Guard cap only when adding a licensed translation
+    if (isAdding) {
+      const guard = guardDrop(
+        { clippingType: 'translation-compare', translations: [t] },
+        { id: boardId, clippings }
+      )
+      if (!guard.ok) {
+        setCapModal(guard.modalProps)
+        return
+      }
+    }
+
     setTranslations(next)
     onUpdateSourceRef?.({ ...ref, translations: next })
   }
@@ -120,6 +143,13 @@ export function TranslationCompareClipping({
             </div>
           ))}
         </div>
+      )}
+
+      {capModal && (
+        <LicenseCapModal
+          {...capModal}
+          onClose={() => setCapModal(null)}
+        />
       )}
     </div>
   )

@@ -1,12 +1,15 @@
 'use client'
 
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { BenchCanvasContext, useCanvasCamera } from './canvas-camera'
 import { ConnectionLayer } from './connection'
 import { ClippingCard } from './clipping-card'
 import { useBenchBoardContext } from './bench-board-context'
 import { scheduleCameraSave } from '@/lib/bench/camera-persistence'
+import { guardDrop } from '@/lib/bench/guard-drop'
+import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
+import { LicenseCapModal } from './license-cap-modal'
 import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
@@ -29,6 +32,8 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
 
   const boardState = useBenchBoardContext()
   const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
+
+  const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
 
   // Persist camera on change (debounced 1500ms)
   useEffect(() => {
@@ -148,6 +153,21 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
           source_ref: unknown
           recent_clip_id?: string
         }
+        // Guard-drop: check per-board license caps before adding
+        const ref = payload.source_ref as Record<string, unknown>
+        const guard = guardDrop(
+          {
+            clippingType: payload.clipping_type,
+            translation: typeof ref.translation === 'string' ? ref.translation : undefined,
+            translations: Array.isArray(ref.translations) ? (ref.translations as string[]) : undefined,
+          },
+          { id: board.id, clippings }
+        )
+        if (!guard.ok) {
+          setCapModal(guard.modalProps)
+          return
+        }
+
         const rect = viewportRef.current!.getBoundingClientRect()
         const worldX = (e.clientX - rect.left - camera.x) / camera.zoom
         const worldY = (e.clientY - rect.top - camera.y) / camera.zoom
@@ -165,7 +185,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
         // malformed drag payload — ignore
       }
     },
-    [camera, addClipping]
+    [camera, addClipping, board.id, clippings]
   )
 
   // Dot grid opacity based on zoom (per 32a §1.2)
@@ -225,6 +245,12 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
           ))}
         </div>
       </div>
+      {capModal && (
+        <LicenseCapModal
+          {...capModal}
+          onClose={() => setCapModal(null)}
+        />
+      )}
     </BenchCanvasContext.Provider>
   )
 }
