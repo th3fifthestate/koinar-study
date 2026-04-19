@@ -3,6 +3,7 @@
 // are handled by this single server on the same port.
 // Note: uses relative imports (not @/ alias) — tsx runs this as plain Node.js.
 
+import './server-polyfills';
 import { createServer } from 'http';
 import next from 'next';
 import { setupWebSocketServer } from './lib/ws/server';
