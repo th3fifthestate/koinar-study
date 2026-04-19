@@ -288,14 +288,6 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ========================================================================
-   BENCH CANVAS — keyboard focus ring
-   ======================================================================== */
-.bench-focusable:focus-visible {
-  outline: 2px solid var(--sage-500, #6b7c5f);
-  outline-offset: 2px;
-}
-
 /* Reduced-motion: disable bench-specific animations */
 @media (prefers-reduced-motion: reduce) {
   .motion-safe\:animate-\[fadeRise_0\.5s_ease-out_both\] {

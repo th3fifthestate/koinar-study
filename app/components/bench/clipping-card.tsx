@@ -151,10 +151,10 @@ export function ClippingCard({
   return (
     <div
       ref={cardRef}
-      role="article"
+      role="group"
       tabIndex={0}
       aria-label={`${clipping.clipping_type} clipping${clipping.user_label ? ` — ${clipping.user_label}` : ''}`}
-      className="group absolute outline-none bench-focusable"
+      className="group absolute outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage-500,#6b7c5f)]"
       style={{
         left: clipping.x,
         top: clipping.y,
@@ -258,6 +258,7 @@ export function ClippingCard({
           }}
           aria-label="Delete clipping"
           tabIndex={-1}
+          aria-hidden="true"
         >
           ×
         </button>
