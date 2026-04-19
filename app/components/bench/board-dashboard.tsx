@@ -4,17 +4,23 @@ import { useState } from 'react'
 import type { BenchBoard } from '@/lib/db/types'
 import { BenchDashboardEmpty } from './empty-states/bench-dashboard-empty'
 import { TemplatePickerDialog } from './templates/template-picker-dialog'
+import { BenchIntroWalkthrough } from './onboarding/bench-intro-walkthrough'
 
 interface BoardDashboardProps {
   boards: BenchBoard[]
+  showWalkthrough?: boolean
 }
 
-export function BoardDashboard({ boards }: BoardDashboardProps) {
+export function BoardDashboard({ boards, showWalkthrough }: BoardDashboardProps) {
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [walkthroughDone, setWalkthroughDone] = useState(false)
 
   if (boards.length === 0) {
     return (
       <>
+        {showWalkthrough && !walkthroughDone && (
+          <BenchIntroWalkthrough onComplete={() => setWalkthroughDone(true)} />
+        )}
         <BenchDashboardEmpty onCreate={() => setPickerOpen(true)} />
         <TemplatePickerDialog open={pickerOpen} onClose={() => setPickerOpen(false)} />
       </>
@@ -23,6 +29,9 @@ export function BoardDashboard({ boards }: BoardDashboardProps) {
 
   return (
     <div className="flex flex-col gap-6 p-8 max-w-4xl mx-auto w-full">
+      {showWalkthrough && !walkthroughDone && (
+        <BenchIntroWalkthrough onComplete={() => setWalkthroughDone(true)} />
+      )}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Study Bench</h1>
         <button
