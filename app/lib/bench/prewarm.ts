@@ -18,7 +18,8 @@ export async function prewarmBoard(boardId: string): Promise<void> {
       if (clip.clipping_type !== 'verse') continue
       try {
         const ref = JSON.parse(clip.source_ref) as BenchClippingSourceRef
-        if (ref.type !== 'verse') continue
+        if ('placeholder' in ref && ref.placeholder) continue
+        if (!('type' in ref) || ref.type !== 'verse') continue
         getCachedVerse(ref.translation, ref.book, ref.chapter, ref.verse)
       } catch (err) {
         // Non-fatal: individual clipping parse/cache error — skip and continue

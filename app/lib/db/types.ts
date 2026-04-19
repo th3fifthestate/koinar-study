@@ -409,7 +409,10 @@ export interface BenchBoard {
   updated_at: string;
 }
 
+export type PlaceholderSourceRef = { placeholder: true; body: string }
+
 export type BenchClippingSourceRef =
+  | PlaceholderSourceRef
   | { type: 'verse'; book: string; chapter: number; verse: number; translation: string }
   | { type: 'entity'; entity_id: string }
   | { type: 'translation-compare'; book: string; chapter: number; verse: number; translations: string[] }
