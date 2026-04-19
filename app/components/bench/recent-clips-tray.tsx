@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { X } from 'lucide-react'
+import { RecentClipsEmptyState } from './empty-states/recent-clips-empty-state'
 
 interface RecentClip {
   id: string
@@ -131,11 +132,7 @@ export function RecentClipsTray() {
               ))}
             </div>
           ) : clips.length === 0 ? (
-            <p className="px-3 py-6 text-[11px] text-muted-foreground text-center leading-relaxed">
-              No recent clips.
-              <br />
-              Clip from the reader to see items here.
-            </p>
+            <RecentClipsEmptyState />
           ) : (
             sections.map(({ key, label, items }) =>
               items.length > 0 ? (

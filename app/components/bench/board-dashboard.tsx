@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { BenchBoard } from '@/lib/db/types'
-import { NoBoards } from './empty-states'
+import { BenchDashboardEmpty } from './empty-states/bench-dashboard-empty'
 import { TemplatePickerDialog } from './templates/template-picker-dialog'
 
 interface BoardDashboardProps {
@@ -15,7 +15,7 @@ export function BoardDashboard({ boards }: BoardDashboardProps) {
   if (boards.length === 0) {
     return (
       <>
-        <NoBoards onCreate={() => setPickerOpen(true)} />
+        <BenchDashboardEmpty onCreate={() => setPickerOpen(true)} />
         <TemplatePickerDialog open={pickerOpen} onClose={() => setPickerOpen(false)} />
       </>
     )

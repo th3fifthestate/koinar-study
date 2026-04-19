@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import type { BenchClippingSourceRef, LexiconEntry } from '@/lib/db/types'
+import { SourceDrawerEmptyState } from './empty-states/source-drawer-empty-state'
 
 interface VerseRow {
   source_ref: string
@@ -231,9 +232,7 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
               {tab === 'verses' && (
                 <div className="p-2 space-y-1.5">
                   {verseSeeds.length === 0 && (
-                    <p className="text-[11px] text-muted-foreground text-center py-4 px-2">
-                      Verse references you use on boards will appear here.
-                    </p>
+                    <SourceDrawerEmptyState tabId="verses" />
                   )}
                   {verseSeeds.map((row, i) => {
                     let ref: Extract<BenchClippingSourceRef, { type: 'verse' }> | null = null
@@ -271,6 +270,9 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                     onChange={(e) => searchEntities(e.target.value)}
                     aria-label="Search entities"
                   />
+                  {entityQuery.length < 2 && !searchingEntities && (
+                    <SourceDrawerEmptyState tabId="entities" />
+                  )}
                   {searchingEntities && (
                     <div className="flex justify-center py-2">
                       <div className="w-4 h-4 rounded-full border-2 border-sage-300 border-t-transparent animate-spin" />
@@ -305,6 +307,9 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                     />
                   </div>
                   <div className="divide-y divide-border">
+                    {!lexiconQ.trim() && (
+                      <SourceDrawerEmptyState tabId="lexicon" />
+                    )}
                     {lexiconResults.map((entry) => (
                       <div
                         key={entry.strongs_id}
@@ -346,6 +351,9 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                       className="w-full text-[12px] border border-border rounded px-2 py-1.5 bg-background focus:outline-none focus:ring-1 focus:ring-sage-400"
                     />
                   </div>
+                  {!xrefInput.trim() && (
+                    <SourceDrawerEmptyState tabId="cross-refs" />
+                  )}
                   {xrefResults.length > 0 && (() => {
                     const match = xrefInput.trim().match(/^(.+?)\s+(\d+):(\d+)$/)
                     if (!match) return null
@@ -390,6 +398,9 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                     />
                   </div>
                   <div className="divide-y divide-border">
+                    {notesQ.trim().length < 2 && (
+                      <SourceDrawerEmptyState tabId="notes" />
+                    )}
                     {notesResults.map((note) => (
                       <div
                         key={note.annotation_id}
@@ -429,6 +440,9 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
                     />
                   </div>
                   <div className="divide-y divide-border">
+                    {studiesQ.trim().length < 2 && (
+                      <SourceDrawerEmptyState tabId="studies" />
+                    )}
                     {studiesResults.map((study) => (
                       <div
                         key={study.id}
