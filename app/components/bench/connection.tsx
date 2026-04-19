@@ -115,6 +115,7 @@ export function ConnectionLayer({ connections, clippings, onDelete }: Connection
     <svg
       className="absolute top-0 left-0 overflow-visible"
       style={{ width: maxX, height: maxY, pointerEvents: 'none' }}
+      aria-hidden="true"
     >
       <defs>
         <marker

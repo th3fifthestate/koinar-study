@@ -153,8 +153,8 @@ export function ClippingCard({
       ref={cardRef}
       role="article"
       tabIndex={0}
-      aria-label={`${clipping.clipping_type} clipping`}
-      className="group absolute outline-none focus-visible:ring-2 focus-visible:ring-sage-400"
+      aria-label={`${clipping.clipping_type} clipping${clipping.user_label ? ` — ${clipping.user_label}` : ''}`}
+      className="group absolute outline-none bench-focusable"
       style={{
         left: clipping.x,
         top: clipping.y,
@@ -179,6 +179,7 @@ export function ClippingCard({
         const step = e.shiftKey ? 256 : 64
         if (e.key === 'Delete' || e.key === 'Backspace') {
           e.preventDefault()
+          e.stopPropagation()
           onDelete(clipping.id)
         }
         if (e.key === 'ArrowLeft') { e.preventDefault(); onMove(clipping.id, clipping.x - step, clipping.y) }
