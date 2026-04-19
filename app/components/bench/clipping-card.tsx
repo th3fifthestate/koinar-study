@@ -13,7 +13,12 @@ import { NoteClipping } from './clippings/note-clipping'
 import { TranslationCompareClipping } from './clippings/translation-compare-clipping'
 import { CrossRefChainClipping } from './clippings/cross-ref-chain-clipping'
 import { LexiconClipping } from './clippings/lexicon-clipping'
-import { StudySectionClipping } from './clippings/study-section-clipping'
+import dynamic from 'next/dynamic'
+
+const StudySectionClipping = dynamic(
+  () => import('./clippings/study-section-clipping').then(m => ({ default: m.StudySectionClipping })),
+  { loading: () => <div className="w-full h-24 animate-pulse rounded bg-muted" aria-label="Loading…" /> }
+)
 import { PlaceholderCard } from './clippings/placeholder-card'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
 

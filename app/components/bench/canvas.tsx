@@ -14,6 +14,7 @@ import { BoardOrientingCard } from './onboarding/board-orienting-card'
 import { KeyboardCheatSheet } from './onboarding/keyboard-cheat-sheet'
 import { FirstConnectionAura } from './onboarding/first-connection-aura'
 import { useBenchKeyboardShortcuts } from '@/lib/hooks/use-bench-keyboard-shortcuts'
+import { useCanvasVisibility } from '@/lib/hooks/use-canvas-visibility'
 import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
@@ -62,6 +63,16 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
 
   const firstConnectionFiredRef = useRef(hasDrawnFirstConnection ?? false)
   const [auraPathD, setAuraPathD] = useState<string | null>(null)
+
+  const [vpSize, setVpSize] = useState({ width: 1200, height: 800 })
+  useEffect(() => {
+    const update = () => setVpSize({ width: window.innerWidth, height: window.innerHeight })
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  const visibleClippings = useCanvasVisibility(camera, clippings, vpSize)
 
   const [orientingDismissed, setOrientingDismissed] = useState(() => {
     if (typeof sessionStorage === 'undefined') return false
@@ -334,7 +345,7 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
           )}
 
           {/* Clipping cards */}
-          {clippings.map((clipping) => (
+          {visibleClippings.map((clipping) => (
             <ClippingCard
               key={clipping.id}
               clipping={clipping}
