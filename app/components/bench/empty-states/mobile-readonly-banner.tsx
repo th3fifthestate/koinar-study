@@ -1,7 +1,7 @@
 export function MobileReadOnlyBanner() {
   return (
     <div
-      className="w-full bg-[var(--ivory-paper,#fdfaf3)] border-b border-stone-200 px-4
+      className="w-full bg-ivory-paper border-b border-stone-200 px-4
                  h-9 flex items-center justify-center text-[13px] text-stone-700 text-center"
     >
       <span>

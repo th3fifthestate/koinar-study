@@ -20,6 +20,8 @@ app.prepare().then(() => {
     handle(req, res);
   });
 
+  // Register our /ws handler in `noServer` mode — see lib/ws/server.ts for
+  // why we must NOT pass the HTTP server to WebSocketServer directly.
   setupWebSocketServer(server);
 
   server.listen(port, hostname, () => {

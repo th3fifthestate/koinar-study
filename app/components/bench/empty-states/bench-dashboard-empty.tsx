@@ -13,9 +13,9 @@ export function BenchDashboardEmpty({ onCreate }: BenchDashboardEmptyProps) {
         aria-hidden="true"
       >
         {/* Table-surface line */}
-        <line x1="20" y1="78" x2="100" y2="78" stroke="#d6d3d1" strokeWidth="1" strokeLinecap="round" />
+        <line x1="20" y1="78" x2="100" y2="78" stroke="var(--stone-300)" strokeWidth="1" strokeLinecap="round" />
         {/* Pen nib dot */}
-        <circle cx="60" cy="62" r="3" fill="#6b8c6b" fillOpacity="0.7" />
+        <circle cx="60" cy="62" r="3" fill="var(--sage-500)" fillOpacity="0.7" />
       </svg>
       <div className="max-w-sm">
         <h2 className="text-[26px] font-serif text-stone-900/90 mb-2 leading-tight">

@@ -48,7 +48,7 @@ function Arrow({ conn, from, to, onDelete }: ArrowProps) {
       {/* Visible arrow */}
       <path
         d={path}
-        stroke={hovered ? 'var(--sage-700, #4a6741)' : 'var(--sage-500, #6b8f61)'}
+        stroke={hovered ? 'var(--sage-700)' : 'var(--sage-500)'}
         strokeWidth={hovered ? 2 : 1.5}
         fill="none"
         markerEnd="url(#bench-arrowhead)"
@@ -62,8 +62,8 @@ function Arrow({ conn, from, to, onDelete }: ArrowProps) {
             width={conn.label.length * 7 + 12}
             height={20}
             rx={4}
-            fill="var(--ivory-paper, #fdfaf3)"
-            stroke="var(--sage-300, #a8c4a0)"
+            fill="var(--ivory-paper)"
+            stroke="var(--sage-300)"
             strokeWidth={1}
           />
           <text
@@ -84,7 +84,7 @@ function Arrow({ conn, from, to, onDelete }: ArrowProps) {
           cx={midX + (conn.label ? conn.label.length * 3.5 + 14 : 10)}
           cy={midY - 8}
           r={7}
-          fill="var(--destructive, #ef4444)"
+          fill="var(--destructive)"
           className="cursor-pointer"
           onClick={() => onDelete(conn.id)}
           role="button"
@@ -126,7 +126,7 @@ export function ConnectionLayer({ connections, clippings, onDelete }: Connection
           refY="4"
           orient="auto"
         >
-          <path d="M 0 0 L 6 4 L 0 8 Z" fill="var(--sage-500, #6b8f61)" />
+          <path d="M 0 0 L 6 4 L 0 8 Z" fill="var(--sage-500)" />
         </marker>
       </defs>
       <g style={{ pointerEvents: 'all' }}>

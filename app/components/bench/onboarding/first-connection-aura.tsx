@@ -11,7 +11,7 @@ export function FirstConnectionAura({ pathD }: FirstConnectionAuraProps) {
     <motion.path
       aria-hidden="true"
       d={pathD}
-      stroke="var(--color-sage-500, #6b8c6b)"
+      stroke="var(--sage-500)"
       strokeWidth={8}
       fill="none"
       style={{ filter: 'blur(6px)' }}

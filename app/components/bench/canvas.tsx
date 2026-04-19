@@ -330,7 +330,7 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
               inset: '-5000px',
               opacity: dotOpacity,
               backgroundImage:
-                'radial-gradient(circle, var(--stone-300, #c7bfb0) 1px, transparent 1px)',
+                'radial-gradient(circle, var(--stone-300) 1px, transparent 1px)',
               backgroundSize: '32px 32px',
             }}
             aria-hidden

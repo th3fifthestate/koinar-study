@@ -154,14 +154,14 @@ export function ClippingCard({
       role="group"
       tabIndex={0}
       aria-label={`${clipping.clipping_type} clipping${clipping.user_label ? ` — ${clipping.user_label}` : ''}`}
-      className="group absolute outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage-500,#6b7c5f)]"
+      className="group absolute outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500"
       style={{
         left: clipping.x,
         top: clipping.y,
         width: clipping.width,
         height: clipping.height,
         borderRadius: 10,
-        background: 'var(--ivory-paper, #fdfaf3)',
+        background: 'var(--ivory-paper)',
         boxShadow: shadow,
         cursor: isDragging ? 'grabbing' : 'grab',
         userSelect: 'none',

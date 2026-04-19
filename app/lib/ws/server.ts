@@ -54,7 +54,32 @@ async function getSessionFromRequest(req: IncomingMessage): Promise<SessionData 
 }
 
 export function setupWebSocketServer(server: Server) {
-  const wss = new WebSocketServer({ server, path: '/ws' });
+  // Use noServer mode and dispatch upgrades ourselves. If we passed `server`
+  // directly, the `ws` library would attach its own upgrade listener that
+  // destroys any socket whose path doesn't match /ws — including Next's
+  // Turbopack HMR WebSocket (/_next/...). Killing the HMR socket in dev
+  // leaves the client's RSC stream unclosed, so `await initialServerResponse`
+  // inside the client hydrate() never resolves, so hydrateRoot is never
+  // called, so the page stays non-interactive.
+  const wss = new WebSocketServer({ noServer: true });
+
+  server.on('upgrade', (req, socket, head) => {
+    let pathname: string | null = null;
+    try {
+      // req.url is a path, e.g. "/ws" or "/_next/..." — no host needed for pathname
+      pathname = new URL(req.url || '/', 'http://localhost').pathname;
+    } catch {
+      pathname = req.url ?? null;
+    }
+    if (pathname === '/ws') {
+      wss.handleUpgrade(req, socket, head, (ws) => {
+        wss.emit('connection', ws, req);
+      });
+    }
+    // Any other path (Next HMR, etc.) — do nothing; Next's own 'upgrade'
+    // listener, or any other handler, will handle it. Multiple 'upgrade'
+    // listeners coexist in Node.
+  });
 
   wss.on('connection', async (ws: WebSocket, req: IncomingMessage) => {
     const session = await getSessionFromRequest(req);

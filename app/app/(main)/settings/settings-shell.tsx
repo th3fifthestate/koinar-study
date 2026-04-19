@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type { SessionData } from '@/lib/auth/session';
 import type { UserSettings, InviteRow } from '@/lib/db/types';
@@ -38,16 +37,11 @@ export function SettingsShell({
   studyOptions,
   initialTab,
 }: Props) {
-  const router = useRouter();
   const tabs = user.isAdmin
     ? [...BASE_TABS, { id: 'admin' as TabId, label: 'Admin' }]
     : BASE_TABS;
   const activeTab = (tabs.find(t => t.id === initialTab)?.id ?? 'profile') as TabId;
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  function switchTab(id: TabId) {
-    router.push(`/settings?tab=${id}`);
-  }
+  const tabRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   function handleKeyDown(e: React.KeyboardEvent, index: number) {
     let next: number | null = null;
@@ -63,7 +57,7 @@ export function SettingsShell({
     if (next !== null) {
       e.preventDefault();
       tabRefs.current[next]?.focus();
-      switchTab(tabs[next].id);
+      tabRefs.current[next]?.click();
     }
   }
 
@@ -87,14 +81,14 @@ export function SettingsShell({
             className="flex md:flex-col gap-1 md:gap-0 md:w-44 mb-8 md:mb-0 flex-shrink-0 overflow-x-auto md:overflow-visible"
           >
             {tabs.map((tab, i) => (
-              <button
+              <Link
                 key={tab.id}
                 ref={el => { tabRefs.current[i] = el; }}
                 role="tab"
+                href={`/settings?tab=${tab.id}`}
                 aria-selected={activeTab === tab.id}
                 aria-controls={`panel-${tab.id}`}
                 id={`tab-${tab.id}`}
-                onClick={() => switchTab(tab.id)}
                 onKeyDown={e => handleKeyDown(e, i)}
                 tabIndex={activeTab === tab.id ? 0 : -1}
                 className={[
@@ -106,7 +100,7 @@ export function SettingsShell({
                 ].join(' ')}
               >
                 {tab.label}
-              </button>
+              </Link>
             ))}
           </nav>
 

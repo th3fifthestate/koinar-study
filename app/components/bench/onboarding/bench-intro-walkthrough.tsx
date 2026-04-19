@@ -30,7 +30,7 @@ export function BenchIntroWalkthrough({ onAdvance, onSkip }: BenchIntroWalkthrou
           role="dialog"
           aria-modal="true"
           aria-labelledby="walkthrough-title"
-          className="pointer-events-auto bg-[var(--ivory-paper,#fdfaf3)] border border-stone-200
+          className="pointer-events-auto bg-ivory-paper border border-stone-200
                      rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 flex flex-col gap-4
                      motion-safe:animate-[fadeRise_0.24s_cubic-bezier(0.2,0.8,0.2,1)_both]"
         >

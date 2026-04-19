@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pencil, LayoutGrid } from 'lucide-react';
 import Link from 'next/link';
 
 interface CornerNavProps {
@@ -53,6 +53,18 @@ export function CornerNav({ username, displayName }: CornerNavProps) {
         >
           <Pencil className="h-4 w-4" />
           <span>New Study</span>
+        </Link>
+
+        <Link
+          href="/bench"
+          className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+            scrolled
+              ? 'text-[var(--stone-700)]/50 hover:text-[var(--stone-900)]'
+              : 'text-[var(--stone-50)]/70 hover:text-[var(--stone-50)]'
+          }`}
+        >
+          <LayoutGrid className="h-4 w-4" />
+          <span>Study Bench</span>
         </Link>
 
         {username ? (

@@ -6,7 +6,7 @@ export function BoardOrientingCard({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
       <div
-        className={`pointer-events-auto relative bg-[var(--ivory-paper,#fdfaf3)] border border-stone-200
+        className={`pointer-events-auto relative bg-ivory-paper border border-stone-200
                     rounded-xl shadow-md px-6 py-5 max-w-sm text-center
                     ${reduced ? '' : 'motion-safe:animate-[fadeRise_0.4s_ease-out_both]'}`}
       >

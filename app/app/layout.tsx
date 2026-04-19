@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Bodoni_Moda, Literata, Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { PageTransition } from "./components/page-transition";
 import { FooterGate } from "@/components/layout/footer-gate";
@@ -70,11 +69,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-dvh font-body">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <PageTransition>{children}</PageTransition>
-          <FooterGate />
-          <Toaster position="bottom-right" richColors />
-        </ThemeProvider>
+        <PageTransition>{children}</PageTransition>
+        <FooterGate />
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );
