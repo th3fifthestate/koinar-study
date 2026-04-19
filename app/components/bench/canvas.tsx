@@ -10,6 +10,7 @@ import { scheduleCameraSave } from '@/lib/bench/camera-persistence'
 import { guardDrop } from '@/lib/bench/guard-drop'
 import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
 import { LicenseCapModal } from './license-cap-modal'
+import { BoardOrientingCard } from './onboarding/board-orienting-card'
 import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
@@ -34,6 +35,16 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
   const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
 
   const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
+
+  const [orientingDismissed, setOrientingDismissed] = useState(() => {
+    if (typeof sessionStorage === 'undefined') return false
+    return sessionStorage.getItem(`bench:orienting:${board.id}`) === '1'
+  })
+
+  const handleOrientingDismiss = useCallback(() => {
+    sessionStorage.setItem(`bench:orienting:${board.id}`, '1')
+    setOrientingDismissed(true)
+  }, [board.id])
 
   // Persist camera on change (debounced 1500ms)
   useEffect(() => {
@@ -244,6 +255,10 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
             />
           ))}
         </div>
+
+        {clippings.length === 0 && !orientingDismissed && (
+          <BoardOrientingCard onDismiss={handleOrientingDismiss} />
+        )}
       </div>
       {capModal && (
         <LicenseCapModal
