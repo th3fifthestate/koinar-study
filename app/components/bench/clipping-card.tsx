@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import type { BenchClipping } from '@/lib/db/types'
 import { useBenchCanvas } from './canvas-camera'
+import { useBenchBoardContext } from './bench-board-context'
 
 // Clipping content components are imported lazily to avoid circular deps
 import { VerseClipping } from './clippings/verse-clipping'
@@ -12,7 +13,12 @@ import { NoteClipping } from './clippings/note-clipping'
 import { TranslationCompareClipping } from './clippings/translation-compare-clipping'
 import { CrossRefChainClipping } from './clippings/cross-ref-chain-clipping'
 import { LexiconClipping } from './clippings/lexicon-clipping'
-import { StudySectionClipping } from './clippings/study-section-clipping'
+import dynamic from 'next/dynamic'
+
+const StudySectionClipping = dynamic(
+  () => import('./clippings/study-section-clipping').then(m => ({ default: m.StudySectionClipping })),
+  { loading: () => <div className="w-full h-24 animate-pulse rounded bg-muted" aria-label="Loading…" /> }
+)
 import { PlaceholderCard } from './clippings/placeholder-card'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
 
@@ -40,6 +46,7 @@ export function ClippingCard({
   onUpdateSourceRef,
 }: ClippingCardProps) {
   const { camera } = useBenchCanvas()
+  const { isReadOnly } = useBenchBoardContext()
   const cardRef = useRef<HTMLDivElement>(null)
   const dragStart = useRef<{ mx: number; my: number; cx: number; cy: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -52,6 +59,7 @@ export function ClippingCard({
   // Drag to move
   const onCardPointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (isReadOnly) return
       // Only primary button; ignore edge zones
       if (e.button !== 0) return
       if ((e.target as HTMLElement).closest('[data-edge-zone]')) return
@@ -60,7 +68,7 @@ export function ClippingCard({
       cardRef.current?.setPointerCapture(e.pointerId)
       dragStart.current = { mx: e.clientX, my: e.clientY, cx: clipping.x, cy: clipping.y }
     },
-    [clipping.x, clipping.y]
+    [isReadOnly, clipping.x, clipping.y]
   )
 
   const onCardPointerMove = useCallback(
@@ -84,13 +92,14 @@ export function ClippingCard({
   // Long-press on edge zone to start connection
   const onEdgePointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (isReadOnly) return
       e.stopPropagation()
       connectTimer.current = setTimeout(() => {
         setPendingConnection(true)
         connectTimer.current = null
       }, 300)
     },
-    []
+    [isReadOnly]
   )
 
   const onEdgePointerUp = useCallback(() => {
@@ -142,10 +151,10 @@ export function ClippingCard({
   return (
     <div
       ref={cardRef}
-      role="article"
+      role="group"
       tabIndex={0}
-      aria-label={`${clipping.clipping_type} clipping`}
-      className="group absolute outline-none focus-visible:ring-2 focus-visible:ring-sage-400"
+      aria-label={`${clipping.clipping_type} clipping${clipping.user_label ? ` — ${clipping.user_label}` : ''}`}
+      className="group absolute outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage-500,#6b7c5f)]"
       style={{
         left: clipping.x,
         top: clipping.y,
@@ -166,9 +175,11 @@ export function ClippingCard({
       onPointerUp={onCardPointerUp}
       onPointerEnter={onCardPointerEnter}
       onKeyDown={(e) => {
+        if (isReadOnly) return
         const step = e.shiftKey ? 256 : 64
         if (e.key === 'Delete' || e.key === 'Backspace') {
           e.preventDefault()
+          e.stopPropagation()
           onDelete(clipping.id)
         }
         if (e.key === 'ArrowLeft') { e.preventDefault(); onMove(clipping.id, clipping.x - step, clipping.y) }
@@ -235,20 +246,23 @@ export function ClippingCard({
       </div>
 
       {/* Delete button (visible on group-hover / focus) */}
-      <button
-        className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red-100 text-red-600 text-xs
-                   opacity-0 group-hover:opacity-100 focus:opacity-100
-                   flex items-center justify-center leading-none z-20
-                   transition-opacity"
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete(clipping.id)
-        }}
-        aria-label="Delete clipping"
-        tabIndex={-1}
-      >
-        ×
-      </button>
+      {!isReadOnly && (
+        <button
+          className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red-100 text-red-600 text-xs
+                     opacity-0 group-hover:opacity-100 focus:opacity-100
+                     flex items-center justify-center leading-none z-20
+                     transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete(clipping.id)
+          }}
+          aria-label="Delete clipping"
+          tabIndex={-1}
+          aria-hidden="true"
+        >
+          ×
+        </button>
+      )}
 
       {/* Connection label popover (shown when pendingConnection and connTarget selected) */}
       {pendingConnection && connTarget && (

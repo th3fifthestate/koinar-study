@@ -309,6 +309,18 @@ function runMigration(database: Database.Database): void {
       }
     }
 
+    // v12 → v13: bench_user_flags table (Brief 35b).
+    if (currentVersion < 13) {
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS bench_user_flags (
+          user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          has_seen_bench_intro INTEGER NOT NULL DEFAULT 0,
+          has_drawn_first_connection INTEGER NOT NULL DEFAULT 0,
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

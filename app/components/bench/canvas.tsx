@@ -10,13 +10,37 @@ import { scheduleCameraSave } from '@/lib/bench/camera-persistence'
 import { guardDrop } from '@/lib/bench/guard-drop'
 import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
 import { LicenseCapModal } from './license-cap-modal'
+import { BoardOrientingCard } from './onboarding/board-orienting-card'
+import { KeyboardCheatSheet } from './onboarding/keyboard-cheat-sheet'
+import { FirstConnectionAura } from './onboarding/first-connection-aura'
+import { useBenchKeyboardShortcuts } from '@/lib/hooks/use-bench-keyboard-shortcuts'
+import { useCanvasVisibility } from '@/lib/hooks/use-canvas-visibility'
 import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
   board: BenchBoard
+  hasDrawnFirstConnection?: boolean
 }
 
-export function BenchCanvas({ board }: BenchCanvasProps) {
+/** Mirrors the same cubic bezier used in connection.tsx */
+function computeConnectionPathD(
+  from: { x: number; y: number; width: number; height: number },
+  to: { x: number; y: number; width: number; height: number }
+): string {
+  const x0 = from.x + from.width / 2
+  const y0 = from.y + from.height / 2
+  const x1 = to.x + to.width / 2
+  const y1 = to.y + to.height / 2
+  const dx = x1 - x0
+  const dy = y1 - y0
+  const cx1 = x0 + dx * 0.33
+  const cy1 = y0 + dy * 0.08
+  const cx2 = x1 - dx * 0.33
+  const cy2 = y1 + dy * 0.08
+  return `M ${x0} ${y0} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x1} ${y1}`
+}
+
+export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps) {
   const prefersReduced = useReducedMotion()
   const viewportRef = useRef<HTMLDivElement>(null)
   const isPanning = useRef(false)
@@ -31,9 +55,65 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
   const { camera, pan, zoomAtPoint, transformStyle } = camControls
 
   const boardState = useBenchBoardContext()
-  const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
+  const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection, isReadOnly } = boardState
 
   const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
+  const [cheatSheetOpen, setCheatSheetOpen] = useState(false)
+  const [selectedClippingId, setSelectedClippingId] = useState<string | null>(null)
+
+  const firstConnectionFiredRef = useRef(hasDrawnFirstConnection ?? false)
+  const [auraPathD, setAuraPathD] = useState<string | null>(null)
+
+  const [vpSize, setVpSize] = useState({ width: 1200, height: 800 })
+  useEffect(() => {
+    const update = () => setVpSize({ width: window.innerWidth, height: window.innerHeight })
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  const visibleClippings = useCanvasVisibility(camera, clippings, vpSize)
+
+  const orientingKey = `bench:orienting-card-dismissed:${board.id}`
+  const [orientingDismissed, setOrientingDismissed] = useState(() => {
+    if (typeof localStorage === 'undefined') return false
+    return localStorage.getItem(orientingKey) === '1'
+  })
+
+  const handleOrientingDismiss = useCallback(() => {
+    try { localStorage.setItem(orientingKey, '1') } catch {}
+    setOrientingDismissed(true)
+  }, [orientingKey])
+
+  // Auto-dismiss the orienting card the first time a clipping is placed on this board.
+  useEffect(() => {
+    if (clippings.length > 0 && !orientingDismissed) {
+      try { localStorage.setItem(orientingKey, '1') } catch {}
+      setOrientingDismissed(true)
+    }
+  }, [clippings.length, orientingDismissed, orientingKey])
+
+  const handleAddConnection = useCallback(async (
+    fromId: string, toId: string, label: string | null
+  ) => {
+    const result = await addConnection(fromId, toId, label)
+    if (!firstConnectionFiredRef.current) {
+      firstConnectionFiredRef.current = true
+      const from = clippings.find(c => c.id === fromId)
+      const to = clippings.find(c => c.id === toId)
+      if (from && to) {
+        const pathD = computeConnectionPathD(from, to)
+        setAuraPathD(pathD)
+        setTimeout(() => setAuraPathD(null), 350)
+      }
+      void fetch('/api/bench/user-flags', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ has_drawn_first_connection: true }),
+      }).catch(err => console.error('[aura] flag patch failed', err))
+    }
+    return result
+  }, [addConnection, clippings])
 
   // Persist camera on change (debounced 1500ms)
   useEffect(() => {
@@ -41,7 +121,44 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board.id, camera.x, camera.y, camera.zoom])
 
-  // Keyboard: Space = pan mode, Cmd+0 = reset
+  // Keyboard shortcuts (global)
+  useBenchKeyboardShortcuts({
+    camReset: camControls.reset,
+    onDuplicate: () => {
+      if (!selectedClippingId) return
+      const src = clippings.find(c => c.id === selectedClippingId)
+      if (!src) return
+      void addClipping({
+        clipping_type: src.clipping_type,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        source_ref: JSON.parse(src.source_ref) as any,
+        x: src.x + 24,
+        y: src.y + 24,
+      })
+    },
+    onDelete: () => {
+      if (selectedClippingId) void deleteClipping(selectedClippingId)
+    },
+    onUndo: () => { /* undo: not yet implemented — requires setClippings in use-bench-board */ },
+    onRedo: () => { /* redo: not yet implemented — requires setClippings in use-bench-board */ },
+    nudge: (dx, dy) => {
+      if (!selectedClippingId) return
+      const c = clippings.find(cl => cl.id === selectedClippingId)
+      if (!c) return
+      void moveClipping(selectedClippingId, c.x + dx / camera.zoom, c.y + dy / camera.zoom)
+    },
+    onOpenExpanded: () => { /* placeholder — no expanded view implemented yet */ },
+    onClearSelection: () => setSelectedClippingId(null),
+    onFocusDrawerSearch: () => {
+      window.dispatchEvent(new CustomEvent('bench:open-drawer', { detail: { tab: 'verses', focusSearch: true } }))
+    },
+    onToggleDrawer: () => window.dispatchEvent(new CustomEvent('bench:toggle-drawer')),
+    onToggleTray: () => window.dispatchEvent(new CustomEvent('bench:toggle-tray')),
+    onOpenCheatSheet: () => setCheatSheetOpen(true),
+    isReadOnly,
+  })
+
+  // Keyboard: Space = pan mode
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -50,10 +167,6 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
         e.preventDefault()
         spaceHeld.current = true
         viewportRef.current?.classList.add('cursor-grab')
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === '0') {
-        e.preventDefault()
-        camControls.reset()
       }
     }
     const onKeyUp = (e: KeyboardEvent) => {
@@ -70,7 +183,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
     }
-  }, [camControls])
+  }, [])
 
   // Pointer: pan when Space held
   const onPointerDown = useCallback(
@@ -230,8 +343,18 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
             onDelete={deleteConnection}
           />
 
+          {/* First-connection celebratory aura overlay */}
+          {auraPathD && (
+            <svg
+              className="absolute top-0 left-0 overflow-visible pointer-events-none"
+              aria-hidden="true"
+            >
+              <FirstConnectionAura key={auraPathD} pathD={auraPathD} />
+            </svg>
+          )}
+
           {/* Clipping cards */}
-          {clippings.map((clipping) => (
+          {visibleClippings.map((clipping) => (
             <ClippingCard
               key={clipping.id}
               clipping={clipping}
@@ -239,11 +362,15 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
               onMove={moveClipping}
               onResize={resizeClipping}
               onDelete={deleteClipping}
-              onAddConnection={addConnection}
+              onAddConnection={handleAddConnection}
               onUpdateSourceRef={updateSourceRef}
             />
           ))}
         </div>
+
+        {clippings.length === 0 && !orientingDismissed && (
+          <BoardOrientingCard onDismiss={handleOrientingDismiss} />
+        )}
       </div>
       {capModal && (
         <LicenseCapModal
@@ -251,6 +378,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
           onClose={() => setCapModal(null)}
         />
       )}
+      <KeyboardCheatSheet open={cheatSheetOpen} onClose={() => setCheatSheetOpen(false)} />
     </BenchCanvasContext.Provider>
   )
 }

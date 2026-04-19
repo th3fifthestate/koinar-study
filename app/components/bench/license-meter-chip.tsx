@@ -55,7 +55,7 @@ export function LicenseMeterChip({ translation, count, cap }: LicenseMeterChipPr
         rel="noopener noreferrer"
         className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-lg text-[12px] tabular-nums
                     ${bg} ${text} transition-colors`}
-        aria-label={`${translation} ${count} of ${cap} verses used on this board`}
+        aria-label={`${translation} ${count} of ${cap} verses used on this board${count >= cap ? ' — limit reached' : count >= cap * 0.8 ? ' — approaching limit' : ''}`}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       >

@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth/session'
 import { getBenchBoards } from '@/lib/db/bench/queries'
+import { getUserFlags } from '@/lib/bench/user-flags'
 import { BoardDashboard } from '@/components/bench/board-dashboard'
+import { BenchDashboardShell } from '@/components/bench/bench-dashboard-shell'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -14,10 +16,11 @@ export default async function BenchPage() {
   if (!session) redirect('/login')
 
   const boards = getBenchBoards(session.userId)
+  const flags = getUserFlags(session.userId)
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <BoardDashboard boards={boards} />
-    </div>
+    <BenchDashboardShell>
+      <BoardDashboard boards={boards} showWalkthrough={flags.has_seen_bench_intro === 0} />
+    </BenchDashboardShell>
   )
 }
