@@ -43,10 +43,24 @@ interface SourceDrawerProps {
 type Tab = 'verses' | 'entities' | 'lexicon' | 'cross-refs' | 'notes' | 'studies'
 const TABS: Tab[] = ['verses', 'entities', 'lexicon', 'cross-refs', 'notes', 'studies']
 
+// Custom event type for opening the drawer from external components (e.g. PlaceholderCard)
+export type BenchOpenDrawerEvent = CustomEvent<{ tab: Tab }>
+
 export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<Tab>('verses')
   const prefersReduced = useReducedMotion()
+
+  // Listen for external open requests (from PlaceholderCard clicks)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { tab: requestedTab } = (e as BenchOpenDrawerEvent).detail
+      setTab(requestedTab)
+      setOpen(true)
+    }
+    window.addEventListener('bench:open-drawer', handler)
+    return () => window.removeEventListener('bench:open-drawer', handler)
+  }, [])
 
   // Entities tab
   const [entityQuery, setEntityQuery] = useState('')
