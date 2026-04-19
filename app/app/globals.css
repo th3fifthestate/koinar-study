@@ -15,6 +15,12 @@
   --sage-500: #6b8060;
   --sage-700: #3d4f35;
   --warmth: #c49a6c;
+  --amber-50:  #fffbeb;
+  --amber-500: #f59e0b;
+  --amber-700: #b45309;
+  --red-50:    #fef2f2;
+  --red-500:   #ef4444;
+  --red-700:   #b91c1c;
 
   /* Sage & Stone color system */
   --background: #f7f6f3;
@@ -347,4 +353,8 @@ body {
 }
 .dark .prose-entity blockquote {
   color: var(--stone-300);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
