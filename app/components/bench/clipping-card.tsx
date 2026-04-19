@@ -170,6 +170,7 @@ export function ClippingCard({
       onPointerUp={onCardPointerUp}
       onPointerEnter={onCardPointerEnter}
       onKeyDown={(e) => {
+        if (isReadOnly) return
         const step = e.shiftKey ? 256 : 64
         if (e.key === 'Delete' || e.key === 'Backspace') {
           e.preventDefault()
@@ -239,20 +240,22 @@ export function ClippingCard({
       </div>
 
       {/* Delete button (visible on group-hover / focus) */}
-      <button
-        className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red-100 text-red-600 text-xs
-                   opacity-0 group-hover:opacity-100 focus:opacity-100
-                   flex items-center justify-center leading-none z-20
-                   transition-opacity"
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete(clipping.id)
-        }}
-        aria-label="Delete clipping"
-        tabIndex={-1}
-      >
-        ×
-      </button>
+      {!isReadOnly && (
+        <button
+          className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-red-100 text-red-600 text-xs
+                     opacity-0 group-hover:opacity-100 focus:opacity-100
+                     flex items-center justify-center leading-none z-20
+                     transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete(clipping.id)
+          }}
+          aria-label="Delete clipping"
+          tabIndex={-1}
+        >
+          ×
+        </button>
+      )}
 
       {/* Connection label popover (shown when pendingConnection and connTarget selected) */}
       {pendingConnection && connTarget && (
