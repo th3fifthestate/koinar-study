@@ -2,11 +2,14 @@ import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getCachedVerse } from '@/lib/translations/cache'
 import { getVerse, normalizeBookName } from '@/lib/db/bible/queries'
+import { recordFumsEvent } from '@/lib/translations/fums-tracker'
+import { TRANSLATIONS } from '@/lib/translations/registry'
+import type { TranslationId } from '@/lib/translations/registry'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 240 })
 
 export async function GET(request: Request) {
-  const { response } = await requireAuth()
+  const { user, response } = await requireAuth()
   if (response) return response
 
   const ip = getClientIp(request)
@@ -19,6 +22,7 @@ export async function GET(request: Request) {
   const book = url.searchParams.get('book')
   const chapter = parseInt(url.searchParams.get('chapter') ?? '', 10)
   const verse = parseInt(url.searchParams.get('verse') ?? '', 10)
+  const boardId = url.searchParams.get('boardId') ?? ''
 
   if (!translation || !book || isNaN(chapter) || isNaN(verse)) {
     return Response.json({ error: 'Missing required params: translation, book, chapter, verse' }, { status: 400 })
@@ -27,6 +31,21 @@ export async function GET(request: Request) {
   // Try translation cache first (handles licensed translations)
   const cached = getCachedVerse(translation, book, chapter, verse)
   if (cached) {
+    const tid = translation.toUpperCase() as TranslationId
+    if (TRANSLATIONS[tid]?.isLicensed) {
+      try {
+        recordFumsEvent({
+          translation: tid,
+          fumsToken: null,
+          eventType: 'display',
+          userId: user.userId,
+          verseCount: 1,
+          surface: { kind: 'bench', boardId },
+        })
+      } catch {
+        // Non-fatal — FUMS failure must not block verse delivery
+      }
+    }
     return Response.json({ text: cached.text, translation, book, chapter, verse })
   }
 
