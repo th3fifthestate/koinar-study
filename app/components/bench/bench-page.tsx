@@ -7,7 +7,9 @@ import { BoardTopBar } from './board-top-bar'
 import { SourceDrawer } from './source-drawer'
 import { RecentClipsTray } from './recent-clips-tray'
 import { EmptyCanvas, MobileNotice } from './empty-states'
+import { MobileReadOnlyBanner } from './empty-states/mobile-readonly-banner'
 import { CopyCapRoot } from './copy-cap-root'
+import { useViewportSize } from '@/lib/hooks/use-viewport-size'
 import type { BenchBoard, BenchClipping, BenchConnection } from '@/lib/db/types'
 
 interface BenchPageProps {
@@ -26,6 +28,7 @@ export function BenchPage({
   prewarmFailed,
 }: BenchPageProps) {
   const isEmpty = initialClippings.length === 0
+  const viewport = useViewportSize()
 
   return (
     <BenchBoardProvider
@@ -34,6 +37,7 @@ export function BenchPage({
       initialConnections={initialConnections}
     >
       <div className="flex flex-col h-screen overflow-hidden bg-background">
+        {viewport === 'mobile' && <MobileReadOnlyBanner />}
         <MobileNotice />
         <BoardTopBar board={board} />
         <div className="flex flex-1 min-h-0">

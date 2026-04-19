@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import type { BenchClipping } from '@/lib/db/types'
 import { useBenchCanvas } from './canvas-camera'
+import { useBenchBoardContext } from './bench-board-context'
 
 // Clipping content components are imported lazily to avoid circular deps
 import { VerseClipping } from './clippings/verse-clipping'
@@ -40,6 +41,7 @@ export function ClippingCard({
   onUpdateSourceRef,
 }: ClippingCardProps) {
   const { camera } = useBenchCanvas()
+  const { isReadOnly } = useBenchBoardContext()
   const cardRef = useRef<HTMLDivElement>(null)
   const dragStart = useRef<{ mx: number; my: number; cx: number; cy: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -52,6 +54,7 @@ export function ClippingCard({
   // Drag to move
   const onCardPointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (isReadOnly) return
       // Only primary button; ignore edge zones
       if (e.button !== 0) return
       if ((e.target as HTMLElement).closest('[data-edge-zone]')) return
@@ -60,7 +63,7 @@ export function ClippingCard({
       cardRef.current?.setPointerCapture(e.pointerId)
       dragStart.current = { mx: e.clientX, my: e.clientY, cx: clipping.x, cy: clipping.y }
     },
-    [clipping.x, clipping.y]
+    [isReadOnly, clipping.x, clipping.y]
   )
 
   const onCardPointerMove = useCallback(
@@ -84,13 +87,14 @@ export function ClippingCard({
   // Long-press on edge zone to start connection
   const onEdgePointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (isReadOnly) return
       e.stopPropagation()
       connectTimer.current = setTimeout(() => {
         setPendingConnection(true)
         connectTimer.current = null
       }, 300)
     },
-    []
+    [isReadOnly]
   )
 
   const onEdgePointerUp = useCallback(() => {
