@@ -7,6 +7,7 @@ import { BoardTopBar } from './board-top-bar'
 import { SourceDrawer } from './source-drawer'
 import { RecentClipsTray } from './recent-clips-tray'
 import { EmptyCanvas, MobileNotice } from './empty-states'
+import { CopyCapRoot } from './copy-cap-root'
 import type { BenchBoard, BenchClipping, BenchConnection } from '@/lib/db/types'
 
 interface BenchPageProps {
@@ -37,10 +38,13 @@ export function BenchPage({
         <BoardTopBar board={board} />
         <div className="flex flex-1 min-h-0">
           <SourceDrawer verseSeeds={verseSeeds} boardId={board.id} />
-          <main className="flex-1 relative min-w-0 overflow-hidden">
+          <CopyCapRoot
+            surface={{ kind: 'bench', boardId: board.id }}
+            className="flex-1 relative min-w-0 overflow-hidden"
+          >
             <BenchCanvas board={board} />
             {isEmpty && <EmptyCanvas />}
-          </main>
+          </CopyCapRoot>
           <RecentClipsTray />
         </div>
         {prewarmFailed && (
