@@ -318,7 +318,7 @@ function runMigration(database: Database.Database): void {
           has_drawn_first_connection INTEGER NOT NULL DEFAULT 0,
           updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         )
-      `).run()
+      `).run();
     }
 
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
