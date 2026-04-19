@@ -1,8 +1,11 @@
 'use client'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
-const isMac = typeof navigator !== 'undefined'
-  && /mac/i.test(navigator.platform)
+const isMac = typeof navigator !== 'undefined' &&
+  /mac/i.test(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((navigator as any).userAgentData?.platform ?? navigator.platform) as string
+  )
 const mod = isMac ? '⌘' : 'Ctrl'
 
 const ALL_SHORTCUTS = [
