@@ -13,6 +13,7 @@ import { TranslationCompareClipping } from './clippings/translation-compare-clip
 import { CrossRefChainClipping } from './clippings/cross-ref-chain-clipping'
 import { LexiconClipping } from './clippings/lexicon-clipping'
 import { StudySectionClipping } from './clippings/study-section-clipping'
+import { PlaceholderCard } from './clippings/placeholder-card'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
 
 type TranslationCompareRef = Extract<BenchClippingSourceRef, { type: 'translation-compare' }>
@@ -201,25 +202,34 @@ export function ClippingCard({
           FULL_BLEED_TYPES.has(clipping.clipping_type) ? '' : 'p-3'
         }`}
       >
-        {clipping.clipping_type === 'verse' && <VerseClipping sourceRef={sourceRef} />}
-        {clipping.clipping_type === 'entity' && <EntityClipping sourceRef={sourceRef} />}
-        {clipping.clipping_type === 'note' && (
-          <NoteClipping clippingId={clipping.id} sourceRef={sourceRef} />
-        )}
-        {clipping.clipping_type === 'translation-compare' && (
-          <TranslationCompareClipping
-            sourceRef={sourceRef}
-            onUpdateSourceRef={(next: TranslationCompareRef) =>
-              onUpdateSourceRef?.(clipping.id, JSON.stringify(next))
-            }
+        {'placeholder' in sourceRef && sourceRef.placeholder ? (
+          <PlaceholderCard
+            body={(sourceRef as { body: string }).body}
+            type={clipping.clipping_type}
           />
-        )}
-        {clipping.clipping_type === 'cross-ref-chain' && (
-          <CrossRefChainClipping sourceRef={sourceRef} />
-        )}
-        {clipping.clipping_type === 'lexicon' && <LexiconClipping sourceRef={sourceRef} />}
-        {clipping.clipping_type === 'study-section' && (
-          <StudySectionClipping sourceRef={sourceRef} />
+        ) : (
+          <>
+            {clipping.clipping_type === 'verse' && <VerseClipping sourceRef={sourceRef} />}
+            {clipping.clipping_type === 'entity' && <EntityClipping sourceRef={sourceRef} />}
+            {clipping.clipping_type === 'note' && (
+              <NoteClipping clippingId={clipping.id} sourceRef={sourceRef} />
+            )}
+            {clipping.clipping_type === 'translation-compare' && (
+              <TranslationCompareClipping
+                sourceRef={sourceRef}
+                onUpdateSourceRef={(next: TranslationCompareRef) =>
+                  onUpdateSourceRef?.(clipping.id, JSON.stringify(next))
+                }
+              />
+            )}
+            {clipping.clipping_type === 'cross-ref-chain' && (
+              <CrossRefChainClipping sourceRef={sourceRef} />
+            )}
+            {clipping.clipping_type === 'lexicon' && <LexiconClipping sourceRef={sourceRef} />}
+            {clipping.clipping_type === 'study-section' && (
+              <StudySectionClipping sourceRef={sourceRef} />
+            )}
+          </>
         )}
       </div>
 
