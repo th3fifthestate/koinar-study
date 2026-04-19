@@ -11,6 +11,8 @@ import { guardDrop } from '@/lib/bench/guard-drop'
 import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
 import { LicenseCapModal } from './license-cap-modal'
 import { BoardOrientingCard } from './onboarding/board-orienting-card'
+import { KeyboardCheatSheet } from './onboarding/keyboard-cheat-sheet'
+import { useBenchKeyboardShortcuts } from '@/lib/hooks/use-bench-keyboard-shortcuts'
 import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
@@ -32,9 +34,13 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
   const { camera, pan, zoomAtPoint, transformStyle } = camControls
 
   const boardState = useBenchBoardContext()
-  const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
+  const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection, isReadOnly } = boardState
 
   const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
+  const [cheatSheetOpen, setCheatSheetOpen] = useState(false)
+  const [selectedClippingId, setSelectedClippingId] = useState<string | null>(null)
+  const undoStack = useRef<BenchClipping[][]>([])
+  const redoStack = useRef<BenchClipping[][]>([])
 
   const [orientingDismissed, setOrientingDismissed] = useState(() => {
     if (typeof sessionStorage === 'undefined') return false
@@ -52,7 +58,54 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board.id, camera.x, camera.y, camera.zoom])
 
-  // Keyboard: Space = pan mode, Cmd+0 = reset
+  // Keyboard shortcuts (global)
+  useBenchKeyboardShortcuts({
+    camReset: camControls.reset,
+    onDuplicate: () => {
+      if (!selectedClippingId) return
+      const src = clippings.find(c => c.id === selectedClippingId)
+      if (!src) return
+      void addClipping({
+        clipping_type: src.clipping_type,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        source_ref: JSON.parse(src.source_ref) as any,
+        x: src.x + 24,
+        y: src.y + 24,
+      })
+    },
+    onDelete: () => {
+      if (selectedClippingId) void deleteClipping(selectedClippingId)
+    },
+    onUndo: () => {
+      const prev = undoStack.current.pop()
+      if (!prev) return
+      redoStack.current.push([...clippings])
+      // Full undo requires setClippings on boardState — stubbed until hook is updated
+    },
+    onRedo: () => {
+      const next = redoStack.current.pop()
+      if (!next) return
+      undoStack.current.push([...clippings])
+      // Full redo requires setClippings on boardState — stubbed until hook is updated
+    },
+    nudge: (dx, dy) => {
+      if (!selectedClippingId) return
+      const c = clippings.find(cl => cl.id === selectedClippingId)
+      if (!c) return
+      void moveClipping(selectedClippingId, c.x + dx / camera.zoom, c.y + dy / camera.zoom)
+    },
+    onOpenExpanded: () => { /* placeholder — no expanded view implemented yet */ },
+    onClearSelection: () => setSelectedClippingId(null),
+    onFocusDrawerSearch: () => {
+      window.dispatchEvent(new CustomEvent('bench:open-drawer', { detail: { focusSearch: true } }))
+    },
+    onToggleDrawer: () => window.dispatchEvent(new CustomEvent('bench:toggle-drawer')),
+    onToggleTray: () => window.dispatchEvent(new CustomEvent('bench:toggle-tray')),
+    onOpenCheatSheet: () => setCheatSheetOpen(true),
+    isReadOnly,
+  })
+
+  // Keyboard: Space = pan mode
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -61,10 +114,6 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
         e.preventDefault()
         spaceHeld.current = true
         viewportRef.current?.classList.add('cursor-grab')
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === '0') {
-        e.preventDefault()
-        camControls.reset()
       }
     }
     const onKeyUp = (e: KeyboardEvent) => {
@@ -81,7 +130,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
     }
-  }, [camControls])
+  }, [])
 
   // Pointer: pan when Space held
   const onPointerDown = useCallback(
@@ -266,6 +315,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
           onClose={() => setCapModal(null)}
         />
       )}
+      <KeyboardCheatSheet open={cheatSheetOpen} onClose={() => setCheatSheetOpen(false)} />
     </BenchCanvasContext.Provider>
   )
 }

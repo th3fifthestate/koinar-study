@@ -63,6 +63,13 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
     return () => window.removeEventListener('bench:open-drawer', handler)
   }, [])
 
+  // Listen for keyboard toggle ([ key via useBenchKeyboardShortcuts)
+  useEffect(() => {
+    const onToggle = () => setOpen(v => !v)
+    window.addEventListener('bench:toggle-drawer', onToggle)
+    return () => window.removeEventListener('bench:toggle-drawer', onToggle)
+  }, [])
+
   // Entities tab
   const [entityQuery, setEntityQuery] = useState('')
   const [entities, setEntities] = useState<EntityRow[]>([])

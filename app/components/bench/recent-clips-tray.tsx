@@ -77,6 +77,13 @@ export function RecentClipsTray() {
     fetchClips()
   }, [fetchClips])
 
+  // Listen for keyboard toggle (] key via useBenchKeyboardShortcuts)
+  useEffect(() => {
+    const onToggle = () => setExpanded(v => !v)
+    window.addEventListener('bench:toggle-tray', onToggle)
+    return () => window.removeEventListener('bench:toggle-tray', onToggle)
+  }, [])
+
   const dismiss = async (id: string) => {
     setClips((prev) => prev.filter((c) => c.id !== id))
     await fetch(`/api/bench/recent-clips/${id}`, { method: 'DELETE' })
