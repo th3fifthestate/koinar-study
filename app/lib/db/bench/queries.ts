@@ -58,6 +58,53 @@ export function createBenchBoard(userId: number, title: string): BenchBoard {
     .get(id) as BenchBoard
 }
 
+export function createBenchBoardWithQuestion(
+  userId: number,
+  title: string,
+  question: string
+): BenchBoard {
+  const db = getDb()
+  const id = crypto.randomUUID()
+  db.prepare(
+    `INSERT INTO bench_boards (id, user_id, title, question, camera_x, camera_y, camera_zoom)
+     VALUES (?, ?, ?, ?, 0, 0, 1)`
+  ).run(id, userId, title, question)
+  return db
+    .prepare(`SELECT ${BOARD_COLS} FROM bench_boards WHERE id = ?`)
+    .get(id) as BenchBoard
+}
+
+interface CreateClippingRawInput {
+  id: string
+  board_id: string
+  clipping_type: BenchClipping['clipping_type']
+  source_ref: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export function createBenchClippingRaw(input: CreateClippingRawInput): void {
+  getDb().prepare(
+    `INSERT INTO bench_clippings (id, board_id, clipping_type, source_ref, x, y, width, height, z_index)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)`
+  ).run(input.id, input.board_id, input.clipping_type, input.source_ref, input.x, input.y, input.width, input.height)
+}
+
+export function createBenchConnectionRaw(
+  id: string,
+  boardId: string,
+  fromId: string,
+  toId: string,
+  label: string | null
+): void {
+  getDb().prepare(
+    `INSERT INTO bench_connections (id, board_id, from_clipping_id, to_clipping_id, label)
+     VALUES (?, ?, ?, ?, ?)`
+  ).run(id, boardId, fromId, toId, label ?? null)
+}
+
 export function updateBenchBoard(
   boardId: string,
   userId: number,
