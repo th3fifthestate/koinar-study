@@ -7,11 +7,7 @@ import {
   getRecentVerseSeeds,
 } from '@/lib/db/bench/queries'
 import { prewarmBoard } from '@/lib/bench/prewarm'
-import { BenchCanvas } from '@/components/bench/canvas'
-import { BoardTopBar } from '@/components/bench/board-top-bar'
-import { SourceDrawer } from '@/components/bench/source-drawer'
-import { RecentClipsTray } from '@/components/bench/recent-clips-tray'
-import { EmptyCanvas, MobileNotice } from '@/components/bench/empty-states'
+import { BenchPage } from '@/components/bench/bench-page'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -39,31 +35,19 @@ export default async function BoardPage({ params }: Props) {
   const board = getBenchBoard(boardId, session.userId)
   if (!board) notFound()
 
-  // Prewarm verse cache before passing to client (non-fatal on error)
-  await prewarmBoard(boardId)
+  const prewarmFailed = await prewarmBoard(boardId).then(() => false).catch(() => true)
 
   const clippings = getBenchClippings(boardId)
   const connections = getBenchConnections(boardId)
   const verseSeeds = getRecentVerseSeeds(session.userId, 10)
 
-  const isEmpty = clippings.length === 0
-
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-background">
-      <MobileNotice />
-      <BoardTopBar board={board} />
-      <div className="flex flex-1 min-h-0">
-        <SourceDrawer verseSeeds={verseSeeds} boardId={boardId} />
-        <main className="flex-1 relative min-w-0 overflow-hidden">
-          <BenchCanvas
-            board={board}
-            initialClippings={clippings}
-            initialConnections={connections}
-          />
-          {isEmpty && <EmptyCanvas />}
-        </main>
-        <RecentClipsTray />
-      </div>
-    </div>
+    <BenchPage
+      board={board}
+      initialClippings={clippings}
+      initialConnections={connections}
+      verseSeeds={verseSeeds}
+      prewarmFailed={prewarmFailed}
+    />
   )
 }
