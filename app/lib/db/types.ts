@@ -459,3 +459,10 @@ export interface BenchRecentClip {
   clipped_from_route: string | null;
   created_at: string;
 }
+
+export interface BenchUserFlags {
+  user_id: string;
+  has_seen_bench_intro: 0 | 1;
+  has_drawn_first_connection: 0 | 1;
+  updated_at: string;
+}
