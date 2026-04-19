@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { BenchBoard } from '@/lib/db/types'
+import { LicenseMeter } from './license-meter'
 
 interface BoardTopBarProps {
   board: BenchBoard
@@ -104,6 +105,9 @@ export function BoardTopBar({ board }: BoardTopBarProps) {
         aria-label="Board question"
         maxLength={140}
       />
+
+      {/* License meter chips */}
+      <LicenseMeter />
 
       {/* Kebab menu */}
       <div ref={menuRef} className="relative shrink-0">
