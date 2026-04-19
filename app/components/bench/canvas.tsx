@@ -5,17 +5,15 @@ import { useReducedMotion } from 'framer-motion'
 import { BenchCanvasContext, useCanvasCamera } from './canvas-camera'
 import { ConnectionLayer } from './connection'
 import { ClippingCard } from './clipping-card'
-import { useBenchBoard } from '@/lib/hooks/use-bench-board'
+import { useBenchBoardContext } from './bench-board-context'
 import { scheduleCameraSave } from '@/lib/bench/camera-persistence'
-import type { BenchBoard, BenchClipping, BenchConnection } from '@/lib/db/types'
+import type { BenchBoard, BenchClipping } from '@/lib/db/types'
 
 interface BenchCanvasProps {
   board: BenchBoard
-  initialClippings: BenchClipping[]
-  initialConnections: BenchConnection[]
 }
 
-export function BenchCanvas({ board, initialClippings, initialConnections }: BenchCanvasProps) {
+export function BenchCanvas({ board }: BenchCanvasProps) {
   const prefersReduced = useReducedMotion()
   const viewportRef = useRef<HTMLDivElement>(null)
   const isPanning = useRef(false)
@@ -29,7 +27,7 @@ export function BenchCanvas({ board, initialClippings, initialConnections }: Ben
   })
   const { camera, pan, zoomAtPoint, transformStyle } = camControls
 
-  const boardState = useBenchBoard(board.id, initialClippings, initialConnections)
+  const boardState = useBenchBoardContext()
   const { clippings, connections, addClipping, deleteConnection, moveClipping, resizeClipping, deleteClipping, updateSourceRef, addConnection } = boardState
 
   // Persist camera on change (debounced 1500ms)
