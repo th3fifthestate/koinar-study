@@ -43,12 +43,12 @@ export function CoachMarkPopover({
             <button onClick={onSkip}
               className="text-xs text-muted-foreground hover:underline focus-visible:outline
                          focus-visible:outline-2 focus-visible:outline-sage-500 rounded">
-              Skip
+              Skip intro
             </button>
             <button onClick={onNext}
               className="text-xs font-medium text-sage-600 hover:underline focus-visible:outline
                          focus-visible:outline-2 focus-visible:outline-sage-500 rounded">
-              {step === totalSteps ? "Let's start" : 'Next'}
+              {step === totalSteps ? "Let's start" : 'Got it'}
             </button>
           </div>
         </div>

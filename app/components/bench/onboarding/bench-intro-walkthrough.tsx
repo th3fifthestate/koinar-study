@@ -1,92 +1,64 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 
-const STEPS = [
-  {
-    title: 'Your research canvas',
-    body: 'Drag any verse, entity, or note from the left panel onto this canvas to begin building your study.',
-  },
-  {
-    title: 'Connect ideas',
-    body: 'Long-press the edge of any card to draw a connection arrow linking two cards.',
-  },
-  {
-    title: 'Stay in budget',
-    body: 'The license meter tracks your translation usage so you always know where you stand.',
-  },
-]
+interface BenchIntroWalkthroughProps {
+  onAdvance: () => void
+  onSkip: () => void
+}
 
-export function BenchIntroWalkthrough({ onComplete }: { onComplete: () => void }) {
-  const [step, setStep] = useState(0)
-  const [dimVisible, setDimVisible] = useState(false)
-
+/**
+ * Step 1 of the three-step bench intro. Steps 2 and 3 are rendered by the
+ * dashboard as CoachMarkPopovers anchored to the "New board" button, since
+ * they need to point at live UI rather than sit in their own centered card.
+ */
+export function BenchIntroWalkthrough({ onAdvance, onSkip }: BenchIntroWalkthroughProps) {
   useEffect(() => {
-    const t = setTimeout(() => setDimVisible(true), 0)
-    return () => clearTimeout(t)
-  }, [])
-
-  const dismiss = useCallback(async () => {
-    try {
-      await fetch('/api/bench/user-flags', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ has_seen_bench_intro: true }),
-      })
-    } catch (err) {
-      console.error('[walkthrough] flag patch failed', err)
-    }
-    onComplete()
-  }, [onComplete])
-
-  const advance = useCallback(() => {
-    if (step >= STEPS.length - 1) void dismiss()
-    else setStep(s => s + 1)
-  }, [step, dismiss])
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') dismiss() }
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onSkip() }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [dismiss])
-
-  const current = STEPS[step]
+  }, [onSkip])
 
   return (
     <>
       <div
         aria-hidden="true"
-        className="fixed inset-0 z-[60] bg-[rgba(25,23,20,0.4)] transition-opacity duration-[180ms]"
-        style={{ opacity: dimVisible ? 1 : 0 }}
-        onClick={dismiss}
+        className="fixed inset-0 z-[60] bg-[rgba(25,23,20,0.4)]"
+        onClick={onSkip}
       />
       <div className="fixed inset-0 z-[70] pointer-events-none flex items-center justify-center">
         <div
           role="dialog"
           aria-modal="true"
           aria-labelledby="walkthrough-title"
-          className="pointer-events-auto bg-card rounded-xl shadow-xl p-6 max-w-sm w-full
-                     mx-4 flex flex-col gap-4"
+          className="pointer-events-auto bg-[var(--ivory-paper,#fdfaf3)] border border-stone-200
+                     rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 flex flex-col gap-4
+                     motion-safe:animate-[fadeRise_0.24s_cubic-bezier(0.2,0.8,0.2,1)_both]"
         >
           <div>
-            <p id="walkthrough-title" className="text-sm font-semibold text-foreground">
-              {current.title}
+            <p id="walkthrough-title" className="text-[18px] font-serif text-stone-900 mb-2">
+              Welcome to your bench.
             </p>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{current.body}</p>
+            <p className="text-[13px] text-stone-700 leading-relaxed">
+              This is a quiet surface for your own study. Pull in verses, entities, notes — arrange
+              them however helps you think. The app never steers. You do.
+            </p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] text-muted-foreground">{step + 1} of {STEPS.length}</span>
-            <div className="flex gap-3">
-              <button onClick={dismiss}
-                className="text-xs text-muted-foreground hover:underline focus-visible:outline
-                           focus-visible:outline-2 focus-visible:outline-sage-500 rounded">
-                Skip
-              </button>
-              <button onClick={advance}
-                className="text-xs font-medium text-sage-600 hover:underline focus-visible:outline
-                           focus-visible:outline-2 focus-visible:outline-sage-500 rounded">
-                {step === STEPS.length - 1 ? "Let's start" : 'Next'}
-              </button>
-            </div>
+          <div className="flex items-center justify-end gap-4">
+            <button
+              onClick={onSkip}
+              className="text-xs text-stone-500 hover:underline focus-visible:outline
+                         focus-visible:outline-2 focus-visible:outline-sage-500 rounded"
+            >
+              Skip intro
+            </button>
+            <button
+              onClick={onAdvance}
+              className="px-3 py-1.5 rounded-md bg-sage-600 text-white text-xs font-medium
+                         hover:bg-sage-700 focus-visible:outline focus-visible:outline-2
+                         focus-visible:outline-offset-2 focus-visible:outline-sage-500"
+            >
+              Show me around
+            </button>
           </div>
         </div>
       </div>

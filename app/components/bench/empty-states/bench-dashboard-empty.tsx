@@ -5,23 +5,24 @@ interface BenchDashboardEmptyProps {
 export function BenchDashboardEmpty({ onCreate }: BenchDashboardEmptyProps) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 gap-6 py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-sage-100 flex items-center justify-center">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect x="4" y="4" width="10" height="10" rx="2" stroke="currentColor"
-            strokeWidth="1.5" className="text-sage-600"/>
-          <rect x="18" y="4" width="10" height="10" rx="2" stroke="currentColor"
-            strokeWidth="1.5" className="text-sage-600"/>
-          <rect x="4" y="18" width="10" height="10" rx="2" stroke="currentColor"
-            strokeWidth="1.5" className="text-sage-600"/>
-          <path d="M18 23h10M23 18v10" stroke="currentColor" strokeWidth="1.5"
-            strokeLinecap="round" className="text-sage-600"/>
-        </svg>
-      </div>
+      <svg
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
+        fill="none"
+        aria-hidden="true"
+      >
+        {/* Table-surface line */}
+        <line x1="20" y1="78" x2="100" y2="78" stroke="#d6d3d1" strokeWidth="1" strokeLinecap="round" />
+        {/* Pen nib dot */}
+        <circle cx="60" cy="62" r="3" fill="#6b8c6b" fillOpacity="0.7" />
+      </svg>
       <div className="max-w-sm">
-        <h2 className="text-xl font-semibold text-foreground mb-2">Your bench is empty</h2>
-        <p className="text-sm text-muted-foreground">
-          Create your first board to start organizing verses, entities, and notes
-          on a visual canvas.
+        <h2 className="text-[26px] font-serif text-stone-900/90 mb-2 leading-tight">
+          Nothing on the bench yet.
+        </h2>
+        <p className="text-sm text-stone-700 leading-relaxed">
+          A board is a question and the things around it. Start when you&rsquo;re ready.
         </p>
       </div>
       <button
@@ -31,7 +32,7 @@ export function BenchDashboardEmpty({ onCreate }: BenchDashboardEmptyProps) {
                    focus-visible:outline-2 focus-visible:outline-offset-2
                    focus-visible:outline-sage-500"
       >
-        Create your first board
+        New board
       </button>
     </div>
   )

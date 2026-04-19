@@ -74,15 +74,24 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
 
   const visibleClippings = useCanvasVisibility(camera, clippings, vpSize)
 
+  const orientingKey = `bench:orienting-card-dismissed:${board.id}`
   const [orientingDismissed, setOrientingDismissed] = useState(() => {
-    if (typeof sessionStorage === 'undefined') return false
-    return sessionStorage.getItem(`bench:orienting:${board.id}`) === '1'
+    if (typeof localStorage === 'undefined') return false
+    return localStorage.getItem(orientingKey) === '1'
   })
 
   const handleOrientingDismiss = useCallback(() => {
-    sessionStorage.setItem(`bench:orienting:${board.id}`, '1')
+    try { localStorage.setItem(orientingKey, '1') } catch {}
     setOrientingDismissed(true)
-  }, [board.id])
+  }, [orientingKey])
+
+  // Auto-dismiss the orienting card the first time a clipping is placed on this board.
+  useEffect(() => {
+    if (clippings.length > 0 && !orientingDismissed) {
+      try { localStorage.setItem(orientingKey, '1') } catch {}
+      setOrientingDismissed(true)
+    }
+  }, [clippings.length, orientingDismissed, orientingKey])
 
   const handleAddConnection = useCallback(async (
     fromId: string, toId: string, label: string | null

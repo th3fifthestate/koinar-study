@@ -16,7 +16,7 @@ export default async function BenchPage() {
   if (!session) redirect('/login')
 
   const boards = getBenchBoards(session.userId)
-  const flags = getUserFlags(String(session.userId))
+  const flags = getUserFlags(session.userId)
 
   return (
     <BenchDashboardShell>

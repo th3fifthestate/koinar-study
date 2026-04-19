@@ -3,10 +3,12 @@ import type { BenchUserFlags } from '@/lib/db/types'
 
 type FlagPatch = Partial<Pick<BenchUserFlags, 'has_seen_bench_intro' | 'has_drawn_first_connection'>>
 
-export function getUserFlags(userId: string): BenchUserFlags {
+export function getUserFlags(userId: number): BenchUserFlags {
   const db = getDb()
   const row = db
-    .prepare('SELECT * FROM bench_user_flags WHERE user_id = ?')
+    .prepare(
+      'SELECT user_id, has_seen_bench_intro, has_drawn_first_connection, updated_at FROM bench_user_flags WHERE user_id = ?'
+    )
     .get(userId) as BenchUserFlags | undefined
 
   return row ?? {
@@ -17,7 +19,7 @@ export function getUserFlags(userId: string): BenchUserFlags {
   }
 }
 
-export function patchUserFlags(userId: string, patch: FlagPatch): void {
+export function patchUserFlags(userId: number, patch: FlagPatch): void {
   const db = getDb()
   const existing = getUserFlags(userId)
   db.prepare(`

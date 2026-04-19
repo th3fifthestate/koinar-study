@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
-  const flags = getUserFlags(String(user.userId))
+  const flags = getUserFlags(user.userId)
   return NextResponse.json({
     has_seen_bench_intro: flags.has_seen_bench_intro === 1,
     has_drawn_first_connection: flags.has_drawn_first_connection === 1,
@@ -53,6 +53,6 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ ok: true })
   }
 
-  patchUserFlags(String(user.userId), patch)
+  patchUserFlags(user.userId, patch)
   return NextResponse.json({ ok: true })
 }

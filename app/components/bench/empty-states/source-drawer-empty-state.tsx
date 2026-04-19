@@ -1,16 +1,10 @@
-const TAB_COPY: Record<string, { heading: string; body: string }> = {
-  verses:       { heading: 'No verse seeds yet',
-                  body: 'Add verse clippings to your board — they will appear here as quick access seeds.' },
-  entities:     { heading: 'Search for a person or place',
-                  body: 'Type a name to find biblical characters, locations, and events.' },
-  lexicon:      { heading: 'Look up a word',
-                  body: "Enter a Strong's number or English word to explore the original language." },
-  'cross-refs': { heading: 'Explore connections',
-                  body: 'Search a verse to see related passages across the canon.' },
-  notes:        { heading: 'No notes yet',
-                  body: 'Highlight text in a study to create notes you can pin here.' },
-  studies:      { heading: 'Search studies',
-                  body: 'Find published studies by topic, title, or keyword.' },
+const TAB_COPY: Record<string, string> = {
+  verses: 'Search a reference, like "John 3:16" or "Gen 1".',
+  entities: 'Search a name — Ruth, Paul, Pilate.',
+  lexicon: "Search a Greek or Hebrew word. Or a Strong's number.",
+  'cross-refs': "Enter a reference. You'll get the refs that fan from it.",
+  notes: 'Your notes from reading land here. Search a phrase, a word, a book.',
+  studies: 'Your own studies are here too. Search a title or a theme.',
 }
 
 interface SourceDrawerEmptyStateProps {
@@ -18,11 +12,10 @@ interface SourceDrawerEmptyStateProps {
 }
 
 export function SourceDrawerEmptyState({ tabId }: SourceDrawerEmptyStateProps) {
-  const copy = TAB_COPY[tabId] ?? { heading: 'Nothing here yet', body: 'Try a search above.' }
+  const copy = TAB_COPY[tabId] ?? 'Nothing here yet.'
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12 px-6 text-center">
-      <p className="text-sm font-medium text-foreground">{copy.heading}</p>
-      <p className="text-xs text-muted-foreground leading-relaxed">{copy.body}</p>
+      <p className="text-sm font-medium text-foreground">{copy}</p>
     </div>
   )
 }

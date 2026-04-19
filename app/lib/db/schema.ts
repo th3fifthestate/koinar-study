@@ -430,7 +430,7 @@ CREATE TABLE IF NOT EXISTS bench_recent_clips (
 CREATE INDEX IF NOT EXISTS idx_bench_recent_user ON bench_recent_clips(user_id, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS bench_user_flags (
-  user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   has_seen_bench_intro INTEGER NOT NULL DEFAULT 0,
   has_drawn_first_connection INTEGER NOT NULL DEFAULT 0,
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))

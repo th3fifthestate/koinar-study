@@ -1,23 +1,30 @@
+'use client'
+import { useReducedMotion } from 'framer-motion'
+
 export function BoardOrientingCard({ onDismiss }: { onDismiss: () => void }) {
+  const reduced = useReducedMotion()
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="absolute top-8 left-1/2 -translate-x-1/2 z-40 bg-card border border-border
-                 rounded-xl shadow-lg px-6 py-4 flex flex-col gap-2 max-w-xs text-center
-                 motion-safe:animate-[fadeRise_0.5s_ease-out_both]"
-    >
-      <p className="text-sm font-semibold text-foreground">Your board is ready</p>
-      <p className="text-xs text-muted-foreground">
-        Drag a verse, entity, or note from the left panel to start building.
-      </p>
-      <button
-        onClick={onDismiss}
-        className="mt-1 text-xs text-sage-600 hover:underline focus-visible:outline
-                   focus-visible:outline-2 focus-visible:outline-sage-500 rounded"
+    <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
+      <div
+        className={`pointer-events-auto relative bg-[var(--ivory-paper,#fdfaf3)] border border-stone-200
+                    rounded-xl shadow-md px-6 py-5 max-w-sm text-center
+                    ${reduced ? '' : 'motion-safe:animate-[fadeRise_0.4s_ease-out_both]'}`}
       >
-        Got it
-      </button>
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label="Dismiss"
+          className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center
+                     text-stone-500 hover:text-stone-900 focus-visible:outline
+                     focus-visible:outline-2 focus-visible:outline-sage-500 rounded"
+        >
+          ×
+        </button>
+        <p className="text-[17px] font-serif text-stone-900/90 mb-1.5">An empty board.</p>
+        <p className="text-[13px] text-stone-700 leading-relaxed">
+          Drag something from the left rail to begin. Or clip from a study you&rsquo;re reading and it lands on the right.
+        </p>
+      </div>
     </div>
   )
 }

@@ -41,7 +41,7 @@ export default async function BoardPage({ params }: Props) {
   const clippings = getBenchClippings(boardId)
   const connections = getBenchConnections(boardId)
   const verseSeeds = getRecentVerseSeeds(session.userId, 10)
-  const flags = getUserFlags(String(session.userId))
+  const flags = getUserFlags(session.userId)
 
   return (
     <BenchPage

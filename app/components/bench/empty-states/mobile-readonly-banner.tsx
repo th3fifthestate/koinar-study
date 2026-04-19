@@ -1,12 +1,13 @@
 export function MobileReadOnlyBanner() {
   return (
     <div
-      role="status"
-      aria-live="polite"
-      className="w-full bg-amber-50 border-b border-amber-200 px-4 py-2
-                 text-[13px] text-amber-800 text-center"
+      className="w-full bg-[var(--ivory-paper,#fdfaf3)] border-b border-stone-200 px-4
+                 h-9 flex items-center justify-center text-[13px] text-stone-700 text-center"
     >
-      Study Bench is view-only on mobile. Open on a desktop or tablet to edit.
+      <span>
+        <strong className="font-semibold">Study Bench boards read best on desktop.</strong>{' '}
+        Editing is disabled at this size. Your clips from reading still work.
+      </span>
     </div>
   )
 }
