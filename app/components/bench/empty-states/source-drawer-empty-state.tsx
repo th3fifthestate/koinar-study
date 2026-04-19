@@ -1,6 +1,6 @@
 const TAB_COPY: Record<string, { heading: string; body: string }> = {
-  verses:       { heading: 'Search for a verse',
-                  body: 'Enter a book, chapter, or keyword to find Scripture passages.' },
+  verses:       { heading: 'No verse seeds yet',
+                  body: 'Add verse clippings to your board — they will appear here as quick access seeds.' },
   entities:     { heading: 'Search for a person or place',
                   body: 'Type a name to find biblical characters, locations, and events.' },
   lexicon:      { heading: 'Look up a word',

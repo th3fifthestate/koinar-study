@@ -226,7 +226,7 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto" aria-live="polite">
 
               {/* Verses */}
               {tab === 'verses' && (
