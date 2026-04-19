@@ -18,6 +18,7 @@ interface BenchPageProps {
   initialConnections: BenchConnection[]
   verseSeeds: Array<{ source_ref: string; created_at: string }>
   prewarmFailed: boolean
+  hasDrawnFirstConnection?: boolean
 }
 
 export function BenchPage({
@@ -26,6 +27,7 @@ export function BenchPage({
   initialConnections,
   verseSeeds,
   prewarmFailed,
+  hasDrawnFirstConnection,
 }: BenchPageProps) {
   const isEmpty = initialClippings.length === 0
   const viewport = useViewportSize()
@@ -46,7 +48,7 @@ export function BenchPage({
             surface={{ kind: 'bench', boardId: board.id }}
             className="flex-1 relative min-w-0 overflow-hidden"
           >
-            <BenchCanvas board={board} />
+            <BenchCanvas board={board} hasDrawnFirstConnection={hasDrawnFirstConnection} />
             {isEmpty && <EmptyCanvas />}
           </CopyCapRoot>
           <RecentClipsTray />

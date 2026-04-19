@@ -7,6 +7,7 @@ import {
   getRecentVerseSeeds,
 } from '@/lib/db/bench/queries'
 import { prewarmBoard } from '@/lib/bench/prewarm'
+import { getUserFlags } from '@/lib/bench/user-flags'
 import { BenchPage } from '@/components/bench/bench-page'
 import type { Metadata } from 'next'
 
@@ -40,6 +41,7 @@ export default async function BoardPage({ params }: Props) {
   const clippings = getBenchClippings(boardId)
   const connections = getBenchConnections(boardId)
   const verseSeeds = getRecentVerseSeeds(session.userId, 10)
+  const flags = getUserFlags(String(session.userId))
 
   return (
     <BenchPage
@@ -48,6 +50,7 @@ export default async function BoardPage({ params }: Props) {
       initialConnections={connections}
       verseSeeds={verseSeeds}
       prewarmFailed={prewarmFailed}
+      hasDrawnFirstConnection={flags.has_drawn_first_connection === 1}
     />
   )
 }
