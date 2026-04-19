@@ -4,21 +4,25 @@ import {
   createBenchBoardWithQuestion,
   createBenchClippingRaw,
   createBenchConnectionRaw,
+  getBenchBoard,
 } from '@/lib/db/bench/queries'
+import type { BenchBoard } from '@/lib/db/types'
 import type { TemplateDescriptor } from './types'
 
 export async function instantiateTemplate(
   descriptor: TemplateDescriptor,
   opts: { userId: number; title: string; question: string }
-): Promise<{ boardId: string }> {
+): Promise<{ board: BenchBoard }> {
   const db = getDb()
 
   // Map placeholder_id → inserted clipping id
   const idMap = new Map<string, string>()
-
-  const board = createBenchBoardWithQuestion(opts.userId, opts.title, opts.question)
+  let boardId = ''
 
   db.transaction(() => {
+    const board = createBenchBoardWithQuestion(opts.userId, opts.title, opts.question)
+    boardId = board.id
+
     for (const tc of descriptor.clippings) {
       const clippingId = crypto.randomUUID()
       idMap.set(tc.placeholder_id, clippingId)
@@ -48,5 +52,7 @@ export async function instantiateTemplate(
     }
   })()
 
-  return { boardId: board.id }
+  const board = getBenchBoard(boardId, opts.userId)
+  if (!board) throw new Error('instantiateTemplate: board not found after insert')
+  return { board }
 }

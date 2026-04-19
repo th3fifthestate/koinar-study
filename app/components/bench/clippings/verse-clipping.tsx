@@ -7,23 +7,24 @@ type VerseRef = Extract<BenchClippingSourceRef, { type: 'verse' }>
 
 interface VerseClippingProps {
   sourceRef: VerseRef | Record<string, unknown>
+  boardId: string
 }
 
-export function VerseClipping({ sourceRef }: VerseClippingProps) {
+export function VerseClipping({ sourceRef, boardId }: VerseClippingProps) {
   const ref = sourceRef as VerseRef
   const { book, chapter, verse, translation } = ref
   const [text, setText] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!book || !chapter || !verse || !translation) {
+    if (!book || !chapter || !verse || !translation || !boardId) {
       setLoading(false)
       return
     }
     let cancelled = false
     setLoading(true)
     fetch(
-      `/api/bench/verse?translation=${encodeURIComponent(translation)}&book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}`
+      `/api/bench/verse?translation=${encodeURIComponent(translation)}&book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}&boardId=${encodeURIComponent(boardId)}`
     )
       .then((r) => (r.ok ? r.json() : null))
       .then((data: { text?: string } | null) => {
@@ -36,7 +37,7 @@ export function VerseClipping({ sourceRef }: VerseClippingProps) {
     return () => {
       cancelled = true
     }
-  }, [book, chapter, verse, translation])
+  }, [book, chapter, verse, translation, boardId])
 
   const label = book && chapter && verse ? `${book} ${chapter}:${verse}` : 'Verse'
   const translationLabel = translation?.toUpperCase() ?? ''

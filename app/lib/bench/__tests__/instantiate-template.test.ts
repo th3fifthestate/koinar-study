@@ -17,6 +17,7 @@ vi.mock('@/lib/db/bench/queries', () => ({
   createBenchBoardWithQuestion: mockCreateBoard,
   createBenchClippingRaw: mockCreateClipping,
   createBenchConnectionRaw: mockCreateConnection,
+  getBenchBoard: vi.fn(() => ({ id: 'board-uuid', title: 'Test', question: '' })),
 }))
 
 vi.mock('@/lib/db/connection', () => ({

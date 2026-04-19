@@ -1,6 +1,7 @@
 import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { fetchVerseText } from '@/lib/bench/fetch-verse-text'
+import { getBenchBoard } from '@/lib/db/bench/queries'
 import { recordFumsEvent } from '@/lib/translations/fums-tracker'
 import { TRANSLATIONS } from '@/lib/translations/registry'
 import type { TranslationId } from '@/lib/translations/registry'
@@ -23,11 +24,16 @@ export async function GET(request: Request) {
   const translationsParam = url.searchParams.get('translations')
   const boardId = url.searchParams.get('boardId') ?? ''
 
-  if (!book || isNaN(chapter) || isNaN(verse) || !translationsParam) {
+  if (!book || isNaN(chapter) || isNaN(verse) || !translationsParam || !boardId) {
     return Response.json(
-      { error: 'Missing required params: book, chapter, verse, translations' },
+      { error: 'Missing required params: book, chapter, verse, translations, boardId' },
       { status: 400 }
     )
+  }
+
+  // Surface identifier is a compliance signal — verify the board belongs to the user.
+  if (!getBenchBoard(boardId, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
   const ids = translationsParam.split(',').slice(0, 4).map(t => t.trim()).filter(Boolean)

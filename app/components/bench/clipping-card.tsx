@@ -209,7 +209,7 @@ export function ClippingCard({
           />
         ) : (
           <>
-            {clipping.clipping_type === 'verse' && <VerseClipping sourceRef={sourceRef} />}
+            {clipping.clipping_type === 'verse' && <VerseClipping sourceRef={sourceRef} boardId={boardId} />}
             {clipping.clipping_type === 'entity' && <EntityClipping sourceRef={sourceRef} />}
             {clipping.clipping_type === 'note' && (
               <NoteClipping clippingId={clipping.id} sourceRef={sourceRef} />

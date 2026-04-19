@@ -54,12 +54,12 @@ export async function POST(request: Request) {
 
   if (template_id && template_id !== 'blank') {
     const descriptor = TEMPLATES[template_id]
-    const { boardId } = await instantiateTemplate(descriptor, {
+    const { board } = await instantiateTemplate(descriptor, {
       userId: user.userId,
       title,
       question,
     })
-    return Response.json({ board: { id: boardId } }, { status: 201 })
+    return Response.json({ board }, { status: 201 })
   }
 
   const board = createBenchBoard(user.userId, title)

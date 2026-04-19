@@ -1,11 +1,14 @@
 import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { z } from 'zod'
-import { getBenchBoard, createBenchClipping } from '@/lib/db/bench/queries'
+import { getBenchBoard, getBenchClippings, createBenchClipping } from '@/lib/db/bench/queries'
 import { generateClippingId } from '@/lib/bench/clipping-id'
+import { guardDrop } from '@/lib/bench/guard-drop'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
+// Placeholder source_refs are server-side-only (materialized via instantiateTemplate) and
+// intentionally excluded from this public-API discriminated union.
 const sourceRefSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('verse'),
@@ -102,6 +105,28 @@ export async function POST(request: Request) {
 
   if (!getBenchBoard(board_id, user.userId)) {
     return Response.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  // Server-side license-cap enforcement (client guardDrop is UNTRUSTED per CLAUDE.md §1).
+  if (source_ref.type === 'verse' || source_ref.type === 'translation-compare') {
+    const existing = getBenchClippings(board_id)
+    const intended =
+      source_ref.type === 'verse'
+        ? { clippingType: 'verse' as const, translation: source_ref.translation }
+        : { clippingType: 'translation-compare' as const, translations: source_ref.translations }
+    const guard = guardDrop(intended, { id: board_id, clippings: existing })
+    if (!guard.ok) {
+      return Response.json(
+        {
+          error: 'License cap reached',
+          reason: guard.reason,
+          translation: guard.modalProps.translation,
+          count: guard.modalProps.count,
+          cap: guard.modalProps.cap,
+        },
+        { status: 409 }
+      )
+    }
   }
 
   const clipping = createBenchClipping({

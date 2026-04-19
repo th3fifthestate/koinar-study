@@ -2,6 +2,7 @@ import { requireAuth } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getCachedVerse } from '@/lib/translations/cache'
 import { getVerse, normalizeBookName } from '@/lib/db/bible/queries'
+import { getBenchBoard } from '@/lib/db/bench/queries'
 import { recordFumsEvent } from '@/lib/translations/fums-tracker'
 import { TRANSLATIONS } from '@/lib/translations/registry'
 import type { TranslationId } from '@/lib/translations/registry'
@@ -24,8 +25,16 @@ export async function GET(request: Request) {
   const verse = parseInt(url.searchParams.get('verse') ?? '', 10)
   const boardId = url.searchParams.get('boardId') ?? ''
 
-  if (!translation || !book || isNaN(chapter) || isNaN(verse)) {
-    return Response.json({ error: 'Missing required params: translation, book, chapter, verse' }, { status: 400 })
+  if (!translation || !book || isNaN(chapter) || isNaN(verse) || !boardId) {
+    return Response.json(
+      { error: 'Missing required params: translation, book, chapter, verse, boardId' },
+      { status: 400 }
+    )
+  }
+
+  // Surface identifier is a compliance signal — verify the board belongs to the user.
+  if (!getBenchBoard(boardId, user.userId)) {
+    return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
   // Try translation cache first (handles licensed translations)
