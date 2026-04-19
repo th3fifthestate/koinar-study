@@ -20,20 +20,16 @@ export function CoachMarkPopover({
   const reduced = useReducedMotion()
   return (
     <Popover open={open}>
-      <PopoverTrigger
-        render={
-          <div className={open && !reduced
-            ? 'ring-2 ring-sage-500 ring-offset-2 animate-[coachPulse_2s_ease-in-out_1]'
-            : ''
-          }>
-            {anchorChildren}
-          </div>
-        }
-      />
+      <PopoverTrigger>
+        <div className={open && !reduced
+          ? 'ring-2 ring-sage-500 ring-offset-2 animate-[coachPulse_2s_ease-in-out_1]'
+          : ''
+        }>
+          {anchorChildren}
+        </div>
+      </PopoverTrigger>
       <PopoverContent
         side={side}
-        role="dialog"
-        aria-modal="true"
         aria-labelledby="coach-mark-title"
         className="w-72 p-4 flex flex-col gap-3 z-[70]"
       >

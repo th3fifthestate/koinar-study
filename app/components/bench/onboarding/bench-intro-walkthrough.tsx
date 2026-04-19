@@ -25,17 +25,21 @@ export function BenchIntroWalkthrough({ onComplete }: { onComplete: () => void }
     return () => clearTimeout(t)
   }, [])
 
-  const dismiss = useCallback(() => {
-    void fetch('/api/bench/user-flags', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ has_seen_bench_intro: true }),
-    })
+  const dismiss = useCallback(async () => {
+    try {
+      await fetch('/api/bench/user-flags', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ has_seen_bench_intro: true }),
+      })
+    } catch (err) {
+      console.error('[walkthrough] flag patch failed', err)
+    }
     onComplete()
   }, [onComplete])
 
   const advance = useCallback(() => {
-    if (step >= STEPS.length - 1) dismiss()
+    if (step >= STEPS.length - 1) void dismiss()
     else setStep(s => s + 1)
   }, [step, dismiss])
 
