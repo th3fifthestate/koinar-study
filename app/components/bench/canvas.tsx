@@ -39,8 +39,6 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
   const [capModal, setCapModal] = useState<GuardCapModalProps | null>(null)
   const [cheatSheetOpen, setCheatSheetOpen] = useState(false)
   const [selectedClippingId, setSelectedClippingId] = useState<string | null>(null)
-  const undoStack = useRef<BenchClipping[][]>([])
-  const redoStack = useRef<BenchClipping[][]>([])
 
   const [orientingDismissed, setOrientingDismissed] = useState(() => {
     if (typeof sessionStorage === 'undefined') return false
@@ -76,18 +74,8 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
     onDelete: () => {
       if (selectedClippingId) void deleteClipping(selectedClippingId)
     },
-    onUndo: () => {
-      const prev = undoStack.current.pop()
-      if (!prev) return
-      redoStack.current.push([...clippings])
-      // Full undo requires setClippings on boardState — stubbed until hook is updated
-    },
-    onRedo: () => {
-      const next = redoStack.current.pop()
-      if (!next) return
-      undoStack.current.push([...clippings])
-      // Full redo requires setClippings on boardState — stubbed until hook is updated
-    },
+    onUndo: () => { /* undo: not yet implemented — requires setClippings in use-bench-board */ },
+    onRedo: () => { /* redo: not yet implemented — requires setClippings in use-bench-board */ },
     nudge: (dx, dy) => {
       if (!selectedClippingId) return
       const c = clippings.find(cl => cl.id === selectedClippingId)
@@ -97,7 +85,7 @@ export function BenchCanvas({ board }: BenchCanvasProps) {
     onOpenExpanded: () => { /* placeholder — no expanded view implemented yet */ },
     onClearSelection: () => setSelectedClippingId(null),
     onFocusDrawerSearch: () => {
-      window.dispatchEvent(new CustomEvent('bench:open-drawer', { detail: { focusSearch: true } }))
+      window.dispatchEvent(new CustomEvent('bench:open-drawer', { detail: { tab: 'verses', focusSearch: true } }))
     },
     onToggleDrawer: () => window.dispatchEvent(new CustomEvent('bench:toggle-drawer')),
     onToggleTray: () => window.dispatchEvent(new CustomEvent('bench:toggle-tray')),

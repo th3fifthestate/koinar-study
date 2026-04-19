@@ -45,7 +45,7 @@ type Tab = 'verses' | 'entities' | 'lexicon' | 'cross-refs' | 'notes' | 'studies
 const TABS: Tab[] = ['verses', 'entities', 'lexicon', 'cross-refs', 'notes', 'studies']
 
 // Custom event type for opening the drawer from external components (e.g. PlaceholderCard)
-export type BenchOpenDrawerEvent = CustomEvent<{ tab: Tab }>
+export type BenchOpenDrawerEvent = CustomEvent<{ tab?: Tab; focusSearch?: boolean }>
 
 export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
   const [open, setOpen] = useState(false)
@@ -56,7 +56,7 @@ export function SourceDrawer({ verseSeeds }: SourceDrawerProps) {
   useEffect(() => {
     const handler = (e: Event) => {
       const { tab: requestedTab } = (e as BenchOpenDrawerEvent).detail
-      setTab(requestedTab)
+      if (requestedTab) setTab(requestedTab)
       setOpen(true)
     }
     window.addEventListener('bench:open-drawer', handler)
