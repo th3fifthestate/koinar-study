@@ -1,6 +1,12 @@
 // app/lib/email/resend.ts
 import { Resend } from "resend";
 import { config } from "@/lib/config";
+import {
+  renderEmailShell,
+  renderEmailButton,
+  renderEmailCode,
+  escape,
+} from "@/lib/email/shell";
 
 const resend = new Resend(config.email.resendApiKey);
 
@@ -11,16 +17,41 @@ export async function sendInviteEmail(options: {
   studyTitle: string;
   inviteLink: string;
 }): Promise<void> {
+  const inviter = escape(options.inviterName);
+  const invitee = escape(options.inviteeName);
+  const study = escape(options.studyTitle);
+
+  const html = renderEmailShell({
+    previewText: `${options.inviterName} invited you to study ${options.studyTitle} on Koinar.`,
+    body: `
+      <p style="margin:0 0 16px 0;">Hi ${invitee},</p>
+      <p style="margin:0 0 16px 0;">
+        <strong style="font-weight:600;">${inviter}</strong> invited you to read
+        <em style="font-style:italic;">${study}</em> together on Koinar —
+        in-depth Bible study shared in real community.
+      </p>
+      <p style="margin:0 0 8px 0;">Tap below to join the study:</p>
+      ${renderEmailButton({ href: options.inviteLink, label: "Join the study" })}
+      <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
+        If the button doesn't work, paste this link into your browser:<br />
+        <a href="${options.inviteLink}" style="color:#5c564a;word-break:break-all;">${options.inviteLink}</a>
+      </p>
+    `,
+  });
+
+  const text =
+    `Hi ${options.inviteeName},\n\n` +
+    `${options.inviterName} invited you to read "${options.studyTitle}" together on Koinar — ` +
+    `in-depth Bible study shared in real community.\n\n` +
+    `Join the study: ${options.inviteLink}\n\n` +
+    `— Koinar\nhello@koinar.app`;
+
   await resend.emails.send({
     from: "Koinar <noreply@koinar.app>",
     to: options.to,
-    subject: `${options.inviterName} wants to study with you`,
-    html: `
-      <p>Hi ${options.inviteeName},</p>
-      <p>${options.inviterName} wants to study <strong>${options.studyTitle}</strong> with you on Koinar.</p>
-      <p><a href="${options.inviteLink}" style="background:#4a5568;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Join the study</a></p>
-      <p style="color:#666;font-size:14px;">This invitation was sent to you by a member of the Koinar community.</p>
-    `,
+    subject: `${options.inviterName} wants to study with you on Koinar`,
+    html,
+    text,
   });
 }
 
@@ -28,15 +59,29 @@ export async function sendVerificationCode(options: {
   to: string;
   code: string;
 }): Promise<void> {
+  const html = renderEmailShell({
+    previewText: `Your Koinar verification code is ${options.code}. It expires in 10 minutes.`,
+    body: `
+      <p style="margin:0 0 8px 0;">Your verification code is:</p>
+      ${renderEmailCode(options.code)}
+      <p style="margin:0;font-size:14px;color:#5c564a;">
+        This code expires in 10 minutes. If you didn't request it, you can ignore this email.
+      </p>
+    `,
+  });
+
+  const text =
+    `Your Koinar verification code is:\n\n` +
+    `    ${options.code}\n\n` +
+    `This code expires in 10 minutes. If you didn't request it, you can ignore this email.\n\n` +
+    `— Koinar`;
+
   await resend.emails.send({
     from: "Koinar <noreply@koinar.app>",
     to: options.to,
     subject: `Your Koinar verification code: ${options.code}`,
-    html: `
-      <p>Your verification code is:</p>
-      <p style="font-size:32px;font-weight:bold;letter-spacing:8px;">${options.code}</p>
-      <p style="color:#666;">This code expires in 10 minutes.</p>
-    `,
+    html,
+    text,
   });
 }
 
@@ -62,16 +107,36 @@ export async function sendApprovalEmail(options: {
   name: string;
   registrationLink: string;
 }): Promise<void> {
+  const name = escape(options.name);
+
+  const html = renderEmailShell({
+    previewText: `Your request to join Koinar has been approved. Create your account to get started.`,
+    body: `
+      <p style="margin:0 0 16px 0;">${name},</p>
+      <p style="margin:0 0 16px 0;">
+        Your request to join Koinar has been approved. We're glad you're here.
+      </p>
+      <p style="margin:0 0 8px 0;">Create your account to get started:</p>
+      ${renderEmailButton({ href: options.registrationLink, label: "Create your account" })}
+      <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
+        This link expires in 7 days. If it expires, reply to this email and we'll send a new one.
+      </p>
+    `,
+  });
+
+  const text =
+    `${options.name},\n\n` +
+    `Your request to join Koinar has been approved. We're glad you're here.\n\n` +
+    `Create your account: ${options.registrationLink}\n\n` +
+    `This link expires in 7 days. If it expires, reply to this email and we'll send a new one.\n\n` +
+    `— Koinar`;
+
   await resend.emails.send({
     from: "Koinar <noreply@koinar.app>",
     to: options.to,
     subject: "Your request to join Koinar has been approved",
-    html: `
-      <p>${options.name},</p>
-      <p>Your request to join Koinar has been approved. We're glad you're here.</p>
-      <p><a href="${options.registrationLink}" style="background:#4a5568;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">Create Your Account</a></p>
-      <p style="color:#666;font-size:14px;">This link expires in 7 days. If it expires, reach out and we'll send a new one.</p>
-    `,
+    html,
+    text,
   });
 }
 
