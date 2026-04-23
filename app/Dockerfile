@@ -103,6 +103,22 @@ RUN npm install -g tsx@4
 COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Helpers for one-off commands invoked via `railway ssh`.
+#
+# `railway ssh` lands as ROOT inside the running container, so anything
+# that writes to the DB volume (e.g. tsx scripts/seed-*.ts) will create
+# files owned by root — including the SQLite WAL/SHM files that SQLite
+# recreates on every write. The Next.js server then runs as `nextjs`
+# and hits `SQLITE_READONLY`.
+#
+#   run-as-nextjs  — wrap seed/admin commands so they run as nextjs:nodejs
+#                    e.g. `railway ssh -- run-as-nextjs tsx scripts/import-tipnr.ts`
+#   fix-db-perms   — emergency repair if something slipped past the wrapper
+#                    e.g. `railway ssh -- fix-db-perms`
+COPY --chown=root:root docker-run-as-nextjs.sh /usr/local/bin/run-as-nextjs
+COPY --chown=root:root docker-fix-db-perms.sh /usr/local/bin/fix-db-perms
+RUN chmod +x /usr/local/bin/run-as-nextjs /usr/local/bin/fix-db-perms
+
 EXPOSE 3000
 
 ENV PORT=3000
