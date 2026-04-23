@@ -12,8 +12,13 @@ dist
 .env.local
 .env.*.local
 
-# Database files
-data/
+# Database files — exclude only the dev DB, not the whole data/ tree.
+# Seed source (data/seeds/*.json, data/tipnr/*.tsv) ships in the image
+# and is required by scripts/seed-entities.ts and scripts/import-tipnr.ts.
+data/app.db
+data/app.db-wal
+data/app.db-shm
+data/backups/
 *.db
 *.db-wal
 *.db-shm
