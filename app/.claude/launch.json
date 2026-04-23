@@ -3,9 +3,15 @@
   "configurations": [
     {
       "name": "koinar-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-lc", "PATH=\"$HOME/.nvm/versions/node/v22.22.2/bin:$PATH\" npm run dev"],
       "port": 3000
+    },
+    {
+      "name": "koinar-next-only",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-lc", "PATH=\"$HOME/.nvm/versions/node/v22.22.2/bin:$PATH\" PORT=3002 npx next dev -p 3002"],
+      "port": 3002
     }
   ]
 }

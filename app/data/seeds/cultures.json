@@ -1,0 +1,2111 @@
+[
+  {
+    "id": "EGYPTIAN_EMPIRE",
+    "entity_type": "culture",
+    "canonical_name": "Egyptian Empire",
+    "aliases": ["Egypt", "Mizraim"],
+    "quick_glance": "The ancient kingdom of the Nile valley, one of the most powerful empires of the ancient world; the land of Israel's bondage and the setting of the Exodus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִצְרַיִם",
+    "greek_name": "Αἴγυπτος",
+    "disambiguation_note": "Refers to the empire/kingdom; see EGYPTIANS for the people group",
+    "date_range": "c. 3100 – 30 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 12, "verse_start": 10, "verse_end": 10, "confidence": "high", "source": "biblical_text"},
+      {"book": "Exodus", "chapter": 1, "verse_start": 8, "verse_end": 14, "confidence": "high", "source": "biblical_text"},
+      {"book": "Exodus", "chapter": 12, "verse_start": 40, "verse_end": 41, "confidence": "high", "source": "biblical_text"},
+      {"book": "Isaiah", "chapter": 19, "verse_start": 1, "verse_end": 4, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EGYPTIANS", "relationship_type": "associated_with", "relationship_label": "people of", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "ISRAELITES", "relationship_type": "oppressor_of", "relationship_label": "enslaved", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Egypt", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ASSYRIAN_EMPIRE",
+    "entity_type": "culture",
+    "canonical_name": "Assyrian Empire",
+    "aliases": ["Assyria", "Asshur"],
+    "quick_glance": "A great and powerful empire on the Tigris River that conquered the northern kingdom of Israel in 722 BC and carried its people into captivity.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אַשּׁוּר",
+    "greek_name": "Ἀσσυρία",
+    "disambiguation_note": null,
+    "date_range": "c. 2500 – 609 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 17, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "Isaiah", "chapter": 10, "verse_start": 5, "verse_end": 7, "confidence": "high", "source": "dictionary"},
+      {"book": "Nahum", "chapter": 3, "verse_start": 1, "verse_end": 7, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "oppressor_of", "relationship_label": "conquered", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "BABYLONIAN_EMPIRE", "relationship_type": "succeeded_by", "relationship_label": "succeeded by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Assyria", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "BABYLONIAN_EMPIRE",
+    "entity_type": "culture",
+    "canonical_name": "Babylonian Empire",
+    "aliases": ["Babylon", "Chaldea", "Chaldeans"],
+    "quick_glance": "The empire centered on the city of Babylon that conquered Judah in 586 BC, destroyed the Temple at Jerusalem, and carried the Jews into exile.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בָּבֶל",
+    "greek_name": "Βαβυλών",
+    "disambiguation_note": null,
+    "date_range": "c. 626 – 539 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 25, "verse_start": 1, "verse_end": 11, "confidence": "high", "source": "biblical_text"},
+      {"book": "Jeremiah", "chapter": 25, "verse_start": 11, "verse_end": 12, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 1, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ASSYRIAN_EMPIRE", "relationship_type": "successor_of", "relationship_label": "successor of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PERSIAN_EMPIRE", "relationship_type": "succeeded_by", "relationship_label": "succeeded by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "TRIBE_OF_JUDAH", "relationship_type": "oppressor_of", "relationship_label": "conquered", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Babylon", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PERSIAN_EMPIRE",
+    "entity_type": "culture",
+    "canonical_name": "Persian Empire",
+    "aliases": ["Persia", "Medo-Persia", "Achaemenid Empire"],
+    "quick_glance": "The empire founded by Cyrus the Great that conquered Babylon and permitted the Jews to return to Jerusalem and rebuild the Temple.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פָּרַס",
+    "greek_name": "Περσία",
+    "disambiguation_note": null,
+    "date_range": "c. 550 – 330 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Ezra", "chapter": 1, "verse_start": 1, "verse_end": 4, "confidence": "high", "source": "biblical_text"},
+      {"book": "Daniel", "chapter": 5, "verse_start": 28, "verse_end": 28, "confidence": "high", "source": "biblical_text"},
+      {"book": "Esther", "chapter": 1, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "BABYLONIAN_EMPIRE", "relationship_type": "successor_of", "relationship_label": "successor of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "MACEDONIAN_GREEK", "relationship_type": "succeeded_by", "relationship_label": "succeeded by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Persia", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MACEDONIAN_GREEK",
+    "entity_type": "culture",
+    "canonical_name": "Macedonian Greek Empire",
+    "aliases": ["Greek Empire", "Hellenistic Empire", "Empire of Alexander"],
+    "quick_glance": "The empire of Alexander the Great that conquered Persia and spread Greek language and culture across the ancient Near East, forming the cultural backdrop of the New Testament.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יָוָן",
+    "greek_name": "Μακεδονία",
+    "disambiguation_note": "Refers to Alexander's empire; see GREEKS for the broader people group",
+    "date_range": "c. 336 – 323 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 8, "verse_start": 21, "verse_end": 22, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 11, "verse_start": 2, "verse_end": 4, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PERSIAN_EMPIRE", "relationship_type": "successor_of", "relationship_label": "successor of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PTOLEMAIC_EGYPT", "relationship_type": "predecessor_of", "relationship_label": "divided into", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_SYRIA", "relationship_type": "predecessor_of", "relationship_label": "divided into", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "GREEKS", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Greece", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PTOLEMAIC_EGYPT",
+    "entity_type": "culture",
+    "canonical_name": "Ptolemaic Egypt",
+    "aliases": ["Ptolemies", "Kingdom of the South"],
+    "quick_glance": "The Greek dynasty that ruled Egypt after Alexander the Great's death; they controlled Judea from 301 to 198 BC and commissioned the Septuagint translation of the Hebrew Scriptures.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Πτολεμαῖοι",
+    "disambiguation_note": "The Greek-ruled successor kingdom in Egypt, distinct from the ancient Egyptian Empire",
+    "date_range": "305 – 30 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 11, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 11, "verse_start": 25, "verse_end": 28, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MACEDONIAN_GREEK", "relationship_type": "successor_of", "relationship_label": "successor of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_SYRIA", "relationship_type": "rival_of", "relationship_label": "rivals of", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Egypt", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SELEUCID_SYRIA",
+    "entity_type": "culture",
+    "canonical_name": "Seleucid Syria",
+    "aliases": ["Seleucids", "Kingdom of the North"],
+    "quick_glance": "The Greek dynasty that ruled Syria and Mesopotamia after Alexander the Great; under Antiochus IV Epiphanes they desecrated the Jerusalem Temple, provoking the Maccabean revolt.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Σελευκίδαι",
+    "disambiguation_note": "Distinct from the broader SYRIANS entry",
+    "date_range": "312 – 63 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 8, "verse_start": 9, "verse_end": 14, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 11, "verse_start": 21, "verse_end": 35, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MACEDONIAN_GREEK", "relationship_type": "successor_of", "relationship_label": "successor of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PTOLEMAIC_EGYPT", "relationship_type": "rival_of", "relationship_label": "rivals of", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "MACCABEES", "relationship_type": "opposed_by", "relationship_label": "opposed by", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_GREEKS", "relationship_type": "associated_with", "relationship_label": "also known as", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Syria", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ROMAN_EMPIRE",
+    "entity_type": "culture",
+    "canonical_name": "Roman Empire",
+    "aliases": ["Romans", "Rome"],
+    "quick_glance": "The dominant world power of the New Testament era, Rome ruled Judea from 63 BC and provided the political and legal context for the life of Jesus and the early church.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ῥώμη",
+    "disambiguation_note": "Refers to the empire; see ROMANS for the people group",
+    "date_range": "27 BC – AD 476",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Luke", "chapter": 2, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"},
+      {"book": "John", "chapter": 11, "verse_start": 48, "verse_end": 48, "confidence": "high", "source": "biblical_text"},
+      {"book": "Romans", "chapter": 13, "verse_start": 1, "verse_end": 7, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ROMANS", "relationship_type": "associated_with", "relationship_label": "people of", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Rome", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "CANAANITES",
+    "entity_type": "culture",
+    "canonical_name": "Canaanites",
+    "aliases": ["Canaan"],
+    "quick_glance": "The general name for the inhabitants of the land of Canaan before the Israelite conquest; descended from Canaan the son of Ham according to Genesis.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כְּנַעֲנִי",
+    "greek_name": "Χαναναῖος",
+    "disambiguation_note": null,
+    "date_range": "c. 3000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 10, "verse_start": 15, "verse_end": 19, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 3, "verse_start": 8, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Deuteronomy", "chapter": 7, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "dictionary"},
+      {"book": "Joshua", "chapter": 3, "verse_start": 10, "verse_end": 10, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HITTITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "AMORITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "PERIZZITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "HIVITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "JEBUSITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "GIRGASHITES", "relationship_type": "associated_with", "relationship_label": "included", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Canaanites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HITTITES",
+    "entity_type": "culture",
+    "canonical_name": "Hittites",
+    "aliases": ["Children of Heth"],
+    "quick_glance": "Descendants of Heth, the son of Canaan; they dwelt in Hebron and its vicinity and are listed among the nations dispossessed by Israel.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חִתִּי",
+    "greek_name": null,
+    "disambiguation_note": "Biblical Hittites are distinct from the Anatolian Hittite Empire, though a connection is debated",
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 23, "verse_start": 3, "verse_end": 7, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 3, "verse_start": 8, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Joshua", "chapter": 1, "verse_start": 4, "verse_end": 4, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Hittites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "AMORITES",
+    "entity_type": "culture",
+    "canonical_name": "Amorites",
+    "aliases": ["Amurru"],
+    "quick_glance": "A powerful Canaanite people who occupied the hill country on both sides of the Jordan; their kings Sihon and Og were defeated by Israel under Moses.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֱמֹרִי",
+    "greek_name": "Ἀμορραῖος",
+    "disambiguation_note": null,
+    "date_range": "c. 2100 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 15, "verse_start": 16, "verse_end": 16, "confidence": "high", "source": "dictionary"},
+      {"book": "Numbers", "chapter": 21, "verse_start": 21, "verse_end": 26, "confidence": "high", "source": "biblical_text"},
+      {"book": "Deuteronomy", "chapter": 7, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Amorites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PERIZZITES",
+    "entity_type": "culture",
+    "canonical_name": "Perizzites",
+    "aliases": null,
+    "quick_glance": "One of the Canaanite peoples dwelling in the land before the Israelite conquest, frequently listed among the nations to be dispossessed.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פְּרִזִּי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 13, "verse_start": 7, "verse_end": 7, "confidence": "high", "source": "biblical_text"},
+      {"book": "Exodus", "chapter": 3, "verse_start": 8, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Joshua", "chapter": 17, "verse_start": 15, "verse_end": 15, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Perizzites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HIVITES",
+    "entity_type": "culture",
+    "canonical_name": "Hivites",
+    "aliases": null,
+    "quick_glance": "A Canaanite people descended from Canaan; the Gibeonites who deceived Joshua were Hivites, and they also dwelt near Mount Hermon.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חִוִּי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 10, "verse_start": 17, "verse_end": 17, "confidence": "high", "source": "biblical_text"},
+      {"book": "Joshua", "chapter": 9, "verse_start": 7, "verse_end": 7, "confidence": "high", "source": "dictionary"},
+      {"book": "Joshua", "chapter": 11, "verse_start": 3, "verse_end": 3, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Hivites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "JEBUSITES",
+    "entity_type": "culture",
+    "canonical_name": "Jebusites",
+    "aliases": null,
+    "quick_glance": "A Canaanite people who held the fortress of Jebus (later Jerusalem) until David captured it and made it his capital city.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יְבוּסִי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1000 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 15, "verse_start": 63, "verse_end": 63, "confidence": "high", "source": "biblical_text"},
+      {"book": "2 Samuel", "chapter": 5, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Chronicles", "chapter": 11, "verse_start": 4, "verse_end": 6, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Jebusites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GIRGASHITES",
+    "entity_type": "culture",
+    "canonical_name": "Girgashites",
+    "aliases": null,
+    "quick_glance": "One of the seven Canaanite nations listed as inhabiting the Promised Land before Israel's conquest; little is known of them beyond their inclusion in the standard lists.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גִּרְגָּשִׁי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 10, "verse_start": 16, "verse_end": 16, "confidence": "high", "source": "biblical_text"},
+      {"book": "Deuteronomy", "chapter": 7, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"},
+      {"book": "Joshua", "chapter": 3, "verse_start": 10, "verse_end": 10, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Girgashites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PHILISTINES",
+    "entity_type": "culture",
+    "canonical_name": "Philistines",
+    "aliases": ["Pelishti", "Sea Peoples"],
+    "quick_glance": "A non-Semitic people who occupied the maritime plain of Canaan and were frequent enemies of Israel from the period of the Judges through the monarchy.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פְּלִשְׁתִּים",
+    "greek_name": "Φυλιστιαίοι",
+    "disambiguation_note": null,
+    "date_range": "c. 1200 – 604 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Judges", "chapter": 13, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Samuel", "chapter": 17, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "dictionary"},
+      {"book": "Amos", "chapter": 9, "verse_start": 7, "verse_end": 7, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "rival_of", "relationship_label": "enemies of", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Philistines", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PHOENICIANS",
+    "entity_type": "culture",
+    "canonical_name": "Phoenicians",
+    "aliases": ["Sidonians", "Tyrians"],
+    "quick_glance": "A seafaring Canaanite people dwelling along the coast of modern Lebanon; their chief cities were Tyre and Sidon, and they supplied materials for Solomon's Temple.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Φοίνικες",
+    "disambiguation_note": null,
+    "date_range": "c. 1500 – 300 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "1 Kings", "chapter": 5, "verse_start": 1, "verse_end": 10, "confidence": "high", "source": "dictionary"},
+      {"book": "Ezekiel", "chapter": 27, "verse_start": 1, "verse_end": 9, "confidence": "high", "source": "dictionary"},
+      {"book": "Acts", "chapter": 11, "verse_start": 19, "verse_end": 19, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Phoenicia", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MOABITES",
+    "entity_type": "culture",
+    "canonical_name": "Moabites",
+    "aliases": ["Moab"],
+    "quick_glance": "Descendants of Moab, the son of Lot; they occupied the territory east of the Dead Sea and were frequently at war with Israel, though Ruth the Moabitess became an ancestress of David.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מוֹאָב",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1300 – 600 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 19, "verse_start": 37, "verse_end": 37, "confidence": "high", "source": "dictionary"},
+      {"book": "Numbers", "chapter": 22, "verse_start": 1, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "Ruth", "chapter": 1, "verse_start": 4, "verse_end": 4, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "AMMONITES", "relationship_type": "related_to", "relationship_label": "kinsmen of", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Moab", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "EDOMITES",
+    "entity_type": "culture",
+    "canonical_name": "Edomites",
+    "aliases": ["Edom", "Esau", "Idumea"],
+    "quick_glance": "Descendants of Esau, the brother of Jacob; they inhabited the region south of the Dead Sea and were perpetual rivals of Israel despite their kinship.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֱדוֹם",
+    "greek_name": "Ἰδουμαία",
+    "disambiguation_note": "Later known as Idumeans in the Greco-Roman period; see IDUMEANS",
+    "date_range": "c. 1300 – 100 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 36, "verse_start": 1, "verse_end": 8, "confidence": "high", "source": "dictionary"},
+      {"book": "Numbers", "chapter": 20, "verse_start": 14, "verse_end": 21, "confidence": "high", "source": "biblical_text"},
+      {"book": "Obadiah", "chapter": 1, "verse_start": 1, "verse_end": 4, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "rival_of", "relationship_label": "rivals of", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "IDUMEANS", "relationship_type": "predecessor_of", "relationship_label": "became known as", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Edom", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "AMMONITES",
+    "entity_type": "culture",
+    "canonical_name": "Ammonites",
+    "aliases": ["Ammon", "Children of Ammon"],
+    "quick_glance": "Descendants of Ben-ammi, the son of Lot; they occupied the territory east of the Jordan near the Jabbok and were persistent enemies of Israel.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עַמּוֹן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1300 – 600 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 19, "verse_start": 38, "verse_end": 38, "confidence": "high", "source": "dictionary"},
+      {"book": "Judges", "chapter": 11, "verse_start": 4, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Samuel", "chapter": 11, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MOABITES", "relationship_type": "related_to", "relationship_label": "kinsmen of", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Ammon", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "AMALEKITES",
+    "entity_type": "culture",
+    "canonical_name": "Amalekites",
+    "aliases": ["Amalek"],
+    "quick_glance": "A nomadic people descended from Esau who attacked Israel at Rephidim after the Exodus; they were declared perpetual enemies of the Lord and eventually destroyed.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲמָלֵק",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1500 – 700 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Exodus", "chapter": 17, "verse_start": 8, "verse_end": 16, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Samuel", "chapter": 15, "verse_start": 1, "verse_end": 9, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Samuel", "chapter": 30, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EDOMITES", "relationship_type": "related_to", "relationship_label": "descended from Esau", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Amalek", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MIDIANITES",
+    "entity_type": "culture",
+    "canonical_name": "Midianites",
+    "aliases": ["Midian"],
+    "quick_glance": "Descendants of Midian, the son of Abraham by Keturah; they were desert traders who oppressed Israel in the time of the Judges until defeated by Gideon.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִדְיָן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1500 – 1100 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 25, "verse_start": 2, "verse_end": 2, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 2, "verse_start": 15, "verse_end": 16, "confidence": "high", "source": "biblical_text"},
+      {"book": "Judges", "chapter": 6, "verse_start": 1, "verse_end": 6, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISHMAELITES", "relationship_type": "associated_with", "relationship_label": "traded alongside", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "KENITES", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Midian", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ARAMEANS",
+    "entity_type": "culture",
+    "canonical_name": "Arameans",
+    "aliases": ["Aram", "Syrians of Damascus"],
+    "quick_glance": "A Semitic people who established kingdoms in Syria and Mesopotamia; the kingdom of Aram-Damascus was a major rival of the northern kingdom of Israel.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֲרָם",
+    "greek_name": null,
+    "disambiguation_note": "Often translated 'Syrians' in the KJV; see SYRIANS",
+    "date_range": "c. 1200 – 732 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 10, "verse_start": 22, "verse_end": 22, "confidence": "high", "source": "biblical_text"},
+      {"book": "2 Samuel", "chapter": 8, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "2 Kings", "chapter": 5, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "SYRIANS", "relationship_type": "associated_with", "relationship_label": "also called", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Aram", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SYRIANS",
+    "entity_type": "culture",
+    "canonical_name": "Syrians",
+    "aliases": ["Syria"],
+    "quick_glance": "The KJV translation for the Aramean peoples; Syria in the Bible generally refers to the region of Aram centered on Damascus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֲרָם",
+    "greek_name": "Σύροι",
+    "disambiguation_note": "The biblical term 'Syrians' usually refers to Arameans; distinct from SELEUCID_SYRIA",
+    "date_range": "c. 1200 – 732 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Samuel", "chapter": 10, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Kings", "chapter": 20, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "biblical_text"},
+      {"book": "2 Kings", "chapter": 6, "verse_start": 8, "verse_end": 12, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ARAMEANS", "relationship_type": "associated_with", "relationship_label": "also called", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Syria", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ISRAELITES",
+    "entity_type": "culture",
+    "canonical_name": "Israelites",
+    "aliases": ["Israel", "Children of Israel", "Sons of Israel"],
+    "quick_glance": "The covenant people descended from the twelve sons of Jacob (Israel), chosen by God and delivered from Egypt to inherit the Promised Land.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יִשְׂרָאֵל",
+    "greek_name": "Ἰσραήλ",
+    "disambiguation_note": null,
+    "date_range": "c. 1800 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 32, "verse_start": 28, "verse_end": 28, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 19, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "Deuteronomy", "chapter": 7, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Romans", "chapter": 9, "verse_start": 4, "verse_end": 5, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HEBREWS", "relationship_type": "associated_with", "relationship_label": "also called", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "associated_with", "relationship_label": "organized as", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_JUDAH", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_LEVI", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Israel", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_JUDAH",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Judah",
+    "aliases": ["Judah", "Judahites", "Kingdom of Judah"],
+    "quick_glance": "The leading tribe of Israel, descended from Jacob's fourth son Judah; the royal tribe from which David and ultimately the Messiah came.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יְהוּדָה",
+    "greek_name": "Ἰούδας",
+    "disambiguation_note": null,
+    "date_range": "c. 1800 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 49, "verse_start": 8, "verse_end": 10, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Kings", "chapter": 12, "verse_start": 20, "verse_end": 20, "confidence": "high", "source": "biblical_text"},
+      {"book": "Hebrews", "chapter": 7, "verse_start": 14, "verse_end": 14, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "subgroup_of", "relationship_label": "tribe of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Judah, the tribe of", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_LEVI",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Levi",
+    "aliases": ["Levi", "Levitical tribe"],
+    "quick_glance": "The priestly tribe of Israel, descended from Jacob's third son Levi; set apart for the service of the tabernacle and Temple, they received no territorial inheritance.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לֵוִי",
+    "greek_name": "Λευί",
+    "disambiguation_note": "The tribe as a whole; see LEVITES for the non-priestly servants and PRIESTS_OF_ISRAEL for the Aaronic priests",
+    "date_range": "c. 1800 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Numbers", "chapter": 1, "verse_start": 49, "verse_end": 50, "confidence": "high", "source": "dictionary"},
+      {"book": "Deuteronomy", "chapter": 10, "verse_start": 8, "verse_end": 9, "confidence": "high", "source": "dictionary"},
+      {"book": "Joshua", "chapter": 13, "verse_start": 33, "verse_end": 33, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "subgroup_of", "relationship_label": "tribe of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "LEVITES", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PRIESTS_OF_ISRAEL", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Levi", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HEBREWS",
+    "entity_type": "culture",
+    "canonical_name": "Hebrews",
+    "aliases": ["Ivrim"],
+    "quick_glance": "A name applied to the Israelites, especially in their relations with foreigners; derived either from Eber the ancestor of Abraham or from a word meaning 'those from beyond' the river.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עִבְרִים",
+    "greek_name": "Ἑβραῖοι",
+    "disambiguation_note": null,
+    "date_range": "c. 1800 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 14, "verse_start": 13, "verse_end": 13, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 2, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "Philippians", "chapter": 3, "verse_start": 5, "verse_end": 5, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "associated_with", "relationship_label": "also called", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Hebrew", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TWELVE_TRIBES",
+    "entity_type": "culture",
+    "canonical_name": "Twelve Tribes of Israel",
+    "aliases": ["Twelve Tribes", "Tribes of Israel"],
+    "quick_glance": "The twelve divisions of the Israelite nation descended from the twelve sons of Jacob, each allotted territory in the Promised Land except the tribe of Levi.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁנֵים עָשָׂר שִׁבְטֵי יִשְׂרָאֵל",
+    "greek_name": "δώδεκα φυλαί",
+    "disambiguation_note": null,
+    "date_range": "c. 1800 BC – 722 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 49, "verse_start": 1, "verse_end": 28, "confidence": "high", "source": "dictionary"},
+      {"book": "Joshua", "chapter": 13, "verse_start": 7, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Matthew", "chapter": 19, "verse_start": 28, "verse_end": 28, "confidence": "high", "source": "biblical_text"},
+      {"book": "Revelation", "chapter": 21, "verse_start": 12, "verse_end": 12, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "associated_with", "relationship_label": "organized as", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_JUDAH", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_LEVI", "relationship_type": "parent_of", "relationship_label": "includes", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Tribes of Israel", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SAMARITANS",
+    "entity_type": "culture",
+    "canonical_name": "Samaritans",
+    "aliases": ["Shomronim"],
+    "quick_glance": "A mixed people descended from Israelites left in the northern kingdom and foreign colonists settled there by Assyria; they worshipped at Mount Gerizim and were despised by the Jews.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֹׁמְרוֹנִים",
+    "greek_name": "Σαμαρῖται",
+    "disambiguation_note": null,
+    "date_range": "c. 722 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 17, "verse_start": 24, "verse_end": 29, "confidence": "high", "source": "dictionary"},
+      {"book": "John", "chapter": 4, "verse_start": 9, "verse_end": 9, "confidence": "high", "source": "biblical_text"},
+      {"book": "Luke", "chapter": 10, "verse_start": 33, "verse_end": 35, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 8, "verse_start": 5, "verse_end": 8, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "descended_from", "relationship_label": "partially descended from", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Samaritans", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "NABATAEANS",
+    "entity_type": "culture",
+    "canonical_name": "Nabataeans",
+    "aliases": ["Nabateans", "Nebaioth"],
+    "quick_glance": "An Arab people who controlled trade routes south and east of Judea, with their capital at Petra; their king Aretas IV is mentioned in Paul's escape from Damascus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ναβαταῖοι",
+    "disambiguation_note": null,
+    "date_range": "c. 300 BC – AD 106",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Corinthians", "chapter": 11, "verse_start": 32, "verse_end": 33, "confidence": "high", "source": "biblical_text"},
+      {"book": "Genesis", "chapter": 25, "verse_start": 13, "verse_end": 13, "confidence": "medium", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ARABIANS", "relationship_type": "associated_with", "relationship_label": "Arab people", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Nebaioth", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "IDUMEANS",
+    "entity_type": "culture",
+    "canonical_name": "Idumeans",
+    "aliases": ["Idumaeans"],
+    "quick_glance": "The Greco-Roman name for the Edomites, who by the intertestamental period had migrated into southern Judea; they were forcibly converted to Judaism under John Hyrcanus and produced the Herodian dynasty.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ἰδουμαῖοι",
+    "disambiguation_note": "The later form of the EDOMITES in the Greco-Roman period",
+    "date_range": "c. 300 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Mark", "chapter": 3, "verse_start": 8, "verse_end": 8, "confidence": "high", "source": "biblical_text"},
+      {"book": "Ezekiel", "chapter": 35, "verse_start": 1, "verse_end": 5, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EDOMITES", "relationship_type": "successor_of", "relationship_label": "later form of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "HERODIANS", "relationship_type": "associated_with", "relationship_label": "produced dynasty of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Idumea", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ZEALOTS",
+    "entity_type": "culture",
+    "canonical_name": "Zealots",
+    "aliases": ["Zelotes", "Kanna'im"],
+    "quick_glance": "A Jewish political faction that advocated violent resistance to Roman rule; Simon the Zealot was one of the twelve apostles.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קַנָּאִים",
+    "greek_name": "Ζηλωταί",
+    "disambiguation_note": null,
+    "date_range": "c. AD 6 – AD 73",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Luke", "chapter": 6, "verse_start": 15, "verse_end": 15, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 1, "verse_start": 13, "verse_end": 13, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 21, "verse_start": 20, "verse_end": 20, "confidence": "medium", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "SICARII", "relationship_type": "associated_with", "relationship_label": "related extremist group", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Zealots", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ESSENES",
+    "entity_type": "culture",
+    "canonical_name": "Essenes",
+    "aliases": null,
+    "quick_glance": "A Jewish ascetic sect of the Second Temple period who lived in communal settings, practiced ritual purity, and are generally associated with the Dead Sea Scrolls community at Qumran.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ἐσσηνοί",
+    "disambiguation_note": "Not directly named in Scripture but described by Josephus and Philo; included for historical context",
+    "date_range": "c. 150 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [],
+    "relationships": [
+      {"to_entity_id": "PHARISEES", "relationship_type": "contemporary_of", "relationship_label": "contemporary sect", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "SADDUCEES", "relationship_type": "contemporary_of", "relationship_label": "contemporary sect", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Essenes", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SICARII",
+    "entity_type": "culture",
+    "canonical_name": "Sicarii",
+    "aliases": ["Dagger-men"],
+    "quick_glance": "An extremist splinter group of the Zealots who carried concealed daggers and assassinated Roman sympathizers; mentioned in Acts when the Roman tribune mistook Paul for their leader.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Σικάριοι",
+    "disambiguation_note": null,
+    "date_range": "c. AD 50 – AD 73",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 21, "verse_start": 38, "verse_end": 38, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ZEALOTS", "relationship_type": "subgroup_of", "relationship_label": "splinter group of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Acts 21:38", "source_ref": "Acts 21:38", "source_url": null, "content_field": "quick_glance", "excerpt": "Art not thou that Egyptian, which before these days madest an uproar, and leddest out into the wilderness four thousand men that were murderers?"}
+    ]
+  },
+  {
+    "id": "PHARISEES",
+    "entity_type": "culture",
+    "canonical_name": "Pharisees",
+    "aliases": ["Perushim"],
+    "quick_glance": "A Jewish religious party known for strict observance of the Mosaic law and the oral tradition; bitterly opposed by the Sadducees in their claim that the oral tradition was as binding as the written law.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פְּרוּשִׁים",
+    "greek_name": "Φαρισαῖοι",
+    "disambiguation_note": null,
+    "date_range": "c. 150 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 3, "verse_start": 7, "verse_end": 7, "confidence": "high", "source": "dictionary"},
+      {"book": "Matthew", "chapter": 23, "verse_start": 1, "verse_end": 39, "confidence": "high", "source": "dictionary"},
+      {"book": "Acts", "chapter": 23, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "SADDUCEES", "relationship_type": "rival_of", "relationship_label": "rivals of", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "SANHEDRIN", "relationship_type": "member_of", "relationship_label": "members of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "SCRIBES", "relationship_type": "associated_with", "relationship_label": "closely associated with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Pharisees", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SADDUCEES",
+    "entity_type": "culture",
+    "canonical_name": "Sadducees",
+    "aliases": ["Tsedukim"],
+    "quick_glance": "A Jewish religious party composed mainly of the priestly aristocracy who accepted only the written Torah, denied the resurrection of the dead, and controlled the Temple worship.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "צְדוּקִים",
+    "greek_name": "Σαδδουκαῖοι",
+    "disambiguation_note": null,
+    "date_range": "c. 150 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 22, "verse_start": 23, "verse_end": 28, "confidence": "high", "source": "dictionary"},
+      {"book": "Acts", "chapter": 4, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 23, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PHARISEES", "relationship_type": "rival_of", "relationship_label": "rivals of", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "SANHEDRIN", "relationship_type": "member_of", "relationship_label": "members of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "HIGH_PRIESTS", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Sadducees", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SCRIBES",
+    "entity_type": "culture",
+    "canonical_name": "Scribes",
+    "aliases": ["Sopherim", "Lawyers", "Teachers of the Law"],
+    "quick_glance": "Professional interpreters and copyists of the Mosaic law who exercised great influence in Jewish religious life; frequently mentioned alongside the Pharisees in the Gospels.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סוֹפְרִים",
+    "greek_name": "γραμματεῖς",
+    "disambiguation_note": null,
+    "date_range": "c. 500 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Ezra", "chapter": 7, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "Matthew", "chapter": 23, "verse_start": 2, "verse_end": 7, "confidence": "high", "source": "biblical_text"},
+      {"book": "Mark", "chapter": 12, "verse_start": 38, "verse_end": 40, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PHARISEES", "relationship_type": "associated_with", "relationship_label": "closely associated with", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "SANHEDRIN", "relationship_type": "member_of", "relationship_label": "members of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Scribes", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HERODIANS",
+    "entity_type": "culture",
+    "canonical_name": "Herodians",
+    "aliases": null,
+    "quick_glance": "A Jewish political party that supported the Herodian dynasty and Roman rule; they joined with the Pharisees in seeking to entrap Jesus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ἡρῳδιανοί",
+    "disambiguation_note": null,
+    "date_range": "c. 37 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 22, "verse_start": 16, "verse_end": 16, "confidence": "high", "source": "biblical_text"},
+      {"book": "Mark", "chapter": 3, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "biblical_text"},
+      {"book": "Mark", "chapter": 12, "verse_start": 13, "verse_end": 13, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "IDUMEANS", "relationship_type": "associated_with", "relationship_label": "supported Herodian dynasty from", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Herodians", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HIGH_PRIESTS",
+    "entity_type": "culture",
+    "canonical_name": "High Priests",
+    "aliases": ["Chief Priests", "High Priesthood"],
+    "quick_glance": "The supreme religious office in Israel held by descendants of Aaron; the high priest alone entered the Holy of Holies on the Day of Atonement and presided over the Sanhedrin.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כֹּהֵן גָּדוֹל",
+    "greek_name": "ἀρχιερεύς",
+    "disambiguation_note": "Refers to the office and its holders as a group; see PRIESTS_OF_ISRAEL for the broader priesthood",
+    "date_range": "c. 1400 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Leviticus", "chapter": 16, "verse_start": 2, "verse_end": 4, "confidence": "high", "source": "dictionary"},
+      {"book": "Matthew", "chapter": 26, "verse_start": 57, "verse_end": 57, "confidence": "high", "source": "biblical_text"},
+      {"book": "Hebrews", "chapter": 4, "verse_start": 14, "verse_end": 16, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "SADDUCEES", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "SANHEDRIN", "relationship_type": "member_of", "relationship_label": "presided over", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PRIESTS_OF_ISRAEL", "relationship_type": "subgroup_of", "relationship_label": "head of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: High Priest", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HASMONEAN_DYNASTY",
+    "entity_type": "culture",
+    "canonical_name": "Hasmonean Dynasty",
+    "aliases": ["Hasmoneans"],
+    "quick_glance": "The Jewish ruling dynasty descended from the Maccabees who governed an independent Judea from 140 to 63 BC, combining the offices of high priest and king.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חַשְׁמוֹנָאִים",
+    "greek_name": "Ἀσαμωναῖοι",
+    "disambiguation_note": null,
+    "date_range": "140 – 63 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 11, "verse_start": 34, "verse_end": 34, "confidence": "medium", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MACCABEES", "relationship_type": "successor_of", "relationship_label": "dynasty established by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_SYRIA", "relationship_type": "rival_of", "relationship_label": "gained independence from", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Maccabees", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MACCABEES",
+    "entity_type": "culture",
+    "canonical_name": "Maccabees",
+    "aliases": ["Maccabean revolt", "Judas Maccabeus"],
+    "quick_glance": "The Jewish family led by Judas Maccabeus who revolted against the Seleucid king Antiochus IV Epiphanes in 167 BC, purified the Temple, and established Jewish independence.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַכַּבִּים",
+    "greek_name": "Μακκαβαῖοι",
+    "disambiguation_note": null,
+    "date_range": "167 – 140 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 11, "verse_start": 32, "verse_end": 35, "confidence": "medium", "source": "dictionary"},
+      {"book": "John", "chapter": 10, "verse_start": 22, "verse_end": 22, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HASMONEAN_DYNASTY", "relationship_type": "predecessor_of", "relationship_label": "established dynasty of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_SYRIA", "relationship_type": "rival_of", "relationship_label": "revolted against", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "SELEUCID_GREEKS", "relationship_type": "rival_of", "relationship_label": "revolted against", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Maccabees", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SELEUCID_GREEKS",
+    "entity_type": "culture",
+    "canonical_name": "Seleucid Greeks",
+    "aliases": ["Greek overlords"],
+    "quick_glance": "The Greek-speaking rulers and settlers under the Seleucid dynasty who imposed Hellenistic culture on Judea, provoking the Maccabean revolt when Antiochus IV desecrated the Temple.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": "The people and cultural influence, as distinct from the SELEUCID_SYRIA political entity",
+    "date_range": "312 – 63 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 8, "verse_start": 9, "verse_end": 12, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 11, "verse_start": 31, "verse_end": 32, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "SELEUCID_SYRIA", "relationship_type": "associated_with", "relationship_label": "also known as", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "MACCABEES", "relationship_type": "rival_of", "relationship_label": "opposed by", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "GREEKS", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Syria", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ROMANS",
+    "entity_type": "culture",
+    "canonical_name": "Romans",
+    "aliases": null,
+    "quick_glance": "The citizens and subjects of Rome who appear throughout the New Testament as soldiers, officials, and the governing authority over Judea; Paul claimed Roman citizenship.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ῥωμαῖοι",
+    "disambiguation_note": "Refers to the people; see ROMAN_EMPIRE for the political entity",
+    "date_range": "c. 63 BC – AD 476",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "John", "chapter": 11, "verse_start": 48, "verse_end": 48, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 16, "verse_start": 37, "verse_end": 38, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 22, "verse_start": 25, "verse_end": 29, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ROMAN_EMPIRE", "relationship_type": "associated_with", "relationship_label": "people of", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Rome", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GREEKS",
+    "entity_type": "culture",
+    "canonical_name": "Greeks",
+    "aliases": ["Hellenists", "Grecians"],
+    "quick_glance": "In the New Testament, 'Greeks' refers broadly to Gentiles of Greek language and culture; the spread of Hellenistic culture provided the common language in which the New Testament was written.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יָוָן",
+    "greek_name": "Ἕλληνες",
+    "disambiguation_note": "Refers to the people and culture; see MACEDONIAN_GREEK for Alexander's empire",
+    "date_range": "c. 800 BC – AD 500",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "John", "chapter": 12, "verse_start": 20, "verse_end": 21, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 17, "verse_start": 4, "verse_end": 4, "confidence": "high", "source": "biblical_text"},
+      {"book": "Romans", "chapter": 1, "verse_start": 16, "verse_end": 16, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Corinthians", "chapter": 1, "verse_start": 22, "verse_end": 24, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MACEDONIAN_GREEK", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "GENTILES", "relationship_type": "subgroup_of", "relationship_label": "category of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Greeks", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MACEDONIANS",
+    "entity_type": "culture",
+    "canonical_name": "Macedonians",
+    "aliases": ["Macedonia"],
+    "quick_glance": "The people of Macedonia in northern Greece; Paul received his vision of the 'man of Macedonia' and established churches at Philippi, Thessalonica, and Berea in this region.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Μακεδόνες",
+    "disambiguation_note": "Refers to the NT-era people and region; see MACEDONIAN_GREEK for Alexander's empire",
+    "date_range": "c. 800 BC – AD 500",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 16, "verse_start": 9, "verse_end": 10, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 19, "verse_start": 29, "verse_end": 29, "confidence": "high", "source": "biblical_text"},
+      {"book": "2 Corinthians", "chapter": 8, "verse_start": 1, "verse_end": 5, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "GREEKS", "relationship_type": "associated_with", "relationship_label": "Greek-speaking people", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Macedonia", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PARTHIANS",
+    "entity_type": "culture",
+    "canonical_name": "Parthians",
+    "aliases": ["Parthia"],
+    "quick_glance": "An Iranian people who ruled a vast empire east of the Roman Empire; Parthians are listed among those present at Pentecost in Jerusalem.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Πάρθοι",
+    "disambiguation_note": null,
+    "date_range": "c. 247 BC – AD 224",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 2, "verse_start": 9, "verse_end": 9, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Parthians", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "CUSHITES",
+    "entity_type": "culture",
+    "canonical_name": "Cushites",
+    "aliases": ["Cush", "Ethiopians"],
+    "quick_glance": "Descendants of Cush, the son of Ham; they inhabited the region south of Egypt known as Ethiopia or Nubia, and appear in Scripture from Genesis through the prophets.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כּוּשׁ",
+    "greek_name": "Αἰθίοψ",
+    "disambiguation_note": "Biblical 'Ethiopia' refers to Nubia/Cush, not modern Ethiopia",
+    "date_range": "c. 2000 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 10, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "dictionary"},
+      {"book": "Numbers", "chapter": 12, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 8, "verse_start": 27, "verse_end": 27, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Cush", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "EGYPTIANS",
+    "entity_type": "culture",
+    "canonical_name": "Egyptians",
+    "aliases": null,
+    "quick_glance": "The people of Egypt who appear throughout Scripture as hosts, oppressors, and neighbors of Israel; their culture profoundly influenced the Israelites during the sojourn and Exodus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִצְרִים",
+    "greek_name": "Αἰγύπτιοι",
+    "disambiguation_note": "Refers to the people; see EGYPTIAN_EMPIRE for the political entity",
+    "date_range": "c. 3100 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 39, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "biblical_text"},
+      {"book": "Exodus", "chapter": 12, "verse_start": 33, "verse_end": 36, "confidence": "high", "source": "biblical_text"},
+      {"book": "Isaiah", "chapter": 19, "verse_start": 21, "verse_end": 22, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EGYPTIAN_EMPIRE", "relationship_type": "associated_with", "relationship_label": "people of", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Egypt", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ARABIANS",
+    "entity_type": "culture",
+    "canonical_name": "Arabians",
+    "aliases": ["Arabs", "Arabia"],
+    "quick_glance": "The peoples of the Arabian peninsula mentioned in Scripture as traders and desert dwellers; they appear from the time of Solomon through the New Testament at Pentecost.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲרָבִים",
+    "greek_name": "Ἄραβες",
+    "disambiguation_note": null,
+    "date_range": "c. 1000 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Chronicles", "chapter": 17, "verse_start": 11, "verse_end": 11, "confidence": "high", "source": "dictionary"},
+      {"book": "Nehemiah", "chapter": 2, "verse_start": 19, "verse_end": 19, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 2, "verse_start": 11, "verse_end": 11, "confidence": "high", "source": "biblical_text"},
+      {"book": "Galatians", "chapter": 1, "verse_start": 17, "verse_end": 17, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "NABATAEANS", "relationship_type": "associated_with", "relationship_label": "includes", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "ISHMAELITES", "relationship_type": "associated_with", "relationship_label": "includes", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Arabia", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ISHMAELITES",
+    "entity_type": "culture",
+    "canonical_name": "Ishmaelites",
+    "aliases": ["Ishmael", "Children of Ishmael"],
+    "quick_glance": "Descendants of Ishmael, the son of Abraham and Hagar; they were nomadic traders who inhabited the desert regions east of Canaan and are identified with the caravan that carried Joseph to Egypt.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יִשְׁמְעֵאלִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1800 – 600 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 16, "verse_start": 11, "verse_end": 12, "confidence": "high", "source": "dictionary"},
+      {"book": "Genesis", "chapter": 25, "verse_start": 13, "verse_end": 18, "confidence": "high", "source": "dictionary"},
+      {"book": "Genesis", "chapter": 37, "verse_start": 25, "verse_end": 28, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MIDIANITES", "relationship_type": "associated_with", "relationship_label": "traded alongside", "bidirectional": 1, "source": "biblical_text"},
+      {"to_entity_id": "ARABIANS", "relationship_type": "associated_with", "relationship_label": "ancestors of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Ishmael", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "KENITES",
+    "entity_type": "culture",
+    "canonical_name": "Kenites",
+    "aliases": null,
+    "quick_glance": "A nomadic Midianite clan of metalworkers; Moses' father-in-law Jethro was a Kenite, and they maintained a friendly relationship with Israel, settling in Judah's territory.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קֵינִי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1500 – 800 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Judges", "chapter": 1, "verse_start": 16, "verse_end": 16, "confidence": "high", "source": "dictionary"},
+      {"book": "Judges", "chapter": 4, "verse_start": 11, "verse_end": 11, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Samuel", "chapter": 15, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "MIDIANITES", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "RECHABITES", "relationship_type": "associated_with", "relationship_label": "ancestors of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Kenites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "RECHABITES",
+    "entity_type": "culture",
+    "canonical_name": "Rechabites",
+    "aliases": ["House of Rechab"],
+    "quick_glance": "A Kenite clan descended from Jonadab son of Rechab who vowed to abstain from wine, agriculture, and permanent dwellings; God commended their faithfulness through Jeremiah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רֵכָבִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 840 – 586 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 10, "verse_start": 15, "verse_end": 16, "confidence": "high", "source": "dictionary"},
+      {"book": "Jeremiah", "chapter": 35, "verse_start": 1, "verse_end": 19, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "KENITES", "relationship_type": "subgroup_of", "relationship_label": "descended from", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Rechabites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "NETHINIM",
+    "entity_type": "culture",
+    "canonical_name": "Nethinim",
+    "aliases": ["Temple servants"],
+    "quick_glance": "A class of Temple servants, 'the given ones,' assigned to assist the Levites in the service of the sanctuary; they returned from the Babylonian exile with Ezra and Nehemiah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נְתִינִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1000 – 400 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Ezra", "chapter": 2, "verse_start": 43, "verse_end": 54, "confidence": "high", "source": "dictionary"},
+      {"book": "Ezra", "chapter": 8, "verse_start": 20, "verse_end": 20, "confidence": "high", "source": "dictionary"},
+      {"book": "Nehemiah", "chapter": 7, "verse_start": 46, "verse_end": 56, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "LEVITES", "relationship_type": "associated_with", "relationship_label": "assisted", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Nethinim", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PROSELYTES",
+    "entity_type": "culture",
+    "canonical_name": "Proselytes",
+    "aliases": ["Converts", "God-fearers"],
+    "quick_glance": "Gentile converts to Judaism who submitted to circumcision, baptism, and the Mosaic law; they appear in the New Testament as worshippers in synagogues and among early Christians.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֵּר",
+    "greek_name": "προσήλυτος",
+    "disambiguation_note": null,
+    "date_range": "c. 500 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 23, "verse_start": 15, "verse_end": 15, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 2, "verse_start": 10, "verse_end": 10, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 13, "verse_start": 43, "verse_end": 43, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "GENTILES", "relationship_type": "associated_with", "relationship_label": "converts from", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Proselyte", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GENTILES",
+    "entity_type": "culture",
+    "canonical_name": "Gentiles",
+    "aliases": ["Nations", "Goyim", "Heathen"],
+    "quick_glance": "A term used in Scripture for all peoples and nations who are not Israelites; the inclusion of Gentiles in God's salvation plan is a central theme of the New Testament.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גּוֹיִם",
+    "greek_name": "ἔθνη",
+    "disambiguation_note": null,
+    "date_range": null,
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 12, "verse_start": 3, "verse_end": 3, "confidence": "high", "source": "dictionary"},
+      {"book": "Isaiah", "chapter": 49, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "Acts", "chapter": 10, "verse_start": 34, "verse_end": 35, "confidence": "high", "source": "biblical_text"},
+      {"book": "Romans", "chapter": 11, "verse_start": 11, "verse_end": 12, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PROSELYTES", "relationship_type": "associated_with", "relationship_label": "some became", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Gentiles", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "DIASPORA_JEWS",
+    "entity_type": "culture",
+    "canonical_name": "Diaspora Jews",
+    "aliases": ["Dispersion", "Jews of the Diaspora", "Hellenistic Jews"],
+    "quick_glance": "Jews living outside the land of Israel, scattered among the nations from the Babylonian exile onward; their synagogues across the Roman Empire became launching points for Paul's mission.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גָּלוּת",
+    "greek_name": "διασπορά",
+    "disambiguation_note": null,
+    "date_range": "c. 586 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "John", "chapter": 7, "verse_start": 35, "verse_end": 35, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 2, "verse_start": 5, "verse_end": 11, "confidence": "high", "source": "biblical_text"},
+      {"book": "James", "chapter": 1, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Peter", "chapter": 1, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "subgroup_of", "relationship_label": "scattered members of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Dispersion", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "LEVITES",
+    "entity_type": "culture",
+    "canonical_name": "Levites",
+    "aliases": null,
+    "quick_glance": "Members of the tribe of Levi who were set apart for service in the tabernacle and Temple but were not priests; they served as musicians, gatekeepers, teachers, and assistants.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לְוִיִּם",
+    "greek_name": "Λευῖται",
+    "disambiguation_note": "Non-priestly members of the tribe of Levi; see PRIESTS_OF_ISRAEL for the Aaronic priesthood",
+    "date_range": "c. 1400 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Numbers", "chapter": 3, "verse_start": 5, "verse_end": 10, "confidence": "high", "source": "dictionary"},
+      {"book": "1 Chronicles", "chapter": 23, "verse_start": 24, "verse_end": 32, "confidence": "high", "source": "dictionary"},
+      {"book": "Luke", "chapter": 10, "verse_start": 32, "verse_end": 32, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TRIBE_OF_LEVI", "relationship_type": "subgroup_of", "relationship_label": "members of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "PRIESTS_OF_ISRAEL", "relationship_type": "associated_with", "relationship_label": "served alongside", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "NETHINIM", "relationship_type": "associated_with", "relationship_label": "assisted by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Levites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "PRIESTS_OF_ISRAEL",
+    "entity_type": "culture",
+    "canonical_name": "Priests of Israel",
+    "aliases": ["Aaronic Priests", "Kohanim", "Priesthood"],
+    "quick_glance": "Descendants of Aaron set apart to offer sacrifices, burn incense, and minister before the Lord in the tabernacle and Temple; they formed a distinct order within the tribe of Levi.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כֹּהֲנִים",
+    "greek_name": "ἱερεῖς",
+    "disambiguation_note": "The general priesthood; see HIGH_PRIESTS for the supreme office",
+    "date_range": "c. 1400 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Exodus", "chapter": 28, "verse_start": 1, "verse_end": 4, "confidence": "high", "source": "dictionary"},
+      {"book": "Leviticus", "chapter": 1, "verse_start": 5, "verse_end": 9, "confidence": "high", "source": "biblical_text"},
+      {"book": "1 Chronicles", "chapter": 24, "verse_start": 1, "verse_end": 5, "confidence": "high", "source": "dictionary"},
+      {"book": "Luke", "chapter": 1, "verse_start": 5, "verse_end": 9, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TRIBE_OF_LEVI", "relationship_type": "subgroup_of", "relationship_label": "members of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "LEVITES", "relationship_type": "associated_with", "relationship_label": "served alongside", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "HIGH_PRIESTS", "relationship_type": "parent_of", "relationship_label": "led by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Priest", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "SANHEDRIN",
+    "entity_type": "culture",
+    "canonical_name": "Sanhedrin",
+    "aliases": ["Council", "Great Sanhedrin", "Jewish Council", "Council of Seventy", "Synedrion"],
+    "quick_glance": "The supreme Jewish council of seventy-one elders that governed religious and civil affairs in Judea; it tried Jesus and later the apostles Peter and Paul.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סַנְהֶדְרִין",
+    "greek_name": "συνέδριον",
+    "disambiguation_note": "The term can refer to the Great Sanhedrin (71 members in Jerusalem) or local sanhedrins (23 members in smaller cities).",
+    "date_range": "c. 200 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 26, "verse_start": 59, "verse_end": 66, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 4, "verse_start": 15, "verse_end": 17, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 5, "verse_start": 34, "verse_end": 40, "confidence": "high", "source": "biblical_text"},
+      {"book": "Acts", "chapter": 23, "verse_start": 1, "verse_end": 10, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PHARISEES", "relationship_type": "associated_with", "relationship_label": "included members from", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "SADDUCEES", "relationship_type": "associated_with", "relationship_label": "included members from", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "HIGH_PRIESTS", "relationship_type": "associated_with", "relationship_label": "presided over by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SCRIBES", "relationship_type": "associated_with", "relationship_label": "included members from", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Sanhedrin", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_REUBEN",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Reuben",
+    "aliases": null,
+    "quick_glance": "The eldest of the twelve tribes of Israel, descended from Reuben the firstborn son of Jacob and Leah; allotted territory east of the Jordan River.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט רְאוּבֵן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Numbers", "chapter": 32, "verse_start": 1, "verse_end": 5, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Reuben", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_SIMEON",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Simeon",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Simeon the second son of Jacob and Leah; eventually absorbed into the territory of Judah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט שִׁמְעוֹן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 19, "verse_start": 1, "verse_end": 9, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_JUDAH", "relationship_type": "associated_with", "relationship_label": "absorbed into", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Simeon", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_BENJAMIN",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Benjamin",
+    "aliases": null,
+    "quick_glance": "The smallest of the twelve tribes of Israel, descended from Benjamin the youngest son of Jacob and Rachel; the tribe of King Saul and the apostle Paul.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט בִּנְיָמִין",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Judges", "chapter": 20, "verse_start": 1, "verse_end": 48, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "TRIBE_OF_JUDAH", "relationship_type": "associated_with", "relationship_label": "allied with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Benjamin", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_DAN",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Dan",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Dan the son of Jacob and Bilhah; settled in the northernmost territory and became associated with idolatry.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט דָּן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Judges", "chapter": 18, "verse_start": 1, "verse_end": 31, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Dan", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_NAPHTALI",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Naphtali",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Naphtali the son of Jacob and Bilhah; allotted territory in northern Galilee.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט נַפְתָּלִי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 19, "verse_start": 32, "verse_end": 39, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Naphtali", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_GAD",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Gad",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Gad the son of Jacob and Zilpah; settled east of the Jordan and known for its men of valor.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט גָּד",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "1 Chronicles", "chapter": 12, "verse_start": 8, "verse_end": 15, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Gad", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_ASHER",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Asher",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Asher the son of Jacob and Zilpah; settled in the northwestern coastal region and known for prosperity and rich food.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט אָשֵׁר",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Deuteronomy", "chapter": 33, "verse_start": 24, "verse_end": 25, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Asher", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_ISSACHAR",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Issachar",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Issachar the son of Jacob and Leah; settled in the Galilee region and renowned for wisdom and understanding of the times.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט יִשָּׂשכָר",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "1 Chronicles", "chapter": 12, "verse_start": 32, "verse_end": 32, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Issachar", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_ZEBULUN",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Zebulun",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Zebulun the son of Jacob and Leah; settled in the northern territory near the Sea of Galilee, later associated with Christ's ministry.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט זְבוּלֻן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 4, "verse_start": 13, "verse_end": 16, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Zebulun", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_EPHRAIM",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Ephraim",
+    "aliases": null,
+    "quick_glance": "The dominant half-tribe of the northern kingdom of Israel, descended from Ephraim the younger son of Joseph; its name became synonymous with the northern kingdom itself.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט אֶפְרַיִם",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 16, "verse_start": 1, "verse_end": 10, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Ephraim", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "TRIBE_OF_MANASSEH",
+    "entity_type": "culture",
+    "canonical_name": "Tribe of Manasseh",
+    "aliases": null,
+    "quick_glance": "One of the twelve tribes of Israel, descended from Manasseh the elder son of Joseph; uniquely divided into two half-tribes settling on both sides of the Jordan River.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁבֶט מְנַשֶּׁה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1900 BC – present",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 17, "verse_start": 1, "verse_end": 13, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "TWELVE_TRIBES", "relationship_type": "member_of", "relationship_label": "member of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Manasseh", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "CHALDEANS",
+    "entity_type": "culture",
+    "canonical_name": "Chaldeans",
+    "aliases": ["Kasdim"],
+    "quick_glance": "A priestly and scholarly class within Babylonian society, prominent in the book of Daniel as wise men, astrologers, and diviners consulted by the king.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כַּשְׂדִּים",
+    "greek_name": "Χαλδαῖοι",
+    "disambiguation_note": "Refers to the priestly/scholarly class; see BABYLONIAN_EMPIRE for the empire",
+    "date_range": "c. 1000 – 539 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 2, "verse_start": 2, "verse_end": 5, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "BABYLONIAN_EMPIRE", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Chaldeans", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "MEDES",
+    "entity_type": "culture",
+    "canonical_name": "Medes",
+    "aliases": ["Media", "Madai"],
+    "quick_glance": "An ancient Iranian people who allied with the Babylonians to overthrow Assyria; later united with Persia under Cyrus and featured prominently in Daniel's prophetic visions.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מָדַי",
+    "greek_name": "Μῆδοι",
+    "disambiguation_note": null,
+    "date_range": "c. 1100 – 550 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 5, "verse_start": 28, "verse_end": 28, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PERSIAN_EMPIRE", "relationship_type": "associated_with", "relationship_label": "united with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Media", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ELAMITES",
+    "entity_type": "culture",
+    "canonical_name": "Elamites",
+    "aliases": ["Elam"],
+    "quick_glance": "An ancient people from the region east of Babylon, one of the oldest civilizations in the Near East; present among the nations at Pentecost who heard the apostles speak.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֵילָם",
+    "greek_name": "Ἐλαμῖται",
+    "disambiguation_note": null,
+    "date_range": "c. 3200 BC – 539 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 2, "verse_start": 9, "verse_end": 9, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PERSIAN_EMPIRE", "relationship_type": "associated_with", "relationship_label": "absorbed into", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Elam", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GOD_FEARERS",
+    "entity_type": "culture",
+    "canonical_name": "God-Fearers",
+    "aliases": ["God-fearing Gentiles", "devout persons"],
+    "quick_glance": "Gentiles in the Greco-Roman world who worshipped the God of Israel and followed Jewish moral law without undergoing full conversion through circumcision.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "φοβούμενοι τὸν θεόν",
+    "disambiguation_note": null,
+    "date_range": "c. 200 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 10, "verse_start": 2, "verse_end": 2, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "GENTILES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Proselyte", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "HELLENISTS",
+    "entity_type": "culture",
+    "canonical_name": "Hellenists",
+    "aliases": ["Grecian Jews", "Greek-speaking Jews", "Hellenistic Jews"],
+    "quick_glance": "Greek-speaking Jews of the diaspora who adopted Hellenic language and customs; a distinct group in the early church whose widows were initially overlooked in the daily distribution.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ἑλληνισταί",
+    "disambiguation_note": "Refers to Greek-speaking Jews; see GREEKS for ethnic Greeks",
+    "date_range": "c. 300 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 6, "verse_start": 1, "verse_end": 6, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ISRAELITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "GREEKS", "relationship_type": "associated_with", "relationship_label": "culturally influenced by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Hellenist", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "KENIZZITES",
+    "entity_type": "culture",
+    "canonical_name": "Kenizzites",
+    "aliases": ["Kenezites"],
+    "quick_glance": "A Canaanite people listed among the nations whose land God promised to Abraham's descendants; associated with Caleb and Othniel through their ancestor Kenaz.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְנִזִּי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 15, "verse_start": 19, "verse_end": 21, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CANAANITES", "relationship_type": "associated_with", "relationship_label": "among the peoples of Canaan", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Kenizzites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "ANAKIM",
+    "entity_type": "culture",
+    "canonical_name": "Anakim",
+    "aliases": ["Anakites", "sons of Anak"],
+    "quick_glance": "A race of giants dwelling in the hill country of Canaan, particularly around Hebron, whose great stature terrified the Israelite spies sent by Moses.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲנָקִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Numbers", "chapter": 13, "verse_start": 33, "verse_end": 33, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "REPHAIM", "relationship_type": "associated_with", "relationship_label": "counted among", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "CANAANITES", "relationship_type": "associated_with", "relationship_label": "inhabitants of Canaan", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Anakim", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "REPHAIM",
+    "entity_type": "culture",
+    "canonical_name": "Rephaim",
+    "aliases": ["Rephaites"],
+    "quick_glance": "An ancient people of great stature who inhabited Canaan and the Transjordan region before the Israelite conquest; associated with the giants of old.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רְפָאִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000 – 1200 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Deuteronomy", "chapter": 2, "verse_start": 11, "verse_end": 11, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ANAKIM", "relationship_type": "associated_with", "relationship_label": "associated with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Rephaim", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GIBEONITES",
+    "entity_type": "culture",
+    "canonical_name": "Gibeonites",
+    "aliases": ["Hivites of Gibeon"],
+    "quick_glance": "A Hivite people of the city of Gibeon who deceived Joshua and the Israelites into making a covenant of peace, and were thereafter appointed as woodcutters and water carriers.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גִּבְעֹנִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1400 – 1000 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 9, "verse_start": 3, "verse_end": 27, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HIVITES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "ISRAELITES", "relationship_type": "associated_with", "relationship_label": "covenant with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Gibeonites", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  },
+  {
+    "id": "GERASENES",
+    "entity_type": "culture",
+    "canonical_name": "Gerasenes",
+    "aliases": ["Gadarenes", "Gergesenes"],
+    "quick_glance": "The people of the Decapolis city of Gerasa (or Gadara), a largely Gentile region on the eastern shore of the Sea of Galilee where Jesus cast demons into a herd of swine.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Γερασηνοί",
+    "disambiguation_note": null,
+    "date_range": "c. 200 BC – AD 100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Mark", "chapter": 5, "verse_start": 1, "verse_end": 20, "confidence": "high", "source": "biblical_text"}
+    ],
+    "relationships": [
+      {"to_entity_id": "GENTILES", "relationship_type": "subgroup_of", "relationship_label": "subgroup of", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "BSB", "source_ref": "Mark 5:1", "source_url": null, "content_field": "quick_glance", "excerpt": null}
+    ]
+  }
+]

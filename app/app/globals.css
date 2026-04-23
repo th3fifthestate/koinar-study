@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --stone-50: #f7f6f3;
@@ -7,13 +11,92 @@
   --stone-300: #c4bfb3;
   --stone-700: #5c564a;
   --stone-900: #2c2924;
+  --sage-50:  #eef2eb;
+  --sage-100: #dce4d7;
+  --sage-200: #c2cfba;
   --sage-300: #a8b8a0;
+  --sage-400: #8a9c80;
   --sage-500: #6b8060;
+  --sage-600: #54684a;
   --sage-700: #3d4f35;
+  --sage-800: #2a3724;
+  --sage-900: #1a2517;
+  --stone-400: #a39e92;
+  --stone-500: #7a7468;
+  --stone-600: #6a6458;
+  --stone-800: #3d3a33;
+  --ivory-paper: #fdfaf3;
   --warmth: #c49a6c;
+  --reader-pane-width: 0px;
+  --amber-50:  #fffbeb;
+  --amber-500: #f59e0b;
+  --amber-700: #b45309;
+  --red-50:    #fef2f2;
+  --red-500:   #ef4444;
+  --red-700:   #b91c1c;
 
-  --background: var(--stone-50);
-  --foreground: var(--stone-900);
+  /* Sage & Stone color system */
+  --background: #f7f6f3;
+  --foreground: #2c2924;
+  --card: #ffffff;
+  --card-foreground: #2c2924;
+  --popover: #ffffff;
+  --popover-foreground: #2c2924;
+  --primary: #6b8060;
+  --primary-foreground: #f7f6f3;
+  --secondary: #e8ede6;
+  --secondary-foreground: #3d4f35;
+  --muted: #edebe6;
+  --muted-foreground: #5c564a;
+  --accent: #e8ede6;
+  --accent-foreground: #3d4f35;
+  --destructive: #b54334;
+  --border: #ddd9d0;
+  --input: #ddd9d0;
+  --ring: #6b8060;
+  --chart-1: #6b8060;
+  --chart-2: #a8b8a0;
+  --chart-3: #c49a6c;
+  --chart-4: #3d4f35;
+  --chart-5: #2c2924;
+  --radius: 0.625rem;
+  --sidebar: #f7f6f3;
+  --sidebar-foreground: #2c2924;
+  --sidebar-primary: #6b8060;
+  --sidebar-primary-foreground: #f7f6f3;
+  --sidebar-accent: #e8ede6;
+  --sidebar-accent-foreground: #3d4f35;
+  --sidebar-border: #ddd9d0;
+  --sidebar-ring: #6b8060;
+}
+
+.dark {
+  --background: #2c2924;
+  --foreground: #edebe6;
+  --card: #3a362f;
+  --card-foreground: #edebe6;
+  --popover: #3a362f;
+  --popover-foreground: #edebe6;
+  --primary: #6b8060;
+  --primary-foreground: #edebe6;
+  --secondary: #2a3527;
+  --secondary-foreground: #a8b8a0;
+  --muted: #3a362f;
+  --muted-foreground: #c4bfb3;
+  --accent: #2a3527;
+  --accent-foreground: #a8b8a0;
+  --destructive: #b54334;
+  --border: #4a453c;
+  --input: #4a453c;
+  --ring: #6b8060;
+  --sidebar: #2c2924;
+  --sidebar-foreground: #edebe6;
+  --sidebar-primary: #6b8060;
+  --sidebar-primary-foreground: #edebe6;
+  --sidebar-accent: #2a3527;
+  --sidebar-accent-foreground: #a8b8a0;
+  --sidebar-border: #4a453c;
+  --sidebar-ring: #6b8060;
 }
 
 @theme inline {
@@ -23,21 +106,88 @@
   --color-stone-100: var(--stone-100);
   --color-stone-200: var(--stone-200);
   --color-stone-300: var(--stone-300);
+  --color-stone-400: var(--stone-400);
+  --color-stone-500: var(--stone-500);
+  --color-stone-600: var(--stone-600);
   --color-stone-700: var(--stone-700);
+  --color-stone-800: var(--stone-800);
   --color-stone-900: var(--stone-900);
+  --color-sage-50:  var(--sage-50);
+  --color-sage-100: var(--sage-100);
+  --color-sage-200: var(--sage-200);
   --color-sage-300: var(--sage-300);
+  --color-sage-400: var(--sage-400);
   --color-sage-500: var(--sage-500);
+  --color-sage-600: var(--sage-600);
   --color-sage-700: var(--sage-700);
+  --color-sage-800: var(--sage-800);
+  --color-sage-900: var(--sage-900);
+  --color-ivory-paper: var(--ivory-paper);
   --color-warmth: var(--warmth);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
-  --font-sans: var(--font-body);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-body), Georgia, serif;
+}
+
+/* ========================================================================
+   READER CONTENT REFLOW
+   The Entity pane (components/reader/resizable-pane.tsx) writes its
+   current width into --reader-pane-width on <html>. On md+ screens the
+   reader's content column shrinks by that amount so study text reflows
+   rather than being overlapped. During drag, <html data-pane-animating>
+   is "false" — we skip the transition so reflow tracks the handle 1:1;
+   on open/close it's "true" and we ease the width change.
+   ======================================================================== */
+@layer components {
+  @media (min-width: 768px) {
+    .reader-content {
+      margin-right: var(--reader-pane-width, 0px);
+    }
+    html[data-pane-animating="true"] .reader-content {
+      transition: margin-right 200ms ease-out;
+    }
+  }
 }
 
 /* ========================================================================
@@ -163,6 +313,44 @@ body {
   100% { background-position: 200% 0; }
 }
 
+@keyframes authFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes authFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes drift {
+  0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.5; transform: translateX(-50%) translateY(5px); }
+}
+
+@keyframes fadeRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Reduced-motion: disable bench-specific animations */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe\:animate-\[fadeRise_0\.5s_ease-out_both\] {
+    animation: none;
+  }
+}
+
+/* ========================================================================
+   COACH MARK
+   ======================================================================== */
+@keyframes coachPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(107, 140, 107, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(107, 140, 107, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[coachPulse_2s_ease-in-out_1\] { animation: none; }
+}
+
 /* ========================================================================
    REDUCED MOTION
    ======================================================================== */
@@ -183,4 +371,53 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Entity drawer markdown content */
+.prose-entity p {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+.prose-entity h1,
+.prose-entity h2,
+.prose-entity h3,
+.prose-entity h4 {
+  font-family: var(--font-display);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.prose-entity ul {
+  list-style: disc;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.prose-entity ol {
+  list-style: decimal;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.prose-entity blockquote {
+  border-left: 2px solid var(--sage-300);
+  padding-left: 0.75rem;
+  font-style: italic;
+  color: var(--stone-700);
+}
+.dark .prose-entity blockquote {
+  color: var(--stone-300);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

@@ -37,7 +37,10 @@ yarn-error.log*
 # databases
 *.db
 *.sqlite
-/data/
+/data/*.db
+/data/*.sqlite
+# keep static reference datasets (e.g. tipnr)
+/data/sqlite/
 
 # vercel
 .vercel

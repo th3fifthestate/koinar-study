@@ -24,7 +24,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
       "font-src 'self' fonts.gstatic.com",
       "img-src 'self' data: blob: https://images.koinar.app",
-      "connect-src 'self' https://images.koinar.app",
+      "connect-src 'self' wss: https://api.anthropic.com https://api.esv.org https://api.scripture.api.bible https://images.koinar.app",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",
@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
 
   // Remove the "X-Powered-By: Next.js" header — no need to advertise the framework
   poweredByHeader: false,
+
+  // Native Node modules that cannot be bundled by webpack
+  serverExternalPackages: ["better-sqlite3", "argon2", "sharp"],
+
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.r2.dev" },
+      { protocol: "https", hostname: "images.koinar.app" },
+    ],
+  },
 
   headers: async () => [
     {
