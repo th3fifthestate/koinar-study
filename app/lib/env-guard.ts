@@ -28,6 +28,12 @@ export function assertEnvPresence(parsed?: Record<string, unknown>): void {
   const nodeEnv = process.env.NODE_ENV;
   if (nodeEnv === "test") return;
 
+  // Browsers never have server-only env vars. If this guard runs in a client
+  // bundle (via a transitive import from a 'use client' component that pulls
+  // in @/lib/config), bail out — the actual server process enforces presence
+  // at startup.
+  if (typeof window !== "undefined") return;
+
   const isProduction = nodeEnv === "production";
   const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
 

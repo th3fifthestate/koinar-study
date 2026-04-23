@@ -16,8 +16,16 @@ const isProduction = process.env.NODE_ENV === "production";
 // During `next build`, Next.js sets NODE_ENV=production but secrets are not
 // present — skip hard validation so the build succeeds.
 const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
-// Treat build-time as non-strict even when NODE_ENV=production.
-const strictValidation = isProduction && !isBuildPhase;
+// If this module is evaluated in a browser bundle (via some transitive import
+// from a client component — e.g. components/shared/useCopyCap pulling in
+// `@/lib/config`), `process.env` is an empty object at runtime and strict
+// validation would throw on page load. Server-only env vars (SESSION_SECRET,
+// ANTHROPIC_API_KEY, etc.) must NEVER be present in the client bundle anyway,
+// so skipping the strict gate here is the correct behavior — the actual
+// server process still enforces it at startup.
+const isBrowser = typeof window !== "undefined";
+// Treat build-time and browser-runtime as non-strict even when NODE_ENV=production.
+const strictValidation = isProduction && !isBuildPhase && !isBrowser;
 
 // --- Lenient schema (always parses with defaults) ---
 // Used to extract values. Strict checks are done separately below.
@@ -100,8 +108,10 @@ if (strictValidation) {
     console.error(message);
     throw new Error(message);
   }
-} else if (isProduction) {
-  // Build phase — warn but don't fail
+} else if (isProduction && !isBrowser) {
+  // Build phase — warn but don't fail. Skip in the browser: the client
+  // bundle never has access to server-only secrets and warning about them
+  // pollutes the DevTools console on every page.
   const strictParsed = productionSchema.safeParse(process.env);
   if (!strictParsed.success) {
     const errors = strictParsed.error.issues
