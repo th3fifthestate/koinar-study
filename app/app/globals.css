@@ -27,6 +27,7 @@
   --stone-800: #3d3a33;
   --ivory-paper: #fdfaf3;
   --warmth: #c49a6c;
+  --reader-pane-width: 0px;
   --amber-50:  #fffbeb;
   --amber-500: #f59e0b;
   --amber-700: #b45309;
@@ -167,6 +168,26 @@
 
 body {
   font-family: var(--font-body), Georgia, serif;
+}
+
+/* ========================================================================
+   READER CONTENT REFLOW
+   The Entity pane (components/reader/resizable-pane.tsx) writes its
+   current width into --reader-pane-width on <html>. On md+ screens the
+   reader's content column shrinks by that amount so study text reflows
+   rather than being overlapped. During drag, <html data-pane-animating>
+   is "false" — we skip the transition so reflow tracks the handle 1:1;
+   on open/close it's "true" and we ease the width change.
+   ======================================================================== */
+@layer components {
+  @media (min-width: 768px) {
+    .reader-content {
+      margin-right: var(--reader-pane-width, 0px);
+    }
+    html[data-pane-animating="true"] .reader-content {
+      transition: margin-right 200ms ease-out;
+    }
+  }
 }
 
 /* ========================================================================

@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import {
@@ -24,7 +24,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)
@@ -45,7 +45,7 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)
@@ -81,7 +81,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

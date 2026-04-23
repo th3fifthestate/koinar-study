@@ -79,13 +79,29 @@ describe('EntityNameIndex', () => {
     expect(index.findMatches('Daniel was wise.')).toHaveLength(0);
   });
 
-  it('is case-insensitive', () => {
+  it('accepts capitalized and ALL-CAPS matches but rejects fully-lowercase ones', () => {
     mockEntities([
       makeEntity({ id: 'MOSES_H4872G', canonical_name: 'Moses' }),
     ]);
     const index = buildEntityNameIndex();
+    // Proper capitalization — match.
+    expect(index.findMatches('Moses spoke.')).toHaveLength(1);
+    // ALL-CAPS (e.g. heading) — still matches (at least one uppercase letter).
     expect(index.findMatches('MOSES spoke.')).toHaveLength(1);
-    expect(index.findMatches('moses spoke.')).toHaveLength(1);
+    // Fully lowercase — rejected, because proper nouns in prose are capitalized.
+    // This prevents "mark my words" from hitting the evangelist Mark.
+    expect(index.findMatches('moses spoke.')).toHaveLength(0);
+  });
+
+  it('drops fully-lowercase common-word collisions (e.g. "mark" the verb)', () => {
+    mockEntities([
+      makeEntity({ id: 'MARK_G3138', canonical_name: 'Mark' }),
+    ]);
+    const index = buildEntityNameIndex();
+    // "mark my words" — the verb, NOT the evangelist.
+    expect(index.findMatches('Just mark my words.')).toHaveLength(0);
+    // But the capitalized proper name still matches.
+    expect(index.findMatches('Mark wrote a gospel.')).toHaveLength(1);
   });
 
   it('prefers longest match', () => {

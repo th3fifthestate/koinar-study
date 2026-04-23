@@ -239,6 +239,77 @@ describe('annotateStudyIfNeeded', () => {
 
       expect(insertStudyAnnotations).not.toHaveBeenCalled();
     });
+
+    it('skips fully-lowercase matches that collide with English words', async () => {
+      // "mark my words" — the lowercase verb should NOT match the evangelist Mark.
+      setupEntityDb([
+        makeEntity({ id: 'MARK_G3138', canonical_name: 'Mark' }),
+      ]);
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([]);
+
+      await annotateStudyIfNeeded(1, 'You mark my words — this will happen.');
+
+      expect(insertStudyAnnotations).not.toHaveBeenCalled();
+    });
+
+    it('still matches capitalized single-word proper names', async () => {
+      setupEntityDb([
+        makeEntity({ id: 'MARK_G3138', canonical_name: 'Mark' }),
+      ]);
+
+      const inserted: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+      vi.mocked(insertStudyAnnotations).mockImplementation((annotations) => {
+        inserted.push(...annotations);
+      });
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([makeAnnotation({ entity_id: 'MARK_G3138', surface_text: 'Mark' })]);
+
+      await annotateStudyIfNeeded(1, 'Mark wrote the second gospel.');
+
+      expect(inserted).toHaveLength(1);
+      expect(inserted[0].entity_id).toBe('MARK_G3138');
+      expect(inserted[0].surface_text).toBe('Mark');
+    });
+
+    it('accepts sentence-initial and ALL-CAPS forms', async () => {
+      setupEntityDb([
+        makeEntity({ id: 'PAUL_G3972G', canonical_name: 'Paul' }),
+      ]);
+
+      const inserted: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+      vi.mocked(insertStudyAnnotations).mockImplementation((annotations) => {
+        inserted.push(...annotations);
+      });
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([makeAnnotation({ entity_id: 'PAUL_G3972G', surface_text: 'PAUL' })]);
+
+      await annotateStudyIfNeeded(1, 'PAUL wrote Romans.');
+
+      expect(inserted).toHaveLength(1);
+      expect(inserted[0].entity_id).toBe('PAUL_G3972G');
+    });
+
+    it('skips fully-lowercase multi-word matches too', async () => {
+      // "saul of tarsus" lowercase in casual typing should not annotate Paul.
+      setupEntityDb([
+        makeEntity({
+          id: 'PAUL_G3972G',
+          canonical_name: 'Paul',
+          aliases: JSON.stringify(['Saul of Tarsus']),
+        }),
+      ]);
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([]);
+
+      await annotateStudyIfNeeded(1, 'we discussed saul of tarsus briefly.');
+
+      expect(insertStudyAnnotations).not.toHaveBeenCalled();
+    });
   });
 
   describe('disambiguation', () => {

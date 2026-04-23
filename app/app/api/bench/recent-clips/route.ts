@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import {
   getRecentClips,
@@ -9,7 +9,7 @@ import {
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
 export async function GET(request: Request) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const clips = getRecentClips(user.userId, 50)
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { useEntityLayerOptional } from './entity-layer-context';
 
 interface CrossRefTooltipProps {
   reference: string;
@@ -15,6 +16,8 @@ interface CrossRefTooltipProps {
 }
 
 export function CrossRefTooltip({ reference, children }: CrossRefTooltipProps) {
+  const entityLayer = useEntityLayerOptional();
+  const benchEnabled = entityLayer?.benchEnabled ?? false;
   const [verseText, setVerseText] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -84,15 +87,17 @@ export function CrossRefTooltip({ reference, children }: CrossRefTooltipProps) {
           <p className="text-xs font-medium text-[var(--sage-700)] dark:text-[var(--sage-300)]">
             {reference} (BSB)
           </p>
-          <button
-            onClick={handleClipChain}
-            className="ml-2 text-muted-foreground hover:text-sage-600 transition-colors shrink-0"
-            aria-label="Clip cross-ref chain to Bench"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
-            </svg>
-          </button>
+          {benchEnabled && (
+            <button
+              onClick={handleClipChain}
+              className="ml-2 text-muted-foreground hover:text-sage-600 transition-colors shrink-0"
+              aria-label="Clip cross-ref chain to Bench"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+              </svg>
+            </button>
+          )}
         </div>
         {loading && (
           <div className="space-y-1.5">

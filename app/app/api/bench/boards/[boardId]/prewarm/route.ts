@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getBenchBoard } from '@/lib/db/bench/queries'
 import { prewarmBoard } from '@/lib/bench/prewarm'
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export async function POST(request: Request, { params }: Props) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

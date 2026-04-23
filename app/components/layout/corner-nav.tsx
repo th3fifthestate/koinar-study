@@ -8,9 +8,10 @@ import Link from 'next/link';
 interface CornerNavProps {
   username?: string;
   displayName?: string;
+  isAdmin?: boolean;
 }
 
-export function CornerNav({ username, displayName }: CornerNavProps) {
+export function CornerNav({ username, displayName, isAdmin = false }: CornerNavProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -55,17 +56,34 @@ export function CornerNav({ username, displayName }: CornerNavProps) {
           <span>New Study</span>
         </Link>
 
-        <Link
-          href="/bench"
-          className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
-            scrolled
-              ? 'text-[var(--stone-700)]/50 hover:text-[var(--stone-900)]'
-              : 'text-[var(--stone-50)]/70 hover:text-[var(--stone-50)]'
-          }`}
-        >
-          <LayoutGrid className="h-4 w-4" />
-          <span>Study Bench</span>
-        </Link>
+        {isAdmin ? (
+          <Link
+            href="/bench"
+            className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+              scrolled
+                ? 'text-[var(--stone-700)]/50 hover:text-[var(--stone-900)]'
+                : 'text-[var(--stone-50)]/70 hover:text-[var(--stone-50)]'
+            }`}
+          >
+            <LayoutGrid className="h-4 w-4" />
+            <span>Study Bench</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            disabled
+            title="Coming soon"
+            aria-label="Study Bench — coming soon"
+            className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] cursor-not-allowed select-none bg-transparent border-0 p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--sage-500)] focus-visible:outline-offset-2 rounded-sm ${
+              scrolled
+                ? 'text-[var(--stone-700)]/25'
+                : 'text-[var(--stone-50)]/30'
+            }`}
+          >
+            <LayoutGrid className="h-4 w-4" />
+            <span>Study Bench</span>
+          </button>
+        )}
 
         {username ? (
           <Link

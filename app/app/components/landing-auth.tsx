@@ -239,12 +239,23 @@ function SignInForm({ onBack }: { onBack: () => void }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<"password" | "verify">("password");
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [code, setCode] = useState("");
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const codeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => firstInputRef.current?.focus(), 520);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (step === "verify") {
+      const t = setTimeout(() => codeInputRef.current?.focus(), 50);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -270,12 +281,122 @@ function SignInForm({ onBack }: { onBack: () => void }) {
         return;
       }
 
+      if (data.step === "verify_login" && typeof data.pendingToken === "string") {
+        setPendingToken(data.pendingToken);
+        setStep("verify");
+        return;
+      }
+
       router.push("/");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleVerifySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pendingToken) return;
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pendingToken, code }),
+      });
+
+      if (!res.ok) {
+        const message =
+          res.status === 429
+            ? "Too many attempts. Please wait a moment and try again."
+            : "That code didn't match, or it expired. Try again.";
+        setError(message);
+        return;
+      }
+
+      router.push("/");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (step === "verify") {
+    return (
+      <form
+        onSubmit={handleVerifySubmit}
+        className="flex flex-col items-center gap-4 w-full max-w-[320px] md:max-w-[340px]"
+      >
+        <p
+          className="font-body text-[0.85rem] text-[rgba(247,246,243,0.75)] text-center"
+          style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}
+        >
+          We sent a 6-digit code to your email. Enter it below to finish
+          signing in.
+        </p>
+        <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "80ms" }}>
+          <label htmlFor="signin-code" className={labelClass}>Code</label>
+          <input
+            id="signin-code"
+            ref={codeInputRef}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]{6}"
+            maxLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
+            placeholder="000000"
+            required
+            autoComplete="one-time-code"
+            disabled={loading}
+            aria-describedby={error ? "signin-error" : undefined}
+            aria-invalid={error ? "true" : undefined}
+            className={`${inputClass} tracking-[0.5em]`}
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading || code.length !== 6}
+          className={buttonClass}
+          style={{
+            ...(loading ? shimmerStyle : {}),
+            animation: loading ? shimmerStyle.animation : "authFadeIn 500ms ease-out both",
+            animationDelay: loading ? undefined : "160ms",
+          }}
+        >
+          {loading ? "Verifying\u2026" : "Verify"}
+        </button>
+
+        {error && (
+          <p
+            id="signin-error"
+            role="alert"
+            className="font-body text-[0.7rem] font-medium text-warmth outline-none"
+          >
+            {error}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setStep("password");
+            setPendingToken(null);
+            setCode("");
+            setError(null);
+          }}
+          className={backLinkClass}
+          style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "220ms" }}
+        >
+          Use a different account
+        </button>
+      </form>
+    );
   }
 
   return (

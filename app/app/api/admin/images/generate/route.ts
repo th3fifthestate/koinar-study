@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/middleware";
 import { generateImage, estimateCost, FluxApiError } from "@/lib/images/flux";
 import { getDimensions, type AspectRatio } from "@/lib/images/prompt-builder";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
+
+// Image generation costs real money per call. Admin-only, but limit spend
+// in case a session is compromised: 20 calls per admin per hour.
+const rateLimiter = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 20 });
 
 const generateSchema = z.object({
   studyId: z.number().int().positive(),
@@ -15,7 +20,13 @@ const generateSchema = z.object({
 export async function POST(request: NextRequest) {
   const { user, response: authResponse } = await requireAdmin();
   if (authResponse) return authResponse;
-  void user;
+
+  if (rateLimiter(String(user.userId))) {
+    return NextResponse.json(
+      { error: "Image generation rate limit reached. Try again later." },
+      { status: 429, headers: { "Retry-After": "3600" } }
+    );
+  }
 
   let body: unknown;
   try {

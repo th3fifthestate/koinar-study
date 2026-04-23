@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getLexiconEntry } from '@/lib/db/lexicon/queries'
 
@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ strongsId: string }> }
 ) {
-  const { response } = await requireAuth()
+  const { response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

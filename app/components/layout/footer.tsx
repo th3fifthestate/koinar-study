@@ -30,6 +30,16 @@ export function Footer() {
                 Attributions
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className={LINK_CLASS}>
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className={LINK_CLASS}>
+                Terms
+              </Link>
+            </li>
           </ul>
         </nav>
 

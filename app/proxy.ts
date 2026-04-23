@@ -9,9 +9,13 @@ const PUBLIC_PATHS = new Set([
   "/",
   "/login",
   "/about",
+  "/privacy",
+  "/terms",
+  "/attributions",
   "/api/auth/register",
   "/api/auth/register-welcome",
   "/api/auth/login",
+  "/api/auth/login/verify",
   "/api/waitlist/submit",
 ]);
 

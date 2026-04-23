@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default async function BenchPage() {
   const session = await getCurrentUser()
   if (!session) redirect('/login')
+  if (!session.isAdmin) redirect('/')
 
   const boards = getBenchBoards(session.userId)
   const flags = getUserFlags(session.userId)

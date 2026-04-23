@@ -87,7 +87,7 @@ export default async function HomePage({
 
   return (
     <div className="relative min-h-dvh bg-[var(--stone-50)]">
-      <CornerNav username={username} displayName={session.displayName ?? username} />
+      <CornerNav username={username} displayName={session.displayName ?? username} isAdmin={session.isAdmin === true} />
 
       {/* Zone 1 — Hero */}
       <Hero

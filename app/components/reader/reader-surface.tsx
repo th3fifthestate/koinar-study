@@ -78,7 +78,7 @@ export function ReaderSurface({ children }: ReaderSurfaceProps) {
       data-reader-surface
       data-tod={bucket}
       data-dark={isDark ? 'true' : 'false'}
-      className="relative min-h-screen transition-colors duration-[1200ms]"
+      className={`relative min-h-screen transition-colors duration-[1200ms] ${isDark ? 'dark' : ''}`}
       style={surfaceStyle}
     >
       {/* Tonal wash layer — warmth glow + sage drift sitting over the
@@ -115,7 +115,15 @@ export function ReaderSurface({ children }: ReaderSurfaceProps) {
         }}
       />
 
-      <div className="relative z-10">{children}</div>
+      {/*
+        Content column. When the Entity pane is open on md+ screens,
+        `--reader-pane-width` is set on <html> and this wrapper shrinks
+        by that amount so the study text reflows instead of being covered.
+        Margin + conditional transition are defined as `.reader-content`
+        in `app/globals.css`; keeping them out of arbitrary Tailwind
+        selectors avoids brittle nesting.
+      */}
+      <div className="reader-content relative z-10">{children}</div>
     </div>
   );
 }

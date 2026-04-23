@@ -32,6 +32,7 @@ export default async function BoardPage({ params }: Props) {
 
   const session = await getCurrentUser()
   if (!session) redirect('/login')
+  if (!session.isAdmin) redirect('/')
 
   const board = getBenchBoard(boardId, session.userId)
   if (!board) notFound()

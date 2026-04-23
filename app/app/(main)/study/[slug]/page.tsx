@@ -77,6 +77,7 @@ export default async function StudyPage({ params }: Props) {
       entities={entities}
       heroNeedsScrim={!!study.hero_needs_scrim}
       translations={translationAvailability}
+      benchEnabled={session?.isAdmin === true}
     />
   );
 }

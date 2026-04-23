@@ -4,12 +4,12 @@ import { useEffect, useState, useMemo } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ReaderOverlay } from './reader-overlay';
+import { ResizablePane, useResizablePaneWidth } from './resizable-pane';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   User, MapPin, Globe, Clock, Lightbulb, Tag,
-  ChevronRight, ChevronDown, ChevronUp, ExternalLink,
+  ChevronRight, ChevronDown, ChevronUp, ExternalLink, X,
 } from 'lucide-react';
 import { useEntityLayer } from './entity-layer-context';
 import type { EntityDetail, EntityCitation, EntityVerseRef } from '@/lib/db/types';
@@ -364,6 +364,7 @@ export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
 
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [prevStackLength, setPrevStackLength] = useState(0);
+  const [width, setWidth] = useResizablePaneWidth();
 
   useEffect(() => {
     if (entityStack.length > prevStackLength) setDirection('forward');
@@ -383,22 +384,33 @@ export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
   }, [entityStack, entityMap]);
 
   return (
-    <ReaderOverlay
+    <ResizablePane
       open={drawerOpen}
       onClose={closeDrawer}
-      variant="sheet"
+      width={width}
+      onWidthChange={setWidth}
       stackLevel={60}
       ariaLabel="Entity Details"
     >
-      {/* Breadcrumbs */}
-      <div className="border-b border-[var(--stone-200)] px-5 py-3 dark:border-[var(--stone-700)]">
-        <EntityBreadcrumbs
-          studyTitle={studyTitle}
-          stack={entityStack}
-          names={nameMap}
-          onNavigate={(i) => navigateBack(i)}
-          onClose={closeDrawer}
-        />
+      {/* Breadcrumbs + close */}
+      <div className="flex items-center gap-2 border-b border-[var(--stone-200)] px-5 py-3 dark:border-[var(--stone-700)]">
+        <div className="min-w-0 flex-1">
+          <EntityBreadcrumbs
+            studyTitle={studyTitle}
+            stack={entityStack}
+            names={nameMap}
+            onNavigate={(i) => navigateBack(i)}
+            onClose={closeDrawer}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={closeDrawer}
+          aria-label="Close entity panel"
+          className="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-[var(--stone-100)] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-sage-500 dark:hover:bg-[var(--stone-800)]"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Scrollable content */}
@@ -413,6 +425,6 @@ export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
           )}
         </AnimatePresence>
       </div>
-    </ReaderOverlay>
+    </ResizablePane>
   );
 }

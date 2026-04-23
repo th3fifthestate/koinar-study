@@ -36,6 +36,7 @@ interface StudyReaderProps {
   entityAnnotations?: StudyEntityAnnotation[];
   entities?: Entity[];
   heroNeedsScrim?: boolean;
+  benchEnabled?: boolean;
 }
 
 // Count individual verses referenced in blockquote citation lines. Used to
@@ -86,6 +87,7 @@ export function StudyReader({
   entityAnnotations = [],
   entities = [],
   heroNeedsScrim,
+  benchEnabled = false,
 }: StudyReaderProps) {
   const { prefs, setFontSize, setAnnotationFullContextHeight, resetPrefs } = useReaderPrefs();
   const fontSize = prefs.fontSize;
@@ -147,7 +149,7 @@ export function StudyReader({
   useReadingProgress(study.slug);
 
   return (
-    <EntityLayerProvider annotations={entityAnnotations} entities={entities}>
+    <EntityLayerProvider annotations={entityAnnotations} entities={entities} benchEnabled={benchEnabled}>
       <StudyReaderContent
         study={study}
         isFavorited={isFavorited}
@@ -166,6 +168,7 @@ export function StudyReader({
         translating={translating}
         onTranslationSelect={handleTranslationSelect}
         heroNeedsScrim={heroNeedsScrim}
+        benchEnabled={benchEnabled}
       />
     </EntityLayerProvider>
   );
@@ -189,6 +192,7 @@ function StudyReaderContent({
   translating,
   onTranslationSelect,
   heroNeedsScrim,
+  benchEnabled,
 }: {
   study: StudyDetail;
   isFavorited: boolean;
@@ -209,6 +213,7 @@ function StudyReaderContent({
   translating: boolean;
   onTranslationSelect: (t: string) => Promise<void>;
   heroNeedsScrim?: boolean;
+  benchEnabled: boolean;
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
@@ -351,7 +356,7 @@ function StudyReaderContent({
                   clearSelection();
                 }}
                 onClose={clearSelection}
-                onClipToBench={async () => {
+                onClipToBench={benchEnabled ? async () => {
                   const headingSlug = activeId ?? 'introduction'
                   const payload = {
                     type: 'study-section',
@@ -372,7 +377,7 @@ function StudyReaderContent({
                   } catch {
                     toast.error('Failed to clip to Bench')
                   }
-                }}
+                } : undefined}
                 annotationFullContextHeight={annotationFullContextHeight}
                 onAnnotationFullContextHeightChange={onAnnotationFullContextHeightChange}
               />

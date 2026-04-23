@@ -321,6 +321,22 @@ function runMigration(database: Database.Database): void {
       `).run();
     }
 
+    // v13 → v14: admin_login_codes for 2FA email verification on admin sign-in.
+    if (currentVersion < 14) {
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS admin_login_codes (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          pending_token TEXT NOT NULL UNIQUE,
+          code TEXT NOT NULL,
+          expires_at TEXT NOT NULL,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          consumed INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 13;
+export const SCHEMA_VERSION = 14;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -52,6 +52,20 @@ CREATE TABLE IF NOT EXISTS email_verification_codes (
   expires_at TEXT NOT NULL,
   attempts INTEGER NOT NULL DEFAULT 0,
   verified INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Admin 2FA login. Both pending_token and 6-digit code must match to create
+-- a session. Token alone or code alone is insufficient. Prior rows for the
+-- same user are invalidated when a new code is requested.
+CREATE TABLE IF NOT EXISTS admin_login_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  pending_token TEXT NOT NULL UNIQUE,
+  code TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  consumed INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -448,6 +462,8 @@ CREATE INDEX IF NOT EXISTS idx_invite_codes_code ON invite_codes(code);
 CREATE INDEX IF NOT EXISTS idx_invite_codes_created_by ON invite_codes(created_by);
 CREATE INDEX IF NOT EXISTS idx_invite_codes_invitee_email ON invite_codes(invitee_email);
 CREATE INDEX IF NOT EXISTS idx_email_verification_invite ON email_verification_codes(invite_code_id);
+CREATE INDEX IF NOT EXISTS idx_admin_login_codes_user ON admin_login_codes(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_admin_login_codes_token ON admin_login_codes(pending_token);
 CREATE INDEX IF NOT EXISTS idx_email_verification_email ON email_verification_codes(email);
 CREATE INDEX IF NOT EXISTS idx_waitlist_status ON waitlist(status);
 CREATE INDEX IF NOT EXISTS idx_waitlist_email ON waitlist(email);

@@ -26,13 +26,24 @@ import { insertStudyAnnotations } from '@/lib/db/entities/queries';
 // 5 generations per 5-minute window per user
 const rateLimiter = createRateLimiter({ windowMs: 300_000, max: 5 });
 
+// Allowlist of Claude model IDs we are willing to bill against. Keep this in
+// sync with `env.AI_MODEL_ID` and the models referenced in `lib/config.ts`.
+// Anything outside this set is rejected so a caller can't point generation
+// at a wildly expensive or otherwise unintended model.
+const ALLOWED_MODELS = [
+  "claude-opus-4-7",
+  "claude-opus-4-6",
+  "claude-sonnet-4-6",
+  "claude-haiku-4-5-20251001",
+] as const;
+
 const requestSchema = z.object({
   prompt: z.string().min(10).max(2000),
   format: z
     .enum(["simple", "standard", "comprehensive"])
     .default("comprehensive"),
   translation: z.enum(["bsb", "esv", "kjv", "nlt"]).default("bsb"),
-  model: z.string().optional(),
+  model: z.enum(ALLOWED_MODELS).optional(),
 });
 
 export async function POST(request: Request) {

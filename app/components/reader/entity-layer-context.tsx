@@ -20,6 +20,9 @@ interface EntityLayerContextValue {
   annotationLookup: Map<string, string>; // surface_text (lowercase) -> entity_id
   annotationRegex: RegExp | null;
 
+  // Feature flags
+  benchEnabled: boolean;
+
   // Toggle
   showAnnotations: boolean;
   setShowAnnotations: (v: boolean) => void;
@@ -67,6 +70,7 @@ export function useEntityLayerOptional() {
 interface EntityLayerProviderProps {
   annotations: StudyEntityAnnotation[];
   entities: Entity[];
+  benchEnabled?: boolean;
   children: ReactNode;
 }
 
@@ -77,6 +81,7 @@ function escapeRegex(s: string) {
 export function EntityLayerProvider({
   annotations,
   entities,
+  benchEnabled = false,
   children,
 }: EntityLayerProviderProps) {
   // ── Data maps ──
@@ -234,6 +239,7 @@ export function EntityLayerProvider({
       entityMap,
       annotationLookup,
       annotationRegex,
+      benchEnabled,
       showAnnotations,
       setShowAnnotations,
       drawerOpen,
@@ -251,6 +257,7 @@ export function EntityLayerProvider({
       entityMap,
       annotationLookup,
       annotationRegex,
+      benchEnabled,
       showAnnotations,
       setShowAnnotations,
       drawerOpen,

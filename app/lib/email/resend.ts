@@ -40,6 +40,23 @@ export async function sendVerificationCode(options: {
   });
 }
 
+export async function sendAdminLoginCode(options: {
+  to: string;
+  code: string;
+}): Promise<void> {
+  await resend.emails.send({
+    from: "Koinar <noreply@koinar.app>",
+    to: options.to,
+    subject: `Koinar admin sign-in code: ${options.code}`,
+    html: `
+      <p>An admin sign-in was just requested for this address.</p>
+      <p>Your one-time code is:</p>
+      <p style="font-size:32px;font-weight:bold;letter-spacing:8px;">${options.code}</p>
+      <p style="color:#666;">This code expires in 10 minutes. If you didn't request this, you can ignore this email — no one can sign in without it.</p>
+    `,
+  });
+}
+
 export async function sendApprovalEmail(options: {
   to: string;
   name: string;

@@ -16,7 +16,7 @@ interface EntityTermProps {
 }
 
 export function EntityTerm({ entityId, children }: EntityTermProps) {
-  const { entityMap, showAnnotations, openDrawer } = useEntityLayer();
+  const { entityMap, showAnnotations, openDrawer, benchEnabled } = useEntityLayer();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const entity = entityMap.get(entityId) ?? null;
@@ -65,7 +65,7 @@ export function EntityTerm({ entityId, children }: EntityTermProps) {
       </PopoverTrigger>
       <PopoverContent className="max-w-[320px] p-4" side="bottom" sideOffset={6}>
         {entity ? (
-          <EntityPopover entity={entity} onExplore={handleExplore} onClipToBench={handleClipToBench} />
+          <EntityPopover entity={entity} onExplore={handleExplore} onClipToBench={benchEnabled ? handleClipToBench : undefined} />
         ) : (
           <p className="text-xs italic text-muted-foreground">
             Context not yet available for this reference.

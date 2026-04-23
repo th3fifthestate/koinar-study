@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getCachedVerse } from '@/lib/translations/cache'
 import { getVerse, normalizeBookName } from '@/lib/db/bible/queries'
@@ -10,7 +10,7 @@ import type { TranslationId } from '@/lib/translations/registry'
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 240 })
 
 export async function GET(request: Request) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

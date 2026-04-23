@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 import { getUserFlags, patchUserFlags } from '@/lib/bench/user-flags'
@@ -6,7 +6,7 @@ import { getUserFlags, patchUserFlags } from '@/lib/bench/user-flags'
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
 export async function GET(request: Request) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { user, response } = await requireAuth()
+  const { user, response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

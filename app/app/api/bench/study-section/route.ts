@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireAdmin } from '@/lib/auth/middleware'
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit'
 import { getStudyById } from '@/lib/db/queries'
 import { extractSection, slugify } from '@/lib/bench/extract-study-section'
@@ -6,7 +6,7 @@ import { extractSection, slugify } from '@/lib/bench/extract-study-section'
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
 export async function GET(request: Request) {
-  const { response } = await requireAuth()
+  const { response } = await requireAdmin()
   if (response) return response
 
   const ip = getClientIp(request)

@@ -227,6 +227,19 @@ function inExcludedRange(position: number, ranges: Range[]): boolean {
   return false;
 }
 
+/**
+ * Reject any match whose surface text is fully lowercase. Proper nouns in
+ * running English prose are always capitalized — a lowercase "mark" in
+ * "mark my words" is the verb, not the evangelist; a lowercase "peter" in
+ * "peter out" is the verb, not the apostle. The regex is case-insensitive
+ * so we can match sentence-initial "Mark" and ALL-CAPS headings, but we
+ * reject the lowercase forms that almost always resolve to a common English
+ * word rather than the biblical figure.
+ */
+function hasProperCase(surfaceText: string): boolean {
+  return surfaceText !== surfaceText.toLowerCase();
+}
+
 // ─── Disambiguation ───────────────────────────────────────────────────────────
 
 function disambiguate(
@@ -312,6 +325,10 @@ export async function annotateStudyIfNeeded(
     const endOffset = startOffset + matchedText.length;
 
     if (inExcludedRange(startOffset, excludedRanges)) continue;
+
+    // Fully-lowercase surface text almost always means the English word,
+    // not the proper name ("mark my words" ≠ the evangelist Mark).
+    if (!hasProperCase(matchedText)) continue;
 
     const candidates = nameToEntities.get(normalizedName);
     if (!candidates || candidates.length === 0) continue;

@@ -468,13 +468,29 @@ async function main() {
   //    resolve them via `entityIdByUnifiedName` to the strongs-suffixed entity id.
   //    Drop any edge whose endpoint isn't in the import set (rare, e.g. refs
   //    to entries that were filtered out because of a missing strongsKey).
+  //
+  // Reciprocity: TIPNR rows occasionally list a family member one-way (e.g.
+  // Joseph lists Jacob as parent but Jacob's row omits Joseph from offspring).
+  // For every resolved edge we also insert the inverse, so the graph is
+  // fully symmetric: parent_of ↔ child_of, sibling_of ↔ sibling_of,
+  // spouse_of ↔ spouse_of. INSERT OR IGNORE makes the reciprocal a no-op
+  // when it already exists.
   let relCount = 0;
   let unresolvedRefs = 0;
+  let selfEdgesSkipped = 0;
+
+  type FamilyRelType = 'child_of' | 'parent_of' | 'spouse_of' | 'sibling_of';
+  const inverseOf: Record<FamilyRelType, { type: FamilyRelType; label: string }> = {
+    child_of:   { type: 'parent_of',  label: 'parent of' },
+    parent_of:  { type: 'child_of',   label: 'child of' },
+    spouse_of:  { type: 'spouse_of',  label: 'spouse of' },
+    sibling_of: { type: 'sibling_of', label: 'sibling of' },
+  };
 
   const tryInsert = (
     fromId: string,
     toRef: string,
-    relationship_type: 'child_of' | 'parent_of' | 'spouse_of' | 'sibling_of',
+    relationship_type: FamilyRelType,
     relationship_label: string,
     bidirectional: 0 | 1
   ) => {
@@ -483,11 +499,30 @@ async function main() {
       unresolvedRefs++;
       return;
     }
+    if (fromId === toId) {
+      // Defensive: drop any self-loop. TIPNR has at least one row
+      // (Herod@Mat.14.1-Act) where a parent field resolves to the same
+      // entity, producing "Herod is a child of Herod".
+      selfEdgesSkipped++;
+      return;
+    }
     insertRelationship({
       from_entity_id: fromId,
       to_entity_id: toId,
       relationship_type,
       relationship_label,
+      bidirectional,
+      source: 'tipnr',
+    });
+    relCount++;
+
+    // Insert the reciprocal (no-op if already present via INSERT OR IGNORE).
+    const inv = inverseOf[relationship_type];
+    insertRelationship({
+      from_entity_id: toId,
+      to_entity_id: fromId,
+      relationship_type: inv.type,
+      relationship_label: inv.label,
       bidirectional,
       source: 'tipnr',
     });
@@ -504,9 +539,12 @@ async function main() {
     }
   })();
 
-  console.log(`Inserted ${relCount} relationships`);
+  console.log(`Inserted ${relCount} relationships (includes auto-added reciprocals)`);
   if (unresolvedRefs > 0) {
     console.warn(`Unresolved family refs (endpoint not in import set): ${unresolvedRefs}`);
+  }
+  if (selfEdgesSkipped > 0) {
+    console.warn(`Self-edges skipped (A → A): ${selfEdgesSkipped}`);
   }
   console.log('Import complete.');
 }

@@ -32,6 +32,17 @@ function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+/**
+ * Reject matches whose surface text is fully lowercase. Proper nouns in
+ * English prose are always capitalized; a lowercase "mark" or "peter" is
+ * almost always the verb / common noun rather than the biblical figure.
+ * The regex stays case-insensitive so sentence-initial and ALL-CAPS forms
+ * still resolve, but fully-lowercase matches are dropped as false positives.
+ */
+function hasProperCase(surfaceText: string): boolean {
+  return surfaceText !== surfaceText.toLowerCase();
+}
+
 export function buildEntityNameIndex(): EntityNameIndex {
   const db = getDb();
   const allEntities = db.prepare('SELECT * FROM entities').all() as Entity[];
@@ -85,6 +96,9 @@ export function buildEntityNameIndex(): EntityNameIndex {
       for (const match of text.matchAll(rx)) {
         const start = match.index!;
         const end = start + match[0].length;
+
+        // Skip fully-lowercase matches (likely the English word, not the name).
+        if (!hasProperCase(match[0])) continue;
 
         // Skip if this range overlaps with an already-matched longer range
         if (coveredRanges.some(([s, e]) => start < e && end > s)) continue;
