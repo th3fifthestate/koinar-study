@@ -55,6 +55,21 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
+# Source files needed for one-off seed/admin scripts run via `railway ssh --
+# npx tsx scripts/<name>.ts`. The standalone Next.js output does not
+# include these because they are not part of the server bundle. They MUST
+# live at paths that do NOT collide with the persistent-volume mount
+# (now mounted at /app/db, not /app/data) — the scripts read seed JSON
+# from /app/data/seeds/ and TSV from /app/data/tipnr/.
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/lib ./lib
+COPY --from=builder --chown=nextjs:nodejs /app/data ./data
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+
+# tsx is a devDependency, so it is absent from the standalone node_modules.
+# Install it globally so seed scripts can be invoked as `npx tsx ...`.
+RUN npm install -g tsx@4
+
 # Entrypoint starts as root so it can chown the persistent-volume mount,
 # then drops to `nextjs` via su-exec before launching the server.
 COPY --chown=root:root docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
