@@ -1,5 +1,5 @@
 # ============================================
-# Stage 1: Install dependencies
+# Stage 1: Install dependencies (all — used by builder)
 # ============================================
 FROM node:22-alpine AS deps
 WORKDIR /app
@@ -8,6 +8,24 @@ RUN apk add --no-cache libc6-compat python3 make g++
 
 COPY package.json package-lock.json ./
 RUN npm ci
+
+# ============================================
+# Stage 1b: Install prod-only dependencies (used by runner for scripts)
+# ============================================
+# Next.js standalone output strips most packages from node_modules by
+# inlining them into server.js via webpack. Seed/admin scripts run
+# outside that bundle and can't resolve inlined packages at runtime, so
+# the runner stage needs a real node_modules with every prod dep
+# present (zod, dotenv, better-sqlite3, argon2, resend, @anthropic-ai/sdk,
+# …). We install `--omit=dev` here so dev-only tooling (playwright,
+# vitest, jsdom, etc.) doesn't bloat the final image.
+FROM node:22-alpine AS prod-deps
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat python3 make g++
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 # ============================================
 # Stage 2: Build the application
@@ -65,6 +83,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/lib ./lib
 COPY --from=builder --chown=nextjs:nodejs /app/data ./data
 COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+
+# Next.js standalone ships ~40MB of node_modules with most deps inlined
+# into server.js by webpack. Seed scripts run outside that bundle and
+# need the prod deps resolvable at runtime. Overlay from the prod-deps
+# stage (not the builder's full tree) so we get zod/dotenv/argon2/etc.
+# without bloating the image with devDeps (playwright, vitest, …).
+# Docker COPY merges file-by-file: standalone-only entries are
+# preserved; colliding files overwrite with identical versions (both
+# came from the same package-lock).
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 # tsx is a devDependency, so it is absent from the standalone node_modules.
 # Install it globally so seed scripts can be invoked as `npx tsx ...`.
