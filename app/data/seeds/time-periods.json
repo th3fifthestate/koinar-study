@@ -1,0 +1,575 @@
+[
+  {
+    "id": "ANTEDILUVIAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Antediluvian Period",
+    "aliases": ["Pre-Flood Era", "Age Before the Flood"],
+    "quick_glance": "The era before the biblical Flood, recorded in Genesis 1–6, encompassing creation, the fall, Cain and Abel, and the genealogies of Adam through Noah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Creation - c. 2350 BC (traditional)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 1, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "dictionary"},
+      {"book": "Genesis", "chapter": 6, "verse_start": 1, "verse_end": 8, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PATRIARCHAL_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Antediluvian", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "PATRIARCHAL_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Patriarchal Period",
+    "aliases": ["Age of the Patriarchs", "Era of the Fathers"],
+    "quick_glance": "The era of Abraham, Isaac, Jacob, and Joseph, during which God established his covenant with Israel and the family settled in Egypt.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 2000–1700 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Genesis", "chapter": 12, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "dictionary"},
+      {"book": "Genesis", "chapter": 50, "verse_start": 24, "verse_end": 25, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ANTEDILUVIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "EGYPTIAN_SOJOURN", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Patriarchs", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "EGYPTIAN_SOJOURN",
+    "entity_type": "time_period",
+    "canonical_name": "Egyptian Sojourn and Exodus",
+    "aliases": ["The Sojourn in Egypt", "The Exodus Period"],
+    "quick_glance": "The period of Israel's slavery in Egypt and subsequent deliverance under Moses, culminating in the Exodus and the giving of the Law at Sinai.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1700–1250 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Exodus", "chapter": 1, "verse_start": 1, "verse_end": 14, "confidence": "high", "source": "dictionary"},
+      {"book": "Exodus", "chapter": 12, "verse_start": 40, "verse_end": 41, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PATRIARCHAL_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "WILDERNESS_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Exodus", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "WILDERNESS_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Wilderness Wandering",
+    "aliases": ["The Forty Years in the Desert", "The Desert Period"],
+    "quick_glance": "The forty years Israel spent in the wilderness of Sinai following the Exodus, during which the Law was given, the Tabernacle built, and an entire generation passed before entering Canaan.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1250–1210 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Numbers", "chapter": 14, "verse_start": 33, "verse_end": 34, "confidence": "high", "source": "dictionary"},
+      {"book": "Deuteronomy", "chapter": 8, "verse_start": 2, "verse_end": 5, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EGYPTIAN_SOJOURN", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "CONQUEST_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Wilderness", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "CONQUEST_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Conquest of Canaan",
+    "aliases": ["The Settlement Period", "The Age of Joshua"],
+    "quick_glance": "The military campaigns led by Joshua to take possession of the Promised Land, including the fall of Jericho and the division of territory among the twelve tribes.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1210–1180 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Joshua", "chapter": 1, "verse_start": 1, "verse_end": 9, "confidence": "high", "source": "dictionary"},
+      {"book": "Joshua", "chapter": 21, "verse_start": 43, "verse_end": 45, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "WILDERNESS_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "JUDGES_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Canaan", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "JUDGES_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Period of the Judges",
+    "aliases": ["The Age of Judges", "The Tribal Period"],
+    "quick_glance": "A cyclical era in which Israel alternated between apostasy, oppression, and deliverance under charismatic military leaders called judges, as recorded in the book of Judges.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1200–1050 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Judges", "chapter": 2, "verse_start": 16, "verse_end": 19, "confidence": "high", "source": "dictionary"},
+      {"book": "Judges", "chapter": 21, "verse_start": 25, "verse_end": 25, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "CONQUEST_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "UNITED_MONARCHY", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Judges", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "UNITED_MONARCHY",
+    "entity_type": "time_period",
+    "canonical_name": "United Monarchy",
+    "aliases": ["The United Kingdom", "Era of Saul, David, and Solomon"],
+    "quick_glance": "The reigns of Saul, David, and Solomon, during which the twelve tribes were united under a single king and Solomon built the First Temple in Jerusalem.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 1050–930 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "1 Samuel", "chapter": 10, "verse_start": 1, "verse_end": 1, "confidence": "high", "source": "dictionary"},
+      {"book": "2 Chronicles", "chapter": 9, "verse_start": 30, "verse_end": 31, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "JUDGES_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "DIVIDED_KINGDOM", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "SECOND_TEMPLE_PERIOD", "relationship_type": "related_to", "relationship_label": "preceded", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Israel", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "DIVIDED_KINGDOM",
+    "entity_type": "time_period",
+    "canonical_name": "Divided Kingdom",
+    "aliases": ["The Two Kingdoms", "Israel and Judah Period"],
+    "quick_glance": "The era following Solomon's death when Israel split into the northern kingdom (Israel) and southern kingdom (Judah), with prophets like Elijah, Elisha, Amos, and Hosea active in the north.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 930–722 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "1 Kings", "chapter": 12, "verse_start": 16, "verse_end": 20, "confidence": "high", "source": "dictionary"},
+      {"book": "Amos", "chapter": 3, "verse_start": 1, "verse_end": 2, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "UNITED_MONARCHY", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "ASSYRIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Kingdom of Israel", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "ASSYRIAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Assyrian Period",
+    "aliases": ["Era of Assyrian Dominance", "Neo-Assyrian Period"],
+    "quick_glance": "The era of Assyrian regional dominance, culminating in the destruction of the northern kingdom of Israel (722 BC) and the deportation of its population, and Assyria's threats against Judah under Sennacherib.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 740–612 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 17, "verse_start": 6, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "Isaiah", "chapter": 10, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "DIVIDED_KINGDOM", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "BABYLONIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Assyria", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "BABYLONIAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Babylonian Period and Exile",
+    "aliases": ["The Babylonian Captivity", "The Exile", "Neo-Babylonian Period"],
+    "quick_glance": "The era of Babylonian supremacy under Nebuchadnezzar, including the destruction of Jerusalem and the First Temple (586 BC) and the deportation of Judah's leadership into Babylonian exile.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 612–539 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "2 Kings", "chapter": 25, "verse_start": 1, "verse_end": 21, "confidence": "high", "source": "dictionary"},
+      {"book": "Jeremiah", "chapter": 29, "verse_start": 10, "verse_end": 14, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ASSYRIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "PERSIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Babylon", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "PERSIAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Persian Period",
+    "aliases": ["Achaemenid Period", "Era of Persian Rule"],
+    "quick_glance": "The era under Achaemenid Persian rule, when Cyrus the Great permitted the Jews to return from exile and rebuild the Temple (Ezra, Nehemiah), and Persian policy generally supported Jewish religious practice.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 539–332 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Ezra", "chapter": 1, "verse_start": 1, "verse_end": 4, "confidence": "high", "source": "dictionary"},
+      {"book": "Nehemiah", "chapter": 2, "verse_start": 1, "verse_end": 8, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "BABYLONIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "HELLENISTIC_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "SECOND_TEMPLE_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Persia", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "HELLENISTIC_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Hellenistic Period",
+    "aliases": ["Greek Period", "Era of Greek Rule"],
+    "quick_glance": "The era following Alexander the Great's conquest, during which Greek language and culture spread throughout the Near East and Judea passed between the Ptolemaic (Egypt) and Seleucid (Syria) empires.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 332–167 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 8, "verse_start": 5, "verse_end": 8, "confidence": "high", "source": "dictionary"},
+      {"book": "Daniel", "chapter": 11, "verse_start": 3, "verse_end": 4, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PERSIAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "HASMONEAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "INTERTESTAMENTAL_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Greece", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "INTERTESTAMENTAL_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Intertestamental Period",
+    "aliases": ["Silent Years", "Four Hundred Silent Years", "Second Temple Era (late)"],
+    "quick_glance": "The approximately 400 years between the close of the OT prophetic canon (Malachi) and the birth of John the Baptist, during which Judaism developed synagogue worship, the Pharisaic movement, and messianic expectations.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 432–6 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Malachi", "chapter": 4, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "dictionary"},
+      {"book": "Luke", "chapter": 1, "verse_start": 11, "verse_end": 17, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HELLENISTIC_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "HASMONEAN_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "SECOND_TEMPLE_PERIOD", "relationship_type": "related_to", "relationship_label": "part of", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Apocrypha", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "HASMONEAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Hasmonean Period",
+    "aliases": ["Maccabean Period", "Era of Jewish Independence"],
+    "quick_glance": "The era of Jewish independence under the Maccabean family, beginning with the revolt against Antiochus IV Epiphanes (Hanukkah) and lasting until Roman conquest under Pompey in 63 BC.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. 167–63 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Daniel", "chapter": 11, "verse_start": 32, "verse_end": 35, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HELLENISTIC_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "ROMAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "INTERTESTAMENTAL_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Maccabees", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "ROMAN_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Roman Period",
+    "aliases": ["Era of Roman Rule", "Roman Occupation"],
+    "quick_glance": "The era of Roman rule over Judea, from Pompey's conquest through Herod the Great, the ministry of Jesus, the Jewish War (AD 66–73), the destruction of the Second Temple (AD 70), and the Bar Kokhba revolt (AD 132–135).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "63 BC – AD 135",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Luke", "chapter": 2, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "dictionary"},
+      {"book": "Matthew", "chapter": 22, "verse_start": 17, "verse_end": 21, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "HASMONEAN_PERIOD", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "SECOND_TEMPLE_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "EARLY_CHURCH_PERIOD", "relationship_type": "related_to", "relationship_label": "contemporary with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Rome", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "SECOND_TEMPLE_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Second Temple Period",
+    "aliases": ["Era of the Second Temple", "Post-Exilic Period", "Intertestamental Period", "Between the Testaments"],
+    "quick_glance": "The era spanning from the completion of Zerubbabel's temple after the return from exile to its destruction by Rome under Titus, encompassing the full background of the New Testament world.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בֵּית הַמִּקְדָּשׁ הַשֵּׁנִי",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "516 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Ezra", "chapter": 6, "verse_start": 15, "verse_end": 16, "confidence": "high", "source": "dictionary"},
+      {"book": "Luke", "chapter": 21, "verse_start": 5, "verse_end": 6, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PERSIAN_PERIOD", "relationship_type": "related_to", "relationship_label": "begins during", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "ROMAN_PERIOD", "relationship_type": "related_to", "relationship_label": "ends during", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Temple", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "EARLY_MINISTRY_JESUS",
+    "entity_type": "time_period",
+    "canonical_name": "Early Ministry of Jesus",
+    "aliases": ["Galilean Ministry", "Early Public Ministry"],
+    "quick_glance": "The opening phase of Jesus' public ministry following his baptism by John, including his temptation, call of the disciples, and extensive teaching and healing ministry in Galilee.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 26–29",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 4, "verse_start": 12, "verse_end": 17, "confidence": "high", "source": "dictionary"},
+      {"book": "John", "chapter": 1, "verse_start": 19, "verse_end": 34, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "ROMAN_PERIOD", "relationship_type": "during_period", "relationship_label": "occurs during", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "PASSION_WEEK", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "BSB", "source_ref": "Matthew 4:12–25", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "PASSION_WEEK",
+    "entity_type": "time_period",
+    "canonical_name": "Passion Week",
+    "aliases": ["Holy Week", "The Last Week", "Passion of Christ"],
+    "quick_glance": "The final week of Jesus' earthly ministry, from the Triumphal Entry into Jerusalem through his arrest, trial, crucifixion, and resurrection.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 30, Nisan 10–17",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Matthew", "chapter": 21, "verse_start": 1, "verse_end": 11, "confidence": "high", "source": "dictionary"},
+      {"book": "Luke", "chapter": 24, "verse_start": 1, "verse_end": 12, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EARLY_MINISTRY_JESUS", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "EARLY_CHURCH_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "biblical_text"}
+    ],
+    "citations": [
+      {"source_name": "BSB", "source_ref": "Matthew 21–28", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "EARLY_CHURCH_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Early Church Period",
+    "aliases": ["Apostolic Period", "Age of the Early Church"],
+    "quick_glance": "The era from Pentecost to the end of the apostolic age, during which the gospel spread from Jerusalem throughout the Roman Empire and the NT documents were written.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 30–100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 2, "verse_start": 1, "verse_end": 47, "confidence": "high", "source": "dictionary"},
+      {"book": "Revelation", "chapter": 22, "verse_start": 20, "verse_end": 21, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "PASSION_WEEK", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "biblical_text"},
+      {"to_entity_id": "PAULINE_MISSION_PERIOD", "relationship_type": "related_to", "relationship_label": "includes", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "APOSTOLIC_AGE", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Church", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "PAULINE_MISSION_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Pauline Mission Period",
+    "aliases": ["Paul's Missionary Journeys", "The Pauline Era"],
+    "quick_glance": "The era of Paul's three missionary journeys and Roman imprisonment, during which he founded churches across Asia Minor and Greece and wrote his epistles.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 46–67",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 13, "verse_start": 1, "verse_end": 3, "confidence": "high", "source": "dictionary"},
+      {"book": "2 Timothy", "chapter": 4, "verse_start": 6, "verse_end": 8, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EARLY_CHURCH_PERIOD", "relationship_type": "related_to", "relationship_label": "part of", "bidirectional": 0, "source": "dictionary"},
+      {"to_entity_id": "APOSTOLIC_AGE", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Smith's Bible Dictionary", "source_ref": "Entry: Paul", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "APOSTOLIC_AGE",
+    "entity_type": "time_period",
+    "canonical_name": "Apostolic Age",
+    "aliases": ["The Apostolic Era", "Age of the Apostles"],
+    "quick_glance": "The foundational era of the Christian church under the direct leadership of the original apostles, during which the canon of the New Testament was completed.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 30–100",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {"book": "Acts", "chapter": 1, "verse_start": 8, "verse_end": 8, "confidence": "high", "source": "dictionary"},
+      {"book": "Jude", "chapter": 1, "verse_start": 3, "verse_end": 3, "confidence": "high", "source": "dictionary"}
+    ],
+    "relationships": [
+      {"to_entity_id": "EARLY_CHURCH_PERIOD", "relationship_type": "related_to", "relationship_label": "overlaps with", "bidirectional": 1, "source": "dictionary"},
+      {"to_entity_id": "POST_APOSTOLIC_PERIOD", "relationship_type": "preceded_by", "relationship_label": "followed by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Apostle", "content_field": "quick_glance"}
+    ]
+  },
+  {
+    "id": "POST_APOSTOLIC_PERIOD",
+    "entity_type": "time_period",
+    "canonical_name": "Post-Apostolic Period",
+    "aliases": ["Sub-Apostolic Age", "Patristic Period", "Age of the Church Fathers"],
+    "quick_glance": "The era following the death of the last apostles through the Council of Nicaea, during which the church father writings, early creeds, and canon formation shaped Christian doctrine.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "c. AD 100–325",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [],
+    "relationships": [
+      {"to_entity_id": "APOSTOLIC_AGE", "relationship_type": "preceded_by", "relationship_label": "preceded by", "bidirectional": 0, "source": "dictionary"}
+    ],
+    "citations": [
+      {"source_name": "Easton's Bible Dictionary", "source_ref": "Entry: Fathers of the Church", "content_field": "quick_glance"}
+    ]
+  }
+]

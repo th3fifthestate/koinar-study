@@ -1,0 +1,5450 @@
+[
+  {
+    "id": "PASSOVER",
+    "entity_type": "custom",
+    "canonical_name": "Passover",
+    "aliases": [
+      "Pesach",
+      "Feast of Passover"
+    ],
+    "quick_glance": "An annual Jewish festival observed on the 14th of Nisan commemorating Israel's deliverance from Egypt, when the Angel of Death passed over homes marked with the blood of a lamb.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פֶּסַח",
+    "greek_name": "Πάσχα",
+    "disambiguation_note": "Distinct from the Feast of Unleavened Bread, though the two were often observed together as a single eight-day observance.",
+    "date_range": "c. 1446 BC onwards",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 12,
+        "verse_start": 1,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 5,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "FEAST_OF_UNLEAVENED_BREAD",
+        "relationship_type": "associated_with",
+        "relationship_label": "followed by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Passover",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_UNLEAVENED_BREAD",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Unleavened Bread",
+    "aliases": [
+      "Chag HaMatzot"
+    ],
+    "quick_glance": "A seven-day festival immediately following Passover (Nisan 15–21) during which no leavened bread was eaten, commemorating the haste of Israel's departure from Egypt.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חַג הַמַּצּוֹת",
+    "greek_name": "ἑορτὴ τῶν ἀζύμων",
+    "disambiguation_note": null,
+    "date_range": "Instituted at the Exodus, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 12,
+        "verse_start": 15,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 6,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 12,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PASSOVER",
+        "relationship_type": "associated_with",
+        "relationship_label": "preceded by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Unleavened Bread, Feast of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_FIRSTFRUITS",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Firstfruits",
+    "aliases": [
+      "Bikkurim"
+    ],
+    "quick_glance": "An offering of the first sheaf of the barley harvest presented to God on the day after the Sabbath during Passover week, marking the beginning of the harvest season.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בִּכּוּרִים",
+    "greek_name": "ἀπαρχή",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 9,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 15,
+        "verse_start": 20,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: First-fruits",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_WEEKS",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Weeks",
+    "aliases": [
+      "Shavuot",
+      "Pentecost",
+      "Festival of Harvest"
+    ],
+    "quick_glance": "A harvest festival celebrated fifty days after the Feast of Firstfruits, later associated with the giving of the Torah at Sinai; in the NT era, the day the Holy Spirit was poured out on the early church.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שָׁבוּעוֹת",
+    "greek_name": "Πεντηκοστή",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai; Pentecost event AD 30",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 15,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 16,
+        "verse_start": 9,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Pentecost",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_TRUMPETS",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Trumpets",
+    "aliases": [
+      "Rosh Hashanah",
+      "Day of Blowing"
+    ],
+    "quick_glance": "A solemn assembly on the first day of Tishri (the seventh month) marked by the blowing of trumpets, calling Israel to rest and sacred gathering before the Day of Atonement.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רֹאשׁ הַשָּׁנָה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 23,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 29,
+        "verse_start": 1,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "DAY_OF_ATONEMENT",
+        "relationship_type": "associated_with",
+        "relationship_label": "precedes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "BLOWING_OF_SHOFAR",
+        "relationship_type": "associated_with",
+        "relationship_label": "marked by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Trumpets, Feast of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DAY_OF_ATONEMENT",
+    "entity_type": "custom",
+    "canonical_name": "Day of Atonement",
+    "aliases": [
+      "Yom Kippur",
+      "The Fast"
+    ],
+    "quick_glance": "The most solemn day in the Jewish calendar, observed on the 10th of Tishri with fasting and the high priest's annual entry into the Holy of Holies to make atonement for the sins of the whole nation.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יוֹם כִּפּוּר",
+    "greek_name": "ἡμέρα ἐξιλασμοῦ",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 16,
+        "verse_start": 1,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 26,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 7,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "SCAPEGOAT_RITUAL",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "HIGH_PRIEST_YOM_KIPPUR_RITUAL",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Atonement, Day of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_TABERNACLES",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Tabernacles",
+    "aliases": [
+      "Sukkot",
+      "Feast of Booths",
+      "Feast of Ingathering"
+    ],
+    "quick_glance": "A joyful seven-day festival in the seventh month (Tishri 15–21) during which Israelites lived in temporary shelters (sukkot) to remember their wilderness sojourn; the greatest of the three annual pilgrimage festivals.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סֻכּוֹת",
+    "greek_name": "σκηνοπηγία",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 33,
+        "verse_end": 43,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 16,
+        "verse_start": 13,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 7,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Zechariah",
+        "chapter": 14,
+        "verse_start": 16,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PILGRIMAGE_FEASTS",
+        "relationship_type": "member_of",
+        "relationship_label": "one of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "WATER_LIBATION",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Tabernacles, Feast of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_PURIM",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Purim",
+    "aliases": [
+      "Purim",
+      "Feast of Lots"
+    ],
+    "quick_glance": "An annual Jewish festival on the 14th–15th of Adar celebrating the deliverance of the Jews from Haman's plot in Persia, as recorded in the Book of Esther.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פּוּרִים",
+    "greek_name": "φρούρια",
+    "disambiguation_note": null,
+    "date_range": "c. 479 BC onwards",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Esther",
+        "chapter": 9,
+        "verse_start": 20,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Purim",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FEAST_OF_DEDICATION",
+    "entity_type": "custom",
+    "canonical_name": "Feast of Dedication",
+    "aliases": [
+      "Hanukkah",
+      "Festival of Lights",
+      "Feast of the Maccabees"
+    ],
+    "quick_glance": "An eight-day festival beginning on the 25th of Kislev celebrating the rededication of the Jerusalem Temple by Judas Maccabaeus in 164 BC after its desecration by Antiochus IV Epiphanes.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חֲנֻכָּה",
+    "greek_name": "τὰ ἐγκαίνια",
+    "disambiguation_note": null,
+    "date_range": "164 BC onwards",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 10,
+        "verse_start": 22,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Dedication, Feast of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "NEW_MOON_FESTIVAL",
+    "entity_type": "custom",
+    "canonical_name": "New Moon Festival",
+    "aliases": [
+      "Rosh Chodesh",
+      "New Moon Celebration"
+    ],
+    "quick_glance": "A monthly observance at the beginning of each lunar month marked by special sacrifices, the blowing of trumpets, rest from labor, and communal gatherings.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רֹאשׁ חֹדֶשׁ",
+    "greek_name": "νουμηνία",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 28,
+        "verse_start": 11,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Samuel",
+        "chapter": 20,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 2,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: New Moon",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SABBATH",
+    "entity_type": "custom",
+    "canonical_name": "Sabbath",
+    "aliases": [
+      "Day of Rest",
+      "Shabbat",
+      "Lord's Day (for Sunday in NT context)"
+    ],
+    "quick_glance": "The seventh day of the week (Friday sundown to Saturday nightfall), set apart by God for rest and worship, commemorating both creation and the Exodus from Egypt.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שַׁבָּת",
+    "greek_name": "σάββατον",
+    "disambiguation_note": "The Jewish Sabbath falls on the seventh day (Saturday). The early Christian 'Lord's Day' was Sunday, the day of resurrection.",
+    "date_range": "Instituted at creation; codified at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 20,
+        "verse_start": 8,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 2,
+        "verse_start": 27,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sabbath",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PILGRIMAGE_FEASTS",
+    "entity_type": "custom",
+    "canonical_name": "Pilgrimage Feasts",
+    "aliases": [
+      "Three Pilgrim Festivals",
+      "Shalosh Regalim",
+      "Three Annual Feasts"
+    ],
+    "quick_glance": "Three annual festivals (Passover, Feast of Weeks, Feast of Tabernacles) at which every adult male Israelite was required to appear before the Lord at the central sanctuary in Jerusalem.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שָׁלֹשׁ רְגָלִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 23,
+        "verse_start": 14,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 16,
+        "verse_start": 16,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 41,
+        "verse_end": 42,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PASSOVER",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "FEAST_OF_WEEKS",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "FEAST_OF_TABERNACLES",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Feasts",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SABBATICAL_YEAR",
+    "entity_type": "custom",
+    "canonical_name": "Sabbatical Year",
+    "aliases": [
+      "Shemitah",
+      "Year of Release",
+      "Seventh Year"
+    ],
+    "quick_glance": "Every seventh year in Israel, the land was to lie fallow without cultivation, outstanding debts among Israelites were to be cancelled, and Hebrew slaves were to be freed.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁמִטָּה",
+    "greek_name": null,
+    "disambiguation_note": "Distinct from the Jubilee Year, which occurred every 49th/50th year.",
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 25,
+        "verse_start": 1,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 15,
+        "verse_start": 1,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Nehemiah",
+        "chapter": 10,
+        "verse_start": 31,
+        "verse_end": 31,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "JUBILEE_YEAR",
+        "relationship_type": "associated_with",
+        "relationship_label": "leads to",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sabbatical Year",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JUBILEE_YEAR",
+    "entity_type": "custom",
+    "canonical_name": "Year of Jubilee",
+    "aliases": [
+      "Jubilee",
+      "Year of Liberty"
+    ],
+    "quick_glance": "Observed every fiftieth year in Israel, the Jubilee required the release of all Israelite slaves, the return of all ancestral land to its original family, and rest for the land.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יוֹבֵל",
+    "greek_name": "ἀφέσεως",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 25,
+        "verse_start": 8,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 25,
+        "verse_start": 54,
+        "verse_end": 55,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 61,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Jubilee, Year of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BURNT_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Burnt Offering",
+    "aliases": [
+      "Whole Burnt Offering",
+      "Holocaust"
+    ],
+    "quick_glance": "A sacrifice in which the entire animal (bull, sheep, goat, or bird) was consumed by fire on the altar, symbolizing complete dedication and atonement before God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֹלָה",
+    "greek_name": "ὁλοκαύτωμα",
+    "disambiguation_note": null,
+    "date_range": "Patriarchal era through Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 22,
+        "verse_start": 2,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 12,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "medium",
+        "source": "dictionary"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Burnt Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GRAIN_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Grain Offering",
+    "aliases": [
+      "Meal Offering",
+      "Cereal Offering",
+      "Meat Offering"
+    ],
+    "quick_glance": "An offering of fine flour, oil, and frankincense—sometimes baked or fried—presented alongside animal sacrifices as an expression of devotion and acknowledgment of God's provision.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִנְחָה",
+    "greek_name": "θυσία",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Meat Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PEACE_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Peace Offering",
+    "aliases": [
+      "Fellowship Offering",
+      "Thank Offering",
+      "Shelem"
+    ],
+    "quick_glance": "A voluntary sacrifice in which the fat was burned on the altar, the priests received a portion, and the offerer and his household shared in a communal meal, expressing fellowship and gratitude to God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֶׁלֶם",
+    "greek_name": "θυσία σωτηρίου",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 3,
+        "verse_start": 1,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 7,
+        "verse_start": 11,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Peace Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SIN_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Sin Offering",
+    "aliases": [
+      "Purification Offering"
+    ],
+    "quick_glance": "A required sacrifice for unintentional sins and ritual impurities, varying in cost according to the offerer's status; it purified the individual and the sanctuary from defilement.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חַטָּאת",
+    "greek_name": "περὶ ἁμαρτίας",
+    "disambiguation_note": "Distinct from the trespass offering, though the two are sometimes confused; the sin offering addressed unintentional sin and ritual impurity.",
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 4,
+        "verse_start": 1,
+        "verse_end": 35,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 10,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sin Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TRESPASS_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Trespass Offering",
+    "aliases": [
+      "Guilt Offering",
+      "Asham"
+    ],
+    "quick_glance": "A sacrifice required for deliberate or inadvertent violations involving sacred things or wrongs against another person, often accompanied by restitution of the principal plus one fifth.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אָשָׁם",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 5,
+        "verse_start": 1,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 53,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "medium",
+        "source": "dictionary"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Trespass Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "WAVE_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Wave Offering",
+    "aliases": [
+      "Heave Offering",
+      "Terumah"
+    ],
+    "quick_glance": "A ritual in which a portion of a sacrifice (breast, thigh, first sheaf) was elevated and moved before the Lord in a symbolic gesture of presentation, then given to the priests.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּנוּפָה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 7,
+        "verse_start": 30,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 15,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Wave Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TITHE",
+    "entity_type": "custom",
+    "canonical_name": "Tithe",
+    "aliases": [
+      "Tenth",
+      "Ma'aser"
+    ],
+    "quick_glance": "The practice of giving one tenth of one's agricultural produce or income, commanded in the Mosaic Law to support the Levites, the Temple, and the poor.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַעֲשֵׂר",
+    "greek_name": "δεκάτη",
+    "disambiguation_note": null,
+    "date_range": "Patriarchal era (Genesis 14) through the Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 27,
+        "verse_start": 30,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 18,
+        "verse_start": 21,
+        "verse_end": 24,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Malachi",
+        "chapter": 3,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Tithe",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TEMPLE_TAX",
+    "entity_type": "custom",
+    "canonical_name": "Temple Tax",
+    "aliases": [
+      "Half-Shekel Offering",
+      "Atonement Money"
+    ],
+    "quick_glance": "An annual contribution of a half-shekel paid by every adult male Israelite for the maintenance of the Tabernacle and later the Temple; in the NT, Jesus paid this tax while asserting his freedom from it.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַחֲצִית הַשֶּׁקֶל",
+    "greek_name": "δίδραχμον",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 30,
+        "verse_start": 13,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 17,
+        "verse_start": 24,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "MONEY_CHANGING_AT_TEMPLE",
+        "relationship_type": "associated_with",
+        "relationship_label": "required",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Temple (Herod's), Tax",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DEDICATION_OF_FIRSTBORN",
+    "entity_type": "custom",
+    "canonical_name": "Dedication of the Firstborn",
+    "aliases": [
+      "Pidyon HaBen",
+      "Redemption of the Firstborn"
+    ],
+    "quick_glance": "The requirement that every firstborn male—human and animal—be consecrated to the Lord in memory of the Exodus, with firstborn sons redeemed by a payment of five shekels to the priest.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פִּדְיוֹן הַבֵּן",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at the Exodus, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 13,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 18,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 22,
+        "verse_end": 24,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Firstborn",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CIRCUMCISION",
+    "entity_type": "custom",
+    "canonical_name": "Circumcision",
+    "aliases": [
+      "Brit Milah",
+      "Covenant of Circumcision"
+    ],
+    "quick_glance": "The surgical removal of the foreskin performed on male Israelites on the eighth day of life, instituted by God as the physical sign of the covenant with Abraham and his descendants.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִילָה",
+    "greek_name": "περιτομή",
+    "disambiguation_note": "In NT theology, Paul distinguishes physical circumcision from 'circumcision of the heart,' emphasizing the spiritual reality over the outward sign.",
+    "date_range": "Instituted c. 2091 BC (Genesis 17)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 17,
+        "verse_start": 10,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 12,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 21,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 5,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Circumcision",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "NAZIRITE_VOW",
+    "entity_type": "custom",
+    "canonical_name": "Nazirite Vow",
+    "aliases": [
+      "Nazarite Vow",
+      "Vow of Separation"
+    ],
+    "quick_glance": "A voluntary vow of consecration to God requiring abstinence from wine and grapes, leaving the hair uncut, and avoiding contact with the dead; at the vow's completion, the Nazirite's hair was shaved and offered with sacrifices.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נָזִיר",
+    "greek_name": "ναζιραίος",
+    "disambiguation_note": "The Nazirite vow is distinct from 'Nazarene,' which denotes someone from Nazareth.",
+    "date_range": "Instituted at Sinai; attested through the NT period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 6,
+        "verse_start": 1,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Judges",
+        "chapter": 13,
+        "verse_start": 5,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 21,
+        "verse_start": 23,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Nazarite",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RITUAL_PURIFICATION",
+    "entity_type": "custom",
+    "canonical_name": "Ritual Purification",
+    "aliases": [
+      "Purification Laws",
+      "Ceremonial Cleansing",
+      "Tahara"
+    ],
+    "quick_glance": "The system of laws governing ritual cleanliness in ancient Israel, requiring washing, waiting periods, and sacrifices after contact with corpses, skin diseases, bodily discharges, or other sources of impurity.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "טָהֳרָה",
+    "greek_name": "καθαρισμός",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through the Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 11,
+        "verse_start": 1,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 19,
+        "verse_start": 1,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "MIKVEH",
+        "relationship_type": "includes",
+        "relationship_label": "performed through",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Purification",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MIKVEH",
+    "entity_type": "custom",
+    "canonical_name": "Mikveh",
+    "aliases": [
+      "Ritual Bath",
+      "Purification Pool"
+    ],
+    "quick_glance": "A pool of natural water used for ritual immersion to restore a state of ceremonial purity after contact with sources of defilement; the practice provided the pattern for Jewish proselyte baptism and early Christian baptism.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִקְוֶה",
+    "greek_name": "λουτρόν",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through the present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 15,
+        "verse_start": 11,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 19,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "RITUAL_PURIFICATION",
+        "relationship_type": "associated_with",
+        "relationship_label": "used in",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Purification",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DIETARY_LAWS",
+    "entity_type": "custom",
+    "canonical_name": "Dietary Laws",
+    "aliases": [
+      "Kashrut",
+      "Kosher Laws",
+      "Clean and Unclean Foods"
+    ],
+    "quick_glance": "The Mosaic regulations specifying which animals were clean (permitted for consumption) and unclean (forbidden), including rules on land animals, fish, birds, and insects.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כַּשְׁרוּת",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 11,
+        "verse_start": 1,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 14,
+        "verse_start": 3,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 9,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Clean",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PHYLACTERIES",
+    "entity_type": "custom",
+    "canonical_name": "Phylacteries",
+    "aliases": [
+      "Tefillin",
+      "Frontlets"
+    ],
+    "quick_glance": "Small leather boxes containing parchments inscribed with Deuteronomy 6:4–9 and 11:13–21, bound by leather straps to the forehead and left arm during weekday morning prayers in fulfillment of the command to bind God's words as signs.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּפִלִּין",
+    "greek_name": "φυλακτήρια",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through the present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 6,
+        "verse_start": 8,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 11,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Phylacteries",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MEZUZAH",
+    "entity_type": "custom",
+    "canonical_name": "Mezuzah",
+    "aliases": [
+      "Doorpost Scripture",
+      "Mezuzot"
+    ],
+    "quick_glance": "A small parchment inscribed with Deuteronomy 6:4–9 and 11:13–21, placed in a case and affixed to the right doorpost of Jewish homes in obedience to the command to write God's words on the doorposts of the house.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מְזוּזָה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through the present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 6,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 11,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Mezuzah",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PRAYER_SHAWL",
+    "entity_type": "custom",
+    "canonical_name": "Prayer Shawl",
+    "aliases": [
+      "Tallit",
+      "Tallith",
+      "Fringed Garment"
+    ],
+    "quick_glance": "A fringed garment worn during prayer, fulfilling the command to put tassels (tzitzit) on the corners of garments as a reminder to observe all of God's commandments.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "טַלִּית",
+    "greek_name": "κράσπεδον",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through the present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 15,
+        "verse_start": 38,
+        "verse_end": 40,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 22,
+        "verse_start": 12,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 9,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Fringes",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "THREE_DAILY_PRAYERS",
+    "entity_type": "custom",
+    "canonical_name": "Three Daily Prayers",
+    "aliases": [
+      "Shacharit",
+      "Mincha",
+      "Maariv",
+      "Fixed Hours of Prayer"
+    ],
+    "quick_glance": "The practice of praying three times daily—morning, afternoon, and evening—observed in Second Temple Judaism and continued by the early church; the hours of prayer (third, sixth, ninth) are referenced throughout the NT.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּפִלּוֹת",
+    "greek_name": "ὥρα προσευχῆς",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period; attested in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 55,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Daniel",
+        "chapter": 6,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 3,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 3,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Prayer",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SYNAGOGUE_SERVICE",
+    "entity_type": "custom",
+    "canonical_name": "Synagogue Service",
+    "aliases": [
+      "Synagogue Worship",
+      "Shabbat Service"
+    ],
+    "quick_glance": "The weekly gathering in the local synagogue for reading from the Torah and Prophets, prayer, and instruction, which developed as the primary institution of Jewish communal worship especially after the Babylonian exile.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בֵּית הַכְּנֶסֶת",
+    "greek_name": "συναγωγή",
+    "disambiguation_note": null,
+    "date_range": "c. 6th century BC onwards",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 4,
+        "verse_start": 16,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 13,
+        "verse_start": 14,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 17,
+        "verse_start": 2,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Synagogue",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PRIESTLY_SERVICE",
+    "entity_type": "custom",
+    "canonical_name": "Priestly Service",
+    "aliases": [
+      "Temple Service",
+      "Priestly Courses",
+      "Priestly Duties"
+    ],
+    "quick_glance": "The rotating system of Temple service by which the priests of Israel were divided into twenty-four courses, each serving for one week twice a year, offering sacrifices, burning incense, and maintaining the sanctuary.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲבוֹדַת הַכֹּהֲנִים",
+    "greek_name": "ἱερατεία",
+    "disambiguation_note": null,
+    "date_range": "c. 10th century BC through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Chronicles",
+        "chapter": 24,
+        "verse_start": 1,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 1,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Priests",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ANOINTING_WITH_OIL",
+    "entity_type": "custom",
+    "canonical_name": "Anointing with Oil",
+    "aliases": [
+      "Anointing",
+      "Sacred Anointing"
+    ],
+    "quick_glance": "The practice of pouring or rubbing olive oil on a person or object to consecrate it for a holy purpose, used for the installation of priests, kings, and prophets, and in the NT for healing prayer.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִשְׁחָה",
+    "greek_name": "χρίσμα",
+    "disambiguation_note": null,
+    "date_range": "Patriarchal era through NT period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 29,
+        "verse_start": 7,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Samuel",
+        "chapter": 16,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "James",
+        "chapter": 5,
+        "verse_start": 14,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Anointing",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LAYING_ON_OF_HANDS",
+    "entity_type": "custom",
+    "canonical_name": "Laying on of Hands",
+    "aliases": [
+      "Semichah",
+      "Ordination by Laying on of Hands"
+    ],
+    "quick_glance": "A symbolic gesture of identification, blessing, or ordination in which hands are placed on a person or animal, used throughout Scripture for conveying blessing, setting apart leaders, and commissioning for ministry.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סְמִיכַת יָדַיִם",
+    "greek_name": "ἐπίθεσις τῶν χειρῶν",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through NT period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 1,
+        "verse_start": 4,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 27,
+        "verse_start": 18,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 6,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Timothy",
+        "chapter": 4,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Laying on of Hands",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BLOWING_OF_SHOFAR",
+    "entity_type": "custom",
+    "canonical_name": "Blowing of the Shofar",
+    "aliases": [
+      "Shofar",
+      "Ram's Horn Trumpet",
+      "Trumpet Blast"
+    ],
+    "quick_glance": "The sounding of a ram's horn used to call assemblies, signal the new moon, initiate festivals, announce the Jubilee, and in warfare; in the NT, associated with the final resurrection and the return of Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שׁוֹפָר",
+    "greek_name": "σάλπιγξ",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through NT period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 25,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Joshua",
+        "chapter": 6,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Thessalonians",
+        "chapter": 4,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Trumpet",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_FASTING",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Fasting",
+    "aliases": [
+      "Fast",
+      "Ta'anit",
+      "Public Fast"
+    ],
+    "quick_glance": "The voluntary or communal abstinence from food and sometimes water as an act of mourning, repentance, or petition before God; the only fast mandated in the Mosaic Law is on the Day of Atonement, though additional fasts were established after the exile.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תַּעֲנִית",
+    "greek_name": "νηστεία",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 27,
+        "verse_end": 29,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 6,
+        "verse_start": 16,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 18,
+        "verse_start": 12,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 27,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Fasting",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HIGH_PRIEST_YOM_KIPPUR_RITUAL",
+    "entity_type": "custom",
+    "canonical_name": "High Priest's Yom Kippur Ritual",
+    "aliases": [
+      "Day of Atonement Ritual",
+      "Annual Atonement Ceremony"
+    ],
+    "quick_glance": "The elaborate annual ritual performed solely by the high priest on the Day of Atonement, including bathing, donning plain linen garments, offering a bull for his own sins, and entering the Holy of Holies to sprinkle blood on the mercy seat.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲבוֹדַת יוֹם הַכִּפּוּרִים",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 16,
+        "verse_start": 3,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 7,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "DAY_OF_ATONEMENT",
+        "relationship_type": "associated_with",
+        "relationship_label": "performed on",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "SCAPEGOAT_RITUAL",
+        "relationship_type": "associated_with",
+        "relationship_label": "accompanied by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Atonement, Day of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SCAPEGOAT_RITUAL",
+    "entity_type": "custom",
+    "canonical_name": "Scapegoat Ritual",
+    "aliases": [
+      "Azazel Goat",
+      "The Scapegoat"
+    ],
+    "quick_glance": "On the Day of Atonement, the high priest laid hands on a live goat to confess Israel's sins over it, then it was led into the wilderness bearing the nation's iniquities, symbolically carrying them away from the community.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲזָאזֵל",
+    "greek_name": "ἀποπομπαῖος",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 16,
+        "verse_start": 20,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "DAY_OF_ATONEMENT",
+        "relationship_type": "associated_with",
+        "relationship_label": "performed on",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Scapegoat",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "INCENSE_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Incense Offering",
+    "aliases": [
+      "Burning of Incense",
+      "Altar of Incense"
+    ],
+    "quick_glance": "The daily burning of a specially compounded incense on the golden altar before the veil of the Holy of Holies, performed by priests each morning and evening as a fragrant offering symbolizing the prayers of the people rising to God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְטֹרֶת",
+    "greek_name": "θυμίαμα",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 30,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 1,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 8,
+        "verse_start": 3,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Incense",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BREAD_OF_PRESENCE",
+    "entity_type": "custom",
+    "canonical_name": "Bread of the Presence",
+    "aliases": [
+      "Showbread",
+      "Shewbread",
+      "Bread of the Face"
+    ],
+    "quick_glance": "Twelve loaves of unleavened bread arranged in two rows on the golden table in the Holy Place, replaced each Sabbath; the old loaves were eaten by the priests and the offering symbolized Israel's perpetual communion with God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לֶחֶם הַפָּנִים",
+    "greek_name": "ἄρτοι τῆς προθέσεως",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 24,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Samuel",
+        "chapter": 21,
+        "verse_start": 4,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 12,
+        "verse_start": 4,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Shewbread",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MENORAH_LIGHTING",
+    "entity_type": "custom",
+    "canonical_name": "Menorah Lighting",
+    "aliases": [
+      "Lampstand Tending",
+      "Golden Lampstand"
+    ],
+    "quick_glance": "The daily priestly duty of trimming the wicks and replenishing the oil of the seven-branched golden lampstand (menorah) in the Holy Place of the Tabernacle and Temple, keeping it burning continually.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הַדְלָקַת הַמְּנוֹרָה",
+    "greek_name": "λυχνία",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 25,
+        "verse_start": 31,
+        "verse_end": 40,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 8,
+        "verse_start": 2,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Candlestick",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "WATER_LIBATION",
+    "entity_type": "custom",
+    "canonical_name": "Water Libation",
+    "aliases": [
+      "Simchat Beit HaShoevah",
+      "Water Pouring Ceremony"
+    ],
+    "quick_glance": "A distinctive ceremony performed during the Feast of Tabernacles in which a golden pitcher of water drawn from the Pool of Siloam was poured on the altar—a practice connected with Jesus' declaration that living water would flow from those who believe in him.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נִסּוּךְ הַמַּיִם",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Second Temple period (post-Mosaic development)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 7,
+        "verse_start": 37,
+        "verse_end": 39,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "FEAST_OF_TABERNACLES",
+        "relationship_type": "associated_with",
+        "relationship_label": "performed during",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Tabernacles, Feast of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BLOOD_SPRINKLING",
+    "entity_type": "custom",
+    "canonical_name": "Blood Sprinkling",
+    "aliases": [
+      "Sprinkling of Blood",
+      "Sacrificial Blood Rite"
+    ],
+    "quick_glance": "The ritual application of sacrificial animal blood to the altar, the mercy seat, the doorposts (at Passover), or worshippers, which constituted the atoning element of most sacrifices in the Mosaic system.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "זְרִיקַת הַדָּם",
+    "greek_name": "ῥαντισμός",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 4,
+        "verse_start": 6,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 19,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 1,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sprinkling",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_BETROTHAL",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Betrothal",
+    "aliases": [
+      "Erusin",
+      "Kiddushin",
+      "Espousal"
+    ],
+    "quick_glance": "A formal, legally binding agreement between a man and a woman (or their families) preceding full marriage, involving payment of the bride price; the betrothed couple were considered legally married though did not yet cohabit.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֵרוּסִין",
+    "greek_name": "μνηστεία",
+    "disambiguation_note": "Betrothal in the ancient Jewish world was legally binding and could only be dissolved by divorce or death—it was far more serious than modern engagement.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 22,
+        "verse_start": 23,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 1,
+        "verse_start": 18,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 1,
+        "verse_start": 27,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "JEWISH_WEDDING",
+        "relationship_type": "preceded_by",
+        "relationship_label": "leads to",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Betrothal",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_WEDDING",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Wedding",
+    "aliases": [
+      "Nissuin",
+      "Wedding Feast",
+      "Marriage Celebration"
+    ],
+    "quick_glance": "Following betrothal, the groom would come to the bride's house and lead her in a festive procession to his own home, where a multi-day celebration (typically seven days) with feasting and celebration was held.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נִשּׂוּאִין",
+    "greek_name": "γάμος",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 25,
+        "verse_start": 1,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Judges",
+        "chapter": 14,
+        "verse_start": 10,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "JEWISH_BETROTHAL",
+        "relationship_type": "preceded_by",
+        "relationship_label": "follows",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Marriage",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LEVIRATE_MARRIAGE",
+    "entity_type": "custom",
+    "canonical_name": "Levirate Marriage",
+    "aliases": [
+      "Yibbum",
+      "Brother's Wife Marriage"
+    ],
+    "quick_glance": "The Mosaic law requiring a man to marry his deceased brother's childless widow in order to preserve the dead brother's name and inheritance within the tribe; a man who refused underwent the ceremony of halitzah (removal of the sandal).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יִבּוּם",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through the Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 25,
+        "verse_start": 5,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ruth",
+        "chapter": 4,
+        "verse_start": 1,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 22,
+        "verse_start": 23,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Levirate Law",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_DIVORCE",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Divorce",
+    "aliases": [
+      "Get",
+      "Bill of Divorcement",
+      "Certificate of Divorce"
+    ],
+    "quick_glance": "The Mosaic law permitted a husband to divorce his wife by giving her a written certificate of divorce (get), a provision that became a source of controversy in the first century between the schools of Hillel and Shammai over the permissible grounds.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֵּט",
+    "greek_name": "ἀποστάσιον",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 24,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 19,
+        "verse_start": 3,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 10,
+        "verse_start": 2,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Divorce",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_BURIAL",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Burial Customs",
+    "aliases": [
+      "Burial Practices",
+      "Interment Customs"
+    ],
+    "quick_glance": "Jewish burial required prompt interment (ideally within the day of death), involving washing and wrapping the body in linen grave clothes with spices; the wealthy were buried in rock-hewn tombs sealed with a stone.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְבוּרָה",
+    "greek_name": "ταφή",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 11,
+        "verse_start": 38,
+        "verse_end": 44,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 19,
+        "verse_start": 38,
+        "verse_end": 42,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 5,
+        "verse_start": 6,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Burial",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MOURNING_PERIOD",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Mourning Practices",
+    "aliases": [
+      "Shiva",
+      "Period of Mourning",
+      "Avelut"
+    ],
+    "quick_glance": "Upon death, Jewish custom prescribed tearing garments, wearing sackcloth, sitting on the ground, fasting, and receiving visitors who brought comfort; the initial intense mourning lasted seven days (shiva), with additional periods of reduced mourning following.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֲבֵלוּת",
+    "greek_name": "πένθος",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 50,
+        "verse_start": 3,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Samuel",
+        "chapter": 13,
+        "verse_start": 31,
+        "verse_end": 31,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 11,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Mourning",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HOSPITALITY",
+    "entity_type": "custom",
+    "canonical_name": "Ancient Near Eastern Hospitality",
+    "aliases": [
+      "Hospitality Code",
+      "Guest-Friend Relationship",
+      "Xenia"
+    ],
+    "quick_glance": "A sacred obligation throughout the ancient Near East requiring the host to provide food, shelter, and protection for travelers and strangers; refusing hospitality was a grave social violation, while welcoming guests was a mark of honor.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הַכְנָסַת אוֹרְחִים",
+    "greek_name": "φιλοξενία",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 18,
+        "verse_start": 1,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 19,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 13,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 12,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Hospitality",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FOOT_WASHING",
+    "entity_type": "custom",
+    "canonical_name": "Foot Washing",
+    "aliases": [
+      "Washing of Feet"
+    ],
+    "quick_glance": "A common act of hospitality in the ancient Near East, performed either by the host's servants or by the host himself; in John 13, Jesus reversed the social hierarchy by washing his disciples' feet as an example of servant leadership.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רְחִיצַת רַגְלַיִם",
+    "greek_name": "νιπτήρ",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 18,
+        "verse_start": 4,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 7,
+        "verse_start": 44,
+        "verse_end": 44,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 13,
+        "verse_start": 1,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Timothy",
+        "chapter": 5,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Feet, Washing of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HAND_WASHING",
+    "entity_type": "custom",
+    "canonical_name": "Ritual Hand Washing",
+    "aliases": [
+      "Netilat Yadayim",
+      "Washing of Hands"
+    ],
+    "quick_glance": "A practice required by Mosaic Law in certain ritual contexts and expanded by Pharisaic oral tradition to require washing before eating bread; the Pharisees criticized Jesus' disciples for not following this tradition.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נְטִילַת יָדַיִם",
+    "greek_name": "νίπτω χεῖρας",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law; expanded in Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 15,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 27,
+        "verse_start": 24,
+        "verse_end": 24,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Washing",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RECLINING_AT_TABLE",
+    "entity_type": "custom",
+    "canonical_name": "Reclining at Table",
+    "aliases": [
+      "Dining Reclining",
+      "Triclinium",
+      "Reclining at Meals"
+    ],
+    "quick_glance": "By the first century AD, it was customary in the Greco-Roman world for diners at formal meals to recline on couches arranged around a low table, with the guest of honor placed at the host's right; this is the posture depicted at the Last Supper.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הֲסֵבָּה",
+    "greek_name": "ἀνάκειμαι",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Mark",
+        "chapter": 14,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 13,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Meals",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HEAD_COVERING",
+    "entity_type": "custom",
+    "canonical_name": "Head Covering",
+    "aliases": [
+      "Veiling",
+      "Women's Head Covering"
+    ],
+    "quick_glance": "In the Greco-Roman and Jewish cultures of the first century, women's head coverings were a mark of modesty, honor, and social respectability; Paul's discussion of head coverings in 1 Corinthians 11 reflects these cultural conventions.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "κατακαλύπτω",
+    "disambiguation_note": null,
+    "date_range": "NT era, first century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Corinthians",
+        "chapter": 11,
+        "verse_start": 2,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Veil",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GREETING_WITH_KISS",
+    "entity_type": "custom",
+    "canonical_name": "Greeting with a Kiss",
+    "aliases": [
+      "Holy Kiss",
+      "Kiss of Peace",
+      "Greeting Kiss"
+    ],
+    "quick_glance": "In the ancient Near East and Greco-Roman world, kissing on the cheek was a common greeting between family and friends of the same sex; Paul's instruction to greet one another with a 'holy kiss' adapted this social custom for Christian community.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἅγιον φίλημα",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 7,
+        "verse_start": 45,
+        "verse_end": 45,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 16,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 47,
+        "verse_end": 48,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Kiss",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ANOINTING_GUESTS",
+    "entity_type": "custom",
+    "canonical_name": "Anointing of Guests",
+    "aliases": [
+      "Anointing the Head",
+      "Guest Anointing"
+    ],
+    "quick_glance": "A mark of honor and hospitality extended to honored guests in the ancient Near East, in which the host applied oil to the guest's head; the failure to provide this courteous gesture is mentioned by Jesus at the house of Simon the Pharisee.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἐλαίῳ τὴν κεφαλήν",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 23,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 7,
+        "verse_start": 46,
+        "verse_end": 46,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 7,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Anointing",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "WEARING_SACKCLOTH",
+    "entity_type": "custom",
+    "canonical_name": "Wearing Sackcloth",
+    "aliases": [
+      "Sackcloth and Ashes",
+      "Sackcloth"
+    ],
+    "quick_glance": "A coarse, dark fabric worn directly against the skin as an outward sign of mourning, repentance, or petition; often accompanied by sprinkling ashes on the head and sitting on the ground.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שַׂק",
+    "greek_name": "σάκκος",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Esther",
+        "chapter": 4,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Jonah",
+        "chapter": 3,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 11,
+        "verse_start": 21,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sackcloth",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TEARING_OF_GARMENTS",
+    "entity_type": "custom",
+    "canonical_name": "Tearing of Garments",
+    "aliases": [
+      "Keriah",
+      "Rending of Clothes"
+    ],
+    "quick_glance": "An ancient Semitic expression of extreme grief, anger, or horror in which the outer garment was torn; performed at news of death, divine offense, or calamity, and still practiced in Jewish mourning (keriah) by cutting the garment.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְרִיעָה",
+    "greek_name": "ῥήγνυμι",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 37,
+        "verse_start": 29,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Job",
+        "chapter": 1,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 65,
+        "verse_end": 65,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Mourning",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PASSOVER_SEDER",
+    "entity_type": "custom",
+    "canonical_name": "Passover Seder",
+    "aliases": [
+      "Passover Meal",
+      "Last Supper (for Jesus' final Passover)"
+    ],
+    "quick_glance": "The ceremonial Passover meal at which the Exodus story was retold through specific foods, four cups of wine, and prayers; Jesus' Last Supper was a Passover meal at which he reinterpreted the bread and cup as symbols of the new covenant.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סֵדֶר פֶּסַח",
+    "greek_name": "δεῖπνον πάσχα",
+    "disambiguation_note": null,
+    "date_range": "Exodus onwards; formal seder structure developed in Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 12,
+        "verse_start": 24,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 26,
+        "verse_end": 30,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 14,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PASSOVER",
+        "relationship_type": "associated_with",
+        "relationship_label": "observed through",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Passover",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GLEANING_LAWS",
+    "entity_type": "custom",
+    "canonical_name": "Gleaning Laws",
+    "aliases": [
+      "Law of Gleanings",
+      "Leket"
+    ],
+    "quick_glance": "Mosaic laws forbidding Israelite farmers from harvesting the corners of their fields or returning to retrieve fallen grain, leaving these portions for the poor, the widow, the orphan, and the sojourner.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לֶקֶט",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 19,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 22,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ruth",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Gleaning",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "YEAR_OF_RELEASE",
+    "entity_type": "custom",
+    "canonical_name": "Year of Release",
+    "aliases": [
+      "Debt Cancellation",
+      "Shemitah Debts"
+    ],
+    "quick_glance": "Every seventh year, all outstanding debts between Israelites were to be cancelled and Hebrew slaves freed, ensuring that poverty did not become permanent within the covenant community.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁמִטַּת הַכְּסָפִים",
+    "greek_name": "ἄφεσις",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 15,
+        "verse_start": 1,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Nehemiah",
+        "chapter": 10,
+        "verse_start": 31,
+        "verse_end": 31,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sabbatical Year",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FIRSTBORN_RIGHTS",
+    "entity_type": "custom",
+    "canonical_name": "Firstborn Rights",
+    "aliases": [
+      "Birthright",
+      "Primogeniture",
+      "Bekhorah"
+    ],
+    "quick_glance": "The eldest son in an Israelite family held a privileged position including a double share of the inheritance and the right of family headship; this birthright could be transferred (as with Esau and Jacob) but was normally inviolable.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּכֹרָה",
+    "greek_name": "πρωτοτόκια",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 21,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 25,
+        "verse_start": 29,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 12,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Birthright",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "KINSMAN_REDEEMER",
+    "entity_type": "custom",
+    "canonical_name": "Kinsman-Redeemer",
+    "aliases": [
+      "Goel",
+      "Redeemer",
+      "Next of Kin"
+    ],
+    "quick_glance": "A close male relative who had the right and duty to redeem a kinsman's property, purchase a relative from slavery, avenge a murdered kinsman's blood, and marry a widowed relative; the institution underpins the Book of Ruth and provides a key type of Christ as redeemer.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֹּאֵל",
+    "greek_name": "λυτρωτής",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 25,
+        "verse_start": 25,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ruth",
+        "chapter": 3,
+        "verse_start": 9,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ruth",
+        "chapter": 4,
+        "verse_start": 1,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Goel",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "INHERITANCE_LAW",
+    "entity_type": "custom",
+    "canonical_name": "Israelite Inheritance Law",
+    "aliases": [
+      "Law of Inheritance",
+      "Tribal Land Laws"
+    ],
+    "quick_glance": "The Mosaic law governing the transfer of property at death, giving priority to sons, then daughters, then brothers; land grants were to remain within the tribe of original allocation, and the Year of Jubilee protected against permanent alienation of ancestral land.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נַחֲלָה",
+    "greek_name": "κληρονομία",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law, c. 1446 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 27,
+        "verse_start": 1,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 36,
+        "verse_start": 7,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 15,
+        "verse_start": 12,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Inheritance",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CITIES_OF_REFUGE",
+    "entity_type": "custom",
+    "canonical_name": "Cities of Refuge",
+    "aliases": [
+      "Refuge Cities",
+      "Arei Miklat"
+    ],
+    "quick_glance": "Six designated Levitical cities in Canaan where a person who had accidentally killed another could flee to receive protection from the blood avenger until standing trial before the congregation.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עָרֵי מִקְלָט",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai; established under Joshua, c. 1406 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 35,
+        "verse_start": 6,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 19,
+        "verse_start": 1,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Joshua",
+        "chapter": 20,
+        "verse_start": 1,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "BLOOD_AVENGER",
+        "relationship_type": "associated_with",
+        "relationship_label": "protects from",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Refuge, Cities of",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BLOOD_AVENGER",
+    "entity_type": "custom",
+    "canonical_name": "Blood Avenger",
+    "aliases": [
+      "Goel HaDam",
+      "Avenger of Blood",
+      "Next-of-kin Avenger"
+    ],
+    "quick_glance": "In ancient Israel, the nearest male relative of a murdered person had both the right and responsibility to execute the murderer; the Mosaic law regulated this custom by requiring proper trial and providing cities of refuge for manslayers.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֹּאֵל הַדָּם",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 35,
+        "verse_start": 12,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 19,
+        "verse_start": 6,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "CITIES_OF_REFUGE",
+        "relationship_type": "associated_with",
+        "relationship_label": "countered by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Avenger of Blood",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "STONING",
+    "entity_type": "custom",
+    "canonical_name": "Stoning",
+    "aliases": [
+      "Lapidation",
+      "Execution by Stoning"
+    ],
+    "quick_glance": "The prescribed method of capital punishment under Mosaic law for offenses including blasphemy, idolatry, and certain sexual crimes; required the testimony of two or more witnesses, with the witnesses casting the first stones.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סְקִילָה",
+    "greek_name": "λιθάζω",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through Roman period (restricted by Roman rule in Judea)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 24,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 8,
+        "verse_start": 3,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 7,
+        "verse_start": 54,
+        "verse_end": 60,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Stoning",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DEBT_SLAVERY",
+    "entity_type": "custom",
+    "canonical_name": "Debt Slavery",
+    "aliases": [
+      "Hebrew Slavery",
+      "Bond Service",
+      "Indentured Servitude"
+    ],
+    "quick_glance": "An Israelite who could not repay debts could sell himself into temporary servitude to a fellow Israelite, but the Mosaic law required release in the seventh year with provisions, distinguishing this from permanent chattel slavery.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֶבֶד עִבְרִי",
+    "greek_name": null,
+    "disambiguation_note": "Distinct from the permanent chattel slavery practiced by surrounding nations; the Mosaic law imposed significant protections.",
+    "date_range": "Mosaic Law through Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 21,
+        "verse_start": 1,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 15,
+        "verse_start": 12,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Nehemiah",
+        "chapter": 5,
+        "verse_start": 1,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Servant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BLOOD_COVENANT",
+    "entity_type": "custom",
+    "canonical_name": "Blood Covenant",
+    "aliases": [
+      "Covenant of Blood",
+      "Covenant Cutting",
+      "Berith"
+    ],
+    "quick_glance": "A solemn binding agreement ratified by the slaughter of animals, with the parties passing between the halves (or sharing blood), symbolizing that the same fate should befall any party who broke the covenant.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית דָּם",
+    "greek_name": "διαθήκη",
+    "disambiguation_note": null,
+    "date_range": "Patriarchal era through biblical period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 15,
+        "verse_start": 9,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Jeremiah",
+        "chapter": 34,
+        "verse_start": 18,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SALT_COVENANT",
+    "entity_type": "custom",
+    "canonical_name": "Covenant of Salt",
+    "aliases": [
+      "Salt Covenant",
+      "Perpetual Covenant"
+    ],
+    "quick_glance": "A covenant ratified by the sharing or inclusion of salt, symbolizing permanence and preservation since salt does not decay; used to describe the unconditional, everlasting nature of God's covenant grants to the priesthood and the Davidic dynasty.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית מֶלַח",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Biblical period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 18,
+        "verse_start": 19,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Chronicles",
+        "chapter": 13,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Salt",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CORBAN_VOW",
+    "entity_type": "custom",
+    "canonical_name": "Corban",
+    "aliases": [
+      "Dedicated Offering",
+      "Korban"
+    ],
+    "quick_glance": "An irrevocable vow by which a person declared that something was 'given to God' (korban), effectively exempting it from any other use; Jesus condemned its use as a means of avoiding the duty to care for parents.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קָרְבָּן",
+    "greek_name": "κορβᾶν",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 11,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 15,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Corban",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RABBI_DISCIPLE_RELATIONSHIP",
+    "entity_type": "custom",
+    "canonical_name": "Rabbi-Disciple Relationship",
+    "aliases": [
+      "Talmid-Rabbi",
+      "Teacher-Student Relationship"
+    ],
+    "quick_glance": "In first-century Judaism, a disciple (talmid) would attach himself to a rabbi ('my master'), follow him closely to learn his interpretation of Scripture (halakha), memorize his teachings, and ultimately replicate his way of life.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תַּלְמִיד",
+    "greek_name": "μαθητής",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period, especially 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 10,
+        "verse_start": 24,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 6,
+        "verse_start": 40,
+        "verse_end": 40,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 38,
+        "verse_end": 39,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Disciple",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SYNAGOGUE_READING",
+    "entity_type": "custom",
+    "canonical_name": "Synagogue Scripture Reading",
+    "aliases": [
+      "Torah Reading",
+      "Parashah",
+      "Haftarah"
+    ],
+    "quick_glance": "The public reading of the Torah (and Prophets) in the synagogue on the Sabbath, after which the reader or another qualified person would offer an interpretation (derashah); Jesus and Paul both participated in this practice.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְרִיאַת הַתּוֹרָה",
+    "greek_name": "ἀνάγνωσις",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 4,
+        "verse_start": 16,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 13,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 15,
+        "verse_start": 21,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Synagogue",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_EDUCATION",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Education",
+    "aliases": [
+      "Torah Education",
+      "Elementary School",
+      "Bet Sefer"
+    ],
+    "quick_glance": "From about age five, Jewish boys began formal education in the local synagogue's 'House of the Book' (bet sefer), learning to read Hebrew and memorizing large portions of Torah; advanced students continued to a 'House of Study' (bet midrash).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חִנּוּךְ",
+    "greek_name": "παιδεία",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 6,
+        "verse_start": 6,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 46,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 22,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Education",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PROSELYTE_CONVERSION",
+    "entity_type": "custom",
+    "canonical_name": "Proselyte Conversion",
+    "aliases": [
+      "Gerut",
+      "Conversion to Judaism",
+      "Proselytism"
+    ],
+    "quick_glance": "The formal process by which a Gentile converted to Judaism, typically involving circumcision (for men), immersion in a mikveh, and sacrifice at the Temple; proselytes were expected to observe the full Mosaic Law and were counted as Jews.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֵּר",
+    "greek_name": "προσήλυτος",
+    "disambiguation_note": "Distinct from 'God-fearers,' who attended the synagogue and observed some Jewish practices without full conversion.",
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 15,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 6,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Proselyte",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GOD_FEARER_STATUS",
+    "entity_type": "custom",
+    "canonical_name": "God-Fearers",
+    "aliases": [
+      "Sebomenoi",
+      "Phoboumenoi",
+      "Sympathizers"
+    ],
+    "quick_glance": "Gentiles who were attracted to Jewish monotheism and ethics, regularly attended the synagogue, and observed some Jewish practices (such as the Sabbath and dietary laws) without undergoing full conversion; they formed a significant segment of Paul's first audiences.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יִרְאֵי אֱלֹהִים",
+    "greek_name": "φοβούμενοι τὸν θεόν",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 13,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 16,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Proselyte",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_CRUCIFIXION",
+    "entity_type": "custom",
+    "canonical_name": "Roman Crucifixion",
+    "aliases": [
+      "Crucifixion",
+      "Cross Execution"
+    ],
+    "quick_glance": "The Roman method of capital punishment reserved for slaves, rebels, and the worst criminals, in which the condemned was nailed or bound to a wooden cross and left to die of asphyxiation and shock over hours or days; considered the most shameful possible death.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "σταύρωσις",
+    "disambiguation_note": null,
+    "date_range": "Roman period, c. 6th century BC – AD 337",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 27,
+        "verse_start": 32,
+        "verse_end": 56,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 19,
+        "verse_start": 16,
+        "verse_end": 30,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 3,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Cross",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_FLOGGING",
+    "entity_type": "custom",
+    "canonical_name": "Roman Flogging",
+    "aliases": [
+      "Flagellation",
+      "Scourging",
+      "Verberatio"
+    ],
+    "quick_glance": "A Roman punishment administered with a flagellum—leather thongs weighted with bone or metal—that lacerating the flesh severely; often administered before crucifixion and sometimes fatal in itself, as in the case of Jesus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "φραγελλόω",
+    "disambiguation_note": "Distinct from Jewish flogging (restricted to 39 stripes by Mishnaic law); Roman scourging had no legal upper limit.",
+    "date_range": "Roman period, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 27,
+        "verse_start": 26,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 19,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 11,
+        "verse_start": 24,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Scourge",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_CITIZENSHIP",
+    "entity_type": "custom",
+    "canonical_name": "Roman Citizenship",
+    "aliases": [
+      "Civis Romanus",
+      "Roman Civil Rights"
+    ],
+    "quick_glance": "A legal status conferring significant rights in the Roman Empire, including freedom from certain punishments, the right to a formal trial, and the right of appeal to Caesar; Paul's Roman citizenship protected him multiple times during his missionary journeys.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Ῥωμαῖος πολίτης",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 16,
+        "verse_start": 37,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 22,
+        "verse_start": 25,
+        "verse_end": 29,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 25,
+        "verse_start": 11,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Roman",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_CENSUS",
+    "entity_type": "custom",
+    "canonical_name": "Roman Census",
+    "aliases": [
+      "Census of Quirinius",
+      "Imperial Registration",
+      "Enrollment"
+    ],
+    "quick_glance": "Periodic registration of the population and property of the Roman Empire, conducted for tax purposes and military levies; the census under Augustus at the time of Jesus' birth required Joseph and Mary to travel to Bethlehem.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἀπογραφή",
+    "disambiguation_note": null,
+    "date_range": "Roman period, c. 6 BC – AD 14 (Augustus era)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Enrollment",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_TAXATION",
+    "entity_type": "custom",
+    "canonical_name": "Roman Taxation",
+    "aliases": [
+      "Imperial Taxes",
+      "Tributum",
+      "Poll Tax",
+      "Custom Duties"
+    ],
+    "quick_glance": "The Roman Empire collected taxes through direct levies (on property and persons) and indirect taxes (customs, tolls); tax collection in the provinces was often farmed out to local collectors (publicani), who profited by collecting excess—making tax collectors socially despised in Jewish society.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "φόρος",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century BC – AD 70 (for Judea)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 22,
+        "verse_start": 15,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 20,
+        "verse_start": 22,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 19,
+        "verse_start": 1,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Publicans",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_MILITARY_SERVICE",
+    "entity_type": "custom",
+    "canonical_name": "Roman Military Service",
+    "aliases": [
+      "Roman Legionary Life",
+      "Roman Army Customs"
+    ],
+    "quick_glance": "Roman soldiers served in legions of approximately 6,000 men, bound by an oath (sacramentum) to the emperor, subject to strict discipline, entitled to requisition civilian assistance (angareia), and rewarded with land grants upon honorable discharge.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "στρατεία",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century BC – 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 5,
+        "verse_start": 41,
+        "verse_end": 41,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 7,
+        "verse_start": 2,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Army, Roman",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_SLAVERY",
+    "entity_type": "custom",
+    "canonical_name": "Roman Slavery",
+    "aliases": [
+      "Greco-Roman Slavery",
+      "Roman Slave System"
+    ],
+    "quick_glance": "Chattel slavery was pervasive in the Roman Empire, with slaves constituting an estimated 15-25% of the population; slaves were the property of their masters with no legal rights, though social mobility through manumission (legal freedom) was possible.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "δοῦλος",
+    "disambiguation_note": "Distinct from the Mosaic institution of indentured servitude, which included significant legal protections and mandatory release.",
+    "date_range": "Roman period, 1st century BC – 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Corinthians",
+        "chapter": 7,
+        "verse_start": 21,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 6,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philemon",
+        "chapter": 1,
+        "verse_start": 10,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Slavery",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PATRON_CLIENT_RELATIONSHIP",
+    "entity_type": "custom",
+    "canonical_name": "Patron-Client Relationship",
+    "aliases": [
+      "Patronage System",
+      "Clientela"
+    ],
+    "quick_glance": "The foundational social institution of the Greco-Roman world, in which a powerful patron provided material benefits and legal protection to clients in exchange for loyalty, public honor, and political support; this framework shaped NT language about God's grace and beneficence.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "εὐεργέτης",
+    "disambiguation_note": null,
+    "date_range": "Greco-Roman period, 1st century BC – 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 16,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "medium",
+        "source": "dictionary"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 4,
+        "verse_start": 15,
+        "verse_end": 18,
+        "confidence": "medium",
+        "source": "dictionary"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Benefactor",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_LEGAL_APPEAL",
+    "entity_type": "custom",
+    "canonical_name": "Roman Legal Appeal",
+    "aliases": [
+      "Appellatio",
+      "Appeal to Caesar",
+      "Provocatio"
+    ],
+    "quick_glance": "A Roman citizen's right to appeal a capital sentence to the emperor (provocatio ad Caesarem), which Paul exercised before Festus in Acts 25, resulting in his voyage to Rome for trial.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἐπικαλέομαι Καίσαρα",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 25,
+        "verse_start": 11,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 26,
+        "verse_start": 32,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "ROMAN_CITIZENSHIP",
+        "relationship_type": "associated_with",
+        "relationship_label": "right of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Appeal",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MONEY_CHANGING_AT_TEMPLE",
+    "entity_type": "custom",
+    "canonical_name": "Money Changing at the Temple",
+    "aliases": [
+      "Temple Money Changers",
+      "Currency Exchange"
+    ],
+    "quick_glance": "Pilgrims visiting the Jerusalem Temple during feasts were required to pay the temple tax in Tyrian silver shekels (not Roman coins bearing the image of Caesar), creating a profitable exchange business that Jesus twice disrupted.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֻׁלְחָן",
+    "greek_name": "κολλυβιστής",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 21,
+        "verse_start": 12,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 2,
+        "verse_start": 14,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "TEMPLE_TAX",
+        "relationship_type": "associated_with",
+        "relationship_label": "facilitated",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Money-changers",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ROMAN_GAMES",
+    "entity_type": "custom",
+    "canonical_name": "Roman Games and Spectacles",
+    "aliases": [
+      "Gladiatorial Games",
+      "Ludi",
+      "Arena Sports"
+    ],
+    "quick_glance": "Public entertainment events in the Roman Empire including chariot races, gladiatorial combat, animal hunts (venationes), and theatrical performances, funded by patrons to gain popular favor; Paul used athletic metaphors drawn from Greek games (agōn) throughout his letters.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἀγών",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century BC – 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Corinthians",
+        "chapter": 9,
+        "verse_start": 24,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 12,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 4,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "medium",
+        "source": "dictionary"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Games",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MORNING_EVENING_SACRIFICE",
+    "entity_type": "custom",
+    "canonical_name": "Morning and Evening Sacrifice",
+    "aliases": [
+      "Tamid",
+      "Daily Burnt Offering",
+      "Perpetual Offering"
+    ],
+    "quick_glance": "Two daily burnt offerings of a year-old lamb, one at dawn and one at twilight, that formed the rhythmic heartbeat of Temple worship and structured the day around communal acts of atonement and dedication.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קָרְבַּן תָּמִיד",
+    "greek_name": "θυσία τοῦ ἑσπερινοῦ",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 29,
+        "verse_start": 38,
+        "verse_end": 42,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Numbers",
+        "chapter": 28,
+        "verse_start": 1,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Daniel",
+        "chapter": 9,
+        "verse_start": 21,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Sacrifices",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_CALENDAR",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Calendar",
+    "aliases": [
+      "Hebrew Calendar",
+      "Lunar-Solar Calendar"
+    ],
+    "quick_glance": "The ancient Hebrew calendar is a lunisolar system of twelve months (with periodic intercalation of a thirteenth month to align with the solar year), beginning with Nisan in the spring for religious purposes and Tishri in the autumn for civil purposes.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לוּחַ הַשָּׁנָה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Biblical period through present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 12,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 23,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Month",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "AGRICULTURAL_CALENDAR",
+    "entity_type": "custom",
+    "canonical_name": "Agricultural Calendar",
+    "aliases": [
+      "Farming Calendar",
+      "Harvest Calendar"
+    ],
+    "quick_glance": "The agricultural cycle of ancient Israel followed a predictable annual rhythm: plowing and planting in October–December, barley and wheat harvests in April–June, and summer fruits in July–September; the three pilgrim festivals were timed to coincide with these harvests.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Ruth",
+        "chapter": 2,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Amos",
+        "chapter": 8,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "James",
+        "chapter": 5,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Agriculture",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DAILY_SHEMA_RECITATION",
+    "entity_type": "custom",
+    "canonical_name": "Daily Shema Recitation",
+    "aliases": [
+      "Shema",
+      "Shema Yisrael"
+    ],
+    "quick_glance": "The twice-daily recitation of Deuteronomy 6:4–9 ('Hear, O Israel: the LORD our God, the LORD is one'), the foundational Jewish confession of faith, recited upon rising and before sleep; cited by Jesus as the greatest commandment.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁמַע יִשְׂרָאֵל",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 6,
+        "verse_start": 4,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 12,
+        "verse_start": 29,
+        "verse_end": 30,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Shema",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PILGRIMAGE_TO_JERUSALEM",
+    "entity_type": "custom",
+    "canonical_name": "Pilgrimage to Jerusalem",
+    "aliases": [
+      "Going up to Jerusalem",
+      "Aliyah la-Regel"
+    ],
+    "quick_glance": "The annual journey to Jerusalem for the three pilgrimage festivals (Passover, Feast of Weeks, Feast of Tabernacles), during which Jews from throughout Judea, Galilee, and the Diaspora gathered at the Temple in fulfillment of the Mosaic command.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲלִיָּה לָרֶגֶל",
+    "greek_name": "ἀναβαίνω εἰς Ἱερουσαλήμ",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 16,
+        "verse_start": 16,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 2,
+        "verse_start": 41,
+        "verse_end": 42,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 2,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PILGRIMAGE_FEASTS",
+        "relationship_type": "associated_with",
+        "relationship_label": "required for",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Feasts",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_VOWS",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Vows",
+    "aliases": [
+      "Neder",
+      "Vow to God",
+      "Oath"
+    ],
+    "quick_glance": "Voluntary pledges to God to do or refrain from something, or to dedicate a person, animal, or property; the Mosaic law required vows to be kept faithfully and provided procedures for redemption of dedicated things.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נֶדֶר",
+    "greek_name": "εὐχή",
+    "disambiguation_note": "Distinct from oaths (sworn by God's name), though the two are related; the corban vow was a specific abuse of the vow institution.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 30,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ecclesiastes",
+        "chapter": 5,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 18,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Vow",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DRINK_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Drink Offering",
+    "aliases": [
+      "Libation",
+      "Nesek"
+    ],
+    "quick_glance": "A libation of wine poured out at the base of the altar alongside burnt offerings and grain offerings, completing the standard sacrificial triad; Paul used the imagery of a drink offering being 'poured out' to describe his approaching martyrdom.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נֶסֶךְ",
+    "greek_name": "σπένδω",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 15,
+        "verse_start": 5,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 2,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Timothy",
+        "chapter": 4,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Drink Offering",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FIRSTFRUITS_OFFERING",
+    "entity_type": "custom",
+    "canonical_name": "Firstfruits Offering",
+    "aliases": [
+      "Bikkurim",
+      "First of the Harvest"
+    ],
+    "quick_glance": "The requirement that the first and finest portion of agricultural produce be brought to the sanctuary as an acknowledgment that all the land's produce belongs to God; presented in a basket before the priest with a recitation of Israel's redemptive history.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בִּכּוּרִים",
+    "greek_name": "ἀπαρχή",
+    "disambiguation_note": "Distinct from the Feast of Firstfruits (waving of the first barley sheaf); the individual firstfruits offering involved a basket of produce and a liturgical recitation.",
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 26,
+        "verse_start": 1,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 23,
+        "verse_start": 19,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Proverbs",
+        "chapter": 3,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: First-fruits",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TEMPLE_WORSHIP",
+    "entity_type": "custom",
+    "canonical_name": "Temple Worship",
+    "aliases": [
+      "Temple Service",
+      "Going up to the Temple"
+    ],
+    "quick_glance": "The full system of sacrificial worship centered on the Jerusalem Temple, including the twice-daily tamid sacrifice, the priestly courses, pilgrimage festivals, and individual offerings; the most visible and central expression of Israel's covenant relationship with God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֲבוֹדַת הַמִּקְדָּשׁ",
+    "greek_name": "λατρεία",
+    "disambiguation_note": null,
+    "date_range": "c. 957 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 122,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 24,
+        "verse_start": 53,
+        "verse_end": 53,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 3,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Temple",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JEWISH_WEIGHTS_AND_MEASURES",
+    "entity_type": "custom",
+    "canonical_name": "Jewish Weights and Measures",
+    "aliases": [
+      "Biblical Measures",
+      "Mosaic Standards"
+    ],
+    "quick_glance": "The system of weights (shekel, mina, talent) and measures (cubit, span, homer, bath) used in ancient Israel; the Mosaic law commanded honest weights and measures, and periodic debasement of standards was a sign of social corruption condemned by the prophets.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִדּוֹת וּמִשְׁקָלוֹת",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 19,
+        "verse_start": 35,
+        "verse_end": 36,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Proverbs",
+        "chapter": 11,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Amos",
+        "chapter": 8,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Weights and Measures",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "UNLEAVENED_BREAD_PREPARATION",
+    "entity_type": "custom",
+    "canonical_name": "Preparation for Passover",
+    "aliases": [
+      "Searching for Leaven",
+      "Bedikat Chametz",
+      "Passover Preparation"
+    ],
+    "quick_glance": "The careful household removal of all leaven (chametz) from Jewish homes before the Feast of Unleavened Bread, a process that by the Second Temple period involved a ceremonial nighttime search by candlelight; Paul alludes to this when he writes 'purge out the old leaven.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּדִיקַת חָמֵץ",
+    "greek_name": "ἄζυμος",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 12,
+        "verse_start": 15,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 5,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PASSOVER",
+        "relationship_type": "associated_with",
+        "relationship_label": "preparation for",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Passover",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  }
+]

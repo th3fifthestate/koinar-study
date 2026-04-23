@@ -10,18 +10,23 @@ node_modules/
 app/.next/
 app/out/
 
-# Database files (ignore runtime DB files but allow static reference data)
-data/
-app/data/
+# Database files — ignore runtime DB artifacts but keep static reference
+# data (seeds, tipnr) under app/data/. Using broad `app/data/` with
+# negation doesn't work because git doesn't recurse into an ignored
+# directory even with `!app/data/seeds/**` rules. Instead, target only
+# the runtime artifacts:
+/data/
 *.db
 *.db-wal
 *.db-shm
-!app/data/tipnr/
-!app/data/tipnr/**
-!app/data/seeds/
-!app/data/seeds/**
-!app/lib/data/
-!app/lib/data/**
+app/data/app.db*
+app/data/backups/
+app/data/sqlite/
+app/data/databases/
+app/data/last-entity-batch.json
+app/data/**/*.db
+app/data/**/*.db-wal
+app/data/**/*.db-shm
 
 # Build output
 app/dist/

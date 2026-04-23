@@ -1,0 +1,5741 @@
+[
+  {
+    "id": "COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "Covenant",
+    "aliases": [
+      "Berith",
+      "Diatheke",
+      "Testament"
+    ],
+    "quick_glance": "A solemn, binding agreement between God and his people that structures the entire biblical narrative; the major biblical covenants include those with Noah, Abraham, Moses (Sinai), David, and the New Covenant promised through Jeremiah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית",
+    "greek_name": "διαθήκη",
+    "disambiguation_note": null,
+    "date_range": "Biblical period — foundational concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 15,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Jeremiah",
+        "chapter": 31,
+        "verse_start": 31,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GRACE",
+    "entity_type": "concept",
+    "canonical_name": "Grace",
+    "aliases": [
+      "Unmerited Favor",
+      "Charis",
+      "Hen"
+    ],
+    "quick_glance": "The unmerited, freely given favor and goodwill of God toward humanity; in the OT expressed in God's covenant faithfulness (hesed), and in the NT understood primarily as the basis of salvation through Jesus Christ apart from human merit.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חֵן",
+    "greek_name": "χάρις",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 33,
+        "verse_start": 19,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 2,
+        "verse_start": 8,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Grace",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FAITH",
+    "entity_type": "concept",
+    "canonical_name": "Faith",
+    "aliases": [
+      "Trust",
+      "Belief",
+      "Emunah",
+      "Pistis"
+    ],
+    "quick_glance": "Trust or confidence in God and his promises, counted in the OT as the basis of righteousness (Genesis 15:6) and in the NT as the means by which sinners are justified, distinct from and yet producing good works.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֱמוּנָה",
+    "greek_name": "πίστις",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 15,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Habakkuk",
+        "chapter": 2,
+        "verse_start": 4,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 1,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 11,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Faith",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RIGHTEOUSNESS",
+    "entity_type": "concept",
+    "canonical_name": "Righteousness",
+    "aliases": [
+      "Tsedek",
+      "Dikaiosyne",
+      "Justice"
+    ],
+    "quick_glance": "Conformity to God's moral standard and covenant requirements; in the OT applied to just conduct and covenant faithfulness, and in the NT used both for the moral quality of right living and for the forensic status of being declared right before God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "צֶדֶק",
+    "greek_name": "δικαιοσύνη",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 6,
+        "verse_start": 25,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 53,
+        "verse_start": 11,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 21,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 5,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Righteousness",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "JUSTIFICATION",
+    "entity_type": "concept",
+    "canonical_name": "Justification",
+    "aliases": [
+      "Dikaiosis",
+      "Forensic Justification"
+    ],
+    "quick_glance": "The legal declaration by God that a sinner is righteous in his sight, in the NT grounded in the atoning work of Christ and received through faith; Paul's letters to the Romans and Galatians develop this concept most fully.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הַצְדָּקָה",
+    "greek_name": "δικαίωσις",
+    "disambiguation_note": "Justification is the forensic declaration of righteousness, distinct from sanctification (the progressive transformation into righteousness).",
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 24,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 5,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 2,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "RIGHTEOUSNESS",
+        "relationship_type": "associated_with",
+        "relationship_label": "declares",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Justification",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SANCTIFICATION",
+    "entity_type": "concept",
+    "canonical_name": "Sanctification",
+    "aliases": [
+      "Hagiasmos",
+      "Holiness",
+      "Setting Apart"
+    ],
+    "quick_glance": "The process of being made holy or set apart for God's purposes; in the NT it refers both to the definitive setting-apart that occurs at conversion and to the ongoing moral transformation of the believer by the Holy Spirit.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְדֻשָּׁה",
+    "greek_name": "ἁγιασμός",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 20,
+        "verse_start": 26,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 17,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Thessalonians",
+        "chapter": 4,
+        "verse_start": 3,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sanctification",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "REDEMPTION",
+    "entity_type": "concept",
+    "canonical_name": "Redemption",
+    "aliases": [
+      "Lutrosis",
+      "Padah",
+      "Deliverance by Price"
+    ],
+    "quick_glance": "The act of buying back or releasing someone from bondage by payment of a price; theologically, God's deliverance of Israel from Egypt served as the paradigm for the NT teaching that Christ's death paid the ransom price to free believers from sin and death.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פְּדוּת",
+    "greek_name": "λύτρωσις",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 6,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 111,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 10,
+        "verse_start": 45,
+        "verse_end": 45,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 3,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Redemption",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ATONEMENT",
+    "entity_type": "concept",
+    "canonical_name": "Atonement",
+    "aliases": [
+      "Kippur",
+      "Covering",
+      "Expiation"
+    ],
+    "quick_glance": "The covering or removal of sin that restores the broken relationship between God and humanity; in the OT, ritual sacrifices provided provisional atonement, while the NT presents Christ's death as the definitive, once-for-all atonement.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כַּפָּרָה",
+    "greek_name": "ἱλασμός",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 17,
+        "verse_start": 11,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 53,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 25,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 John",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Atonement",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PROPITIATION",
+    "entity_type": "concept",
+    "canonical_name": "Propitiation",
+    "aliases": [
+      "Hilasterion",
+      "Mercy Seat",
+      "Appeasement of Wrath"
+    ],
+    "quick_glance": "The satisfaction of God's righteous wrath against sin; in the NT, Christ's death is presented as the propitiation (hilasterion) that turns away divine judgment, described using the same Greek word as the mercy seat on the Ark of the Covenant.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כַּפֹּרֶת",
+    "greek_name": "ἱλαστήριον",
+    "disambiguation_note": "Some translations render hilasterion as 'expiation' (removal of sin) rather than 'propitiation' (turning away wrath); the two are related but distinct.",
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 25,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 John",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 John",
+        "chapter": 4,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "ATONEMENT",
+        "relationship_type": "associated_with",
+        "relationship_label": "aspect of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Propitiation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RECONCILIATION",
+    "entity_type": "concept",
+    "canonical_name": "Reconciliation",
+    "aliases": [
+      "Katallage",
+      "Restoration of Relationship"
+    ],
+    "quick_glance": "The restoration of a broken relationship between parties who were formerly at enmity; in Paul's letters, the reconciliation of sinful humanity to God through Christ's death is a central metaphor, with believers then becoming 'ministers of reconciliation.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "καταλλαγή",
+    "disambiguation_note": null,
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 5,
+        "verse_start": 10,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 5,
+        "verse_start": 18,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 1,
+        "verse_start": 20,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Reconciliation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "REPENTANCE",
+    "entity_type": "concept",
+    "canonical_name": "Repentance",
+    "aliases": [
+      "Teshuvah",
+      "Metanoia",
+      "Turning"
+    ],
+    "quick_glance": "A genuine change of mind and direction, turning away from sin toward God; in the OT (teshuvah = 'return'), repentance involves action and changed behavior, while the NT word metanoia emphasizes the inner transformation that produces new conduct.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּשׁוּבָה",
+    "greek_name": "μετάνοια",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Joel",
+        "chapter": 2,
+        "verse_start": 12,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 3,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 38,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 24,
+        "verse_start": 47,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Repentance",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SALVATION",
+    "entity_type": "concept",
+    "canonical_name": "Salvation",
+    "aliases": [
+      "Yeshua",
+      "Soteria",
+      "Deliverance"
+    ],
+    "quick_glance": "The comprehensive deliverance God provides for his people—in the OT referring primarily to physical and national rescue (from enemies, captivity, death), and in the NT broadened to include rescue from sin, guilt, death, and final judgment.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יְשׁוּעָה",
+    "greek_name": "σωτηρία",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 14,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 27,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 19,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 2,
+        "verse_start": 5,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Salvation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ELECTION",
+    "entity_type": "concept",
+    "canonical_name": "Election",
+    "aliases": [
+      "Divine Election",
+      "Chosen",
+      "Eklogē"
+    ],
+    "quick_glance": "God's sovereign choice of individuals or a people for his saving purposes; in the OT, Israel was chosen not because of her merit but by God's free initiative (Deuteronomy 7:6–8), and in the NT, believers are described as chosen in Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּחִירָה",
+    "greek_name": "ἐκλογή",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 7,
+        "verse_start": 6,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 9,
+        "verse_start": 11,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 1,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Election",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MESSIAH",
+    "entity_type": "concept",
+    "canonical_name": "Messiah",
+    "aliases": [
+      "Christ",
+      "Anointed One",
+      "Mashiach"
+    ],
+    "quick_glance": "Literally 'the anointed one,' referring to the long-expected deliverer figure promised in the Hebrew Scriptures; in Second Temple Judaism, messianic expectations varied widely—royal deliverer, priestly figure, prophet, heavenly being—and Jesus' messianic identity was understood by his followers in terms of his death and resurrection.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מָשִׁיחַ",
+    "greek_name": "Χριστός",
+    "disambiguation_note": "The title 'Christ' in the NT is not a surname but the Greek translation of the Hebrew 'Messiah'; early believers confessed 'Jesus is the Christ.'",
+    "date_range": "Concept rooted in OT; prominently developed in Second Temple Judaism",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Daniel",
+        "chapter": 9,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 4,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 36,
+        "verse_end": 36,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Messiah",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SON_OF_MAN",
+    "entity_type": "concept",
+    "canonical_name": "Son of Man",
+    "aliases": [
+      "Ben Adam",
+      "Huios Anthrōpou"
+    ],
+    "quick_glance": "In the OT, a term for a human being (Ezekiel) or a heavenly figure in Daniel's vision who receives eternal dominion; Jesus used 'Son of Man' as his preferred self-designation, combining the human and the cosmic-royal dimensions of the phrase.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בֶּן אָדָם",
+    "greek_name": "υἱὸς τοῦ ἀνθρώπου",
+    "disambiguation_note": null,
+    "date_range": "OT origins; NT application, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Daniel",
+        "chapter": 7,
+        "verse_start": 13,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ezekiel",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 16,
+        "verse_start": 13,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 14,
+        "verse_start": 62,
+        "verse_end": 62,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Son of Man",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "KINGDOM_OF_GOD",
+    "entity_type": "concept",
+    "canonical_name": "Kingdom of God",
+    "aliases": [
+      "Kingdom of Heaven",
+      "Malkut Shamayim",
+      "Basileia tou Theou"
+    ],
+    "quick_glance": "God's sovereign rule over creation, his people, and history; the central theme of Jesus' preaching, which declared that in his own person and ministry the promised reign of God had arrived ('already') while awaiting its full consummation ('not yet').",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַלְכוּת שָׁמַיִם",
+    "greek_name": "βασιλεία τοῦ θεοῦ",
+    "disambiguation_note": "'Kingdom of Heaven' in Matthew is equivalent to 'Kingdom of God' in the other Gospels; Matthew's Jewish-Christian audience avoided the direct use of 'God.'",
+    "date_range": "Biblical concept; central in 1st-century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Daniel",
+        "chapter": 2,
+        "verse_start": 44,
+        "verse_end": 44,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 4,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 1,
+        "verse_start": 15,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 17,
+        "verse_start": 20,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Kingdom of God",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RESURRECTION",
+    "entity_type": "concept",
+    "canonical_name": "Resurrection",
+    "aliases": [
+      "Anastasis",
+      "Rising from the Dead",
+      "Tehiyat HaMeitim"
+    ],
+    "quick_glance": "The bodily raising of the dead to life; a contested doctrine in Second Temple Judaism (affirmed by the Pharisees, denied by the Sadducees), and the foundational claim of the Christian faith, grounded in the historical resurrection of Jesus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּחִיַּת הַמֵּתִים",
+    "greek_name": "ἀνάστασις",
+    "disambiguation_note": "The Sadducees rejected resurrection (Matthew 22:23); the Pharisees affirmed it. Jesus' resurrection is the basis of Paul's extended argument in 1 Corinthians 15.",
+    "date_range": "Concept developed during Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Daniel",
+        "chapter": 12,
+        "verse_start": 2,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 22,
+        "verse_start": 23,
+        "verse_end": 29,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 11,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 15,
+        "verse_start": 3,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Resurrection",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ETERNAL_LIFE",
+    "entity_type": "concept",
+    "canonical_name": "Eternal Life",
+    "aliases": [
+      "Life Everlasting",
+      "Zoe Aionios"
+    ],
+    "quick_glance": "Life of the coming age, both in quality (knowing God) and duration (unending); in John's Gospel, eternal life begins in the present for those who believe, while it also has a future dimension of resurrection and life beyond death.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חַיֵּי עוֹלָם",
+    "greek_name": "ζωὴ αἰώνιος",
+    "disambiguation_note": null,
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Daniel",
+        "chapter": 12,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 3,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 17,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 6,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Life, Eternal",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TORAH",
+    "entity_type": "concept",
+    "canonical_name": "Torah",
+    "aliases": [
+      "Law of Moses",
+      "The Law",
+      "Pentateuch",
+      "Five Books of Moses"
+    ],
+    "quick_glance": "The first five books of the Hebrew Bible (Genesis, Exodus, Leviticus, Numbers, Deuteronomy), containing God's instructions, history, and covenant commands to Israel; in Jewish life it is the supreme authority for faith and practice.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תּוֹרָה",
+    "greek_name": "νόμος",
+    "disambiguation_note": "'Torah' literally means 'instruction' or 'teaching,' not merely 'law'; in NT usage, 'the Law' often refers specifically to the Mosaic covenant commands.",
+    "date_range": "c. 15th century BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 31,
+        "verse_start": 9,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 119,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 5,
+        "verse_start": 17,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Law of Moses",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ORAL_LAW",
+    "entity_type": "concept",
+    "canonical_name": "Oral Law",
+    "aliases": [
+      "Oral Torah",
+      "Tradition of the Elders",
+      "Halakha"
+    ],
+    "quick_glance": "The body of legal rulings and interpretations transmitted orally alongside the written Torah and held by the Pharisees to be equally authoritative; Jesus frequently challenged specific oral tradition rulings while affirming the written Scripture.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תּוֹרָה שֶׁבְּעַל פֶּה",
+    "greek_name": "παράδοσις τῶν πρεσβυτέρων",
+    "disambiguation_note": "The Oral Law was later codified in the Mishnah (c. AD 200) and further elaborated in the Talmud.",
+    "date_range": "Second Temple period through AD 200 (codification)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 15,
+        "verse_start": 2,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "TORAH",
+        "relationship_type": "associated_with",
+        "relationship_label": "supplements",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Tradition",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HOLY_OF_HOLIES",
+    "entity_type": "concept",
+    "canonical_name": "Holy of Holies",
+    "aliases": [
+      "Most Holy Place",
+      "Debir",
+      "Inner Sanctuary"
+    ],
+    "quick_glance": "The innermost chamber of the Tabernacle and Temple, housing the Ark of the Covenant, where God's presence dwelt; entered only by the high priest once a year on the Day of Atonement—at Jesus' death, the veil separating it from the Holy Place was torn in two.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קֹדֶשׁ הַקֳּדָשִׁים",
+    "greek_name": "ἅγια τῶν ἁγίων",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 26,
+        "verse_start": 33,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 3,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 27,
+        "verse_start": 51,
+        "verse_end": 51,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Holy of Holies",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ARK_OF_THE_COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "Ark of the Covenant",
+    "aliases": [
+      "Ark of God",
+      "Ark of the Testimony",
+      "Aron HaBrit"
+    ],
+    "quick_glance": "A gilded acacia wood chest containing the two tablets of the Law (and also the jar of manna and Aaron's staff according to Hebrews), topped by the mercy seat flanked by two cherubim; it was the focal point of God's presence among Israel and led the people in the wilderness.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֲרוֹן הַבְּרִית",
+    "greek_name": "κιβωτὸς τῆς διαθήκης",
+    "disambiguation_note": null,
+    "date_range": "c. 1446 BC – lost after 586 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 25,
+        "verse_start": 10,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Samuel",
+        "chapter": 4,
+        "verse_start": 3,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Ark of the Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MERCY_SEAT",
+    "entity_type": "concept",
+    "canonical_name": "Mercy Seat",
+    "aliases": [
+      "Kapporet",
+      "Atonement Cover",
+      "Propitiatory"
+    ],
+    "quick_glance": "The golden lid of the Ark of the Covenant, flanked by two golden cherubim, where the high priest sprinkled blood on the Day of Atonement; Paul uses the same Greek word (hilasterion) for both the mercy seat and Christ as the propitiation.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כַּפֹּרֶת",
+    "greek_name": "ἱλαστήριον",
+    "disambiguation_note": null,
+    "date_range": "c. 1446 BC – lost after 586 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 25,
+        "verse_start": 17,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 16,
+        "verse_start": 14,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 25,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "ARK_OF_THE_COVENANT",
+        "relationship_type": "associated_with",
+        "relationship_label": "lid of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Mercy Seat",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TABERNACLE",
+    "entity_type": "concept",
+    "canonical_name": "Tabernacle",
+    "aliases": [
+      "Mishkan",
+      "Tent of Meeting",
+      "Tent of the Congregation"
+    ],
+    "quick_glance": "The portable sanctuary constructed by Israel in the wilderness according to detailed divine instructions, consisting of an outer court, the Holy Place, and the Holy of Holies; it served as the dwelling place of God among his people and the center of sacrificial worship until the Temple was built.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מִשְׁכָּן",
+    "greek_name": "σκηνή",
+    "disambiguation_note": "In the NT, the Tabernacle functions typologically as a pattern of heavenly realities (Hebrews 8–9).",
+    "date_range": "c. 1446–970 BC (until Solomon's Temple)",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 25,
+        "verse_start": 8,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 40,
+        "verse_start": 34,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Tabernacle",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TEMPLE",
+    "entity_type": "concept",
+    "canonical_name": "Temple",
+    "aliases": [
+      "House of God",
+      "Beit HaMikdash",
+      "Solomon's Temple",
+      "Herod's Temple"
+    ],
+    "quick_glance": "The permanent sanctuary built in Jerusalem as the dwelling place of God among Israel; Solomon built the First Temple (c. 957 BC), destroyed by Babylon in 586 BC, succeeded by the Second Temple (516 BC), which was massively expanded by Herod and destroyed by Rome in AD 70.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בֵּית הַמִּקְדָּשׁ",
+    "greek_name": "ναός",
+    "disambiguation_note": "The Greek naos (inner sanctuary) differs from hieron (the entire Temple complex including outer courts).",
+    "date_range": "c. 957 BC – AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Kings",
+        "chapter": 6,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 21,
+        "verse_start": 12,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 2,
+        "verse_start": 19,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Temple",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "APOSTLE",
+    "entity_type": "concept",
+    "canonical_name": "Apostle",
+    "aliases": [
+      "Shaliach",
+      "Sent One",
+      "Apostolos"
+    ],
+    "quick_glance": "One who is sent as an authorized representative; in the NT, the Twelve whom Jesus appointed were given unique authority as witnesses of his resurrection and foundational teachers of the church, with Paul later included in the circle as 'apostle to the Gentiles.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שָׁלִיחַ",
+    "greek_name": "ἀπόστολος",
+    "disambiguation_note": "The word 'apostle' is sometimes used in a broader sense for missionaries and church emissaries (Romans 16:7), distinct from the Twelve.",
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 6,
+        "verse_start": 12,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 1,
+        "verse_start": 21,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Apostle",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DISCIPLE",
+    "entity_type": "concept",
+    "canonical_name": "Disciple",
+    "aliases": [
+      "Talmid",
+      "Follower",
+      "Learner",
+      "Mathetes"
+    ],
+    "quick_glance": "A learner or follower attached to a teacher; in the NT, the disciples of Jesus were called to follow him, learn from him, and ultimately replicate his way of life and mission, with the term eventually applied to all believers.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תַּלְמִיד",
+    "greek_name": "μαθητής",
+    "disambiguation_note": "The 'Twelve' (apostles) were a specific subset of Jesus' larger group of disciples.",
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 28,
+        "verse_start": 19,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 14,
+        "verse_start": 26,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 8,
+        "verse_start": 31,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Disciple",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ELDER",
+    "entity_type": "concept",
+    "canonical_name": "Elder",
+    "aliases": [
+      "Zaken",
+      "Presbyteros",
+      "Presbuteroi"
+    ],
+    "quick_glance": "In the OT, an elder was a recognized community leader responsible for justice and governance at the city gate; in the NT church, elders (presbyteroi) were appointed in each congregation as overseers and shepherds of the flock, an office closely related to 'overseer' (bishop).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "זָקֵן",
+    "greek_name": "πρεσβύτερος",
+    "disambiguation_note": "'Elder' (presbyteros) and 'overseer/bishop' (episkopos) appear to refer to the same office in the NT (Titus 1:5–7), though later church usage distinguished them.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 18,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 14,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Timothy",
+        "chapter": 5,
+        "verse_start": 17,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Titus",
+        "chapter": 1,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Elder",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DEACON",
+    "entity_type": "concept",
+    "canonical_name": "Deacon",
+    "aliases": [
+      "Diakonos",
+      "Servant-Leader"
+    ],
+    "quick_glance": "A church servant-leader responsible for practical ministry and the needs of the community; the office appears to have developed from the seven appointed in Acts 6 to oversee the daily distribution of food, and is formally described in 1 Timothy 3:8–13 and Philippians 1:1.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "διάκονος",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 6,
+        "verse_start": 1,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Timothy",
+        "chapter": 3,
+        "verse_start": 8,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Deacon",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PROPHET",
+    "entity_type": "concept",
+    "canonical_name": "Prophet",
+    "aliases": [
+      "Nabi",
+      "Prophetes",
+      "Seer"
+    ],
+    "quick_glance": "A person called by God to speak his word to the people—primarily a messenger of the present covenant and caller to repentance, secondarily a foreteller of future events; OT prophets were authenticated by the fulfillment of their predictions and by conformity to the Mosaic covenant.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "נָבִיא",
+    "greek_name": "προφήτης",
+    "disambiguation_note": "The NT also mentions the continuing gift of prophecy in the church (1 Corinthians 12–14), distinct from the foundational prophets of the OT.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 18,
+        "verse_start": 18,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Amos",
+        "chapter": 3,
+        "verse_start": 7,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 17,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Prophet",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SCRIBE",
+    "entity_type": "concept",
+    "canonical_name": "Scribe",
+    "aliases": [
+      "Sofer",
+      "Grammateus",
+      "Teacher of the Law"
+    ],
+    "quick_glance": "In the Second Temple period, scribes (grammateis) were professional experts in the written Torah who copied, interpreted, and taught the Law; they often appear alongside the Pharisees in the Gospels as opponents of Jesus.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סוֹפֵר",
+    "greek_name": "γραμματεύς",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Ezra",
+        "chapter": 7,
+        "verse_start": 6,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 12,
+        "verse_start": 28,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 2,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Scribes",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "RABBI",
+    "entity_type": "concept",
+    "canonical_name": "Rabbi",
+    "aliases": [
+      "My Master",
+      "Teacher",
+      "Rabboni"
+    ],
+    "quick_glance": "An honorific title meaning 'my master' or 'my teacher,' used in first-century Judaism for recognized Torah teachers; Jesus was frequently addressed as 'Rabbi,' and his mode of teaching—with authority and through parables—drew comparison to the great rabbinic teachers.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רַבִּי",
+    "greek_name": "ῥαββί",
+    "disambiguation_note": "'Rabboni' (John 20:16) is a more emphatic form meaning 'my great master.'",
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 38,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 3,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Rabbi",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HIGH_PRIEST",
+    "entity_type": "concept",
+    "canonical_name": "High Priest",
+    "aliases": [
+      "Cohen Gadol",
+      "Archiereus",
+      "Chief Priest"
+    ],
+    "quick_glance": "The supreme religious official of Israel, the only one permitted to enter the Holy of Holies on the Day of Atonement; in the Second Temple period the office became politically powerful and subject to Roman appointment, and the book of Hebrews presents Jesus as the ultimate and permanent High Priest.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כֹּהֵן גָּדוֹל",
+    "greek_name": "ἀρχιερεύς",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 21,
+        "verse_start": 10,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 57,
+        "verse_end": 66,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 4,
+        "verse_start": 14,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Priest, High",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PRIEST",
+    "entity_type": "concept",
+    "canonical_name": "Priest",
+    "aliases": [
+      "Cohen",
+      "Hiereus",
+      "Kohen"
+    ],
+    "quick_glance": "A descendant of Aaron authorized to offer sacrifices, burn incense, maintain the sanctuary, and mediate between God and the people; in the NT, the entire church is described as 'a royal priesthood' while Jesus is uniquely 'the great high priest.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כֹּהֵן",
+    "greek_name": "ἱερεύς",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 28,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Leviticus",
+        "chapter": 1,
+        "verse_start": 5,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 2,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Priest",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LEVITE",
+    "entity_type": "concept",
+    "canonical_name": "Levite",
+    "aliases": [
+      "Son of Levi",
+      "Temple Servant"
+    ],
+    "quick_glance": "Members of the tribe of Levi who assisted the Aaronic priests in the Tabernacle and Temple service—transporting the sanctuary, performing music and gatekeeping, and performing preparatory tasks—but were not authorized to offer sacrifices.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "לֵוִי",
+    "greek_name": "Λευΐτης",
+    "disambiguation_note": "Priests were a subset of Levites (the Aaronic line); all priests were Levites, but not all Levites were priests.",
+    "date_range": "Mosaic Law through AD 70",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 3,
+        "verse_start": 5,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Deuteronomy",
+        "chapter": 18,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 10,
+        "verse_start": 32,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Levites",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CENTURION",
+    "entity_type": "concept",
+    "canonical_name": "Centurion",
+    "aliases": [
+      "Hekatontarchos",
+      "Roman Officer"
+    ],
+    "quick_glance": "A Roman military officer commanding approximately 80–100 soldiers (a centuria); centurions were the professional backbone of the Roman army, known for discipline and valor; several centurions appear sympathetically in the NT—Cornelius, the Capernaum centurion, and the one at the cross.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἑκατοντάρχης",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century BC – 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 8,
+        "verse_start": 5,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 1,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 23,
+        "verse_start": 47,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Centurion",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PARABLE",
+    "entity_type": "concept",
+    "canonical_name": "Parable",
+    "aliases": [
+      "Mashal",
+      "Parabole",
+      "Story-Saying"
+    ],
+    "quick_glance": "A short narrative or comparison drawn from everyday life that illuminates a spiritual truth; Jesus used parables as his primary teaching method, drawing on familiar images from agriculture, economics, and family life to reveal truths about the Kingdom of God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מָשָׁל",
+    "greek_name": "παραβολή",
+    "disambiguation_note": null,
+    "date_range": "Rooted in OT wisdom tradition; prominent in Jesus' teaching, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 13,
+        "verse_start": 10,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 78,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 15,
+        "verse_start": 11,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Parable",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BAPTISM",
+    "entity_type": "concept",
+    "canonical_name": "Baptism",
+    "aliases": [
+      "Immersion",
+      "Water Baptism",
+      "Baptisma"
+    ],
+    "quick_glance": "A rite of immersion in water; in its Jewish background related to mikveh purification and proselyte conversion, John's baptism was a public act of repentance, and Christian baptism became the rite of initiation into the community of believers, associated with repentance, forgiveness, and the gift of the Spirit.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "טְבִילָה",
+    "greek_name": "βάπτισμα",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 3,
+        "verse_start": 6,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 38,
+        "verse_end": 41,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 6,
+        "verse_start": 3,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Baptism",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LORDS_SUPPER",
+    "entity_type": "concept",
+    "canonical_name": "Lord's Supper",
+    "aliases": [
+      "Eucharist",
+      "Breaking of Bread",
+      "Communion",
+      "Last Supper"
+    ],
+    "quick_glance": "The meal instituted by Jesus at the Passover Seder on the night of his arrest, in which he identified the bread as his body and the cup as his blood of the new covenant; observed by the early church as a regular communal practice of remembrance and proclamation.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "κυριακὸν δεῖπνον",
+    "disambiguation_note": null,
+    "date_range": "Instituted c. AD 30; NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 14,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 11,
+        "verse_start": 23,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 42,
+        "verse_end": 42,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Lord's Supper",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CHURCH",
+    "entity_type": "concept",
+    "canonical_name": "Church",
+    "aliases": [
+      "Ekklesia",
+      "Assembly",
+      "Congregation"
+    ],
+    "quick_glance": "The Greek word ekklesia ('assembly, gathering') was used in the Septuagint for Israel's congregation before God, and is used in the NT for the community of believers in Jesus—both local congregations and the universal body of all who are in Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קָהָל",
+    "greek_name": "ἐκκλησία",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 16,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 47,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 1,
+        "verse_start": 22,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 1,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Church",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GENTILE",
+    "entity_type": "concept",
+    "canonical_name": "Gentile",
+    "aliases": [
+      "Goy",
+      "Nation",
+      "Ethnos",
+      "Heathen"
+    ],
+    "quick_glance": "Any person not of Jewish birth; in the OT, the Gentile nations were both a source of threat and temptation and the ultimate beneficiaries of God's promise to Abraham that all nations would be blessed through his seed—a promise Paul understood to be fulfilled in the mission to the Gentiles.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גּוֹי",
+    "greek_name": "ἔθνος",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 12,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 49,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 11,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 1,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Gentiles",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DIASPORA",
+    "entity_type": "concept",
+    "canonical_name": "Diaspora",
+    "aliases": [
+      "Dispersion",
+      "Exile Communities",
+      "Jews of the Dispersion"
+    ],
+    "quick_glance": "The worldwide scattering of Jewish communities outside the Land of Israel, beginning with the Assyrian deportation (722 BC) and Babylonian exile (586 BC), expanding through voluntary emigration; by the first century, diaspora Jews far outnumbered those in Judea.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גָּלוּת",
+    "greek_name": "διασπορά",
+    "disambiguation_note": null,
+    "date_range": "722 BC onwards",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 28,
+        "verse_start": 64,
+        "verse_end": 64,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 7,
+        "verse_start": 35,
+        "verse_end": 35,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "James",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Dispersion",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "REMNANT",
+    "entity_type": "concept",
+    "canonical_name": "Remnant",
+    "aliases": [
+      "Shear",
+      "The Faithful Remnant",
+      "Leimma"
+    ],
+    "quick_glance": "The faithful minority preserved by God through judgment when the majority of Israel was unfaithful; a major prophetic concept linking OT judgment and future restoration, and in Romans 9–11, Paul uses it to explain the partial hardening of Israel and the preserved believing community.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁאָר",
+    "greek_name": "λεῖμμα",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Isaiah",
+        "chapter": 10,
+        "verse_start": 20,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Micah",
+        "chapter": 4,
+        "verse_start": 7,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 11,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Remnant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "EXILE_AND_RETURN",
+    "entity_type": "concept",
+    "canonical_name": "Exile and Return",
+    "aliases": [
+      "Babylonian Exile",
+      "Captivity",
+      "Return from Exile",
+      "Golah"
+    ],
+    "quick_glance": "The defining event in Israel's national memory after the Exodus: the Babylonian deportation (586 BC), the 70-year exile described by Jeremiah, and the return under Cyrus the Persian (538 BC); the prophets interpreted exile as covenant judgment and return as covenant renewal.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גָּלוּת וְשִׁיבָה",
+    "greek_name": "μετοικεσία",
+    "disambiguation_note": null,
+    "date_range": "586 – 538 BC",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "2 Kings",
+        "chapter": 25,
+        "verse_start": 1,
+        "verse_end": 12,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Jeremiah",
+        "chapter": 29,
+        "verse_start": 10,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ezra",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Captivity",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CLEAN_AND_UNCLEAN",
+    "entity_type": "concept",
+    "canonical_name": "Clean and Unclean",
+    "aliases": [
+      "Ritual Purity",
+      "Tahor and Tamei",
+      "Ceremonial Cleanness"
+    ],
+    "quick_glance": "A system of ritual status in the Mosaic Law that categorized persons, animals, foods, and objects as either clean (tahor) or unclean (tamei); uncleanness was contagious and transmitted through contact, requiring purification before participation in worship.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "טָהוֹר וְטָמֵא",
+    "greek_name": "καθαρός καὶ ἀκάθαρτος",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 11,
+        "verse_start": 44,
+        "verse_end": 47,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 14,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 10,
+        "verse_start": 14,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Clean",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SYNAGOGUE",
+    "entity_type": "concept",
+    "canonical_name": "Synagogue",
+    "aliases": [
+      "Beit Knesset",
+      "House of Assembly",
+      "Place of Prayer"
+    ],
+    "quick_glance": "A local Jewish gathering place for prayer, Scripture reading, and teaching that developed during the Babylonian exile as a substitute for Temple worship; by the first century, synagogues existed in most Jewish communities throughout Judea and the Diaspora.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בֵּית כְּנֶסֶת",
+    "greek_name": "συναγωγή",
+    "disambiguation_note": null,
+    "date_range": "c. 6th century BC through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 4,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 17,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 2,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Synagogue",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SHEOL",
+    "entity_type": "concept",
+    "canonical_name": "Sheol",
+    "aliases": [
+      "Realm of the Dead",
+      "The Pit",
+      "Grave",
+      "Hades"
+    ],
+    "quick_glance": "The Hebrew concept of the underworld or realm of the dead, a shadowy place where all the dead went regardless of moral status; in NT Greek often translated as Hades, and gradually distinguished from Gehenna (the place of punishment for the wicked).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁאוֹל",
+    "greek_name": "ᾅδης",
+    "disambiguation_note": "Sheol/Hades should not be confused with Gehenna; Sheol is the general realm of the dead, while Gehenna specifically refers to the place of punishment.",
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 37,
+        "verse_start": 35,
+        "verse_end": 35,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 16,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 16,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 27,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sheol",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GEHENNA",
+    "entity_type": "concept",
+    "canonical_name": "Gehenna",
+    "aliases": [
+      "Valley of Hinnom",
+      "Hell",
+      "Lake of Fire"
+    ],
+    "quick_glance": "Originally the Valley of Hinnom (Ge-Hinnom) south of Jerusalem, where children were burned as offerings to Molech and later used as a rubbish dump; in Second Temple Judaism and the NT it became the name for the place of final punishment for the wicked.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "גֵּיא בֶן הִנֹּם",
+    "greek_name": "γέεννα",
+    "disambiguation_note": "Distinct from Sheol/Hades (the general realm of the dead); Gehenna specifically refers to the place of condemnation after final judgment.",
+    "date_range": "OT period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "2 Chronicles",
+        "chapter": 28,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Jeremiah",
+        "chapter": 7,
+        "verse_start": 31,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 5,
+        "verse_start": 22,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 9,
+        "verse_start": 47,
+        "verse_end": 48,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Gehenna",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ANGEL",
+    "entity_type": "concept",
+    "canonical_name": "Angel",
+    "aliases": [
+      "Malak",
+      "Angelos",
+      "Messenger of God",
+      "Heavenly Being"
+    ],
+    "quick_glance": "A created heavenly being serving as a messenger and agent of God; angels appear throughout Scripture as divine messengers, worship leaders in heaven, agents of protection and judgment, and attendants at key events in redemptive history.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַלְאָךְ",
+    "greek_name": "ἄγγελος",
+    "disambiguation_note": "The 'angel of the LORD' in the OT is a distinct figure sometimes equated with a theophanic appearance of God himself.",
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 16,
+        "verse_start": 7,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 6,
+        "verse_start": 2,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 1,
+        "verse_start": 26,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Angel",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DEMON",
+    "entity_type": "concept",
+    "canonical_name": "Demon",
+    "aliases": [
+      "Evil Spirit",
+      "Daimon",
+      "Unclean Spirit",
+      "Devil"
+    ],
+    "quick_glance": "Malevolent spiritual beings under Satan's authority; in the NT, demons are presented as real agents capable of afflicting and possessing humans, and their expulsion (exorcism) by Jesus was a primary sign that the Kingdom of God had arrived.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֵׁד",
+    "greek_name": "δαίμων",
+    "disambiguation_note": "In NT Greek, daimon/daimonion refers to evil spiritual beings, distinct from the Greek philosophical usage of daimon as a guiding spirit.",
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 32,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 8,
+        "verse_start": 28,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 11,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 16,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Demon",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "IMPUTATION",
+    "entity_type": "concept",
+    "canonical_name": "Imputation",
+    "aliases": [
+      "Reckoning",
+      "Crediting",
+      "Logizomai"
+    ],
+    "quick_glance": "The act of crediting something to another's account; in biblical theology, Abraham's faith was 'reckoned' (imputed) to him as righteousness (Genesis 15:6), and in the NT, Christ's righteousness is imputed to believers while their sins were imputed to him.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חָשַׁב",
+    "greek_name": "λογίζομαι",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept; developed in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 15,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 4,
+        "verse_start": 3,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 5,
+        "verse_start": 21,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "JUSTIFICATION",
+        "relationship_type": "associated_with",
+        "relationship_label": "basis of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Imputation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LOGOS",
+    "entity_type": "concept",
+    "canonical_name": "The Word (Logos)",
+    "aliases": [
+      "Logos",
+      "Word of God",
+      "Memra"
+    ],
+    "quick_glance": "John's Gospel opens by identifying Jesus as the divine Logos ('Word'), a concept drawing on both the OT tradition of God's creative and revelatory speech and the Hellenistic philosophical concept of the rational principle ordering the universe, declaring that this eternal Word became flesh.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "דָּבָר",
+    "greek_name": "λόγος",
+    "disambiguation_note": null,
+    "date_range": "NT era; rooted in OT and Hellenistic background",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 1,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 19,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Word",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ADOPTION",
+    "entity_type": "concept",
+    "canonical_name": "Adoption (Theological)",
+    "aliases": [
+      "Huiothesia",
+      "Sonship",
+      "Children of God"
+    ],
+    "quick_glance": "The act by which God receives believers as his own children and heirs; Paul uses the legal metaphor of Roman adoption (huiothesia) to describe the believer's new status as a full member of God's family, with all the rights of heirs and crying 'Abba, Father.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "υἱοθεσία",
+    "disambiguation_note": null,
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 8,
+        "verse_start": 14,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 4,
+        "verse_start": 4,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 1,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 12,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Adoption",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "CHOSEN_PEOPLE",
+    "entity_type": "concept",
+    "canonical_name": "Chosen People",
+    "aliases": [
+      "Am Segulah",
+      "Treasured Possession",
+      "Holy Nation"
+    ],
+    "quick_glance": "The biblical concept of Israel as uniquely chosen by God from among all nations to be his covenant people, bearers of his revelation, and the channel through which blessing would reach all nations; in the NT, this identity is extended to include all who are in Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עַם סְגֻלָּה",
+    "greek_name": "ἐκλεκτοί",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 7,
+        "verse_start": 6,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 2,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Israel",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HALAKHA",
+    "entity_type": "concept",
+    "canonical_name": "Halakha",
+    "aliases": [
+      "Jewish Law",
+      "Legal Rulings",
+      "The Way of Walking"
+    ],
+    "quick_glance": "The collective body of Jewish religious law, encompassing biblical commandments, rabbinic legislation, and legal precedents, governing all aspects of daily life; literally 'the way of walking,' it describes the practical application of Torah to concrete situations.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הֲלָכָה",
+    "greek_name": null,
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through present day",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 23,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 7,
+        "verse_start": 3,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "ORAL_LAW",
+        "relationship_type": "associated_with",
+        "relationship_label": "product of",
+        "bidirectional": 0,
+        "source": "dictionary"
+      },
+      {
+        "to_entity_id": "TORAH",
+        "relationship_type": "associated_with",
+        "relationship_label": "applies",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Law",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SHEKINAH",
+    "entity_type": "concept",
+    "canonical_name": "Shekinah",
+    "aliases": [
+      "Divine Presence",
+      "Glory of God",
+      "Cloud of Glory"
+    ],
+    "quick_glance": "A post-biblical Jewish term (from shakhan, 'to dwell') for the visible manifestation of God's presence—the pillar of cloud and fire in the wilderness, the glory filling the Tabernacle and Temple; John's statement that the Word 'tabernacled among us' (1:14) alludes to this concept.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שְׁכִינָה",
+    "greek_name": null,
+    "disambiguation_note": "The word 'shekinah' does not appear in the Hebrew Bible but was coined by rabbis to describe the concept of God's indwelling presence.",
+    "date_range": "Concept rooted in OT; term developed in Second Temple period",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 40,
+        "verse_start": 34,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Kings",
+        "chapter": 8,
+        "verse_start": 10,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Shechinah",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MIRACLE",
+    "entity_type": "concept",
+    "canonical_name": "Miracle",
+    "aliases": [
+      "Sign",
+      "Wonder",
+      "Dunamis",
+      "Ot"
+    ],
+    "quick_glance": "An event that transcends the ordinary course of nature and is attributed to divine action; in the Gospels, Jesus' miracles (dynameis = 'acts of power'; semeia = 'signs') were both demonstrations of God's power and authenticating signs of his identity as Messiah.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אוֹת",
+    "greek_name": "δύναμις",
+    "disambiguation_note": "In John, miracles are consistently called 'signs' (semeia), pointing beyond the event to the identity of Jesus.",
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 4,
+        "verse_start": 8,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 2,
+        "verse_start": 11,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 22,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Miracle",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "NEW_COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "New Covenant",
+    "aliases": [
+      "Berit Chadashah",
+      "New Testament"
+    ],
+    "quick_glance": "The covenant promised by Jeremiah (31:31–34) and Ezekiel (36:26–27) in which God would write his law on human hearts, give his Spirit, and provide full and final forgiveness; the NT presents Jesus as the mediator of this New Covenant, inaugurated through his blood.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית חֲדָשָׁה",
+    "greek_name": "καινὴ διαθήκη",
+    "disambiguation_note": null,
+    "date_range": "Prophesied c. 626–571 BC; inaugurated c. AD 30",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Jeremiah",
+        "chapter": 31,
+        "verse_start": 31,
+        "verse_end": 34,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ezekiel",
+        "chapter": 36,
+        "verse_start": 26,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 22,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 8,
+        "verse_start": 6,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "COVENANT",
+        "relationship_type": "associated_with",
+        "relationship_label": "fulfillment of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PENTECOST_EVENT",
+    "entity_type": "concept",
+    "canonical_name": "Day of Pentecost (Acts 2)",
+    "aliases": [
+      "Outpouring of the Spirit",
+      "Birthday of the Church"
+    ],
+    "quick_glance": "The event fifty days after the resurrection of Jesus when, as the disciples gathered in Jerusalem for the Feast of Weeks, the Holy Spirit was poured out on them with signs of wind and fire, fulfilling Joel's prophecy and inaugurating the age of the Spirit.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "Πεντηκοστή",
+    "disambiguation_note": "Distinct from the annual Jewish Feast of Weeks (also called Pentecost); this refers to the specific event in Acts 2.",
+    "date_range": "c. AD 30",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 1,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Joel",
+        "chapter": 2,
+        "verse_start": 28,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "FEAST_OF_WEEKS",
+        "relationship_type": "associated_with",
+        "relationship_label": "occurred during",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Pentecost",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LAST_JUDGMENT",
+    "entity_type": "concept",
+    "canonical_name": "Last Judgment",
+    "aliases": [
+      "Day of Judgment",
+      "Great White Throne",
+      "Final Judgment"
+    ],
+    "quick_glance": "The final eschatological act in which God judges all humanity for their deeds; the NT presents Christ as the judge and depicts the books being opened, the dead raised, and the ultimate separation between those who receive eternal life and those who receive condemnation.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "יוֹם הַדִּין",
+    "greek_name": "κρίσις",
+    "disambiguation_note": null,
+    "date_range": "Eschatological event",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Daniel",
+        "chapter": 7,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 25,
+        "verse_start": 31,
+        "verse_end": 46,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 20,
+        "verse_start": 11,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 5,
+        "verse_start": 28,
+        "verse_end": 29,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "RESURRECTION",
+        "relationship_type": "associated_with",
+        "relationship_label": "follows",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Judgment",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HOLY_SPIRIT",
+    "entity_type": "concept",
+    "canonical_name": "Holy Spirit",
+    "aliases": [
+      "Spirit of God",
+      "Ruach HaKodesh",
+      "Paraclete",
+      "Comforter"
+    ],
+    "quick_glance": "The third person of the Trinity; in the OT, the divine Spirit empowered prophets, judges, and craftsmen for specific tasks, while the NT presents the Spirit as permanently indwelling all believers, convicting the world of sin, and guiding the church.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "רוּחַ הַקֹּדֶשׁ",
+    "greek_name": "ἅγιον πνεῦμα",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 1,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 14,
+        "verse_start": 16,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 1,
+        "verse_start": 8,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Holy Spirit",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "FORGIVENESS",
+    "entity_type": "concept",
+    "canonical_name": "Forgiveness",
+    "aliases": [
+      "Pardon",
+      "Aphesis",
+      "Selichah"
+    ],
+    "quick_glance": "The remission of sins and the release from the guilt and penalty they incur; in the OT, forgiveness was mediated through sacrifice and priestly intercession, while in the NT it is grounded entirely in Christ's atoning death and received through repentance and faith.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "סְלִיחָה",
+    "greek_name": "ἄφεσις",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 103,
+        "verse_start": 3,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 6,
+        "verse_start": 12,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 38,
+        "verse_end": 38,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 1,
+        "verse_start": 13,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Forgiveness",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DENARIUS",
+    "entity_type": "concept",
+    "canonical_name": "Denarius",
+    "aliases": [
+      "Roman Penny",
+      "Silver Coin",
+      "Day's Wage"
+    ],
+    "quick_glance": "The standard silver coin of the Roman Empire, equivalent to a day's wage for a laborer; it bore the image of the emperor and appears prominently in Jesus' discussion of taxation ('Render to Caesar') and in parables about wages and debts.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "δηνάριον",
+    "disambiguation_note": null,
+    "date_range": "Roman period, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 20,
+        "verse_start": 2,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 22,
+        "verse_start": 19,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 10,
+        "verse_start": 35,
+        "verse_end": 35,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Penny",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SHEKEL",
+    "entity_type": "concept",
+    "canonical_name": "Shekel",
+    "aliases": [
+      "Silver Shekel",
+      "Sacred Shekel",
+      "Sheqel"
+    ],
+    "quick_glance": "The primary unit of weight and currency in ancient Israel; the sacred shekel (used for Temple dues and vows) was fixed at approximately 11.4 grams of silver; the phrase 'thirty pieces of silver' for which Judas betrayed Jesus refers to thirty shekels.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שֶׁקֶל",
+    "greek_name": "σίγλος",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 30,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 26,
+        "verse_start": 15,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Shekel",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "TALENT",
+    "entity_type": "concept",
+    "canonical_name": "Talent",
+    "aliases": [
+      "Kikkar",
+      "Talanton"
+    ],
+    "quick_glance": "The largest unit of monetary weight in the ancient Near East, approximately 34 kg (75 lb) of silver or gold; in NT parables, a talent represented an enormous sum—roughly 20 years' wages for a laborer—making the parable of the talents a story of extraordinary trust.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כִּכָּר",
+    "greek_name": "τάλαντον",
+    "disambiguation_note": "The modern use of 'talent' to mean a personal skill or ability derives from the parable of the talents.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 38,
+        "verse_start": 24,
+        "verse_end": 24,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 25,
+        "verse_start": 14,
+        "verse_end": 30,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Talent",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MINA",
+    "entity_type": "concept",
+    "canonical_name": "Mina",
+    "aliases": [
+      "Maneh",
+      "Mna"
+    ],
+    "quick_glance": "A unit of weight and monetary value equal to one-sixtieth of a talent or approximately 50 shekels (about 570g of silver); appears in the Parable of the Minas (Luke 19) where ten servants are each entrusted with one mina while the master is away.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מָנֶה",
+    "greek_name": "μνᾶ",
+    "disambiguation_note": null,
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Luke",
+        "chapter": 19,
+        "verse_start": 13,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Kings",
+        "chapter": 10,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Pound",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ABBA",
+    "entity_type": "concept",
+    "canonical_name": "Abba",
+    "aliases": [
+      "Father",
+      "Dear Father"
+    ],
+    "quick_glance": "An Aramaic word for 'father,' used in everyday family speech; Jesus used it in prayer (Mark 14:36), suggesting an intimate, trusting relationship with God, and Paul tells believers that the Spirit prompts them to cry 'Abba, Father' as adopted children of God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אַבָּא",
+    "greek_name": "ἀββά",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Mark",
+        "chapter": 14,
+        "verse_start": 36,
+        "verse_end": 36,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 8,
+        "verse_start": 15,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 4,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Abba",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MARANATHA",
+    "entity_type": "concept",
+    "canonical_name": "Maranatha",
+    "aliases": [
+      "Come, Lord",
+      "Our Lord, Come"
+    ],
+    "quick_glance": "An Aramaic phrase preserved in 1 Corinthians 16:22 and the Didache, meaning either 'Our Lord has come' or 'Our Lord, come!'; as one of the very few Aramaic expressions preserved in Paul's Greek letters, it reflects an early Palestinian Christian prayer for the return of Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "μαράνα θά",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Corinthians",
+        "chapter": 16,
+        "verse_start": 22,
+        "verse_end": 22,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 22,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "medium",
+        "source": "dictionary"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Maranatha",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HOSANNA",
+    "entity_type": "concept",
+    "canonical_name": "Hosanna",
+    "aliases": [
+      "Save now",
+      "Hoshanna"
+    ],
+    "quick_glance": "A Hebrew liturgical cry meaning 'Save now!' or 'Please save!' (Psalm 118:25), used in the Hallel psalms during pilgrimage festivals; the crowd's cry of 'Hosanna!' at Jesus' triumphal entry identified him with the coming Davidic king who would save Israel.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הוֹשַׁע נָא",
+    "greek_name": "ὡσαννά",
+    "disambiguation_note": null,
+    "date_range": "OT liturgical use; NT application, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 118,
+        "verse_start": 25,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 21,
+        "verse_start": 9,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 12,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Hosanna",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "AMEN",
+    "entity_type": "concept",
+    "canonical_name": "Amen",
+    "aliases": [
+      "Truly",
+      "Verily",
+      "So be it"
+    ],
+    "quick_glance": "A Hebrew word expressing affirmation or confirmation ('so be it'), used in Scripture both as a congregational response to prayers and blessings and, uniquely by Jesus, as a formula introducing his own authoritative teachings ('Amen I say to you').",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אָמֵן",
+    "greek_name": "ἀμήν",
+    "disambiguation_note": "Jesus' 'Amen, amen' (double amen) in John's Gospel is unique in ancient Jewish literature and underscores his claim to speak with divine authority.",
+    "date_range": "Biblical period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Deuteronomy",
+        "chapter": 27,
+        "verse_start": 15,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 5,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 3,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Amen",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PEACE_SHALOM",
+    "entity_type": "concept",
+    "canonical_name": "Shalom",
+    "aliases": [
+      "Peace",
+      "Wholeness",
+      "Eirene"
+    ],
+    "quick_glance": "The Hebrew concept of shalom encompasses far more than the absence of conflict—it denotes comprehensive well-being, wholeness, justice, and right relationship in all dimensions of life; in the NT, 'peace with God' (eirene) is the fruit of justification.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "שָׁלוֹם",
+    "greek_name": "εἰρήνη",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Numbers",
+        "chapter": 6,
+        "verse_start": 24,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 53,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 5,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Peace",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LOVING_KINDNESS",
+    "entity_type": "concept",
+    "canonical_name": "Lovingkindness",
+    "aliases": [
+      "Hesed",
+      "Steadfast Love",
+      "Covenant Loyalty",
+      "Mercy"
+    ],
+    "quick_glance": "One of the most important OT theological terms, describing God's covenant-faithful, steadfast, loyal love that persists even when the human partner breaks the covenant; often translated 'mercy,' 'steadfast love,' or 'lovingkindness,' it is the heart of God's character.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חֶסֶד",
+    "greek_name": "ἔλεος",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 34,
+        "verse_start": 6,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 136,
+        "verse_start": 1,
+        "verse_end": 26,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Lamentations",
+        "chapter": 3,
+        "verse_start": 22,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Mercy",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GLORY",
+    "entity_type": "concept",
+    "canonical_name": "Glory of God",
+    "aliases": [
+      "Kabod",
+      "Doxa",
+      "Shekinah Glory"
+    ],
+    "quick_glance": "The weightiness, honor, and radiant manifestation of God's presence and character; kabod ('weight, honor') and doxa ('splendor, reputation') describe God's visible majesty—the cloud and fire in the wilderness, the glory in the Temple, and in the NT, the glory revealed in the person of Jesus Christ.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "כָּבוֹד",
+    "greek_name": "δόξα",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 33,
+        "verse_start": 18,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 6,
+        "verse_start": 1,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Glory",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SEED_OF_ABRAHAM",
+    "entity_type": "concept",
+    "canonical_name": "Seed of Abraham",
+    "aliases": [
+      "Offspring of Abraham",
+      "Zera Avraham"
+    ],
+    "quick_glance": "The promised descendants of Abraham through whom all nations would be blessed (Genesis 12:3, 22:18); in the NT, Paul argues that the singular 'seed' of Abraham refers ultimately to Christ himself (Galatians 3:16), and that all who are in Christ are Abraham's seed and heirs of the promise.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "זֶרַע אַבְרָהָם",
+    "greek_name": "σπέρμα Ἀβραάμ",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept rooted in Genesis; developed in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 22,
+        "verse_start": 17,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 3,
+        "verse_start": 16,
+        "verse_end": 29,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 8,
+        "verse_start": 37,
+        "verse_end": 39,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Abraham",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PROPHECY_FULFILLMENT",
+    "entity_type": "concept",
+    "canonical_name": "Prophecy and Fulfillment",
+    "aliases": [
+      "Fulfillment Formula",
+      "Typology",
+      "This was to fulfill"
+    ],
+    "quick_glance": "The pattern throughout Scripture—especially in Matthew—of events in Jesus' life fulfilling OT prophetic texts, sometimes directly and sometimes typologically; Matthew uses the formula 'This took place to fulfill what was spoken through the prophet' to connect Jesus' story to Israel's story.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הִתְקַיֵּם",
+    "greek_name": "πληρόω",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout; prominently NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Isaiah",
+        "chapter": 7,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 1,
+        "verse_start": 22,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 24,
+        "verse_start": 44,
+        "verse_end": 46,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Prophecy",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "THEOPHANY",
+    "entity_type": "concept",
+    "canonical_name": "Theophany",
+    "aliases": [
+      "Appearance of God",
+      "Divine Manifestation",
+      "Christophany"
+    ],
+    "quick_glance": "A visible or otherwise perceptible appearance of God to human beings; OT theophanies include the burning bush, the pillar of cloud and fire, the glory at Sinai, and appearances of 'the Angel of the LORD'; in the NT, the incarnation of Christ is the supreme theophany.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "הִגָּלוּת אֱלֹהִים",
+    "greek_name": "θεοφάνεια",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 3,
+        "verse_start": 2,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 16,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Theophany",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "INCARNATION",
+    "entity_type": "concept",
+    "canonical_name": "Incarnation",
+    "aliases": [
+      "God Made Flesh",
+      "Enfleshment",
+      "The Word Became Flesh"
+    ],
+    "quick_glance": "The Christian doctrine that God the Son took on human nature—becoming fully human while remaining fully divine—in the person of Jesus of Nazareth; grounded in John 1:14 ('the Word became flesh and tabernacled among us') and affirmed in Paul's Christological hymns.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "ἐνσάρκωσις",
+    "disambiguation_note": null,
+    "date_range": "c. 5–4 BC (birth of Jesus) through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 1,
+        "verse_start": 14,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 2,
+        "verse_start": 5,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 1,
+        "verse_start": 15,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Incarnation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "INTERCESSION",
+    "entity_type": "concept",
+    "canonical_name": "Intercession",
+    "aliases": [
+      "Intercessory Prayer",
+      "Advocacy",
+      "Pleading"
+    ],
+    "quick_glance": "Prayer on behalf of others; in the OT, Moses and Abraham were notable intercessors for Israel; in the NT, Christ is presented as the ultimate intercessor who continually prays for his people (Romans 8:34; Hebrews 7:25), and the Spirit intercedes for believers with groanings.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "פְּגִיעָה",
+    "greek_name": "ἔντευξις",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 32,
+        "verse_start": 30,
+        "verse_end": 32,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 8,
+        "verse_start": 26,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 7,
+        "verse_start": 25,
+        "verse_end": 25,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Intercession",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "REGENERATION",
+    "entity_type": "concept",
+    "canonical_name": "Regeneration",
+    "aliases": [
+      "New Birth",
+      "Born Again",
+      "Palingenesia"
+    ],
+    "quick_glance": "The spiritual new birth by which the Holy Spirit gives a new nature and orientation to the believer; Jesus' conversation with Nicodemus (John 3) uses the metaphor of being 'born again' or 'born from above' (anothen), while Paul speaks of the 'renewing' of the inner person.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "παλιγγενεσία",
+    "disambiguation_note": null,
+    "date_range": "NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 3,
+        "verse_start": 3,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Titus",
+        "chapter": 3,
+        "verse_start": 5,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 1,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Regeneration",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PAROUSIA",
+    "entity_type": "concept",
+    "canonical_name": "Parousia",
+    "aliases": [
+      "Second Coming",
+      "Return of Christ",
+      "Presence"
+    ],
+    "quick_glance": "The Greek word parousia (literally 'presence' or 'arrival') was used in the Hellenistic world for the formal visit of a king or emperor; in NT usage it refers to the future, visible return of Christ in glory to judge the living and dead and establish God's kingdom in fullness.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "παρουσία",
+    "disambiguation_note": null,
+    "date_range": "Future eschatological event; taught throughout NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 24,
+        "verse_start": 3,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Thessalonians",
+        "chapter": 4,
+        "verse_start": 15,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Peter",
+        "chapter": 3,
+        "verse_start": 4,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "LAST_JUDGMENT",
+        "relationship_type": "associated_with",
+        "relationship_label": "precedes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Coming of Christ",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "THEOCRACY",
+    "entity_type": "concept",
+    "canonical_name": "Theocracy",
+    "aliases": [
+      "Divine Rule",
+      "God's Kingship",
+      "Rule of God"
+    ],
+    "quick_glance": "Government directly by God; ancient Israel was constituted as a theocracy at Sinai, with God as king and Moses as mediator of the covenant law, before the people requested a human king (1 Samuel 8); prophetic vision looked forward to a renewed theocracy in the age to come.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מֶמְשֶׁלֶת אֱלֹהִים",
+    "greek_name": "θεοκρατία",
+    "disambiguation_note": null,
+    "date_range": "Mosaic Law through the monarchy",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 3,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Samuel",
+        "chapter": 8,
+        "verse_start": 4,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 47,
+        "verse_start": 2,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Theocracy",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "DAVIDIC_COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "Davidic Covenant",
+    "aliases": [
+      "Covenant with David",
+      "Eternal Throne Promise"
+    ],
+    "quick_glance": "God's unconditional promise to David (2 Samuel 7) that his dynasty would be established forever, that a son of David would build the Temple, and that God would be 'a father' to David's son; the NT presents Jesus as the fulfillment of this promise as the eternal Son of David.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית דָּוִד",
+    "greek_name": "διαθήκη Δαυίδ",
+    "disambiguation_note": null,
+    "date_range": "c. 1000 BC; fulfilled in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "2 Samuel",
+        "chapter": 7,
+        "verse_start": 12,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Psalm",
+        "chapter": 89,
+        "verse_start": 3,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Luke",
+        "chapter": 1,
+        "verse_start": 31,
+        "verse_end": 33,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 2,
+        "verse_start": 29,
+        "verse_end": 36,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "COVENANT",
+        "relationship_type": "associated_with",
+        "relationship_label": "type of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "MESSIAH",
+        "relationship_type": "associated_with",
+        "relationship_label": "basis for",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ABRAHAMIC_COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "Abrahamic Covenant",
+    "aliases": [
+      "Covenant with Abraham",
+      "Promise to Abraham"
+    ],
+    "quick_glance": "God's foundational promise to Abraham (Genesis 12, 15, 17) of land, numerous descendants, and blessing to all nations; Paul argues that this covenant, established 430 years before the Mosaic Law, cannot be annulled by the Law and finds its ultimate fulfillment in Christ and his universal people.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית אַבְרָהָם",
+    "greek_name": "διαθήκη Ἀβραάμ",
+    "disambiguation_note": null,
+    "date_range": "c. 2091 BC; fulfilled progressively through Scripture",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 12,
+        "verse_start": 1,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 15,
+        "verse_start": 18,
+        "verse_end": 21,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 17,
+        "verse_start": 1,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 3,
+        "verse_start": 8,
+        "verse_end": 9,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "COVENANT",
+        "relationship_type": "associated_with",
+        "relationship_label": "type of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Abraham",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "MOSAIC_COVENANT",
+    "entity_type": "concept",
+    "canonical_name": "Mosaic Covenant",
+    "aliases": [
+      "Sinai Covenant",
+      "Old Covenant",
+      "Law Covenant"
+    ],
+    "quick_glance": "The covenant God established with Israel at Mount Sinai (Exodus 19–24), structured on the pattern of ancient Near Eastern suzerainty treaties: God the great king declares his mighty acts, stipulates covenant requirements, and promises blessings for obedience and curses for disobedience.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִית סִינַי",
+    "greek_name": "παλαιὰ διαθήκη",
+    "disambiguation_note": null,
+    "date_range": "c. 1446 BC; superseded by the New Covenant in Christ",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 5,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Exodus",
+        "chapter": 24,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 8,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "COVENANT",
+        "relationship_type": "associated_with",
+        "relationship_label": "type of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      },
+      {
+        "to_entity_id": "NEW_COVENANT",
+        "relationship_type": "succeeded_by",
+        "relationship_label": "succeeded by",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Covenant",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "IMAGO_DEI",
+    "entity_type": "concept",
+    "canonical_name": "Image of God",
+    "aliases": [
+      "Imago Dei",
+      "Tselem Elohim",
+      "God's Image"
+    ],
+    "quick_glance": "The biblical teaching that human beings were created 'in the image and likeness of God' (Genesis 1:26–27), distinguishing humanity from all other creatures; the concept grounds human dignity, the prohibition of murder, and in the NT is applied to Christ as the perfect image of God.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "צֶלֶם אֱלֹהִים",
+    "greek_name": "εἰκὼν τοῦ θεοῦ",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 1,
+        "verse_start": 26,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Genesis",
+        "chapter": 9,
+        "verse_start": 6,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 4,
+        "verse_start": 4,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 3,
+        "verse_start": 10,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Image",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "NEW_CREATION",
+    "entity_type": "concept",
+    "canonical_name": "New Creation",
+    "aliases": [
+      "Ktisis Kaine",
+      "New Heaven and New Earth"
+    ],
+    "quick_glance": "The eschatological renewal of all creation promised in Isaiah (65:17) and realized in the NT both individually ('if anyone is in Christ, he is a new creation,' 2 Corinthians 5:17) and cosmically in the final restoration when God will make all things new.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "בְּרִיאָה חֲדָשָׁה",
+    "greek_name": "καινὴ κτίσις",
+    "disambiguation_note": null,
+    "date_range": "OT prophecy through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Isaiah",
+        "chapter": 65,
+        "verse_start": 17,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 5,
+        "verse_start": 17,
+        "verse_end": 17,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Galatians",
+        "chapter": 6,
+        "verse_start": 15,
+        "verse_end": 15,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 21,
+        "verse_start": 1,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: New Creation",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BODY_OF_CHRIST",
+    "entity_type": "concept",
+    "canonical_name": "Body of Christ",
+    "aliases": [
+      "Soma Christou",
+      "The Church as Body"
+    ],
+    "quick_glance": "Paul's primary metaphor for the church as a unified organism with diverse members: Christ is the head and believers are the members, each with distinct gifts contributing to the whole; the metaphor grounds both the unity and diversity of the Christian community.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "σῶμα Χριστοῦ",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 12,
+        "verse_start": 4,
+        "verse_end": 5,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 12,
+        "verse_start": 12,
+        "verse_end": 27,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 4,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Colossians",
+        "chapter": 1,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "CHURCH",
+        "relationship_type": "associated_with",
+        "relationship_label": "describes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Church",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SPIRITUAL_GIFTS",
+    "entity_type": "concept",
+    "canonical_name": "Spiritual Gifts",
+    "aliases": [
+      "Charismata",
+      "Gifts of the Spirit",
+      "Pneumatika"
+    ],
+    "quick_glance": "Special abilities granted by the Holy Spirit to believers for the building up of the church; Paul lists various gifts (prophecy, teaching, healing, tongues, administration) in Romans 12, 1 Corinthians 12, and Ephesians 4, emphasizing that all gifts are for common service.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "χαρίσματα",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Romans",
+        "chapter": 12,
+        "verse_start": 6,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 12,
+        "verse_start": 4,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Ephesians",
+        "chapter": 4,
+        "verse_start": 11,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Gifts, Spiritual",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "AGAPE_LOVE",
+    "entity_type": "concept",
+    "canonical_name": "Agape Love",
+    "aliases": [
+      "Agape",
+      "Brotherly Love",
+      "Love of God"
+    ],
+    "quick_glance": "The Greek word agape (used primarily in NT and LXX) denotes a self-giving, unconditional, covenant love; in 1 Corinthians 13, Paul describes it as the greatest gift, and in 1 John 4, God's own nature is defined as love (agape).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אַהֲבָה",
+    "greek_name": "ἀγάπη",
+    "disambiguation_note": "Distinct from philos (friendship love) and eros (romantic love); agape emphasizes will and commitment over emotion.",
+    "date_range": "Biblical concept; prominent in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "John",
+        "chapter": 3,
+        "verse_start": 16,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 13,
+        "verse_start": 1,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 John",
+        "chapter": 4,
+        "verse_start": 7,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Love",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "GREAT_COMMISSION",
+    "entity_type": "concept",
+    "canonical_name": "Great Commission",
+    "aliases": [
+      "Commission to Make Disciples",
+      "Mission Mandate"
+    ],
+    "quick_glance": "Jesus' final command to his disciples (Matthew 28:18–20) to go and make disciples of all nations, baptizing them and teaching them to obey his commands—grounded in his universal authority and accompanied by his promise of continual presence.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": null,
+    "greek_name": "μαθητεύσατε πάντα τὰ ἔθνη",
+    "disambiguation_note": null,
+    "date_range": "c. AD 30",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 28,
+        "verse_start": 18,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Mark",
+        "chapter": 16,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 1,
+        "verse_start": 8,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "BAPTISM",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Mission",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "LORD_KYRIOS",
+    "entity_type": "concept",
+    "canonical_name": "Lord (Kyrios)",
+    "aliases": [
+      "Kyrios",
+      "Adonai",
+      "Master"
+    ],
+    "quick_glance": "In the Septuagint, kyrios ('Lord') translates the divine name YHWH, making the early Christian confession 'Jesus is Lord' (Romans 10:9) an implicit claim to Jesus' divine identity; the title also carried political resonance in the Roman world, where 'Caesar is Lord' was a competing allegiance.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אֲדֹנָי",
+    "greek_name": "κύριος",
+    "disambiguation_note": null,
+    "date_range": "OT through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Psalm",
+        "chapter": 110,
+        "verse_start": 1,
+        "verse_end": 1,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 10,
+        "verse_start": 9,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 2,
+        "verse_start": 9,
+        "verse_end": 11,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Lord",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "WITNESS_MARTYR",
+    "entity_type": "concept",
+    "canonical_name": "Witness",
+    "aliases": [
+      "Martys",
+      "Martyr",
+      "Testimony"
+    ],
+    "quick_glance": "The Greek word martys ('witness') describes one who testifies to what they have seen and heard; in the NT, the apostles were 'witnesses of the resurrection,' and the word evolved to describe those who bore witness by dying for their faith, giving the English word 'martyr.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "עֵד",
+    "greek_name": "μάρτυς",
+    "disambiguation_note": null,
+    "date_range": "NT era, 1st century AD",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Acts",
+        "chapter": 1,
+        "verse_start": 8,
+        "verse_end": 8,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Acts",
+        "chapter": 22,
+        "verse_start": 20,
+        "verse_end": 20,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 2,
+        "verse_start": 13,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Martyr",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "BINDING_AND_LOOSING",
+    "entity_type": "concept",
+    "canonical_name": "Binding and Loosing",
+    "aliases": [
+      "Keys of the Kingdom",
+      "Asar and Shara"
+    ],
+    "quick_glance": "A rabbinic legal formula for declaring something forbidden ('binding') or permitted ('loosing'); Jesus grants this authority to Peter and to the church (Matthew 16:19; 18:18), likely in the context of admitting or excluding from the community and authoritative doctrinal rulings.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אָסַר וְשֵׁרֵא",
+    "greek_name": "δέω καὶ λύω",
+    "disambiguation_note": null,
+    "date_range": "Second Temple period through NT era",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Matthew",
+        "chapter": 16,
+        "verse_start": 19,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 18,
+        "verse_start": 18,
+        "verse_end": 18,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Smith's Bible Dictionary",
+        "source_ref": "Entry: Keys",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "KINGDOM_OF_PRIESTS",
+    "entity_type": "concept",
+    "canonical_name": "Kingdom of Priests",
+    "aliases": [
+      "Holy Nation",
+      "Royal Priesthood",
+      "Mamlekhet Kohanim"
+    ],
+    "quick_glance": "God's designation of Israel at Sinai as 'a kingdom of priests and a holy nation' (Exodus 19:6), meaning they were to serve as mediators of God's presence to the surrounding nations; in 1 Peter 2:9, this identity is applied to the church as 'a royal priesthood, a holy nation.'",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "מַמְלֶכֶת כֹּהֲנִים",
+    "greek_name": "βασίλειον ἱεράτευμα",
+    "disambiguation_note": null,
+    "date_range": "Instituted at Sinai, c. 1446 BC; applied to the church in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Exodus",
+        "chapter": 19,
+        "verse_start": 5,
+        "verse_end": 6,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 2,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Revelation",
+        "chapter": 5,
+        "verse_start": 9,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "CHOSEN_PEOPLE",
+        "relationship_type": "associated_with",
+        "relationship_label": "aspect of",
+        "bidirectional": 0,
+        "source": "biblical_text"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Priest",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "PRAYER",
+    "entity_type": "concept",
+    "canonical_name": "Prayer",
+    "aliases": [
+      "Tefillah",
+      "Proseuche",
+      "Petition",
+      "Intercession"
+    ],
+    "quick_glance": "Communication addressed to God—encompassing praise, thanksgiving, confession, petition, and intercession—practiced by individuals and communities throughout the Bible; Jesus taught a model prayer (the Lord's Prayer) and emphasized the importance of persistent, trusting prayer.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "תְּפִלָּה",
+    "greek_name": "προσευχή",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "1 Kings",
+        "chapter": 8,
+        "verse_start": 22,
+        "verse_end": 53,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 6,
+        "verse_start": 9,
+        "verse_end": 13,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Philippians",
+        "chapter": 4,
+        "verse_start": 6,
+        "verse_end": 7,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Prayer",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "ESCHATOLOGY",
+    "entity_type": "concept",
+    "canonical_name": "Eschatology",
+    "aliases": [
+      "Last Things",
+      "End Times",
+      "Acharit HaYamim"
+    ],
+    "quick_glance": "The study or doctrine concerning the 'last things'—the final events of history including the return of Christ, resurrection of the dead, final judgment, and renewal of creation; the NT presents eschatology as both 'already' (inaugurated in Christ's resurrection) and 'not yet' (awaiting final consummation).",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "אַחֲרִית הַיָּמִים",
+    "greek_name": "ἔσχατα",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout; developed in NT",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Isaiah",
+        "chapter": 2,
+        "verse_start": 2,
+        "verse_end": 4,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Matthew",
+        "chapter": 24,
+        "verse_start": 3,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Corinthians",
+        "chapter": 15,
+        "verse_start": 20,
+        "verse_end": 28,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [
+      {
+        "to_entity_id": "PAROUSIA",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "dictionary"
+      },
+      {
+        "to_entity_id": "LAST_JUDGMENT",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "dictionary"
+      },
+      {
+        "to_entity_id": "RESURRECTION",
+        "relationship_type": "includes",
+        "relationship_label": "includes",
+        "bidirectional": 0,
+        "source": "dictionary"
+      }
+    ],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Last Things",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "SIN",
+    "entity_type": "concept",
+    "canonical_name": "Sin",
+    "aliases": [
+      "Hamartia",
+      "Transgression",
+      "Missing the Mark"
+    ],
+    "quick_glance": "Any thought, word, deed, or state of being that falls short of God's holy standard, violates his commands, or misses the purpose for which humanity was created; in the NT hamartia ('missing the mark') is the most common term, with Paul arguing that all humanity is 'under sin' and in need of the redemption Christ provides.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "חֵטְא",
+    "greek_name": "ἁμαρτία",
+    "disambiguation_note": null,
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Genesis",
+        "chapter": 3,
+        "verse_start": 1,
+        "verse_end": 19,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Romans",
+        "chapter": 3,
+        "verse_start": 23,
+        "verse_end": 23,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 John",
+        "chapter": 1,
+        "verse_start": 8,
+        "verse_end": 10,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Sin",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  },
+  {
+    "id": "HOLINESS",
+    "entity_type": "concept",
+    "canonical_name": "Holiness",
+    "aliases": [
+      "Qadosh",
+      "Hagios",
+      "Set Apart",
+      "Sanctity"
+    ],
+    "quick_glance": "The quality of being set apart from the common and dedicated to God; holiness is first and fundamentally a divine attribute ('Holy, holy, holy is the LORD of hosts,' Isaiah 6:3) and secondarily a call to his people to reflect that character in their lives.",
+    "summary": "",
+    "full_profile": "",
+    "hebrew_name": "קְדֻשָּׁה",
+    "greek_name": "ἁγιωσύνη",
+    "disambiguation_note": "Distinct from sanctification (the process of becoming holy); holiness can refer to God's essential nature, the status of persons/objects set apart for God, and the ethical call to holy living.",
+    "date_range": "Biblical concept throughout",
+    "geographic_context": null,
+    "source_verified": 1,
+    "verse_refs": [
+      {
+        "book": "Leviticus",
+        "chapter": 19,
+        "verse_start": 2,
+        "verse_end": 2,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 6,
+        "verse_start": 3,
+        "verse_end": 3,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "Hebrews",
+        "chapter": 12,
+        "verse_start": 14,
+        "verse_end": 14,
+        "confidence": "high",
+        "source": "biblical_text"
+      },
+      {
+        "book": "1 Peter",
+        "chapter": 1,
+        "verse_start": 15,
+        "verse_end": 16,
+        "confidence": "high",
+        "source": "biblical_text"
+      }
+    ],
+    "relationships": [],
+    "citations": [
+      {
+        "source_name": "Easton's Bible Dictionary",
+        "source_ref": "Entry: Holiness",
+        "source_url": null,
+        "content_field": "quick_glance",
+        "excerpt": null
+      }
+    ]
+  }
+]
