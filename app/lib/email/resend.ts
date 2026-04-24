@@ -102,6 +102,52 @@ export async function sendAdminLoginCode(options: {
   });
 }
 
+export async function sendPasswordResetEmail(options: {
+  to: string;
+  displayName: string;
+  resetLink: string;
+}): Promise<void> {
+  const name = escape(options.displayName);
+
+  const html = renderEmailShell({
+    previewText: `Reset your Koinar password. This link expires in 30 minutes.`,
+    body: `
+      <p style="margin:0 0 16px 0;">Hi ${name},</p>
+      <p style="margin:0 0 16px 0;">
+        We received a request to reset the password on your Koinar account.
+        Tap below to choose a new one:
+      </p>
+      ${renderEmailButton({ href: options.resetLink, label: "Reset your password" })}
+      <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
+        This link expires in 30 minutes and can only be used once. If the
+        button doesn't work, paste this link into your browser:<br />
+        <a href="${options.resetLink}" style="color:#5c564a;word-break:break-all;">${options.resetLink}</a>
+      </p>
+      <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
+        If you didn't request this, you can ignore this email — your password
+        won't change until you click the link and set a new one.
+      </p>
+    `,
+  });
+
+  const text =
+    `Hi ${options.displayName},\n\n` +
+    `We received a request to reset the password on your Koinar account.\n\n` +
+    `Reset your password: ${options.resetLink}\n\n` +
+    `This link expires in 30 minutes and can only be used once.\n\n` +
+    `If you didn't request this, you can ignore this email — your password ` +
+    `won't change until you click the link and set a new one.\n\n` +
+    `— Koinar`;
+
+  await resend.emails.send({
+    from: "Koinar <noreply@koinar.app>",
+    to: options.to,
+    subject: "Reset your Koinar password",
+    html,
+    text,
+  });
+}
+
 export async function sendApprovalEmail(options: {
   to: string;
   name: string;

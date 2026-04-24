@@ -237,6 +237,94 @@ export function deleteUserSessions(userId: number): void {
   getDb().prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
 }
 
+// ─── Password reset tokens ────────────────────────────────────────────────────
+
+/**
+ * Insert a new password-reset token. `tokenHash` MUST be the sha256 digest
+ * of the raw 32-byte token — the raw token only ever lives in the email
+ * that the server just sent. `expiresAt` is an ISO timestamp.
+ */
+export function createPasswordResetToken(
+  userId: number,
+  tokenHash: string,
+  expiresAt: string
+): void {
+  getDb()
+    .prepare(
+      `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at)
+       VALUES (?, ?, ?)`
+    )
+    .run(userId, tokenHash, expiresAt);
+}
+
+/**
+ * Look up an unconsumed, unexpired token by its hash. Used by the reset
+ * page to pre-validate before rendering the form, and by the POST to
+ * verify right before consuming. Returns null (not throw) on miss so
+ * the caller can return a generic "invalid or expired" response.
+ */
+export function findActivePasswordResetToken(
+  tokenHash: string
+): { id: number; user_id: number } | null {
+  return (
+    (getDb()
+      .prepare(
+        `SELECT id, user_id FROM password_reset_tokens
+         WHERE token_hash = ? AND consumed_at IS NULL
+           AND expires_at > datetime('now')`
+      )
+      .get(tokenHash) as { id: number; user_id: number } | undefined) ?? null
+  );
+}
+
+/**
+ * Atomically consume the token AND invalidate every other outstanding
+ * token for the same user in one transaction. Returns true if this call
+ * was the one that consumed it (so the caller can proceed to update the
+ * password); false if it was already consumed by a racing request.
+ *
+ * The caller should hold on to `id` and `userId` from a preceding
+ * findActivePasswordResetToken() call; we re-verify consumed_at IS NULL
+ * in the UPDATE's WHERE so a race between two tabs doesn't double-consume.
+ */
+export function consumePasswordResetToken(
+  id: number,
+  userId: number
+): boolean {
+  const db = getDb();
+  return db.transaction(() => {
+    const claimed = db
+      .prepare(
+        `UPDATE password_reset_tokens SET consumed_at = datetime('now')
+         WHERE id = ? AND consumed_at IS NULL`
+      )
+      .run(id);
+    if (claimed.changes !== 1) return false;
+    // Burn every other live token for this user so a second email link
+    // (e.g. the user requested two resets) can't be used after one succeeds.
+    db.prepare(
+      `UPDATE password_reset_tokens SET consumed_at = datetime('now')
+       WHERE user_id = ? AND consumed_at IS NULL`
+    ).run(userId);
+    return true;
+  })();
+}
+
+/** How many reset tokens has this user requested in the last `minutes`? */
+export function countRecentPasswordResetTokens(
+  userId: number,
+  minutes: number
+): number {
+  return (
+    (getDb()
+      .prepare(
+        `SELECT COUNT(*) AS c FROM password_reset_tokens
+         WHERE user_id = ? AND created_at > datetime('now', ?)`
+      )
+      .get(userId, `-${minutes} minutes`) as { c: number }).c
+  );
+}
+
 // ─── Invite code queries ──────────────────────────────────────────────────────
 
 export function getInviteCode(code: string): InviteCode | null {

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getUserByEmail, getUserByUsername } from "@/lib/db/queries";
+import { getUserByEmail, getUserByUsername, normalizeEmail } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           `INSERT INTO users (username, email, password_hash, display_name, is_approved)
            VALUES (?, ?, ?, ?, ?)`
         )
-        .run(username, email, passwordHash, entry.name, 1)
+        .run(username, normalizeEmail(email), passwordHash, entry.name, 1)
         .lastInsertRowid as number;
     })();
 

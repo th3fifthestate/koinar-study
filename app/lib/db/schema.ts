@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 15;
+export const SCHEMA_VERSION = 16;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -66,6 +66,21 @@ CREATE TABLE IF NOT EXISTS admin_login_codes (
   expires_at TEXT NOT NULL,
   attempts INTEGER NOT NULL DEFAULT 0,
   consumed INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Forgot-password flow. We store sha256(token), never the raw token — if
+-- the row ever leaks (logs, backups, an errant SELECT), the attacker can't
+-- reverse it back into a usable link. Tokens are 32 random bytes (256 bits
+-- of entropy), single-use (consumed_at locks further use), and short-lived
+-- (30-minute expires_at). On successful reset we invalidate every other
+-- outstanding token for that user_id in the same transaction.
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -464,6 +479,8 @@ CREATE INDEX IF NOT EXISTS idx_invite_codes_invitee_email ON invite_codes(invite
 CREATE INDEX IF NOT EXISTS idx_email_verification_invite ON email_verification_codes(invite_code_id);
 CREATE INDEX IF NOT EXISTS idx_admin_login_codes_user ON admin_login_codes(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_login_codes_token ON admin_login_codes(pending_token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_user ON password_reset_tokens(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_password_reset_hash ON password_reset_tokens(token_hash);
 CREATE INDEX IF NOT EXISTS idx_email_verification_email ON email_verification_codes(email);
 CREATE INDEX IF NOT EXISTS idx_waitlist_status ON waitlist(status);
 CREATE INDEX IF NOT EXISTS idx_waitlist_email ON waitlist(email);

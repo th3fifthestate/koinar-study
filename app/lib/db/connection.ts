@@ -358,6 +358,22 @@ function runMigration(database: Database.Database): void {
       ).run();
     }
 
+    // v15 → v16: password_reset_tokens table for forgot-password flow.
+    // Link-based (32-byte opaque token hashed with sha256 before storage).
+    // No backfill required — new table, no existing rows.
+    if (currentVersion < 16) {
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS password_reset_tokens (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          token_hash TEXT NOT NULL UNIQUE,
+          expires_at TEXT NOT NULL,
+          consumed_at TEXT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

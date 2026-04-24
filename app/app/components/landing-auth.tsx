@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/ui/password-input";
 
-type View = "buttons" | "join" | "signin";
+type View = "buttons" | "join" | "signin" | "forgot";
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 const inputClass =
@@ -233,7 +233,140 @@ function JoinForm({ onBack }: { onBack: () => void }) {
   );
 }
 
-function SignInForm({ onBack }: { onBack: () => void }) {
+function ForgotForm({
+  onBack,
+}: {
+  onBack: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const firstInputRef = useRef<HTMLInputElement>(null);
+  const statusRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => firstInputRef.current?.focus(), 520);
+    return () => clearTimeout(t);
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      // Server always returns 200 regardless of whether the email exists,
+      // so we don't branch on the response body. Any non-200 means rate-
+      // limit or malformed input.
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+      setStatus(res.ok ? "success" : "error");
+    } catch {
+      setStatus("error");
+    }
+    setTimeout(() => statusRef.current?.focus(), 100);
+  }
+
+  if (status === "success") {
+    return (
+      <AnimatedView>
+        <div
+          ref={statusRef}
+          tabIndex={-1}
+          role="status"
+          aria-live="polite"
+          className="flex flex-col items-center gap-4 text-center outline-none max-w-[360px]"
+          style={{ animation: "sageGlow 1.5s ease-out" }}
+        >
+          <div className="h-px w-10 bg-[rgba(168,184,160,0.5)]" />
+          <p className="font-display text-[1.6rem] italic font-normal leading-[1.25] text-[rgba(247,246,243,0.92)]">
+            Check your email.
+          </p>
+          <p className="font-body text-[0.9rem] leading-relaxed text-[rgba(247,246,243,0.55)]">
+            If that address has a Koinar account, we just sent a password
+            reset link. It expires in 30 minutes and can only be used once.
+          </p>
+          <div className="h-px w-10 bg-[rgba(168,184,160,0.5)] mt-1" />
+          <button
+            type="button"
+            onClick={onBack}
+            className={backLinkClass}
+            style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "300ms" }}
+          >
+            Back to sign in
+          </button>
+        </div>
+      </AnimatedView>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col items-center gap-4 w-full max-w-[320px] md:max-w-[340px]"
+    >
+      <p
+        className="font-body text-[0.85rem] text-[rgba(247,246,243,0.75)] text-center"
+        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "0ms" }}
+      >
+        Enter your email and we'll send a link to set a new password.
+      </p>
+
+      <div className={fieldWrapClass} style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "80ms" }}>
+        <label htmlFor="forgot-email" className={labelClass}>Email</label>
+        <input
+          id="forgot-email"
+          ref={firstInputRef}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+          maxLength={254}
+          autoComplete="email"
+          spellCheck={false}
+          disabled={status === "loading"}
+          className={inputClass}
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className={buttonClass}
+        style={{
+          ...(status === "loading" ? shimmerStyle : {}),
+          animation: status === "loading" ? shimmerStyle.animation : "authFadeIn 500ms ease-out both",
+          animationDelay: status === "loading" ? undefined : "160ms",
+        }}
+      >
+        {status === "loading" ? "Sending\u2026" : "Send reset link"}
+      </button>
+
+      {status === "error" && (
+        <p
+          ref={statusRef}
+          tabIndex={-1}
+          role="alert"
+          className="font-body text-[0.7rem] font-medium text-warmth outline-none"
+        >
+          Something went wrong. Please try again in a moment.
+        </p>
+      )}
+
+      <button
+        type="button"
+        onClick={onBack}
+        className={backLinkClass}
+        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "220ms" }}
+      >
+        Back to sign in
+      </button>
+    </form>
+  );
+}
+
+function SignInForm({ onBack, onForgot }: { onBack: () => void; onForgot: () => void }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -472,9 +605,18 @@ function SignInForm({ onBack }: { onBack: () => void }) {
 
       <button
         type="button"
+        onClick={onForgot}
+        className={backLinkClass}
+        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "200ms" }}
+      >
+        Forgot password?
+      </button>
+
+      <button
+        type="button"
         onClick={onBack}
         className={backLinkClass}
-        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "220ms" }}
+        style={{ animation: "authFadeIn 500ms ease-out both", animationDelay: "240ms" }}
       >
         Back
       </button>
@@ -516,7 +658,18 @@ export function LandingAuth() {
   if (view === "signin") {
     return (
       <div style={wrapStyle} key="signin">
-        <SignInForm onBack={() => transitionTo("buttons")} />
+        <SignInForm
+          onBack={() => transitionTo("buttons")}
+          onForgot={() => transitionTo("forgot")}
+        />
+      </div>
+    );
+  }
+
+  if (view === "forgot") {
+    return (
+      <div style={wrapStyle} key="forgot">
+        <ForgotForm onBack={() => transitionTo("signin")} />
       </div>
     );
   }

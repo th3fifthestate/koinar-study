@@ -14,6 +14,23 @@ export function AccountTab({ settings }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'saving' | 'error'>('idle');
   const [error, setError] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    // Confirm because logging out on an admin account means redoing the
+    // email-2FA dance to sign back in. Cheap UX insurance.
+    const ok = window.confirm('Sign out of Koinar on this device?');
+    if (!ok) return;
+    setSigningOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // Logout is best-effort on the network path; the cookie's being
+      // cleared server-side and a hard navigation follows either way.
+    }
+    // Hard navigation to clear any client-cached user state.
+    window.location.href = '/';
+  }
 
   function validate(): string | null {
     if (newPassword.length < 8) return 'New password must be at least 8 characters';
@@ -122,6 +139,24 @@ export function AccountTab({ settings }: Props) {
           </p>
         )}
       </form>
+
+      <div className="pt-6 border-t border-stone-200">
+        <h2 className="font-display text-xl font-normal text-stone-900 mb-1">
+          Sign out
+        </h2>
+        <p className="font-body text-sm text-stone-500 mb-3">
+          End your session on this device. You'll need to sign in again to
+          continue.
+        </p>
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={signingOut}
+          className="font-body text-base text-stone-700 underline underline-offset-2 hover:text-stone-900 transition-colors disabled:opacity-50"
+        >
+          {signingOut ? 'Signing out\u2026' : 'Sign out'}
+        </button>
+      </div>
     </div>
   );
 }

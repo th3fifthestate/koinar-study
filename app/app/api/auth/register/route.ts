@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getInviteCode, getUserByEmail, getUserByUsername, createUser } from "@/lib/db/queries";
+import { getInviteCode, getUserByEmail, getUserByUsername, createUser, normalizeEmail } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { getDb } from "@/lib/db/connection";
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
             `INSERT INTO users (username, email, password_hash, display_name, invited_by, is_approved)
              VALUES (?, ?, ?, ?, ?, ?)`
           )
-          .run(username, email, passwordHash, invite.invitee_name, invite.created_by, 1)
+          .run(username, normalizeEmail(email), passwordHash, invite.invitee_name, invite.created_by, 1)
           .lastInsertRowid as number;
 
         const claimed = db
