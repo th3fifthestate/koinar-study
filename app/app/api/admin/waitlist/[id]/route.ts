@@ -28,7 +28,12 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ error: "action must be 'approve' or 'deny'" }, { status: 400 });
