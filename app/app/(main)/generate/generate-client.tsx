@@ -12,6 +12,7 @@ import { StreamingHold } from './components/streaming-hold';
 import { CompletionCard } from './components/completion-card';
 import { ErrorState } from './components/error-state';
 import { NoEntitlement } from './components/no-entitlement';
+import { CreditsBanner } from './components/credits-banner';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -127,6 +128,9 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
 
       {/* Composition well */}
       <div className="max-w-2xl mx-auto px-6 pb-16">
+        {/* Credits banner (gift-code users only) */}
+        <CreditsBanner entitlement={entitlement} />
+
         {/* Prompt field */}
         <div className="mb-8">
           <PromptField

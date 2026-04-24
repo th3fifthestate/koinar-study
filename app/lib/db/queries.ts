@@ -680,7 +680,8 @@ export function getStudies(opts: GetStudiesOptions = {}): { studies: StudyListIt
       s.id, s.title, s.slug, s.summary, s.format_type, s.translation_used,
       s.is_public, s.is_featured, s.created_at, s.updated_at,
       c.name AS category_name, c.slug AS category_slug,
-      u.display_name AS author_display_name, u.username AS author_username,
+      CASE WHEN u.is_admin = 1 THEN 'Koinar Team' ELSE u.display_name END AS author_display_name,
+      u.username AS author_username,
       (SELECT image_url FROM study_images si WHERE si.study_id = s.id ORDER BY si.sort_order LIMIT 1) AS featured_image_url,
       (SELECT COUNT(*) FROM favorites f WHERE f.study_id = s.id) AS favorite_count
     FROM studies s
@@ -730,7 +731,8 @@ export function getStudyDetail(slug: string, userId?: number): StudyDetail | nul
       s.is_public, s.is_featured,
       s.created_by, s.category_id, s.generation_metadata, s.created_at, s.updated_at,
       c.name AS category_name, c.slug AS category_slug,
-      u.display_name AS author_display_name, u.username AS author_username,
+      CASE WHEN u.is_admin = 1 THEN 'Koinar Team' ELSE u.display_name END AS author_display_name,
+      u.username AS author_username,
       (SELECT image_url FROM study_images si WHERE si.study_id = s.id ORDER BY si.sort_order LIMIT 1) AS featured_image_url,
       (SELECT COUNT(*) FROM favorites f WHERE f.study_id = s.id) AS favorite_count,
       (SELECT COUNT(*) FROM annotations a WHERE a.study_id = s.id AND a.is_public = 1) AS annotation_count

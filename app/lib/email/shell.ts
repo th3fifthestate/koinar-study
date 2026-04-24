@@ -49,7 +49,7 @@ export function renderEmailShell({
   const defaultFooter = `
     You're receiving this because someone invited you to Koinar —
     Bible study in deep fellowship.<br />
-    Questions? Reply to this email or write
+    Questions? Write
     <a href="mailto:hello@koinar.app" style="color:${PALETTE.mutedFg};text-decoration:underline;">hello@koinar.app</a>.
   `;
 

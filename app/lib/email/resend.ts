@@ -165,7 +165,7 @@ export async function sendApprovalEmail(options: {
       <p style="margin:0 0 8px 0;">Create your account to get started:</p>
       ${renderEmailButton({ href: options.registrationLink, label: "Create your account" })}
       <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
-        This link expires in 7 days. If it expires, reply to this email and we'll send a new one.
+        This link expires in 7 days. If it expires, write hello@koinar.app and we'll send a new one.
       </p>
     `,
   });
@@ -174,13 +174,64 @@ export async function sendApprovalEmail(options: {
     `${options.name},\n\n` +
     `Your request to join Koinar has been approved. We're glad you're here.\n\n` +
     `Create your account: ${options.registrationLink}\n\n` +
-    `This link expires in 7 days. If it expires, reply to this email and we'll send a new one.\n\n` +
+    `This link expires in 7 days. If it expires, write hello@koinar.app and we'll send a new one.\n\n` +
     `— Koinar`;
 
   await resend.emails.send({
     from: "Koinar <noreply@koinar.app>",
     to: options.to,
     subject: "Your request to join Koinar has been approved",
+    html,
+    text,
+  });
+}
+
+// Notification email the admin sends when a pre-assigned gift code is
+// already pinned to a user's account. The credits are already redeemable
+// on /generate — this mail just tells the user they're there. Deliberately
+// does NOT carry the raw code string, because the code is unnecessary to
+// the user (it's already linked to their account) and exposing it in plain
+// email widens the blast radius if the inbox is compromised.
+export async function sendGiftCodeNotification(options: {
+  to: string;
+  displayName: string;
+  formatLabel: string; // e.g. "Standard"
+  credits: number; // remaining count at time of send
+  generateLink: string; // absolute URL to /generate
+}): Promise<void> {
+  const name = escape(options.displayName);
+  const format = escape(options.formatLabel);
+  const plural = options.credits === 1 ? "credit" : "credits";
+
+  const html = renderEmailShell({
+    previewText: `You have ${options.credits} ${format} study ${plural} ready on Koinar.`,
+    body: `
+      <p style="margin:0 0 16px 0;">Hi ${name},</p>
+      <p style="margin:0 0 16px 0;">
+        You have <strong style="font-weight:600;">${options.credits} ${format} study ${plural}</strong>
+        ready to use on Koinar. No code to enter — we've already linked them
+        to your account.
+      </p>
+      <p style="margin:0 0 8px 0;">Start a study whenever you're ready:</p>
+      ${renderEmailButton({ href: options.generateLink, label: "Begin a study" })}
+      <p style="margin:16px 0 0 0;font-size:14px;color:#5c564a;">
+        If the button doesn't work, paste this link into your browser:<br />
+        <a href="${options.generateLink}" style="color:#5c564a;word-break:break-all;">${options.generateLink}</a>
+      </p>
+    `,
+  });
+
+  const text =
+    `Hi ${options.displayName},\n\n` +
+    `You have ${options.credits} ${options.formatLabel} study ${plural} ready to use on Koinar. ` +
+    `No code to enter — we've already linked them to your account.\n\n` +
+    `Start a study: ${options.generateLink}\n\n` +
+    `— Koinar\nhello@koinar.app`;
+
+  await resend.emails.send({
+    from: "Koinar <noreply@koinar.app>",
+    to: options.to,
+    subject: `Your ${options.formatLabel} study ${plural} are ready on Koinar`,
     html,
     text,
   });

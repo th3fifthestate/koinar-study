@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Ban, Trash2, Mail } from 'lucide-react';
 
 interface AdminGiftCodeDTO {
   id: number;
@@ -76,6 +77,11 @@ export default function GiftCodesPage() {
     max_uses: '1',
     expires_at: '',
   });
+
+  // Pending row state: multiple admins/tabs shouldn't share a single flag.
+  const [pending, setPending] = useState<
+    Record<number, 'invalidate' | 'delete' | 'notify' | undefined>
+  >({});
 
   const fetchCodes = useCallback(async (page: number) => {
     setLoading(true);
@@ -149,6 +155,60 @@ export default function GiftCodesPage() {
     }
   };
 
+  const invalidateCode = async (c: AdminGiftCodeDTO) => {
+    if (!window.confirm(`Revoke all remaining uses on this code? @${c.recipient_username} currently has ${c.uses_remaining} left.`)) return;
+    setPending((p) => ({ ...p, [c.id]: 'invalidate' }));
+    try {
+      const res = await fetch(`/api/admin/gift-codes/${c.id}`, { method: 'PATCH' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error ?? 'Failed to invalidate');
+      }
+      toast.success('Gift code invalidated');
+      await fetchCodes(pagination.page);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to invalidate');
+    } finally {
+      setPending((p) => ({ ...p, [c.id]: undefined }));
+    }
+  };
+
+  const deleteCode = async (c: AdminGiftCodeDTO) => {
+    if (!window.confirm(`Permanently delete this unused gift code for @${c.recipient_username}?`)) return;
+    setPending((p) => ({ ...p, [c.id]: 'delete' }));
+    try {
+      const res = await fetch(`/api/admin/gift-codes/${c.id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error ?? 'Failed to delete');
+      }
+      toast.success('Gift code deleted');
+      await fetchCodes(pagination.page);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete');
+    } finally {
+      setPending((p) => ({ ...p, [c.id]: undefined }));
+    }
+  };
+
+  const notifyRecipient = async (c: AdminGiftCodeDTO) => {
+    if (!window.confirm(`Email @${c.recipient_username} that their credits are ready?`)) return;
+    setPending((p) => ({ ...p, [c.id]: 'notify' }));
+    try {
+      const res = await fetch(`/api/admin/gift-codes/${c.id}/notify`, { method: 'POST' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data as { error?: string }).error ?? 'Failed to notify');
+      }
+      toast.success('Notification sent');
+      await fetchCodes(pagination.page);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to notify');
+    } finally {
+      setPending((p) => ({ ...p, [c.id]: undefined }));
+    }
+  };
+
   const columns: Column<AdminGiftCodeDTO>[] = [
     {
       key: 'code',
@@ -204,6 +264,64 @@ export default function GiftCodesPage() {
           {c.expires_at ? new Date(c.expires_at).toLocaleDateString() : '—'}
         </span>
       ),
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (c) => {
+        const isDepleted = c.uses_remaining === 0;
+        const isFullyUnused = c.uses_remaining === c.max_uses;
+        const rowPending = pending[c.id];
+        return (
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              onClick={() => notifyRecipient(c)}
+              disabled={isDepleted || Boolean(rowPending)}
+              title={
+                isDepleted
+                  ? 'No credits remain'
+                  : 'Email the recipient a reminder'
+              }
+            >
+              <Mail className="h-3 w-3 mr-1" />
+              {rowPending === 'notify' ? 'Sending…' : 'Notify'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              onClick={() => invalidateCode(c)}
+              disabled={isDepleted || Boolean(rowPending)}
+              title={
+                isDepleted
+                  ? 'Already depleted'
+                  : 'Zero out remaining uses (row retained for audit)'
+              }
+            >
+              <Ban className="h-3 w-3 mr-1" />
+              {rowPending === 'invalidate' ? 'Working…' : 'Invalidate'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+              onClick={() => deleteCode(c)}
+              disabled={!isFullyUnused || Boolean(rowPending)}
+              title={
+                isFullyUnused
+                  ? 'Delete permanently'
+                  : 'Only unused codes can be deleted'
+              }
+            >
+              <Trash2 className="h-3 w-3 mr-1" />
+              {rowPending === 'delete' ? 'Working…' : 'Delete'}
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
