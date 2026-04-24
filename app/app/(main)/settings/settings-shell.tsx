@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { SessionData } from '@/lib/auth/session';
 import type { UserSettings, InviteRow } from '@/lib/db/types';
 import { ProfileTab } from './tabs/profile-tab';
@@ -42,6 +42,23 @@ export function SettingsShell({
     : BASE_TABS;
   const activeTab = (tabs.find(t => t.id === initialTab)?.id ?? 'profile') as TabId;
   const tabRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    // Surfacing sign-out in the shell sidebar so it's discoverable from
+    // every tab — previously it was only on the Account tab. Confirm step
+    // mirrors the account-tab version (admin accounts go through the
+    // email-2FA dance on the way back in).
+    const ok = window.confirm('Sign out of Koinar on this device?');
+    if (!ok) return;
+    setSigningOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // Best-effort; cookie is cleared server-side and we hard-nav anyway.
+    }
+    window.location.href = '/';
+  }
 
   function handleKeyDown(e: React.KeyboardEvent, index: number) {
     let next: number | null = null;
@@ -102,6 +119,18 @@ export function SettingsShell({
                 {tab.label}
               </Link>
             ))}
+
+            {/* Sign-out — not a tab, but lives in the rail so it's findable
+                from anywhere in settings without hunting through Account. */}
+            <div className="hidden md:block md:mt-6 md:pt-4 md:border-t md:border-stone-200" />
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="font-body text-base text-left px-3 py-2 text-stone-500 hover:text-stone-900 transition-colors whitespace-nowrap md:border-l-2 md:border-transparent disabled:opacity-50"
+            >
+              {signingOut ? 'Signing out…' : 'Sign out'}
+            </button>
           </nav>
 
           {/* Active tab panel */}
