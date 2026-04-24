@@ -47,10 +47,12 @@ export function applyHighlights(
 
       const mark = document.createElement('mark');
       mark.dataset.annotationId = String(annotation.id);
-      const colorCfg = HIGHLIGHT_COLORS[annotation.color] || HIGHLIGHT_COLORS.yellow;
 
       // Build class list — Tailwind classes won't work on dynamically created elements,
-      // so we use inline styles for the background and CSS classes for structure
+      // so we use inline styles for the background and CSS classes for structure.
+      // (Historical: we used to look up HIGHLIGHT_COLORS here, but the final
+      // render path uses the inline `colorMap` below. Kept HIGHLIGHT_COLORS
+      // import in place for the popover picker UI.)
       mark.className = 'annotation-mark cursor-pointer rounded-[2px] transition-opacity';
 
       // Community annotations get reduced opacity

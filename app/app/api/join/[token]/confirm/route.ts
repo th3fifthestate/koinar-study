@@ -3,6 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getInviteCode, markVerificationVerified } from "@/lib/db/queries";
 import { getDb } from "@/lib/db/connection";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
+
+// 10 confirm attempts per IP per minute. The DB-level attempt counter caps
+// brute-force to 5 guesses per code; this IP-level limiter stops a
+// distributed-code-guessing pattern (rotate which token you're targeting so
+// you never trip the per-code counter) and the general hammering case.
+// Looser than /verify (3/min) because legitimate users can reasonably
+// mistype a 6-digit code a few times in a session.
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 10 });
 
 const confirmSchema = z.object({
   code: z.string().length(6),
@@ -13,6 +23,14 @@ export async function POST(
   { params }: { params: Promise<{ token: string }> }
 ) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
     const { token } = await params;
     let body: unknown;
     try {
@@ -81,7 +99,7 @@ export async function POST(
       inviteeEmail: invite.invitee_email,
     });
   } catch (err) {
-    console.error("[POST /api/join/[token]/confirm]", err);
+    logger.error({ route: "/api/join/[token]/confirm", err }, "Join confirm failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -31,6 +31,7 @@ import {
 import { sendPasswordResetEmail } from "@/lib/email/resend";
 import { config } from "@/lib/config";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 5 requests per IP per 15 minutes. Deliberately looser than the login
 // rate-limit because legitimate users fat-finger emails and there's no
@@ -118,7 +119,10 @@ export async function POST(request: NextRequest) {
       // Email delivery failed. The token is already written; we log and
       // still return 200 so the client doesn't branch on delivery state.
       // The user will either retry (within the rate-limit) or contact us.
-      console.error("[POST /api/auth/forgot-password] email delivery failed", err);
+      logger.error(
+        { route: "/api/auth/forgot-password", event: "email_delivery_failed", err },
+        "Forgot password email delivery failed"
+      );
     }
 
     console.info(
@@ -126,7 +130,7 @@ export async function POST(request: NextRequest) {
     );
     return NextResponse.json(OK);
   } catch (err) {
-    console.error("[POST /api/auth/forgot-password]", err);
+    logger.error({ route: "/api/auth/forgot-password", err }, "Forgot password failed");
     // Still return 200 on unexpected errors to preserve the enumeration
     // defense. The server-side log is the canonical signal.
     return NextResponse.json(OK);

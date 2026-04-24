@@ -105,7 +105,7 @@ export default async function HomePage({
         <div
           className="border-b border-[var(--stone-200)] dark:border-[var(--stone-700)] relative"
           style={{
-            backgroundColor: '#f5f2ea',
+            backgroundColor: 'var(--surface-home-hero)',
             backgroundImage: `
               radial-gradient(ellipse 1400px 900px at 8% 12%, rgba(196,154,108,0.10), transparent 65%),
               radial-gradient(ellipse 1600px 1100px at 96% 38%, rgba(168,184,160,0.09), transparent 60%),

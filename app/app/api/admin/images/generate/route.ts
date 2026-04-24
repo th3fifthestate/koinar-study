@@ -3,6 +3,8 @@ import { requireAdmin } from "@/lib/auth/middleware";
 import { generateImage, estimateCost, FluxApiError } from "@/lib/images/flux";
 import { getDimensions, type AspectRatio } from "@/lib/images/prompt-builder";
 import { createRateLimiter } from "@/lib/rate-limit";
+import { logAdminAction } from "@/lib/admin/actions";
+import { logger } from "@/lib/logger";
 import { z } from "zod";
 
 // Image generation costs real money per call. Admin-only, but limit spend
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { prompt, aspectRatio, model } = parsed.data;
+  const { studyId, prompt, style, aspectRatio, model } = parsed.data;
   const dimensions = getDimensions(aspectRatio as AspectRatio);
   const cost = estimateCost(1, model);
 
@@ -54,6 +56,16 @@ export async function POST(request: NextRequest) {
 
     const base64 = buffer.toString("base64");
 
+    // Preview only — no DB row yet — but Flux charged for the call, so audit
+    // the money-spending action with the study as target.
+    logAdminAction({
+      adminId: user.userId,
+      actionType: "generate_image_preview",
+      targetType: "study",
+      targetId: studyId,
+      details: { style, aspectRatio, model, taskId, estimatedCost: cost.formatted },
+    });
+
     return NextResponse.json({
       success: true,
       preview: `data:image/png;base64,${base64}`,
@@ -62,7 +74,10 @@ export async function POST(request: NextRequest) {
       sizeBytes: buffer.length,
     });
   } catch (error) {
-    console.error("[POST /api/admin/images/generate]", error);
+    logger.error(
+      { route: "/api/admin/images/generate", userId: user.userId, err: error },
+      "Image generation failed"
+    );
     // FluxApiError.message is curated and safe to return. Anything else gets a generic message.
     if (error instanceof FluxApiError) {
       const status = error.statusCode === 429 ? 429 : 500;

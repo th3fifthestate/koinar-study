@@ -65,6 +65,24 @@ export default function PrivacyPage() {
 
           <article className="border-t border-stone-200 pt-10">
             <h2 className="font-display text-2xl md:text-3xl font-normal text-stone-900 mb-4">
+              Cookies &amp; storage
+            </h2>
+            <p className="font-body text-base leading-relaxed text-stone-600">
+              Koinar uses a session cookie (to keep you signed in) and a CSRF
+              token cookie (to protect account actions). That&apos;s it — no
+              analytics, no advertising pixels, no third-party trackers. Your
+              cookie preference itself is saved in your browser&apos;s
+              localStorage under the key{" "}
+              <code className="font-mono text-[0.9em] text-stone-800">
+                koinar:cookies
+              </code>
+              . Clearing your browser&apos;s site data for koinar.app resets
+              the banner and shows it again on the next visit.
+            </p>
+          </article>
+
+          <article className="border-t border-stone-200 pt-10">
+            <h2 className="font-display text-2xl md:text-3xl font-normal text-stone-900 mb-4">
               Your choices
             </h2>
             <p className="font-body text-base leading-relaxed text-stone-600">

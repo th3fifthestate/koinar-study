@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { getSession } from '@/lib/auth/session';
+import { logger } from '@/lib/logger';
 
 export async function POST() {
   const { user, response } = await requireAuth();
@@ -18,7 +19,7 @@ export async function POST() {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[POST /api/user/onboarding-complete]', err);
+    logger.error({ route: '/api/user/onboarding-complete', method: 'POST', userId: user.userId, err }, 'Onboarding complete failed');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

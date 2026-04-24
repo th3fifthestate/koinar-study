@@ -5,6 +5,7 @@ import { swapVerses } from '@/lib/translations/swap-engine';
 import { getAvailableTranslations } from '@/lib/translations/registry';
 import type { TranslationId } from '@/lib/translations/registry';
 import { createRateLimiter } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 const BodySchema = z.object({
   translation: z.enum(['BSB', 'KJV', 'WEB', 'NLT', 'NIV', 'NASB', 'ESV'] as const),
@@ -67,9 +68,10 @@ export async function POST(
     swapResult = await swapVerses(source, translation as TranslationId, {
       studyId,
       userId: user.userId,
+      sessionId: user.sessionId ?? null,
     });
   } catch (err) {
-    console.error('[POST /api/studies/translate]', err);
+    logger.error({ route: '/api/studies/[id]/translate', method: 'POST', studyId, translation, userId: user.userId, err }, 'Translation swap failed');
     return Response.json({ error: 'Translation service error' }, { status: 502 });
   }
 
@@ -82,7 +84,7 @@ export async function POST(
   try {
     updateStudyTranslation(studyId, translation);
   } catch (persistErr) {
-    console.error('[POST /api/studies/translate] failed to persist translation', persistErr);
+    logger.error({ route: '/api/studies/[id]/translate', method: 'POST', studyId, translation, userId: user.userId, err: persistErr }, 'Translation persist failed (swap still returned)');
     // Swap succeeded — return content even if persistence failed
   }
 

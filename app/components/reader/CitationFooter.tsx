@@ -5,6 +5,7 @@ import { CITATIONS } from '@/lib/translations/citations';
 import { TRANSLATIONS } from '@/lib/translations/registry';
 import type { TranslationId } from '@/lib/translations/registry';
 import { recordDisplayEvent } from '@/lib/translations/actions';
+import { ApiBibleAttribution } from '@/components/shared/api-bible-attribution';
 
 interface CitationFooterProps {
   currentTranslation: string;
@@ -50,17 +51,9 @@ export function CitationFooter({
         </a>
       )}
       {info?.source === 'api-bible' && (
-        <p className="mt-3 text-muted-foreground/70">
-          Scripture text provided by{' '}
-          <a
-            href="https://scripture.api.bible"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2 hover:text-foreground transition-colors"
-          >
-            API.Bible
-          </a>
-        </p>
+        <div className="mt-3">
+          <ApiBibleAttribution className="text-xs text-muted-foreground/70" />
+        </div>
       )}
     </footer>
   );

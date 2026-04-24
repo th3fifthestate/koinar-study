@@ -9,6 +9,7 @@ import { config } from "@/lib/config";
 import { createRateLimiter } from "@/lib/rate-limit";
 import { getDb } from "@/lib/db/connection";
 import type { InviteCode } from "@/lib/db/types";
+import { logger } from "@/lib/logger";
 
 const createInviteSchema = z.object({
   inviteeName: z.string().min(2).max(100),
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, inviteLink });
   } catch (err) {
-    console.error("[POST /api/invites]", err);
+    logger.error({ route: "/api/invites", method: "POST", err }, "Invite create failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -109,7 +110,7 @@ export async function GET() {
 
     return NextResponse.json({ invites });
   } catch (err) {
-    console.error("[GET /api/invites]", err);
+    logger.error({ route: "/api/invites", method: "GET", err }, "Invite list failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

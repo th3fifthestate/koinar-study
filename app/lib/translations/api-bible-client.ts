@@ -6,7 +6,7 @@
 // `message`, server-only `details` (CLAUDE.md §6).
 
 import { config } from "@/lib/config";
-import { ApiBibleError } from "./errors";
+import { ApiBibleError, TranslationNotAvailableError } from "./errors";
 import { bookToOsis } from "./osis-book-map";
 
 export interface ApiBibleVerse {
@@ -28,25 +28,28 @@ export interface FetchPassageInput {
   verseEnd: number;
 }
 
-const API_BASE = "https://api.scripture.api.bible/v1";
+// Canonical API.Bible REST host. The older `api.scripture.api.bible` alias
+// still resolves (same backend), but rest.api.bible is the documented one as
+// of the Starter-plan dashboard — keep both internal code and docs in sync
+// so future agents don't get confused by two forms.
+const API_BASE = "https://rest.api.bible/v1";
 
 export async function fetchApiBiblePassage(
   input: FetchPassageInput,
 ): Promise<ApiBibleVerse[]> {
+  // Config-missing cases are a licensing/provisioning failure, NOT a network
+  // failure. Throwing TranslationNotAvailableError makes classifyError() in
+  // swap-engine.ts map these to failureReason: 'licensing', so the UI shows
+  // "This translation isn't licensed in this environment yet" instead of
+  // "We can't reach api.bible right now." Matters because the 'network' path
+  // silently hides the switcher entirely via getAvailableTranslations(), which
+  // is exactly how this failure mode went unnoticed in the previewer.
   const bibleId = config.bible.translationIds[input.translation];
   if (!bibleId) {
-    throw new ApiBibleError(
-      "Translation unavailable.",
-      503,
-      `Missing bible ID for ${input.translation}`,
-    );
+    throw new TranslationNotAvailableError(input.translation);
   }
   if (!config.bible.apiBibleKey) {
-    throw new ApiBibleError(
-      "Translation unavailable.",
-      503,
-      "API_BIBLE_KEY not configured",
-    );
+    throw new TranslationNotAvailableError(input.translation);
   }
   const osis = bookToOsis(input.book);
   if (!osis) {

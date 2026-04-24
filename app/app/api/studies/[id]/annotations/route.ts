@@ -3,6 +3,7 @@ import { requireAuth } from '@/lib/auth/middleware';
 import { getAnnotationsForStudy, createAnnotation, studyIsAccessible } from '@/lib/db/queries';
 import { broadcastAnnotationCreated } from '@/lib/ws/broadcaster';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 import type { AnnotationColor } from '@/lib/db/types';
 
 // 60 reads per minute per IP
@@ -41,7 +42,7 @@ export async function GET(
     const annotations = getAnnotationsForStudy(studyId, user.userId);
     return Response.json({ annotations });
   } catch (error) {
-    console.error('[GET /api/studies/[id]/annotations]', error);
+    logger.error({ route: '/api/studies/[id]/annotations', method: 'GET', studyId, userId: user.userId, err: error }, 'Annotation list failed');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -148,7 +149,7 @@ export async function POST(
 
     return Response.json({ annotation }, { status: 201 });
   } catch (error) {
-    console.error('[POST /api/studies/[id]/annotations]', error);
+    logger.error({ route: '/api/studies/[id]/annotations', method: 'POST', studyId, userId: user.userId, err: error }, 'Annotation create failed');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

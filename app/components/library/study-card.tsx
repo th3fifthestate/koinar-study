@@ -39,7 +39,7 @@ export function StudyCard({ study, isFavorited, index, isLoggedIn, variant = 'de
       className={isLead ? 'xl:col-span-2' : ''}
     >
       <Link href={`/study/${study.slug}`} className="block group">
-        <div className={`flex ${isLead ? 'flex-col md:flex-row gap-8 md:gap-10 p-8 md:p-10' : 'gap-5 p-7'} border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[#faf9f7] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]`}>
+        <div className={`flex ${isLead ? 'flex-col md:flex-row gap-8 md:gap-10 p-8 md:p-10' : 'gap-5 p-7'} border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[var(--surface-study-card-hover)] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]`}>
           {/* Text side */}
           <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center gap-2.5 mb-3.5">

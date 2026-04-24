@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { streamText, stepCountIs } from "ai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { requireAuth } from "@/lib/auth/middleware";
+import { hasValidStepUpSession } from "@/lib/auth/step-up";
 import { studyTools } from "@/lib/ai/tools";
 import { getSystemPrompt } from "@/lib/ai/system-prompt";
 import { getUserApiKey } from "@/lib/ai/keys";
@@ -22,6 +23,7 @@ import crypto from 'crypto';
 import { stripEntityAnnotations } from '@/lib/entities/strip-annotations';
 import { stripPreamble } from '@/lib/ai/strip-preamble';
 import { insertStudyAnnotations } from '@/lib/db/entities/queries';
+import { logger } from '@/lib/logger';
 
 // 5 generations per 5-minute window per user
 const rateLimiter = createRateLimiter({ windowMs: 300_000, max: 5 });
@@ -99,7 +101,22 @@ export async function POST(request: Request) {
     }
     isByok = true;
   } else if (auth.user.isAdmin) {
-    // Admin — use platform key
+    // Admin — gated by TOTP step-up before we hand out the platform key.
+    // This is layered on top of the email-2FA that already runs at login.
+    // Rationale: login 2FA sits on the admin's email account; if that is
+    // ever compromised, TOTP on a physical authenticator is the second
+    // independent factor that must also fall before platform-key abuse is
+    // possible. 403 + STEP_UP_REQUIRED lets the UI open the TOTP modal
+    // instead of treating this as a generic forbidden.
+    if (!hasValidStepUpSession(auth.user.userId)) {
+      return NextResponse.json(
+        {
+          error: "Step-up verification required",
+          code: "STEP_UP_REQUIRED",
+        },
+        { status: 403 }
+      );
+    }
     const platformKey = config.ai.anthropicApiKey;
     if (!platformKey) {
       return NextResponse.json(
@@ -210,8 +227,11 @@ export async function POST(request: Request) {
         topic: prompt,
         summary: "",
       };
-      let metaEntityAnnotations: EntityAnnotationMeta[] = [];
-
+      // Historically this pipeline also harvested entity_annotations from
+      // the metadata block to seed the annotation pipeline. That path is
+      // unused today — annotations are backfilled by a separate script
+      // after save. Kept the parse/merge for metadata alone; the
+      // entity_annotations key is tolerated-but-ignored in the payload.
       const metadataMatch = text.match(/```json-metadata\s*\n([\s\S]*?)\n```/);
       if (metadataMatch) {
         try {
@@ -219,7 +239,6 @@ export async function POST(request: Request) {
             entity_annotations?: EntityAnnotationMeta[];
           };
           metadata = { ...metadata, ...parsed };
-          metaEntityAnnotations = parsed.entity_annotations ?? [];
         } catch {
           // Use defaults if JSON parsing fails
         }
@@ -313,7 +332,15 @@ export async function POST(request: Request) {
         if (pendingGiftCode) {
           const consumed = consumeGiftCode(pendingGiftCode.code, pendingGiftCode.format);
           if (!consumed) {
-            console.error("[generate/onFinish] Gift code consumption failed after study saved");
+            logger.error(
+              {
+                route: "/api/study/generate",
+                event: "gift_code_consume_failed",
+                userId: auth.user.userId,
+                giftFormat: pendingGiftCode.format,
+              },
+              "Gift code consumption failed after study saved"
+            );
           }
         }
 
@@ -357,7 +384,10 @@ export async function POST(request: Request) {
 
         terminalResolve({ slug, saveOk: true, title });
       } catch (error) {
-        console.error("[generate/onFinish] Failed to save study:", error);
+        logger.error(
+          { route: "/api/study/generate", userId: auth.user.userId, err: error },
+          "Failed to save study in onFinish"
+        );
         terminalResolve({ slug: '', saveOk: false, title: prompt.slice(0, 100) });
       }
     },

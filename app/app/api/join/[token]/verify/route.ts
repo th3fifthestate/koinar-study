@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { getInviteCode, createVerificationCode } from "@/lib/db/queries";
 import { sendVerificationCode } from "@/lib/email/resend";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 3 verification emails per IP per minute
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 3 });
@@ -53,7 +54,7 @@ export async function POST(
       redactedEmail: redactEmail(invite.invitee_email),
     });
   } catch (err) {
-    console.error("[POST /api/join/[token]/verify]", err);
+    logger.error({ route: "/api/join/[token]/verify", err }, "Join verify failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

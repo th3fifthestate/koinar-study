@@ -3,6 +3,11 @@ import { z } from 'zod';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { logAdminAction } from '@/lib/admin/actions';
+import { createRateLimiter } from '@/lib/rate-limit';
+
+// Per-admin throttle, shared across PATCH + DELETE. User-keyed because
+// admins may share NAT.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 const patchSchema = z.object({
   is_featured: z.boolean().optional(),
@@ -15,6 +20,13 @@ export async function PATCH(
 ) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   const { id } = await params;
   const studyId = parseInt(id, 10);
@@ -84,6 +96,13 @@ export async function DELETE(
 ) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   const { id } = await params;
   const studyId = parseInt(id, 10);

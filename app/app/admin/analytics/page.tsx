@@ -1,5 +1,4 @@
-import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
+import { requireAdminPage } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import {
   Table,
@@ -22,8 +21,7 @@ interface PopularStudyRow {
 }
 
 export default async function AnalyticsPage() {
-  const session = await getSession();
-  if (!session.userId || !session.isAdmin) redirect('/');
+  await requireAdminPage();
 
   const db = getDb();
 

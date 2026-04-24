@@ -3,6 +3,12 @@ import { z } from 'zod';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { logAdminAction } from '@/lib/admin/actions';
+import { createRateLimiter } from '@/lib/rate-limit';
+
+// Per-admin throttle. User-keyed so admins on shared NAT don't 429 each
+// other. Approvals/bans/admin-grants are high-sensitivity; 30/min leaves
+// plenty of headroom for legitimate bulk work while capping abuse.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 const patchSchema = z.object({
   is_approved: z.boolean().optional(),
@@ -16,6 +22,13 @@ export async function PATCH(
 ) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   const { id } = await params;
   const targetId = parseInt(id, 10);

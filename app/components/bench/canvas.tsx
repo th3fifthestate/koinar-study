@@ -41,7 +41,7 @@ function computeConnectionPathD(
 }
 
 export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps) {
-  const prefersReduced = useReducedMotion()
+  const _prefersReduced = useReducedMotion()
   const viewportRef = useRef<HTMLDivElement>(null)
   const isPanning = useRef(false)
   const lastPointer = useRef({ x: 0, y: 0 })

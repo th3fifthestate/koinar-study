@@ -239,7 +239,12 @@ function getFtsDb(): Database.Database {
   return ftsDb;
 }
 
-function buildFtsIndex(db: Database.Database): void {
+// One-shot: regenerates `bsb_fts.db` from the BSB source DB. Invoked by
+// the out-of-tree `build-fts-index` step of the bible-data pipeline; kept
+// here so the SQL stays alongside the schema it owns. Export (vs. strip)
+// keeps future FTS rebuilds a single import away.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- called from the bible-data pipeline
+export function buildFtsIndex(db: Database.Database): void {
   const bsb = getBsbDb();
 
   db.prepare(`

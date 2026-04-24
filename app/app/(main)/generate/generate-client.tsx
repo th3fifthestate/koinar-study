@@ -13,6 +13,7 @@ import { CompletionCard } from './components/completion-card';
 import { ErrorState } from './components/error-state';
 import { NoEntitlement } from './components/no-entitlement';
 import { CreditsBanner } from './components/credits-banner';
+import { StepUpModal } from '@/components/admin-security/step-up-modal';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -31,7 +32,8 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
   const [prompt, setPrompt] = useState('');
   const [format, setFormat] = useState<Format>('standard');
 
-  const { state, submit, retry } = useGenerateStream(entitlement);
+  const { state, submit, retry, resumeAfterStepUp, cancelStepUp } =
+    useGenerateStream(entitlement);
 
   const handleSubmit = () => {
     submit(prompt, format);
@@ -44,6 +46,20 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
   const handleOpenStudy = (slug: string) => {
     window.location.href = `/study/${slug}`;
   };
+
+  // ------------------------------------------------------------------
+  // Step-up required (admin-only branch on /api/study/generate)
+  // ------------------------------------------------------------------
+  if (state.kind === 'needs-step-up') {
+    const resumePrompt = state.prompt;
+    const resumeFormat = state.format;
+    return (
+      <StepUpModal
+        onVerified={() => resumeAfterStepUp(resumePrompt, resumeFormat)}
+        onCancel={() => cancelStepUp(entitlement, resumePrompt, resumeFormat)}
+      />
+    );
+  }
 
   // ------------------------------------------------------------------
   // No-entitlement state

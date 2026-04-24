@@ -5,6 +5,12 @@ import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { logAdminAction } from '@/lib/admin/actions';
 import { parsePagination, paginatedResponse } from '@/lib/admin/pagination';
+import { createRateLimiter } from '@/lib/rate-limit';
+
+// Per-admin throttle on mutating writes. User-keyed (not IP) because admins
+// may share corporate NAT. 30 creates/minute is generous for legitimate bulk
+// work, tight enough to stop a hijacked session or runaway script.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 const createSchema = z.object({
   user_id: z.number().int().positive(),
@@ -75,6 +81,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   let body: unknown;
   try {

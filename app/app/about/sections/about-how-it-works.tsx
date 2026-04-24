@@ -23,7 +23,7 @@ export function AboutHowItWorks() {
   return (
     <section
       className="px-8 py-20 md:px-14 md:py-24 xl:px-[100px] xl:py-28"
-      style={{ background: "#eae5dc" }}
+      style={{ background: "var(--surface-about-gap)" }}
     >
       {/* Eyebrow */}
       <div className="mb-16 md:mb-20">

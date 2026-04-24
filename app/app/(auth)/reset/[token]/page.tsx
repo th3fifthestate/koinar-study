@@ -9,6 +9,7 @@
 // Noindex metadata is essential: we don't want this URL crawled and the
 // token ending up in search-engine caches.
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createHash } from "crypto";
 import { findActivePasswordResetToken } from "@/lib/db/queries";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
@@ -45,12 +46,12 @@ export default async function ResetPasswordPage({ params }: Props) {
           This reset link is invalid or has expired. Head back and request a
           new one — links are valid for 30 minutes and can only be used once.
         </p>
-        <a
+        <Link
           href="/"
           className="inline-block font-body text-sm text-sage-700 underline underline-offset-2 hover:text-sage-900"
         >
           Back to sign in
-        </a>
+        </Link>
       </div>
     );
   }

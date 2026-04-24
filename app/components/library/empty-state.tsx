@@ -12,7 +12,7 @@ export function EmptyState() {
   const category = searchParams.get('category');
   const hasFilters = query || category || searchParams.get('format_type') || searchParams.get('favorites');
 
-  let title = 'No studies found';
+  const title = 'No studies found';
   let subtitle = 'The library is empty. Studies will appear here as they are created.';
 
   if (query) {

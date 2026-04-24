@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/middleware';
 import { getDb } from '@/lib/db/connection';
 import { logAdminAction } from '@/lib/admin/actions';
+import { createRateLimiter } from '@/lib/rate-limit';
+
+// Per-admin throttle, shared across PATCH + DELETE. User-keyed so admins
+// on shared NAT don't accidentally 429 each other.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 export async function GET(
   _request: NextRequest,
@@ -67,6 +72,13 @@ export async function PATCH(
   const { user, response } = await requireAdmin();
   if (response) return response;
 
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
+
   const { id } = await params;
   const codeId = parseInt(id, 10);
   if (isNaN(codeId)) {
@@ -114,6 +126,13 @@ export async function DELETE(
 ) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again in a minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   const { id } = await params;
   const codeId = parseInt(id, 10);

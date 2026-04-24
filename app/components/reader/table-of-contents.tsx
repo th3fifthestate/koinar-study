@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/sheet';
 import {
   READER_TRANSITION_TOC_GLIDE,
-  READER_MOTION_TOC_GLIDER_FADE_IN,
   READER_TRANSITION_TOC_FADEIN,
 } from '@/lib/motion/reader';
 

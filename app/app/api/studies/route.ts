@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { getStudies } from '@/lib/db/queries';
 import { getSession } from '@/lib/auth/session';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 // 30 requests per minute per IP (browsing/pagination)
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
     });
     return Response.json({ studies: result.studies, totalCount: result.totalCount, page, limit });
   } catch (error) {
-    console.error('[GET /api/studies]', error);
+    logger.error({ route: '/api/studies', method: 'GET', err: error }, 'Studies list failed');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

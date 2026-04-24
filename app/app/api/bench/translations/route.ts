@@ -61,6 +61,7 @@ export async function GET(request: Request) {
         userId: user.userId,
         verseCount: 1,
         surface: { kind: 'bench', boardId },
+        sessionId: user.sessionId ?? null,
       })
     } catch {
       // Non-fatal — FUMS failure must not block response

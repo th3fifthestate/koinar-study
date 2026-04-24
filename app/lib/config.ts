@@ -48,6 +48,8 @@ export const config = {
     },
     /** 72-hour termination kill-switch. Hides licensed translations app-wide. */
     purgeEnabled: env.ABS_PURGE_ENABLED,
+    /** sha256 salt for FUMS uId. See FUMS_UID_SALT in env.ts. */
+    fumsUidSalt: env.FUMS_UID_SALT,
   },
   r2: {
     accountId: env.R2_ACCOUNT_ID,

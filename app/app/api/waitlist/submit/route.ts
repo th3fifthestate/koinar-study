@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createWaitlistEntry, getWaitlistByEmail } from "@/lib/db/queries";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 5 submissions per IP per minute
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 });
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
       message: "Your request has been submitted. We'll be in touch!",
     });
   } catch (err) {
-    console.error("[POST /api/waitlist/submit]", err);
+    logger.error({ route: "/api/waitlist/submit", method: "POST", err }, "Waitlist submit failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

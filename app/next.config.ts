@@ -26,7 +26,11 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
       "font-src 'self' fonts.gstatic.com",
       "img-src 'self' data: blob: https://images.koinar.app",
-      "connect-src 'self' wss: https://api.anthropic.com https://api.esv.org https://api.scripture.api.bible https://images.koinar.app",
+      // API.Bible: rest.api.bible is the canonical host; fums.api.bible is the
+      // 1x1-pixel Fair Use Monitoring endpoint. api.scripture.api.bible (older
+      // alias) also still resolves but is not listed — client + scripts now use
+      // rest.api.bible directly.
+      "connect-src 'self' wss: https://api.anthropic.com https://api.esv.org https://rest.api.bible https://fums.api.bible https://images.koinar.app",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",

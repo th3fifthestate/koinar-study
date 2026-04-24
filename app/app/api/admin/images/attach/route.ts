@@ -4,6 +4,14 @@ import { uploadImageToR2, convertToWebP, makeImageKey } from "@/lib/images/r2";
 import { getDb } from "@/lib/db/connection";
 import { z } from "zod";
 import { randomUUID } from "crypto";
+import { createRateLimiter } from "@/lib/rate-limit";
+import { logAdminAction } from "@/lib/admin/actions";
+import { logger } from "@/lib/logger";
+
+// Per-admin throttle. Attach is the expensive endpoint — R2 upload + WebP
+// conversion — so this limiter doubles as a cost ceiling on a hijacked
+// admin session. User-keyed because admins may share NAT.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const attachSchema = z.object({
   studyId: z.number().int().positive(),
@@ -20,6 +28,13 @@ const attachSchema = z.object({
 export async function POST(request: NextRequest) {
   const { user, response: authResponse } = await requireAdmin();
   if (authResponse) return authResponse;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   let body: unknown;
   try {
@@ -81,6 +96,21 @@ export async function POST(request: NextRequest) {
       ).run(data.studyId, imageId);
     }
 
+    logAdminAction({
+      adminId: user.userId,
+      actionType: "attach_image",
+      targetType: "image",
+      targetId: imageId,
+      details: {
+        studyId: data.studyId,
+        isHero: data.isHero,
+        style: data.style,
+        aspectRatio: data.aspectRatio,
+        sizeBytes,
+        fluxTaskId: data.fluxTaskId ?? null,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       image: { id: imageId, url: imageUrl, r2Key, sizeBytes },
@@ -88,7 +118,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     // Raw errors here may include R2/AWS SDK details, DB errors, or sharp internals.
     // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
-    console.error("[POST /api/admin/images/attach]", error);
+    logger.error(
+      { route: "/api/admin/images/attach", userId: user.userId, err: error },
+      "Failed to attach image"
+    );
     return NextResponse.json({ error: "Failed to attach image" }, { status: 500 });
   }
 }

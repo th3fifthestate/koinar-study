@@ -4,6 +4,13 @@ import { uploadImageToR2, convertToWebP } from "@/lib/images/r2";
 import { getDb } from "@/lib/db/connection";
 import { z } from "zod";
 import { randomUUID } from "crypto";
+import { createRateLimiter } from "@/lib/rate-limit";
+import { logAdminAction } from "@/lib/admin/actions";
+import { logger } from "@/lib/logger";
+
+// Per-admin throttle. R2 upload + WebP conversion is expensive; cap a bit
+// tighter than the generic 30/min. User-keyed.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const seasonalSchema = z.object({
   season: z.enum(["spring", "summer", "autumn", "winter"]),
@@ -15,8 +22,15 @@ const seasonalSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const { response: authResponse } = await requireAdmin();
+  const { user, response: authResponse } = await requireAdmin();
   if (authResponse) return authResponse;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   let body: unknown;
   try {
@@ -60,14 +74,32 @@ export async function POST(request: NextRequest) {
         data.setActive ? 1 : 0
       );
 
+    const seasonalId = Number(info.lastInsertRowid);
+
+    logAdminAction({
+      adminId: user.userId,
+      actionType: "create_seasonal_image",
+      targetType: "image",
+      targetId: seasonalId,
+      details: {
+        season: data.season,
+        style: data.style,
+        setActive: data.setActive,
+        fluxTaskId: data.fluxTaskId ?? null,
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      image: { id: Number(info.lastInsertRowid), url: imageUrl, r2Key },
+      image: { id: seasonalId, url: imageUrl, r2Key },
     });
   } catch (error) {
     // Raw errors may include R2/AWS SDK details or sharp internals.
     // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
-    console.error("[POST /api/admin/images/seasonal]", error);
+    logger.error(
+      { route: "/api/admin/images/seasonal", userId: user.userId, err: error },
+      "Failed to save seasonal image"
+    );
     return NextResponse.json({ error: "Failed to save seasonal image" }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { bucketForHour, GRADIENT_OPACITY, type TodBucket } from '@/lib/home/tod-bucket';
-import { getReaderPalette, type ReaderPalette } from './reader-tones';
+import { getReaderPalette } from './reader-tones';
 
 export function useTodPalette(mode: 'dark' | 'light' | 'sepia' = 'dark') {
   const [bucket, setBucket] = useState<TodBucket>('evening'); // SSR-safe default

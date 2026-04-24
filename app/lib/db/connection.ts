@@ -374,6 +374,51 @@ function runMigration(database: Database.Database): void {
       `).run();
     }
 
+    // v16 → v17: Real FUMS flush (Brief 25).
+    //   - session_id column on fums_events so flush can group by (dId, sId, uId)
+    //     per the api.bible Fair Use Monitoring spec.
+    //   - flush_attempts + flush_last_error so a permanently-bad row (e.g. corrupt
+    //     token) gets quarantined after 10 tries instead of blocking the batch.
+    //   - app_config table (key/value) stores the deployment-scoped deviceId,
+    //     minted once on first flush and never rotated.
+    // Existing rows have session_id=NULL; flushFumsEvents() treats NULL as a
+    // synthetic "pre-sessionid" session so they still ship.
+    if (currentVersion < 17) {
+      for (const sql of [
+        'ALTER TABLE fums_events ADD COLUMN session_id TEXT',
+        'ALTER TABLE fums_events ADD COLUMN flush_attempts INTEGER NOT NULL DEFAULT 0',
+        'ALTER TABLE fums_events ADD COLUMN flush_last_error TEXT',
+      ]) {
+        try { database.prepare(sql).run(); } catch { /* column already exists */ }
+      }
+      database.prepare(`
+        CREATE TABLE IF NOT EXISTS app_config (
+          key         TEXT PRIMARY KEY,
+          value       TEXT NOT NULL,
+          updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+    }
+
+    // v17 → v18: Admin TOTP step-up (Brief 26).
+    //   - users.totp_secret / users.totp_enrolled_at hold the shared secret
+    //     and enrollment timestamp. Secret is stored base32-encoded (RFC 4648);
+    //     we accept the DB-leak tradeoff because the only principals able to
+    //     read the users table are Railway admins, and an attacker who has
+    //     DB read access already has the platform Anthropic key.
+    //   - admin_step_up_sessions + admin_totp_backup_codes tables come from
+    //     CREATE_TABLES (CREATE TABLE IF NOT EXISTS), which runMigration
+    //     already executed above. Nothing to do here for those tables on
+    //     upgrade — they will simply be created on first run.
+    if (currentVersion < 18) {
+      for (const sql of [
+        'ALTER TABLE users ADD COLUMN totp_secret TEXT',
+        'ALTER TABLE users ADD COLUMN totp_enrolled_at TEXT',
+      ]) {
+        try { database.prepare(sql).run(); } catch { /* column already exists */ }
+      }
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);

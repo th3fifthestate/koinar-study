@@ -27,6 +27,15 @@
   --stone-800: #3d3a33;
   --ivory-paper: #fdfaf3;
   --warmth: #c49a6c;
+
+  /* Editorial surfaces — warm cream tones used for full-section
+     backgrounds on the marketing pages. Named by role, not by color,
+     so a future type-scale / palette tweak can land in one place. */
+  --surface-home-hero: #f5f2ea;
+  --surface-about-gap: #eae5dc;
+  --surface-about-resolution: #e0dace;
+  --surface-study-card-hover: #faf9f7;
+
   --reader-pane-width: 0px;
   --amber-50:  #fffbeb;
   --amber-500: #f59e0b;

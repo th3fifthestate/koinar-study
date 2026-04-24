@@ -2,11 +2,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { randomBytes } from "crypto";
-import { getInviteCode, getUserByEmail, getUserByUsername, createUser, normalizeEmail } from "@/lib/db/queries";
+import { getInviteCode, getUserByEmail, getUserByUsername, normalizeEmail } from "@/lib/db/queries";
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
+import { newFumsSessionId } from "@/lib/fums/identity";
 import { getDb } from "@/lib/db/connection";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 5 registration attempts per IP per 5 minutes
 const isRateLimited = createRateLimiter({ windowMs: 300_000, max: 5 });
@@ -121,6 +123,8 @@ export async function POST(request: NextRequest) {
     session.isAdmin = false;
     session.isApproved = true;
     session.onboardingCompleted = false;
+    // FUMS sId: stable for the life of this login. See lib/fums/identity.ts.
+    session.sessionId = newFumsSessionId();
     await session.save();
 
     return NextResponse.json({
@@ -128,7 +132,7 @@ export async function POST(request: NextRequest) {
       user: { username, displayName: invite.invitee_name },
     });
   } catch (err) {
-    console.error("[POST /api/auth/register]", err);
+    logger.error({ route: "/api/auth/register", err }, "Registration failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

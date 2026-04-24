@@ -2,6 +2,7 @@
 import { requireAuth } from '@/lib/auth/middleware';
 import { toggleFavorite, getStudyFavoriteCount } from '@/lib/db/queries';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 // 20 favorite toggles per minute per IP
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
@@ -41,7 +42,7 @@ export async function POST(
     const favorite_count = getStudyFavoriteCount(studyId);
     return Response.json({ favorited, favorite_count });
   } catch (error) {
-    console.error('[POST /api/studies/favorite]', error);
+    logger.error({ route: '/api/studies/[id]/favorite', method: 'POST', studyId, userId: user.userId, err: error }, 'Favorite toggle failed');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

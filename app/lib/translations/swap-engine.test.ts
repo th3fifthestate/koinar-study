@@ -26,6 +26,7 @@ import { getLocalPassage } from './local-queries';
 import { getCachedVerse } from './cache';
 import { fetchApiBiblePassage } from './api-bible-client';
 import { enforceNivPerViewCap } from './niv-display-guard';
+import { ApiBibleError, TranslationNotAvailableError } from './errors';
 
 const FIXTURE_STUDY = `# The Light of the World
 
@@ -100,6 +101,28 @@ describe('swapVerses', () => {
     expect(result.content).toBe(FIXTURE_STUDY);
   });
 
+  // Regression: Stream A root cause. Previously api-bible-client.ts threw
+  // ApiBibleError(status=503) when API_BIBLE_KEY / API_BIBLE_ID_* was missing,
+  // and classifyError() mapped 503 → 'network'. But "config missing" is a
+  // licensing/provisioning state, not a transient outage — it should not tell
+  // the UI to show a "we can't reach api.bible" toast. The client now throws
+  // TranslationNotAvailableError instead, which maps to 'licensing'. Test both
+  // directions so we don't silently regress.
+  it('regression: missing API.Bible config surfaces failureReason "licensing", not "network"', async () => {
+    vi.mocked(fetchApiBiblePassage).mockRejectedValue(
+      new TranslationNotAvailableError('NLT'),
+    );
+    const result = await swapVerses(FIXTURE_STUDY, 'NLT', { studyId: 1, userId: 1 });
+    expect(result.versesSwapped).toBe(0);
+    expect(result.failureReason).toBe('licensing');
+    // Real upstream outages still map to 'network' — don't flatten the two.
+    vi.mocked(fetchApiBiblePassage).mockRejectedValue(
+      new ApiBibleError('upstream down.', 503, 'fetch threw'),
+    );
+    const outage = await swapVerses(FIXTURE_STUDY, 'NLT', { studyId: 1, userId: 1 });
+    expect(outage.failureReason).toBe('network');
+  });
+
   it('NIV cap drops verses past the per-view allowance', async () => {
     // Allow only John 1:1; John 3:16 must be trimmed.
     vi.mocked(enforceNivPerViewCap).mockReturnValueOnce({
@@ -123,7 +146,6 @@ describe('swapVerses', () => {
       text: `cached ${ch}:${v}`,
       fumsToken: 'cached-tok',
       leaseUntil: Date.now() + 1000,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any);
     const result = await swapVerses(FIXTURE_STUDY, 'NLT', { studyId: 1, userId: 1 });
     expect(result.versesSwapped).toBe(2);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { useEntityLayer, type ExploredEntity } from './entity-layer-context';
+import { useEntityLayer } from './entity-layer-context';
 import { computeLayout, type GraphNode } from './branch-map/layout';
 import { truncateLabel } from './branch-map/truncate';
 

@@ -3,6 +3,7 @@ import { Bodoni_Moda, Literata, Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { PageTransition } from "./components/page-transition";
 import { FooterGate } from "@/components/layout/footer-gate";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -71,6 +72,7 @@ export default function RootLayout({
       <body className="min-h-dvh font-body">
         <PageTransition>{children}</PageTransition>
         <FooterGate />
+        <CookieBanner />
         <Toaster position="bottom-right" richColors />
       </body>
     </html>

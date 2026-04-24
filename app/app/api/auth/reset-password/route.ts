@@ -32,6 +32,7 @@ import {
 import { hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 10 attempts per IP per 15 minutes. Each attempt costs an argon2 hash
 // (slow by design), so this is generous but caps runaway automation.
@@ -119,7 +120,10 @@ export async function POST(request: NextRequest) {
       // stolen the password, they're kicked out now.
       deleteUserSessions(user.id);
     } catch (err) {
-      console.error("[POST /api/auth/reset-password] DB write failed", err);
+      logger.error(
+        { route: "/api/auth/reset-password", event: "db_write_failed", err },
+        "Reset password DB write failed"
+      );
       return NextResponse.json(
         { error: "We couldn't reset your password. Please try again." },
         { status: 500 }
@@ -138,7 +142,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[POST /api/auth/reset-password]", err);
+    logger.error({ route: "/api/auth/reset-password", err }, "Reset password failed");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

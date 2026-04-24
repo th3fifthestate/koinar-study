@@ -6,7 +6,7 @@ export function AboutResolution() {
   return (
     <section
       className="grid grid-cols-1 md:grid-cols-2"
-      style={{ minHeight: "100dvh", background: "#e0dace" }}
+      style={{ minHeight: "100dvh", background: "var(--surface-about-resolution)" }}
     >
       {/* Image — order 1 mobile, order 2 desktop */}
       <div className="reveal--image relative overflow-hidden min-h-[50vh] md:min-h-full md:order-2">

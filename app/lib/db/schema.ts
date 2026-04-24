@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 16;
+export const SCHEMA_VERSION = 18;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -66,6 +66,30 @@ CREATE TABLE IF NOT EXISTS admin_login_codes (
   expires_at TEXT NOT NULL,
   attempts INTEGER NOT NULL DEFAULT 0,
   consumed INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Admin step-up session. Holds a TOTP-verified window that unlocks the
+-- platform Anthropic key on /api/study/generate. One row per admin user
+-- (UNIQUE on user_id). expires_at is a rolling 30-minute TTL reset on each
+-- successful verify. Row is deleted on explicit revoke or on admin reset
+-- (scripts/admin-reset-totp.ts).
+CREATE TABLE IF NOT EXISTS admin_step_up_sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  verified_at TEXT NOT NULL DEFAULT (datetime('now')),
+  expires_at TEXT NOT NULL
+);
+
+-- One-time backup codes handed to the admin at TOTP enrollment. Stored as
+-- sha256(code) so a DB leak can't be replayed. consumed_at locks further use.
+-- Codes are user-scoped and CASCADE-delete with the user (so scripts can
+-- fully reset an admin by wiping the users.totp_* columns + these rows).
+CREATE TABLE IF NOT EXISTS admin_totp_backup_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  code_hash TEXT NOT NULL,
+  consumed_at TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -210,17 +234,44 @@ CREATE TABLE IF NOT EXISTS verse_cache (
   PRIMARY KEY (translation, book, chapter, verse)
 );
 
+-- FUMS event buffer. Rows are written on every licensed-translation fetch/display
+-- and drained by flushFumsEvents() (app/lib/translations/fums-tracker.ts) on a
+-- cron, which issues GET pings to https://fums.api.bible/f3. Only rows with a
+-- non-null fums_token are sent — display events without a token are audit-only
+-- and cleaned up by the 13-month prune.
+--
+-- session_id groups verses fetched within the same iron-session login, which
+-- maps to the FUMS sId query param (unique per session). dId (device ID,
+-- app-wide constant) lives in app_config, and uId (sha256(userId + salt)) is
+-- computed at flush time.
+--
+-- flush_attempts / flush_last_error track per-row retry state so a permanently
+-- bad row (quarantined at 10 attempts) doesn't block the batch it's in.
 CREATE TABLE IF NOT EXISTS fums_events (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  translation   TEXT    NOT NULL,
-  fums_token    TEXT,
-  event_type    TEXT    NOT NULL CHECK (event_type IN ('fetch', 'display')),
-  study_id      INTEGER,
-  user_id       INTEGER,
-  verse_count   INTEGER NOT NULL,
-  created_at    INTEGER NOT NULL,
-  flushed_at    INTEGER,
-  surface       TEXT    NOT NULL DEFAULT 'reader'
+  id               INTEGER PRIMARY KEY AUTOINCREMENT,
+  translation      TEXT    NOT NULL,
+  fums_token       TEXT,
+  event_type       TEXT    NOT NULL CHECK (event_type IN ('fetch', 'display')),
+  study_id         INTEGER,
+  user_id          INTEGER,
+  verse_count      INTEGER NOT NULL,
+  created_at       INTEGER NOT NULL,
+  flushed_at       INTEGER,
+  surface          TEXT    NOT NULL DEFAULT 'reader',
+  session_id       TEXT,
+  flush_attempts   INTEGER NOT NULL DEFAULT 0,
+  flush_last_error TEXT
+);
+
+-- Generic key/value store for deployment-scoped config that must persist
+-- across restarts without an env-var rotation. Current use: FUMS deviceId
+-- (minted once on first flush, then constant for the life of the DB file).
+-- Add new keys sparingly — prefer env vars for anything not truly deployment-
+-- internal. Value is TEXT, so serialize JSON if needed.
+CREATE TABLE IF NOT EXISTS app_config (
+  key         TEXT PRIMARY KEY,
+  value       TEXT NOT NULL,
+  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS renewal_meta (
@@ -479,6 +530,8 @@ CREATE INDEX IF NOT EXISTS idx_invite_codes_invitee_email ON invite_codes(invite
 CREATE INDEX IF NOT EXISTS idx_email_verification_invite ON email_verification_codes(invite_code_id);
 CREATE INDEX IF NOT EXISTS idx_admin_login_codes_user ON admin_login_codes(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_login_codes_token ON admin_login_codes(pending_token);
+CREATE INDEX IF NOT EXISTS idx_admin_step_up_user ON admin_step_up_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_totp_backup_user ON admin_totp_backup_codes(user_id, consumed_at);
 CREATE INDEX IF NOT EXISTS idx_password_reset_user ON password_reset_tokens(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_password_reset_hash ON password_reset_tokens(token_hash);
 CREATE INDEX IF NOT EXISTS idx_email_verification_email ON email_verification_codes(email);
@@ -510,6 +563,12 @@ CREATE INDEX IF NOT EXISTS idx_verse_cache_lease ON verse_cache(translation, lea
 CREATE INDEX IF NOT EXISTS idx_verse_cache_access ON verse_cache(translation, last_access);
 CREATE INDEX IF NOT EXISTS idx_fums_events_flushed ON fums_events(flushed_at);
 CREATE INDEX IF NOT EXISTS idx_fums_events_created ON fums_events(created_at);
+-- Drive flush SELECTs. Partial index keeps it compact since flushed rows are
+-- irrelevant to the cron. flush_attempts is in the index key so the scan can
+-- skip quarantined rows cheaply.
+CREATE INDEX IF NOT EXISTS idx_fums_events_unflushed
+  ON fums_events(flush_attempts, id)
+  WHERE flushed_at IS NULL AND fums_token IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON admin_actions(admin_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_target ON admin_actions(target_type, target_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions(created_at);

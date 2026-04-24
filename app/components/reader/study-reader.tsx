@@ -234,8 +234,11 @@ function StudyReaderContent({
 
   const { selection, clearSelection } = useTextSelection(contentRef);
 
-  // Track which annotation was clicked (for note expansion)
-  const [clickedAnnotation, setClickedAnnotation] = useState<AnnotationPayload | null>(null);
+  // Track which annotation was clicked (for note expansion). The value
+  // is only read by a future note-expansion UI; for now the setter's
+  // side effect (re-render on change) is what keeps the handler
+  // meaningful. Underscore-prefixed so lint knows it's intentional.
+  const [_clickedAnnotation, setClickedAnnotation] = useState<AnnotationPayload | null>(null);
 
   const handleAnnotationClick = useCallback((annotation: AnnotationPayload) => {
     setClickedAnnotation((prev) => prev?.id === annotation.id ? null : annotation);

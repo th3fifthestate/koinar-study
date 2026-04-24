@@ -17,6 +17,13 @@ vi.mock('@/lib/auth/middleware', () => ({
   requireAuth: vi.fn(),
 }))
 
+// Admin path gates on TOTP step-up before handing out the platform key.
+// Tests that exercise the admin-happy-path mock this to true; tests that
+// assert the gate fires mock it to false.
+vi.mock('@/lib/auth/step-up', () => ({
+  hasValidStepUpSession: vi.fn().mockReturnValue(true),
+}))
+
 vi.mock('@/lib/config', () => ({
   config: {
     ai: { anthropicApiKey: 'sk-ant-test-key', modelId: 'claude-opus-4-6' },
@@ -87,6 +94,7 @@ vi.mock('@/lib/db/bible/queries', () => ({
 
 import { POST } from '@/app/api/study/generate/route'
 import { requireAuth } from '@/lib/auth/middleware'
+import { hasValidStepUpSession } from '@/lib/auth/step-up'
 import { createStudy } from '@/lib/db/queries'
 
 // ---------------------------------------------------------------------------
@@ -101,7 +109,9 @@ function makeSSEResponse(events: string): Response {
 }
 
 function sse(chunks: unknown[]): string {
-  return chunks.map(JSON.stringify).join('\n\n') + '\n\n'
+  // Arrow-wrap so Array.prototype.map's index argument doesn't collide with
+  // JSON.stringify's replacer overload.
+  return chunks.map((c) => JSON.stringify(c)).join('\n\n') + '\n\n'
 }
 
 /** First Anthropic response: one tool_use call (query_verse). */
@@ -233,5 +243,107 @@ describe('POST /api/study/generate', () => {
     expect(genMeta.tools_called.length).toBeGreaterThan(0)
     expect(genMeta.tools_called).toContain('query_verse')
     expect(genMeta.model).toBe('claude-opus-4-6')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Step-up gate (admin-only branch)
+// ---------------------------------------------------------------------------
+
+describe('POST /api/study/generate — admin step-up gate', () => {
+  beforeEach(() => {
+    vi.mocked(requireAuth).mockResolvedValue({
+      user: {
+        userId: 1,
+        username: 'admin',
+        isAdmin: true,
+        isApproved: true,
+        onboardingCompleted: true,
+      },
+      response: null,
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.clearAllMocks()
+    // Leave the default step-up mock in a truthy state for any tests that
+    // follow so they aren't coupled to this suite's order-of-execution.
+    vi.mocked(hasValidStepUpSession).mockReturnValue(true)
+  })
+
+  it('returns 403 with STEP_UP_REQUIRED when admin has no step-up session', async () => {
+    vi.mocked(hasValidStepUpSession).mockReturnValue(false)
+
+    const req = new Request('http://localhost/api/study/generate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'Psalm 1 — the two paths: a short study',
+        format: 'simple',
+        translation: 'bsb',
+      }),
+    })
+
+    const response = await POST(req)
+    expect(response.status).toBe(403)
+    const json = (await response.json()) as { error: string; code: string }
+    expect(json.code).toBe('STEP_UP_REQUIRED')
+  })
+
+  it('does not hand out the platform key when the gate fires', async () => {
+    vi.mocked(hasValidStepUpSession).mockReturnValue(false)
+
+    let fetchCalled = false
+    vi.stubGlobal('fetch', async () => {
+      fetchCalled = true
+      return new Response('', { status: 200 })
+    })
+
+    const req = new Request('http://localhost/api/study/generate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'Psalm 1 — the two paths: a short study',
+        format: 'simple',
+        translation: 'bsb',
+      }),
+    })
+
+    await POST(req)
+    expect(fetchCalled).toBe(false)
+  })
+
+  it('checks step-up ONLY for admins — non-admin path is unaffected', async () => {
+    vi.mocked(requireAuth).mockResolvedValue({
+      user: {
+        userId: 2,
+        username: 'user',
+        isAdmin: false,
+        isApproved: true,
+        onboardingCompleted: true,
+      },
+      response: null,
+    })
+    vi.mocked(hasValidStepUpSession).mockReturnValue(false)
+
+    const req = new Request('http://localhost/api/study/generate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'Psalm 1 — the two paths: a short study',
+        format: 'simple',
+        translation: 'bsb',
+      }),
+    })
+
+    const response = await POST(req)
+    // Non-admin without a gift code hits the 403 "Generation not available"
+    // branch — NOT the step-up branch. Assert the error body distinguishes
+    // the two: no STEP_UP_REQUIRED code for regular users.
+    expect(response.status).toBe(403)
+    const json = (await response.json()) as { error?: string; code?: string }
+    expect(json.code).toBeUndefined()
+    expect(json.error).toContain('Generation not available')
   })
 })

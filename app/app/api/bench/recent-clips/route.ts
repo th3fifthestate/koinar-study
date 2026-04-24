@@ -9,7 +9,7 @@ import {
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   const { user, response } = await requireAdmin()
   if (response) return response
 

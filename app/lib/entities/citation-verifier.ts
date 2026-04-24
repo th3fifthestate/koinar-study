@@ -10,7 +10,7 @@
 // signal only (many etymologies are folk/debated — prefer STEPBible lexicon).
 
 import { getDb } from '../db/connection';
-import { getVerse, lookupStrongs, normalizeBookName } from '../db/bible/queries';
+import { getVerse, lookupStrongs } from '../db/bible/queries';
 import type { EntityCitation } from '../db/types';
 
 export interface VerificationResult {

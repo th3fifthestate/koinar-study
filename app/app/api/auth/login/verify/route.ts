@@ -6,7 +6,9 @@ import { getDb } from "@/lib/db/connection";
 import { getUserForAuthById } from "@/lib/db/queries";
 import { resetFailedLogins } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
+import { newFumsSessionId } from "@/lib/fums/identity";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 // 10 verify attempts per IP per minute (matches login route). The per-row
 // attempt counter (capped at 5) is the primary defense; this limits scan noise.
@@ -107,11 +109,17 @@ export async function POST(request: NextRequest) {
     session.isAdmin = true;
     session.isApproved = user.is_approved === 1;
     session.onboardingCompleted = user.onboarding_completed === 1;
+    // FUMS sId: stable for the life of this login. See lib/fums/identity.ts.
+    session.sessionId = newFumsSessionId();
+    // Absolute ceiling on admin session age (24h). requireAdmin() rejects
+    // sessions older than ADMIN_SESSION_TTL_MS even if the cookie itself is
+    // still within the 7-day user TTL.
+    session.adminLoginAt = Date.now();
     await session.save();
 
     return NextResponse.json({ success: true, step: "done" });
   } catch (err) {
-    console.error("[POST /api/auth/login/verify]", err);
+    logger.error({ route: "/api/auth/login/verify", err }, "Admin 2FA verify failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

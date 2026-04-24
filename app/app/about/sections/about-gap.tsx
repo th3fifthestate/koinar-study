@@ -4,7 +4,7 @@ export function AboutGap() {
   return (
     <section
       className="grid grid-cols-1 md:grid-cols-2"
-      style={{ minHeight: "100dvh", background: "#eae5dc" }}
+      style={{ minHeight: "100dvh", background: "var(--surface-about-gap)" }}
     >
       <div className="reveal--image relative overflow-hidden min-h-[50vh] md:min-h-full">
         <img

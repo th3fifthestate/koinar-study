@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { logger } from "@/lib/logger";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -15,8 +16,8 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_BODY_SIZE = 1024; // 1KB
 
-// Allowed HTTP methods
-const ALLOWED_METHODS = new Set(["POST"]);
+// Method gating is handled by Next.js itself — only the POST export is
+// reachable. Non-POST verbs return 405 with no handler invocation.
 
 // In-memory rate limiter (IP-based, 5 requests per minute)
 // Note: state is lost on container restart — Cloudflare WAF provides persistent layer
@@ -124,14 +125,20 @@ export async function POST(request: Request) {
         return Response.json({ error: "Already subscribed" }, { status: 409 });
       }
       // Log error name/message only — never log API keys or full error objects
-      console.error("[waitlist] Resend error:", error.name, error.message);
+      logger.error(
+        { route: "/api/waitlist/notify", method: "POST", errName: error.name, errMessage: error.message },
+        "Resend contact create failed"
+      );
       return Response.json({ error: "Failed to subscribe" }, { status: 500 });
     }
 
     return Response.json({ success: true }, { status: 201 });
   } catch (err) {
     // Catches getAudienceId() throw (missing env var) or unexpected Resend failures
-    console.error("[waitlist] Unexpected error:", err instanceof Error ? err.message : "unknown");
+    logger.error(
+      { route: "/api/waitlist/notify", method: "POST", err },
+      "Waitlist notify unexpected error"
+    );
     return Response.json({ error: "Failed to subscribe" }, { status: 500 });
   }
 }

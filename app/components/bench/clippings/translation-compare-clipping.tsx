@@ -7,6 +7,10 @@ import { useBenchBoardContext } from '../bench-board-context'
 import { guardDrop } from '@/lib/bench/guard-drop'
 import type { LicenseCapModalProps as GuardCapModalProps } from '@/lib/bench/guard-drop'
 import { LicenseCapModal } from '../license-cap-modal'
+import {
+  ApiBibleAttribution,
+  hasApiBibleTranslation,
+} from '@/components/shared/api-bible-attribution'
 
 type TranslationCompareRef = Extract<BenchClippingSourceRef, { type: 'translation-compare' }>
 
@@ -143,6 +147,17 @@ export function TranslationCompareClipping({
             </div>
           ))}
         </div>
+      )}
+
+      {/* Starter Plan AUP: "Powered by API.Bible" must render inside the UI
+          whenever an API.Bible-sourced translation (NLT/NIV/NASB) is on-screen.
+          Only emit the link for results that actually returned text — failed
+          fetches show "Not available" instead, and we don't want to hang an
+          attribution on empty space. */}
+      {hasApiBibleTranslation(
+        results.filter((r) => Boolean(r.text)).map((r) => r.id),
+      ) && (
+        <ApiBibleAttribution className="mt-1 text-[10px] text-muted-foreground/70" />
       )}
 
       {capModal && (

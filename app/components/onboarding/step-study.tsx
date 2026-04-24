@@ -52,7 +52,7 @@ export function StepStudy({ linkedStudySlug, linkedStudyTitle, onNext, onBack }:
           Notice the original Greek and Hebrew insights, cross-references connecting the whole Bible,
           and contextual analysis for every passage.
         </p>
-        <div className="inline-flex items-start gap-2 rounded-md bg-[#e8ede6] dark:bg-[#2a3527]/30 px-3 py-1.5 text-xs text-[#3d4f35] dark:text-[#a8b8a0] max-w-lg text-left">
+        <div className="inline-flex items-start gap-2 rounded-md bg-[var(--secondary)] dark:bg-[var(--secondary)]/30 px-3 py-1.5 text-xs text-[var(--sage-700)] dark:text-[var(--sage-300)] max-w-lg text-left">
           <span className="text-base leading-none">{'\u26F0\uFE0F'}</span>
           <span>
             The mountain icon marks information drawn from historical records, not the biblical text itself.

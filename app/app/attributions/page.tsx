@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { CITATIONS } from "@/lib/translations/citations";
-import { getAvailableTranslations } from "@/lib/translations/registry";
 import type { TranslationId } from "@/lib/translations/registry";
 
 export const metadata = {
@@ -9,14 +8,44 @@ export const metadata = {
     "Scripture translations, Bible APIs, and knowledge graph data sources that Koinar is built on.",
 };
 
-export default function Attributions() {
-  const availableIds = new Set(getAvailableTranslations().map((t) => t.id));
-  const citationEntries = (
-    Object.entries(CITATIONS) as [TranslationId, (typeof CITATIONS)[TranslationId]][]
-  ).filter(
-    ([id, c]) => availableIds.has(id) && !c.full.startsWith("[TODO"),
-  );
+// Shipping translation order for the Scripture Translations section. We show
+// BSB + the three licensed translations unconditionally (even when an
+// environment is missing API.Bible keys) because readers need to see what
+// Koinar is licensed to serve, independent of which backend the current
+// deployment happens to reach. ESV is rendered as a separate "coming soon"
+// card below the block since its citation stub isn't legally complete until
+// Crossway approval lands.
+const SHIPPING_TRANSLATIONS: TranslationId[] = ["BSB", "NLT", "NIV", "NASB"];
 
+// Per-translation routing blurbs. Shown on /attributions#scripture-api so
+// copyright-curious readers can see both the legal citation (above) and the
+// technical upstream (here) side by side.
+const API_ROUTING: Array<{
+  id: TranslationId;
+  name: string;
+  blurb: string;
+}> = [
+  {
+    id: "NLT",
+    name: "NLT — New Living Translation",
+    blurb:
+      "Served via API.Bible. Responses are cached per the DHCP-lease policy (7-day lease, up to ~500 verses per translation, hourly renewal of leases past 75% of their window).",
+  },
+  {
+    id: "NIV",
+    name: "NIV — New International Version",
+    blurb:
+      "Served via API.Bible, display-only, with a per-view cap of 2 chapters or 25 verses per Biblica §V.F. Attempts to render past the cap replace the overflow passages with a truncation marker.",
+  },
+  {
+    id: "NASB",
+    name: "NASB — New American Standard Bible (1995)",
+    blurb:
+      "Served via API.Bible. Cached under the same DHCP-lease policy as NLT, with a slightly higher storage cap (~1,000 verses).",
+  },
+];
+
+export default function Attributions() {
   return (
     <main>
       {/* Hero */}
@@ -57,24 +86,74 @@ export default function Attributions() {
           </p>
 
           <div className="space-y-10">
-            {citationEntries.map(([id, citation]) => (
-              <article key={id} className="border-t border-stone-200 pt-8">
-                <h3 className="font-display text-lg font-medium text-stone-900 mb-3">{id}</h3>
-                <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
-                  {citation.full}
-                </p>
-                {citation.publisherLink && (
-                  <a
-                    href={citation.publisherLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
-                  >
-                    {citation.publisherLink.label}
-                  </a>
-                )}
-              </article>
-            ))}
+            {SHIPPING_TRANSLATIONS.map((id) => {
+              const citation = CITATIONS[id];
+              return (
+                <article
+                  key={id}
+                  id={`translation-${id.toLowerCase()}`}
+                  className="border-t border-stone-200 pt-8 scroll-mt-20"
+                >
+                  <h3 className="font-display text-lg font-medium text-stone-900 mb-3">
+                    {id}
+                  </h3>
+                  <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
+                    {citation.full}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                    {citation.publisherLink && (
+                      <a
+                        href={citation.publisherLink.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-body text-base text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                      >
+                        {citation.publisherLink.label}
+                      </a>
+                    )}
+                    {(id === "NLT" || id === "NIV" || id === "NASB") && (
+                      <Link
+                        href={`#api-${id.toLowerCase()}`}
+                        className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                      >
+                        How we deliver {id} →
+                      </Link>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+
+            {/* ESV is a sibling of the shipping list, not part of it — the
+                citation registry's `full` string is a TODO stub until Crossway
+                approval lands, so we render a deliberately minimal "coming
+                soon" card instead of an invalid copyright block. */}
+            <article
+              id="translation-esv"
+              className="border-t border-stone-200 pt-8 scroll-mt-20"
+            >
+              <h3 className="font-display text-lg font-medium text-stone-900 mb-3">
+                ESV — English Standard Version{" "}
+                <span className="ml-2 align-middle inline-block rounded-full bg-stone-200 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-stone-600">
+                  Coming soon
+                </span>
+              </h3>
+              <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
+                Pending approval from Crossway. When approved, ESV will be
+                available alongside our other licensed translations, served
+                directly via{" "}
+                <a
+                  href="https://api.esv.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-stone-700 transition-colors"
+                >
+                  api.esv.org
+                </a>{" "}
+                (not through API.Bible). Full copyright text will appear here
+                when the license is finalised.
+              </p>
+            </article>
           </div>
         </div>
       </section>
@@ -97,16 +176,78 @@ export default function Attributions() {
             <p className="font-body text-base leading-relaxed text-stone-600">
               Licensed translations (NLT, NIV, NASB) are served via{" "}
               <a
-                href="https://scripture.api.bible"
+                href="https://api.bible"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-stone-700 transition-colors"
               >
                 API.Bible
               </a>{" "}
-              under the Starter plan agreement.
+              under the Starter plan agreement. Fair-use monitoring is reported
+              hourly via the{" "}
+              <code className="font-mono text-[0.9em]">fums.api.bible</code>{" "}
+              endpoint, per{" "}
+              <a
+                href="https://docs.api.bible/guides/fair-use/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-stone-700 transition-colors"
+              >
+                docs.api.bible/guides/fair-use
+              </a>
+              .
             </p>
           </article>
+
+          {/* Per-translation routing. Readers clicking through from the
+              Scripture Translations cards above land on the matching anchor
+              here. Keep wording cross-referenced to that section so legal
+              text + technical delivery read as one coherent story. */}
+          <div className="mt-10 space-y-8">
+            {API_ROUTING.map(({ id, name, blurb }) => (
+              <article
+                key={id}
+                id={`api-${id.toLowerCase()}`}
+                className="border-t border-stone-200 pt-8 scroll-mt-20"
+              >
+                <h3 className="font-display text-base font-medium text-stone-900 mb-2">
+                  {name}
+                </h3>
+                <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
+                  {blurb}
+                </p>
+                <Link
+                  href={`#translation-${id.toLowerCase()}`}
+                  className="font-body text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700 transition-colors"
+                >
+                  ← See copyright notice
+                </Link>
+              </article>
+            ))}
+
+            <article
+              id="api-esv"
+              className="border-t border-stone-200 pt-8 scroll-mt-20"
+            >
+              <h3 className="font-display text-base font-medium text-stone-900 mb-2">
+                ESV — served via api.esv.org (when approved)
+              </h3>
+              <p className="font-body text-base leading-relaxed text-stone-600 mb-3">
+                If Crossway approves Koinar&apos;s ESV request, ESV content will
+                be fetched directly from{" "}
+                <a
+                  href="https://api.esv.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-stone-700 transition-colors"
+                >
+                  api.esv.org
+                </a>{" "}
+                — a different upstream from NLT/NIV/NASB. ESV is not reported
+                through FUMS (Crossway&apos;s API has its own usage reporting).
+              </p>
+            </article>
+          </div>
         </div>
       </section>
 

@@ -15,6 +15,7 @@ type Action =
   | { type: 'stream-complete'; title: string; slug: string }
   | { type: 'save-failed'; markdown: string }
   | { type: 'complete' }
+  | { type: 'needs-step-up' }
   | { type: 'error-rate-limited'; retryAt: number }
   | { type: 'error-invalid-key' }
   | { type: 'error-stream-aborted' }
@@ -99,6 +100,12 @@ function reducer(state: GenerateState, action: Action): GenerateState {
       }
       return state;
 
+    case 'needs-step-up':
+      if (state.kind === 'submitting' || state.kind === 'streaming') {
+        return { kind: 'needs-step-up', prompt: state.prompt, format: state.format };
+      }
+      return state;
+
     case 'error-rate-limited':
       if (state.kind === 'submitting' || state.kind === 'streaming') {
         return {
@@ -178,6 +185,14 @@ export interface UseGenerateStreamReturn {
   state: GenerateState;
   submit: (prompt: string, format: Format) => void;
   retry: (prompt: string, format: Format) => void;
+  /**
+   * Called after the step-up modal succeeds to resume the interrupted
+   * generation. Re-fires `submit` with the same prompt/format the user
+   * was trying to send when the gate fired.
+   */
+  resumeAfterStepUp: (prompt: string, format: Format) => void;
+  /** Cancel a pending step-up challenge and return to idle. */
+  cancelStepUp: (entitlement: Entitlement, prompt: string, format: Format) => void;
 }
 
 export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamReturn {
@@ -249,7 +264,16 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
 
       if (res.status === 403) {
         clearInterval(heartbeat);
-        dispatch({ type: 'error-invalid-key' });
+        // The admin branch can return 403 with code: "STEP_UP_REQUIRED"
+        // when the server wants a TOTP challenge before handing out the
+        // platform Anthropic key. Distinguish that from the generic
+        // entitlement-missing 403 by parsing the body.
+        const body = (await res.json().catch(() => ({}))) as { code?: string };
+        if (body.code === 'STEP_UP_REQUIRED') {
+          dispatch({ type: 'needs-step-up' });
+        } else {
+          dispatch({ type: 'error-invalid-key' });
+        }
         return;
       }
 
@@ -339,5 +363,27 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
     });
   }, []);
 
-  return { state, submit, retry };
+  const resumeAfterStepUp = useCallback(
+    (prompt: string, format: Format) => {
+      // Go through idle first so `submit` sees a state it will act on
+      // (it only advances from `idle` or `validating`).
+      dispatch({
+        type: 'reset-to-idle',
+        entitlement: entitlementRef.current,
+        prompt,
+        format,
+      });
+      void submit(prompt, format);
+    },
+    [submit]
+  );
+
+  const cancelStepUp = useCallback(
+    (entitlement: Entitlement, prompt: string, format: Format) => {
+      dispatch({ type: 'reset-to-idle', entitlement, prompt, format });
+    },
+    []
+  );
+
+  return { state, submit, retry, resumeAfterStepUp, cancelStepUp };
 }

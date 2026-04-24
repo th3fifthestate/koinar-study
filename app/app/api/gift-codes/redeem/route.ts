@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth/middleware";
 import { getGiftCode, getActiveGiftCodesForUser } from "@/lib/db/queries";
 import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const redeemSchema = z.object({
   code: z.string().min(1),
@@ -57,7 +58,10 @@ export async function POST(request: Request) {
       remainingUses: giftCode.uses_remaining,
     });
   } catch (err) {
-    console.error("[gift-codes/redeem POST] DB error:", err);
+    logger.error(
+      { route: "/api/gift-codes/redeem", method: "POST", userId: auth.user.userId, err },
+      "Gift code redeem DB error"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -76,7 +80,10 @@ export async function GET() {
       })),
     });
   } catch (err) {
-    console.error("[gift-codes/my-codes GET] DB error:", err);
+    logger.error(
+      { route: "/api/gift-codes/my-codes", method: "GET", userId: auth.user.userId, err },
+      "My gift codes DB error"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

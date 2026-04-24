@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
+import {
+  ApiBibleAttribution,
+  hasApiBibleTranslation,
+} from '@/components/shared/api-bible-attribution'
 
 type VerseRef = Extract<BenchClippingSourceRef, { type: 'verse' }>
 
@@ -41,6 +45,7 @@ export function VerseClipping({ sourceRef, boardId }: VerseClippingProps) {
 
   const label = book && chapter && verse ? `${book} ${chapter}:${verse}` : 'Verse'
   const translationLabel = translation?.toUpperCase() ?? ''
+  const showApiBible = hasApiBibleTranslation([translation])
 
   return (
     <div className="flex flex-col h-full gap-1.5">
@@ -58,6 +63,9 @@ export function VerseClipping({ sourceRef, boardId }: VerseClippingProps) {
         <p className="text-[13px] leading-relaxed text-foreground line-clamp-6 italic">{text}</p>
       ) : (
         <p className="text-[12px] text-muted-foreground italic">Verse text unavailable</p>
+      )}
+      {showApiBible && text && (
+        <ApiBibleAttribution className="mt-auto text-[10px] text-muted-foreground/70" />
       )}
     </div>
   )

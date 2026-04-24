@@ -105,7 +105,9 @@ describe("surface-aware enforceNivPerViewCap", () => {
     const benchSurface: DisplaySurface = { kind: "bench", boardId: "board-1" };
     // Reader call: 25 refs across 3 chapters — would push an "accumulated" count
     // to 25 if state leaked between calls. Both caps exceeded → truncated at 25.
-    const readerResult = enforceNivPerViewCap(makeRefs(25), readerSurface);
+    // Intentional: we call this to prove that state does NOT leak into the
+    // bench call below. The result itself isn't asserted.
+    enforceNivPerViewCap(makeRefs(25), readerSurface);
     // Bench call: 26 refs across 3 chapters — should still be evaluated fresh;
     // if the reader call had leaked state, a stateful implementation might
     // behave differently. Surface isolation means this call is independent.

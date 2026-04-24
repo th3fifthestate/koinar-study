@@ -3,6 +3,12 @@ import { requireAdmin } from "@/lib/auth/middleware";
 import { generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
+import { createRateLimiter } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
+
+// Per-admin throttle. Each call invokes Claude Haiku — cost + latency both
+// matter. Tighter cap than the generic 30/min admin bucket.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 10 });
 
 const suggestSchema = z.object({
   studyTitle: z.string().min(1).max(500),
@@ -19,8 +25,15 @@ const styleInstructions: Record<string, string> = {
 };
 
 export async function POST(request: NextRequest) {
-  const { response: authResponse } = await requireAdmin();
+  const { user, response: authResponse } = await requireAdmin();
   if (authResponse) return authResponse;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   let body: unknown;
   try {
@@ -58,7 +71,10 @@ Rules:
   } catch (error) {
     // Anthropic SDK errors can include API keys, rate-limit tokens, internal URLs.
     // Per CLAUDE.md §6, return a generic message to the client and log details server-side only.
-    console.error("[POST /api/admin/images/suggest-prompt]", error);
+    logger.error(
+      { route: "/api/admin/images/suggest-prompt", userId: user.userId, err: error },
+      "Prompt suggestion failed"
+    );
     return NextResponse.json(
       { error: "Failed to generate prompt suggestion" },
       { status: 500 }

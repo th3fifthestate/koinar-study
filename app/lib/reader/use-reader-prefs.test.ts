@@ -10,7 +10,10 @@ const LEGACY_KEY = 'koinar:reader:fontSize';
 function makeLocalStorageMock() {
   let store: Record<string, string> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] ?? null),
+    // Explicit `(string | null)` return so mockImplementation overrides can
+    // return null without a type error — TS would otherwise narrow the
+    // factory's return to `string` via Record's index signature.
+    getItem: vi.fn((key: string): string | null => store[key] ?? null),
     setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
     removeItem: vi.fn((key: string) => { delete store[key]; }),
     clear: vi.fn(() => { store = {}; }),

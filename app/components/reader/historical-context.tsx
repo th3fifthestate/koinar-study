@@ -19,7 +19,7 @@ function stripLeadingEmoji(children: ReactNode): ReactNode {
 
 export function HistoricalContext({ children }: { children: ReactNode }) {
   return (
-    <div className="my-4 rounded-lg border border-[var(--warmth)]/50 bg-gradient-to-r from-[#e8ede6]/80 to-[#ddd9d0]/40 p-4 dark:border-[var(--warmth)]/30 dark:from-[#2a3527]/30 dark:to-[#3a362f]/20">
+    <div className="my-4 rounded-lg border border-[var(--warmth)]/50 bg-gradient-to-r from-[var(--secondary)]/80 to-[var(--border)]/40 p-4 dark:border-[var(--warmth)]/30 dark:from-[var(--secondary)]/30 dark:to-[var(--card)]/20">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 text-lg leading-none" aria-label="Historical context indicator">
           ⛰️

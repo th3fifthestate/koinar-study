@@ -10,6 +10,25 @@ export interface SessionData {
   isAdmin: boolean;
   isApproved: boolean;
   onboardingCompleted: boolean;
+  /**
+   * FUMS session ID — minted once per login via newFumsSessionId(). Passed to
+   * api.bible's /f3 Fair Use Monitoring endpoint as `sId`, which expects "a
+   * unique random ID per session, regenerated each session" per
+   * https://docs.api.bible/guides/fair-use/.
+   *
+   * Optional at the type level so legacy seal-data with no sessionId parses
+   * cleanly; flushFumsEvents() treats null as a synthetic "pre-sessionid"
+   * session so events recorded before this field was added still ship.
+   */
+  sessionId?: string;
+  /**
+   * Unix ms timestamp captured when an admin completes TOTP step 2 of login.
+   * Used by requireAdmin() to enforce a 24-hour absolute ceiling on admin
+   * sessions — much shorter than the 7-day user TTL. Absent for non-admins
+   * and for legacy admin sessions predating this field (in which case the
+   * requireAdmin gate refuses them and forces a fresh login).
+   */
+  adminLoginAt?: number;
 }
 
 export const sessionOptions = {
@@ -44,5 +63,6 @@ export async function getCurrentUser(): Promise<SessionData | null> {
     isAdmin: session.isAdmin,
     isApproved: session.isApproved,
     onboardingCompleted: session.onboardingCompleted,
+    sessionId: session.sessionId,
   };
 }

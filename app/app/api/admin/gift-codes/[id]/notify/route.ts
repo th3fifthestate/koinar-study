@@ -16,6 +16,7 @@ import { logAdminAction } from '@/lib/admin/actions';
 import { sendGiftCodeNotification } from '@/lib/email/resend';
 import { config } from '@/lib/config';
 import { createRateLimiter } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 const isRateLimited = createRateLimiter({ windowMs: 300_000, max: 10 });
 
@@ -97,7 +98,10 @@ export async function POST(
       generateLink,
     });
   } catch (err) {
-    console.error('[admin gift-code notify] email send failed', err);
+    logger.error(
+      { route: '/api/admin/gift-codes/[id]/notify', userId: user.userId, giftCodeId: id, err },
+      'Gift code notification email failed'
+    );
     return NextResponse.json(
       { error: 'Failed to send notification email' },
       { status: 502 }

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 import { sendContactMessage } from "@/lib/email/resend";
 import { getCurrentUser } from "@/lib/auth/session";
+import { logger } from "@/lib/logger";
 
 // 3 submissions per IP per 5 minutes
 const isRateLimited = createRateLimiter({ windowMs: 5 * 60_000, max: 3 });
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("[POST /api/contact]", err);
+    logger.error({ route: "/api/contact", err }, "Contact submission failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

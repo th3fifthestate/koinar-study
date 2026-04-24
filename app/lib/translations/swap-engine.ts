@@ -132,7 +132,7 @@ async function fetchVerse(
   book: string,
   chapter: number,
   verse: number,
-  ctx: { studyId: number; userId: number; surface: DisplaySurface },
+  ctx: { studyId: number; userId: number; surface: DisplaySurface; sessionId?: string | null },
 ): Promise<FetchVerseResult> {
   const info = TRANSLATIONS[target];
 
@@ -185,6 +185,7 @@ async function fetchVerse(
         userId: ctx.userId,
         verseCount: 1,
         surface: ctx.surface,
+        sessionId: ctx.sessionId ?? null,
       });
       return { ok: true, text: r.text, fumsToken: null };
     } catch (err) {
@@ -219,6 +220,7 @@ async function fetchVerse(
       userId: ctx.userId,
       verseCount: 1,
       surface: ctx.surface,
+      sessionId: ctx.sessionId ?? null,
     });
     enforceStorageCap(target);
     return { ok: true, text: r.text, fumsToken: r.fumsToken };
@@ -230,7 +232,7 @@ async function fetchVerse(
 export async function swapVerses(
   studyContent: string,
   target: TranslationId,
-  ctx: { studyId: number; userId: number; surface?: DisplaySurface },
+  ctx: { studyId: number; userId: number; surface?: DisplaySurface; sessionId?: string | null },
 ): Promise<SwapResult> {
   if (target === "BSB") {
     return { content: studyContent, versesSwapped: 0, missingVerses: [], truncated: false };

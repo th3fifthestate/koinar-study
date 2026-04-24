@@ -317,7 +317,7 @@ async function main() {
   }
 
   let succeeded = 0;
-  let failed = 0;
+  const failed = 0;
   let errored = 0;
   let expired = 0;
   let skipped = 0;

@@ -3,6 +3,7 @@ import { requireAuth } from '@/lib/auth/middleware';
 import { getAnnotationForOwner, deleteAnnotation, studyIsAccessible } from '@/lib/db/queries';
 import { broadcastAnnotationDeleted } from '@/lib/ws/broadcaster';
 import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 // 30 deletes per minute per IP
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
@@ -50,7 +51,7 @@ export async function DELETE(
 
     return Response.json({ success: true });
   } catch (error) {
-    console.error('[DELETE /api/studies/[id]/annotations/[annotationId]]', error);
+    logger.error({ route: '/api/studies/[id]/annotations/[annotationId]', method: 'DELETE', studyId, annId, userId: user.userId, err: error }, 'Annotation delete failed');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

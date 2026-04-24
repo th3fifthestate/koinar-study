@@ -9,6 +9,13 @@ import { config } from "@/lib/config";
 import { getDb } from "@/lib/db/connection";
 import { logAdminAction } from "@/lib/admin/actions";
 import type { WaitlistEntry } from "@/lib/db/types";
+import { createRateLimiter } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
+
+// Per-admin throttle. Approve path sends email; deny path is cheap. Cap
+// tightened relative to the generic admin bucket because each approve
+// triggers a transactional email. User-keyed.
+const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const schema = z.object({
   action: z.enum(["approve", "deny"]),
@@ -20,6 +27,13 @@ export async function PATCH(
 ) {
   const { user, response } = await requireAdmin();
   if (response) return response;
+
+  if (isMutationLimited(`admin:${user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   try {
     const { id } = await params;
@@ -80,7 +94,10 @@ export async function PATCH(
       return NextResponse.json({ success: true, action: "denied" });
     }
   } catch (err) {
-    console.error("[PATCH /api/admin/waitlist/[id]]", err);
+    logger.error(
+      { route: "/api/admin/waitlist/[id]", userId: user.userId, err },
+      "Waitlist PATCH failed"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

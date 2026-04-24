@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import { StudyCard, StudyCardSkeleton } from '@/components/library/study-card';
+import { StudyCard } from '@/components/library/study-card';
 import type { StudyListItem } from '@/lib/db/types';
 
 interface InterruptionCard {
@@ -61,12 +62,12 @@ function NoFavorites() {
       <p className="font-body text-[1rem] text-[var(--stone-300)] mb-6">
         Tap the heart on any reading to save it here.
       </p>
-      <a
+      <Link
         href="/"
         className="font-body text-[0.9375rem] text-[var(--warmth)] underline-offset-4 hover:underline"
       >
         Browse the library
-      </a>
+      </Link>
     </div>
   );
 }

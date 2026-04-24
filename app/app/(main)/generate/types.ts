@@ -23,6 +23,7 @@ export type GenerateState =
   | { kind: 'streaming'; prompt: string; format: Format; toolCalls: ToolCallEntry[]; textBuffered: string }
   | { kind: 'completing'; prompt: string; format: Format; title: string; slug: string }
   | { kind: 'complete'; title: string; slug: string; countdownMs: number }
+  | { kind: 'needs-step-up'; prompt: string; format: Format }
   | { kind: 'error-rate-limited'; prompt: string; format: Format; retryAt: number }
   | { kind: 'error-invalid-key'; prompt: string; format: Format }
   | { kind: 'error-stream-aborted'; prompt: string; format: Format }

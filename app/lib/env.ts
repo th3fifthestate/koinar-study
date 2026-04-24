@@ -58,6 +58,11 @@ const envSchema = z.object({
   API_BIBLE_ID_NLT: z.string().default(""),
   API_BIBLE_ID_NIV: z.string().default(""),
   API_BIBLE_ID_NASB: z.string().default(""),
+  // Salt for sha256(userId + salt) before sending uId to FUMS. Must be stable
+  // for the life of the deployment — rotating it breaks api.bible's view of
+  // user-session continuity. Generate once (`openssl rand -hex 32`) and never
+  // change. Absence just drops the uId query param — FUMS spec makes uId optional.
+  FUMS_UID_SALT: z.string().default(""),
   // ABS termination kill-switch — when true, getAvailableTranslations() hides
   // every licensed translation. Operational flag; see runbooks/abs-termination-purge.md.
   ABS_PURGE_ENABLED: z
@@ -90,6 +95,20 @@ const productionSchema = z.object({
   FLUX_API_KEY: z.string().min(1, "FLUX_API_KEY is required in production"),
   ENCRYPTION_KEY: z.string().min(64, "ENCRYPTION_KEY must be at least 64 characters in production"),
   API_BIBLE_KEY: z.string().min(1, "API_BIBLE_KEY is required in production"),
+  // API_BIBLE_KEY authorizes the translations; each translation still needs its
+  // own Bible UUID for the /v1/bibles/{id}/passages URL. A half-configured stack
+  // (key set, IDs empty) leaves getAvailableTranslations() returning only BSB —
+  // the exact "translations don't appear when I switch" failure mode. Require
+  // all three in production so we never ship that state again. Run
+  // `npx tsx scripts/fetch-api-bible-ids.ts` locally to resolve UUIDs.
+  API_BIBLE_ID_NLT: z.string().min(1, "API_BIBLE_ID_NLT is required in production (paired with API_BIBLE_KEY)"),
+  API_BIBLE_ID_NIV: z.string().min(1, "API_BIBLE_ID_NIV is required in production (paired with API_BIBLE_KEY)"),
+  API_BIBLE_ID_NASB: z.string().min(1, "API_BIBLE_ID_NASB is required in production (paired with API_BIBLE_KEY)"),
+  // FUMS uId is technically optional per api.bible's spec, but running without
+  // it means we can't prove continuity of a user's verse-fetch pattern to
+  // api.bible during a compliance inquiry. Require it in prod; 32-char min to
+  // force at least 128 bits of entropy.
+  FUMS_UID_SALT: z.string().min(32, "FUMS_UID_SALT must be at least 32 characters in production (generate via `openssl rand -hex 32`)"),
 });
 
 // --- Parse (always succeeds — uses defaults for missing values) ---

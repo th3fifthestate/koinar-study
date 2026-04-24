@@ -5,9 +5,11 @@ import { randomBytes } from "crypto";
 import { getUserForAuth } from "@/lib/db/queries";
 import { verifyPassword, isAccountLocked, recordFailedLogin, resetFailedLogins, hashPassword } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
+import { newFumsSessionId } from "@/lib/fums/identity";
 import { getDb } from "@/lib/db/connection";
 import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 import { sendAdminLoginCode } from "@/lib/email/resend";
+import { logger } from "@/lib/logger";
 
 // 10 login attempts per IP per minute
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 10 });
@@ -132,7 +134,10 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         // If email fails, leave the row so the admin can retry without racking
         // up the rate-limit counter; but surface a generic failure to the client.
-        console.error("[POST /api/auth/login] failed to send admin code", err);
+        logger.error(
+          { route: "/api/auth/login", userId: user.id, event: "admin_code_email_failed", err },
+          "Failed to send admin login code"
+        );
         return NextResponse.json(
           { error: "We couldn't send your sign-in code. Please try again shortly." },
           { status: 500 }
@@ -158,6 +163,8 @@ export async function POST(request: NextRequest) {
     session.isAdmin = false;
     session.isApproved = user.is_approved === 1;
     session.onboardingCompleted = user.onboarding_completed === 1;
+    // FUMS sId: stable for the life of this login. See lib/fums/identity.ts.
+    session.sessionId = newFumsSessionId();
     await session.save();
 
     // Minimal response — same top-level shape as the admin path. User
@@ -165,7 +172,7 @@ export async function POST(request: NextRequest) {
     // don't leak is_admin here and don't expose user row fields.
     return NextResponse.json({ success: true, step: "done" });
   } catch (err) {
-    console.error("[POST /api/auth/login]", err);
+    logger.error({ route: "/api/auth/login", err }, "Login failed");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

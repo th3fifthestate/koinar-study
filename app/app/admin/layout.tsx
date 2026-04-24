@@ -1,5 +1,4 @@
-import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
+import { requireAdminPage } from '@/lib/auth/middleware';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 
 export const metadata = { title: 'Admin — Koinar' };
@@ -9,10 +8,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session.userId || !session.isAdmin) {
-    redirect('/');
-  }
+  // requireAdminPage enforces sign-in + admin + 24h absolute admin session
+  // TTL. Each page under this layout calls it again for defense in depth.
+  await requireAdminPage();
 
   return (
     <div className="flex h-screen overflow-hidden">
