@@ -23,6 +23,22 @@ import type {
 
 const SAFE_USER_COLUMNS = `id, username, email, display_name, bio, avatar_url, is_admin, is_approved, invited_by, onboarding_completed, created_at, last_login`;
 
+/**
+ * Canonicalize an email for storage and lookup. Trims whitespace and
+ * lower-cases so "Josh@Koinar.app " and "josh@koinar.app" resolve to the
+ * same row. Applied at every read and write boundary against the users /
+ * waitlist / invite_codes tables so a caller that forgets to normalize
+ * can't produce a mismatch (e.g. a login form letting the OS capitalize
+ * the first letter would otherwise fail lookup against a lowercase row).
+ *
+ * NOTE: this is the authoritative normalization. Route handlers may also
+ * normalize at the edge for clarity, but correctness relies on this
+ * helper because it sits immediately above the SQL layer.
+ */
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
 // ─── User queries ────────────────────────────────────────────────────────────
 
 export function getUserById(id: number): SafeUser | null {
@@ -35,7 +51,7 @@ export function getUserByEmail(email: string): SafeUser | null {
   return (
     (getDb()
       .prepare(`SELECT ${SAFE_USER_COLUMNS} FROM users WHERE email = ?`)
-      .get(email) as SafeUser | undefined) ?? null
+      .get(normalizeEmail(email)) as SafeUser | undefined) ?? null
   );
 }
 
@@ -52,7 +68,7 @@ export function getUserForAuth(email: string): User | null {
   return (
     (getDb()
       .prepare('SELECT * FROM users WHERE email = ?')
-      .get(email) as User | undefined) ?? null
+      .get(normalizeEmail(email)) as User | undefined) ?? null
   );
 }
 
@@ -71,7 +87,7 @@ export function createUser(data: {
     )
     .run(
       data.username,
-      data.email,
+      normalizeEmail(data.email),
       data.password_hash,
       data.display_name ?? null,
       data.invited_by ?? null,
@@ -243,7 +259,13 @@ export function createInviteCode(data: {
       `INSERT INTO invite_codes (code, created_by, invitee_name, invitee_email, linked_study_id)
        VALUES (?, ?, ?, ?, ?)`
     )
-    .run(data.code, data.created_by, data.invitee_name, data.invitee_email, data.linked_study_id ?? null);
+    .run(
+      data.code,
+      data.created_by,
+      data.invitee_name,
+      normalizeEmail(data.invitee_email),
+      data.linked_study_id ?? null
+    );
   return result.lastInsertRowid as number;
 }
 
@@ -788,7 +810,7 @@ export function createWaitlistEntry(data: {
 }): number {
   const result = getDb()
     .prepare('INSERT INTO waitlist (email, name, message) VALUES (?, ?, ?)')
-    .run(data.email, data.name, data.message ?? null);
+    .run(normalizeEmail(data.email), data.name, data.message ?? null);
   return result.lastInsertRowid as number;
 }
 
@@ -802,7 +824,7 @@ export function getWaitlistByEmail(email: string): WaitlistEntry | null {
   return (
     (getDb()
       .prepare("SELECT * FROM waitlist WHERE email = ?")
-      .get(email) as WaitlistEntry | undefined) ?? null
+      .get(normalizeEmail(email)) as WaitlistEntry | undefined) ?? null
   );
 }
 

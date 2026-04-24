@@ -266,7 +266,14 @@ function SignInForm({ onBack }: { onBack: () => void }) {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        // Canonicalize before POST so the session echo and any client-side
+        // cached email state matches what the server stores. The server
+        // (queries.ts → normalizeEmail) is the authoritative fix, but
+        // normalizing here too keeps the round-trip consistent.
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
       const data = await res.json();
 

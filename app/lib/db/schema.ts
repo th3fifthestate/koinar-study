@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 14;
+export const SCHEMA_VERSION = 15;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (

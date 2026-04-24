@@ -337,6 +337,27 @@ function runMigration(database: Database.Database): void {
       `).run();
     }
 
+    // v14 → v15: Canonicalize email addresses to lowercase across all tables
+    // that key by email. A user typing "Josh@koinar.app" at sign-in was
+    // previously missing the "josh@koinar.app" row. queries.ts now normalizes
+    // at every read/write boundary via normalizeEmail(); this block backfills
+    // any legacy rows inserted before that normalization landed. UNIQUE
+    // constraints on email mean two rows differing only by case could
+    // collide here — there are none in production today (verified), so this
+    // is a no-op in practice. If one ever exists, the whole migration
+    // transaction rolls back and surfaces the conflict in logs.
+    if (currentVersion < 15) {
+      database.prepare(
+        "UPDATE users SET email = lower(email) WHERE email <> lower(email)"
+      ).run();
+      database.prepare(
+        "UPDATE waitlist SET email = lower(email) WHERE email <> lower(email)"
+      ).run();
+      database.prepare(
+        "UPDATE invite_codes SET invitee_email = lower(invitee_email) WHERE invitee_email <> lower(invitee_email)"
+      ).run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);
