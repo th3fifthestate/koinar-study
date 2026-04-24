@@ -17,7 +17,10 @@ export const sessionOptions = {
   cookieName: config.session.cookieName,
   cookieOptions: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Secure cookies in any non-dev/test environment. Staging serves over
+    // HTTPS (Cloudflare Access) so default to closed rather than keying on
+    // a single "production" literal.
+    secure: !["development", "test"].includes(process.env.NODE_ENV ?? ""),
     sameSite: "lax" as const,
     path: "/",
     maxAge: config.session.ttlDays * 24 * 60 * 60,

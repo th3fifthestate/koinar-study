@@ -16,6 +16,8 @@ const PUBLIC_PATHS = new Set([
   "/api/auth/register-welcome",
   "/api/auth/login",
   "/api/auth/login/verify",
+  "/api/auth/me",
+  "/api/health",
   "/api/waitlist/submit",
 ]);
 
