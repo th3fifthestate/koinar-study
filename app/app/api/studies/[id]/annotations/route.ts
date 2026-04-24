@@ -9,6 +9,8 @@ import type { AnnotationColor } from '@/lib/db/types';
 const isGetRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 });
 // 30 creates per minute per IP
 const isPostRateLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
+// 30 creates per minute per authenticated user — defends against IP rotation
+const isPostUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 const VALID_COLORS: AnnotationColor[] = ['yellow', 'green', 'blue', 'pink', 'purple'];
 const VALID_TYPES = ['highlight', 'note'] as const;
@@ -55,6 +57,10 @@ export async function POST(
 
   const { user, response } = await requireAuth();
   if (response) return response;
+
+  if (isPostUserRateLimited(`user-${user.userId}`)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': '60' } });
+  }
 
   const { id } = await params;
   const studyId = parseInt(id, 10);

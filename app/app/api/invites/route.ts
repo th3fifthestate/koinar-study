@@ -6,6 +6,7 @@ import { requireAuth } from "@/lib/auth/middleware";
 import { getInviteCountForUser, createInviteCode, getStudyById } from "@/lib/db/queries";
 import { sendInviteEmail } from "@/lib/email/resend";
 import { config } from "@/lib/config";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { getDb } from "@/lib/db/connection";
 import type { InviteCode } from "@/lib/db/types";
 
@@ -15,9 +16,19 @@ const createInviteSchema = z.object({
   linkedStudyId: z.number().int().positive(),
 });
 
+// Per-user burst guard (30-day quota is enforced separately in handler below).
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 });
+
 export async function POST(request: NextRequest) {
   const { user, response } = await requireAuth();
   if (response) return response;
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   try {
     let body: unknown;

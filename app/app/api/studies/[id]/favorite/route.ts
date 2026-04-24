@@ -5,6 +5,8 @@ import { createRateLimiter, getClientIp } from '@/lib/rate-limit';
 
 // 20 favorite toggles per minute per IP
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
+// 20 per minute per authenticated user — defends against IP rotation
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 export async function POST(
   request: Request,
@@ -20,6 +22,13 @@ export async function POST(
 
   const { user, response } = await requireAuth();
   if (response) return response;
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
+    return Response.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   const { id } = await params;
   const studyId = parseInt(id, 10);

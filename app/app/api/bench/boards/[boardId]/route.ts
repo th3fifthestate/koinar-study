@@ -10,6 +10,7 @@ import {
 } from '@/lib/db/bench/queries'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
 const patchSchema = z.object({
   title: z.string().min(1).max(120).optional(),
@@ -53,6 +54,10 @@ export async function PATCH(
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
+  if (isUserRateLimited(`user-${user.userId}`)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const { boardId } = await params
   if (!getBenchBoard(boardId, user.userId)) {
     return Response.json({ error: 'Not found' }, { status: 404 })
@@ -86,6 +91,10 @@ export async function DELETE(
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

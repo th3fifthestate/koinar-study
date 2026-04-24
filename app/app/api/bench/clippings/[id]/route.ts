@@ -6,6 +6,7 @@ import { getDb } from '@/lib/db/connection'
 import type { BenchClipping } from '@/lib/db/types'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 240 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 240 })
 
 // source_ref is intentionally not patchable — it is the typed payload set at
 // creation and later mutations would require re-validating the discriminated
@@ -47,6 +48,10 @@ export async function PATCH(
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
+  if (isUserRateLimited(`user-${user.userId}`)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const { id } = await params
   const clipping = getClippingForUser(id, user.userId)
   if (!clipping) return Response.json({ error: 'Not found' }, { status: 404 })
@@ -79,6 +84,10 @@ export async function DELETE(
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

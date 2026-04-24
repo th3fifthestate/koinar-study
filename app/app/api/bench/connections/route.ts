@@ -8,6 +8,7 @@ import {
 } from '@/lib/db/bench/queries'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
 const createSchema = z.object({
   board_id: z.string().min(1),
@@ -22,6 +23,10 @@ export async function POST(request: Request) {
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

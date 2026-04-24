@@ -2,16 +2,27 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/middleware";
 import { getGiftCode, getActiveGiftCodesForUser } from "@/lib/db/queries";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const redeemSchema = z.object({
   code: z.string().min(1),
 });
 
+// Per-user rate limit — gift-code redemption is a credential-check path; cap abuse per user.
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
+
 // POST /api/gift-codes/redeem — verify a gift code belongs to this user and return its status
 export async function POST(request: Request) {
   const auth = await requireAuth();
   if (auth.response) return auth.response;
+
+  if (isUserRateLimited(`user-${auth.user.userId}`)) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
 
   let body: unknown;
   try {

@@ -6,6 +6,7 @@ import { generateClippingId } from '@/lib/bench/clipping-id'
 import { guardDrop } from '@/lib/bench/guard-drop'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 120 })
 
 // Placeholder source_refs are server-side-only (materialized via instantiateTemplate) and
 // intentionally excluded from this public-API discriminated union.
@@ -75,6 +76,10 @@ export async function POST(request: Request) {
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

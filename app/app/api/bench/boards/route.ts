@@ -6,6 +6,7 @@ import { TEMPLATES } from '@/components/bench/templates'
 import { instantiateTemplate } from '@/components/bench/templates/instantiate-template'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
 const createSchema = z.object({
   title: z.string().min(1).max(120),
@@ -32,6 +33,10 @@ export async function POST(request: Request) {
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

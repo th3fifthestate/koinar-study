@@ -6,6 +6,7 @@ import { getDb } from '@/lib/db/connection'
 import type { BenchConnection } from '@/lib/db/types'
 
 const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
+const isUserRateLimited = createRateLimiter({ windowMs: 60_000, max: 60 })
 
 const patchSchema = z.object({
   label: z.string().max(60).nullable(),
@@ -32,6 +33,10 @@ export async function PATCH(
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
@@ -67,6 +72,10 @@ export async function DELETE(
 
   const ip = getClientIp(request)
   if (isRateLimited(ip)) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  if (isUserRateLimited(`user-${user.userId}`)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
