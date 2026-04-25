@@ -534,3 +534,35 @@ body {
   color: var(--warmth);
   opacity: 1;
 }
+
+/* ── Drop cap on the first paragraph of the Summary section only.
+ *    Task 15 wraps each major section in a <Bed> with
+ *    data-section-key="summary" — the selector below targets the first
+ *    <p> within that bed. ── */
+
+[data-section-key="summary"] p:first-of-type::first-letter {
+  font-family: var(--font-display, 'Fraunces'), 'Bodoni Moda', Georgia, serif;
+  font-size: 4.6rem;
+  font-style: italic;
+  line-height: 0.9;
+  float: left;
+  padding: 8px 14px 0 0;
+  color: var(--reader-accent-deep);
+  font-weight: 400;
+}
+
+/* ── Scripture citation — the trailing "— Reference (BSB)" line inside
+ *    a blockquote, if the LLM emits it as <em> on its own line. ── */
+
+.reader-content blockquote em:last-child,
+.reader-content blockquote p:last-child em {
+  font-family: var(--font-sans, system-ui), sans-serif;
+  font-style: normal;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--reader-accent-deep);
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 16px;
+}

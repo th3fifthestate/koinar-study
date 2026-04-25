@@ -46,6 +46,23 @@ function extractTextContent(children: ReactNode): string {
   return '';
 }
 
+function stripLeadingMountain(children: ReactNode): ReactNode {
+  if (typeof children === 'string') {
+    return children.replace(/^\s*⛰️?\s*/, '');
+  }
+  if (Array.isArray(children)) {
+    const result = [...children];
+    for (let i = 0; i < result.length; i++) {
+      if (typeof result[i] === 'string') {
+        result[i] = (result[i] as string).replace(/^\s*⛰️?\s*/, '');
+        break;
+      }
+    }
+    return result;
+  }
+  return children;
+}
+
 function createSlugify() {
   const counters = new Map<string, number>();
   return {
@@ -217,6 +234,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
   // Instance-scoped state — safe across concurrent SSR renders
   const slugRef = useRef(createSlugify());
   const crossRefSectionRef = useRef(false);
+  const historicalContextSectionRef = useRef<boolean>(false);
   const entityCtx = useEntityLayerOptional();
 
   const components = useMemo(() => {
@@ -237,22 +255,15 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         const id = slugify(children);
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
+        historicalContextSectionRef.current = /historical\s*context/i.test(text);
         return (
           <h2
             id={id}
-            className="scroll-mt-24 font-display text-3xl font-normal mt-10 mb-4 pb-2 border-b flex items-baseline gap-3"
-            style={{
-              borderColor: 'var(--reader-rule, var(--stone-200))',
-              color: 'var(--reader-display, inherit)',
-            }}
+            className="font-display scroll-mt-24 mt-16 mb-9 text-[clamp(2.6rem,5vw,4.4rem)] font-bold uppercase leading-[0.98] tracking-[-0.005em] text-[var(--stone-900)] dark:text-[var(--stone-100)]"
+            style={{ fontFeatureSettings: '"case" on, "dlig" on, "liga" on, "lnum" on' }}
             {...props}
           >
-            <span
-              aria-hidden="true"
-              className="inline-block h-[0.55em] w-[0.55em] translate-y-[-0.15em] rounded-full"
-              style={{ backgroundColor: 'var(--reader-accent-sage, currentColor)', opacity: 0.85 }}
-            />
-            <span className="flex-1">{children}</span>
+            {children}
           </h2>
         );
       },
@@ -260,9 +271,20 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         const id = slugify(children);
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
+        historicalContextSectionRef.current = /historical\s*context/i.test(text);
         return (
-          <h3 id={id} className="scroll-mt-24 font-display text-2xl font-normal mt-8 mb-3" {...props}>
+          <h3
+            id={id}
+            className="font-display scroll-mt-24 mt-16 mb-3 text-[1.5rem] italic font-medium leading-[1.2] tracking-[-0.005em] text-[var(--stone-900)] dark:text-[var(--stone-100)]"
+            style={{ fontFeatureSettings: '"dlig" on, "liga" on' }}
+            {...props}
+          >
             {children}
+            <span
+              aria-hidden="true"
+              className="mt-3.5 mb-5 block h-px w-9"
+              style={{ background: 'var(--reader-accent)' }}
+            />
           </h3>
         );
       },
@@ -319,15 +341,29 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         return <strong className="font-semibold" {...props}>{children}</strong>;
       },
       hr: () => <hr className="my-8 border-t border-[var(--stone-200)]/50 dark:border-[var(--stone-700)]/50" />,
-      ul: ({ children, node, ...props }: MdProps) => (
-        <ul className="mb-4 ml-6 list-disc space-y-1" {...props}>{children}</ul>
-      ),
+      ul: ({ children, node, ...props }: MdProps) => {
+        if (historicalContextSectionRef.current) {
+          return (
+            <div className="historical-context">
+              <ul {...props}>{children}</ul>
+            </div>
+          );
+        }
+        return (
+          <ul className="mb-4 ml-6 list-disc space-y-1" {...props}>
+            {children}
+          </ul>
+        );
+      },
       ol: ({ children, node, ...props }: MdProps) => (
         <ol className="mb-4 ml-6 list-decimal space-y-1" {...props}>{children}</ol>
       ),
       li: ({ children, node, ...props }: MdProps) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const insideBlockquote = useContext(InsideBlockquoteContext);
+        const text = extractTextContent(children);
+        const isOutside = /^\s*⛰/.test(text);
+
         let processedChildren = children;
         if (entityCtx?.showAnnotations && entityCtx.annotationRegex && !insideBlockquote) {
           processedChildren = wrapEntityTermsInChildren(
@@ -336,7 +372,23 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
             entityCtx.annotationLookup,
           );
         }
-        return <li className="leading-relaxed" {...props}>{processedChildren}</li>;
+
+        // For outside-source items, strip the leading ⛰ glyph (the CSS ::before
+        // pseudo will render it) and tag the li so the right CSS rule fires.
+        let renderedChildren = processedChildren;
+        if (isOutside) {
+          renderedChildren = stripLeadingMountain(processedChildren);
+        }
+
+        return (
+          <li
+            className="leading-relaxed"
+            data-outside={isOutside ? 'true' : undefined}
+            {...props}
+          >
+            {renderedChildren}
+          </li>
+        );
       },
       code: ({ children, node, ...props }: MdProps) => (
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm" {...props}>
@@ -402,6 +454,7 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         if (i === 0) {
           slugRef.current.reset();
           crossRefSectionRef.current = false;
+          historicalContextSectionRef.current = false;
         }
 
         return (
