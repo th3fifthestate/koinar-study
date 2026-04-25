@@ -56,7 +56,7 @@ export function EntityTerm({ entityId, children }: EntityTermProps) {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger
-        className="cursor-pointer border-b-[1.5px] border-dotted border-[var(--sage-300)] transition-colors duration-200 hover:border-[var(--sage-500)]"
+        className="cursor-pointer border-b-2 border-dotted border-[var(--reader-accent)] transition-colors duration-200 hover:border-[var(--reader-accent-deep)]"
         role="button"
         tabIndex={0}
         aria-label={entity ? `Learn about ${entity.canonical_name}` : 'Entity reference'}
