@@ -107,8 +107,9 @@ export function StudyReader({
   benchEnabled = false,
   isAdmin = false,
 }: StudyReaderProps) {
-  const { prefs, setFontSize, setAnnotationFullContextHeight, resetPrefs } = useReaderPrefs();
+  const { prefs, setFontSize, setMode, setAnnotationFullContextHeight, resetPrefs } = useReaderPrefs();
   const fontSize = prefs.fontSize;
+  const mode = prefs.mode ?? 'light';
 
   // Strip any stray verification-audit fences from old studies before
   // they hit the renderer. New studies don't carry the fence in markdown.
@@ -184,6 +185,8 @@ export function StudyReader({
         entityAnnotationCount={entityAnnotations.length}
         fontSize={fontSize}
         setFontSize={setFontSize}
+        mode={mode}
+        setMode={setMode}
         resetPrefs={resetPrefs}
         annotationFullContextHeight={prefs.annotationFullContextHeight}
         onAnnotationFullContextHeightChange={setAnnotationFullContextHeight}
@@ -209,6 +212,8 @@ function StudyReaderContent({
   entityAnnotationCount,
   fontSize,
   setFontSize,
+  mode,
+  setMode,
   resetPrefs,
   annotationFullContextHeight,
   onAnnotationFullContextHeightChange,
@@ -229,6 +234,8 @@ function StudyReaderContent({
   entityAnnotationCount: number;
   fontSize: FontSize;
   setFontSize: (s: FontSize) => void;
+  mode: 'dark' | 'light';
+  setMode: (m: 'dark' | 'light') => void;
   resetPrefs: () => void;
   /** Persisted height for annotation full-context panel (px). */
   annotationFullContextHeight?: number;
@@ -305,6 +312,8 @@ function StudyReaderContent({
           isFavorited={isFavorited}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
+          mode={mode}
+          onModeChange={setMode}
           onResetPrefs={resetPrefs}
           showEntityAnnotations={showAnnotations}
           onEntityAnnotationsToggle={setShowAnnotations}

@@ -20,6 +20,8 @@ type RowState = 'verifying' | 'unavailable';
 interface ReaderSettingsPopoverProps {
   fontSize: FontSize;
   onFontSizeChange: (size: FontSize) => void;
+  mode: 'dark' | 'light';
+  onModeChange: (mode: 'dark' | 'light') => void;
   onResetPrefs: () => void;
   translations: TranslationAvailability[];
   currentTranslation: string;
@@ -36,6 +38,8 @@ const FONT_SIZE_OPTIONS: { key: FontSize; label: string; display: string }[] = [
 export function ReaderSettingsPopover({
   fontSize,
   onFontSizeChange,
+  mode,
+  onModeChange,
   onResetPrefs,
   translations,
   currentTranslation,
@@ -133,6 +137,8 @@ export function ReaderSettingsPopover({
           <MainView
             fontSize={fontSize}
             onFontSizeChange={onFontSizeChange}
+            mode={mode}
+            onModeChange={onModeChange}
             onReset={handleResetPrefs}
             currentTranslationName={currentTranslationName}
             showChangeTranslation={translations.length > 1}
@@ -162,6 +168,8 @@ export function ReaderSettingsPopover({
 function MainView({
   fontSize,
   onFontSizeChange,
+  mode,
+  onModeChange,
   onReset,
   currentTranslationName,
   showChangeTranslation,
@@ -170,6 +178,8 @@ function MainView({
 }: {
   fontSize: FontSize;
   onFontSizeChange: (size: FontSize) => void;
+  mode: 'dark' | 'light';
+  onModeChange: (mode: 'dark' | 'light') => void;
   onReset: () => void;
   currentTranslationName: string;
   showChangeTranslation: boolean;
@@ -205,22 +215,25 @@ function MainView({
       {/* Divider */}
       <hr className="border-[var(--stone-100)] dark:border-[var(--stone-800)]" />
 
-      {/* Reading mode row (disabled placeholder for 28c) */}
+      {/* Reading mode row */}
       <div className="px-4 py-3">
-        <p className="mb-2 flex items-center justify-between text-xs font-medium text-[var(--stone-500)] dark:text-[var(--stone-400)]">
-          <span>Reading mode</span>
-          <span className="text-[10px] text-[var(--stone-400)] dark:text-[var(--stone-600)]">Coming soon</span>
+        <p className="mb-2 text-xs font-medium text-[var(--stone-500)] dark:text-[var(--stone-400)]">
+          Reading mode
         </p>
-        <div className="flex items-center gap-1">
-          {['Dark', 'Light', 'Sepia'].map((mode) => (
+        <div className="flex gap-1.5">
+          {(['light', 'dark'] as const).map((m) => (
             <button
-              key={mode}
-              aria-disabled="true"
-              title="Coming in a future update"
-              tabIndex={-1}
-              className="flex-1 cursor-not-allowed rounded py-1.5 text-sm font-medium opacity-35 bg-[var(--stone-100)] text-[var(--stone-500)] dark:bg-[var(--stone-800)] dark:text-[var(--stone-400)]"
+              key={m}
+              type="button"
+              onClick={() => onModeChange(m)}
+              aria-pressed={mode === m}
+              className={`flex-1 rounded py-1.5 text-sm font-medium capitalize transition-colors ${
+                mode === m
+                  ? 'bg-[var(--sage-500)] text-white'
+                  : 'bg-[var(--stone-100)] text-[var(--stone-500)] hover:bg-[var(--stone-200)] hover:text-[var(--stone-700)] dark:bg-[var(--stone-800)] dark:text-[var(--stone-400)] dark:hover:bg-[var(--stone-700)] dark:hover:text-[var(--stone-200)]'
+              }`}
             >
-              {mode}
+              {m}
             </button>
           ))}
         </div>

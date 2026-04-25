@@ -28,6 +28,8 @@ interface StudyHeaderProps {
   isFavorited: boolean;
   fontSize: FontSize;
   onFontSizeChange: (size: FontSize) => void;
+  mode: 'dark' | 'light';
+  onModeChange: (m: 'dark' | 'light') => void;
   onResetPrefs: () => void;
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
@@ -60,6 +62,8 @@ export function StudyHeader({
   isFavorited,
   fontSize,
   onFontSizeChange,
+  mode,
+  onModeChange,
   onResetPrefs,
   showEntityAnnotations,
   onEntityAnnotationsToggle,
@@ -189,6 +193,8 @@ export function StudyHeader({
           <ReaderSettingsPopover
             fontSize={fontSize}
             onFontSizeChange={onFontSizeChange}
+            mode={mode}
+            onModeChange={onModeChange}
             onResetPrefs={onResetPrefs}
             translations={translations}
             currentTranslation={currentTranslation}
