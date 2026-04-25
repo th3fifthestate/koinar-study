@@ -56,6 +56,9 @@ app/exports/
 # Superpowers (local config)
 .superpowers/
 
+# Claude Code (local settings — contains tool permissions and dev creds)
+.claude/
+
 # Founders Files
 founders-files/
 docs/
