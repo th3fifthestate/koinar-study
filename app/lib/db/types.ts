@@ -74,7 +74,7 @@ export interface StudyGiftCode {
   id: number;
   code: string;
   user_id: number;
-  format_locked: 'simple' | 'standard' | 'comprehensive';
+  format_locked: 'quick' | 'standard' | 'comprehensive';
   max_uses: number;
   uses_remaining: number;
   created_by: number;
@@ -91,6 +91,9 @@ export interface Category {
   sort_order: number;
 }
 
+/** Discriminator for the 5 study skeletons; controls body section naming and templating. */
+export type StudyType = 'passage' | 'person' | 'word' | 'topical' | 'book';
+
 /** Parsed shape of Study.generation_metadata JSON — not a direct table row. */
 export interface StudyGenerationMetadata {
   model: string;
@@ -100,6 +103,21 @@ export interface StudyGenerationMetadata {
   duration_ms: number;
   tools_called: string[];
   prompt: string;
+  /**
+   * LLM's detected study type (passage|person|word|topical|book). Mirrors
+   * studies.study_type — duplicated in metadata so the original generation-time
+   * value is preserved even if the row's column gets edited later (e.g. by an
+   * admin re-categorization).
+   */
+  study_type?: StudyType;
+  /**
+   * SQL/tool-query audit log parsed out of the verification-audit code fence
+   * at generation time. Admin-only; never rendered in the public reader.
+   * Each entry is an opaque object whose shape is determined by the LLM —
+   * we don't validate beyond "it's an array of objects" because the fence
+   * format may evolve and we'd rather preserve forward-compat than hard-fail.
+   */
+  queries?: Array<Record<string, unknown>>;
 }
 
 export interface Study {
@@ -108,7 +126,11 @@ export interface Study {
   slug: string;
   content_markdown: string;
   summary: string | null;
-  format_type: 'simple' | 'standard' | 'comprehensive';
+  format_type: 'quick' | 'standard' | 'comprehensive';
+  /** One of 5 skeletons; `topical` is the migration-default for pre-v19 rows. */
+  study_type: StudyType;
+  /** Original user prompt (post-v19); null for pre-migration rows. */
+  source_prompt: string | null;
   translation_used: string;
   is_public: number;
   is_featured: number;
@@ -122,7 +144,7 @@ export interface Study {
 }
 
 /** Study row without large content fields. Safe for list/card views. */
-export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata' | 'original_content' | 'current_translation'>;
+export type StudySummary = Omit<Study, 'content_markdown' | 'generation_metadata' | 'original_content' | 'current_translation' | 'source_prompt'>;
 
 /** Enriched study for library cards — includes derived fields from JOINs. */
 export interface StudyListItem {
@@ -130,7 +152,7 @@ export interface StudyListItem {
   title: string;
   slug: string;
   summary: string | null;
-  format_type: 'simple' | 'standard' | 'comprehensive';
+  format_type: 'quick' | 'standard' | 'comprehensive';
   translation_used: string;
   is_public: number;
   is_featured: number;

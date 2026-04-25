@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 18;
+export const SCHEMA_VERSION = 19;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS study_gift_codes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   code TEXT NOT NULL UNIQUE,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  format_locked TEXT NOT NULL CHECK (format_locked IN ('simple', 'standard', 'comprehensive')),
+  format_locked TEXT NOT NULL CHECK (format_locked IN ('quick', 'standard', 'comprehensive')),
   max_uses INTEGER NOT NULL DEFAULT 1,
   uses_remaining INTEGER NOT NULL CHECK (uses_remaining >= 0),
   created_by INTEGER NOT NULL REFERENCES users(id),
@@ -148,7 +148,9 @@ CREATE TABLE IF NOT EXISTS studies (
   slug TEXT NOT NULL UNIQUE,
   content_markdown TEXT NOT NULL,
   summary TEXT,
-  format_type TEXT NOT NULL DEFAULT 'comprehensive' CHECK (format_type IN ('simple', 'standard', 'comprehensive')),
+  format_type TEXT NOT NULL DEFAULT 'comprehensive' CHECK (format_type IN ('quick', 'standard', 'comprehensive')),
+  study_type TEXT NOT NULL DEFAULT 'topical' CHECK (study_type IN ('passage', 'person', 'word', 'topical', 'book')),
+  source_prompt TEXT,
   translation_used TEXT NOT NULL DEFAULT 'BSB',
   is_public INTEGER NOT NULL DEFAULT 0,
   is_featured INTEGER NOT NULL DEFAULT 0,
@@ -547,6 +549,7 @@ CREATE INDEX IF NOT EXISTS idx_studies_category ON studies(category_id);
 CREATE INDEX IF NOT EXISTS idx_studies_public ON studies(is_public);
 CREATE INDEX IF NOT EXISTS idx_studies_featured ON studies(is_featured, created_at);
 CREATE INDEX IF NOT EXISTS idx_studies_created_at ON studies(created_at);
+CREATE INDEX IF NOT EXISTS idx_studies_study_type ON studies(study_type, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_study_tags_study ON study_tags(study_id);
 CREATE INDEX IF NOT EXISTS idx_study_tags_name ON study_tags(tag_name);
 CREATE INDEX IF NOT EXISTS idx_favorites_user ON favorites(user_id);

@@ -467,7 +467,7 @@ export function getActiveGiftCodesForUser(userId: number): StudyGiftCode[] {
  */
 export function consumeGiftCode(
   code: string,
-  format: 'simple' | 'standard' | 'comprehensive'
+  format: 'quick' | 'standard' | 'comprehensive'
 ): StudyGiftCode | null {
   const database = getDb();
   let consumed: StudyGiftCode | null = null;
@@ -491,7 +491,7 @@ export function consumeGiftCode(
 
 // ─── Study queries ────────────────────────────────────────────────────────────
 
-const STUDY_SUMMARY_COLUMNS = `id, title, slug, summary, format_type, translation_used, is_public, is_featured, created_by, category_id, created_at, updated_at`;
+const STUDY_SUMMARY_COLUMNS = `id, title, slug, summary, format_type, study_type, translation_used, is_public, is_featured, created_by, category_id, created_at, updated_at`;
 
 export function getStudyById(id: number): Study | null {
   return (
@@ -551,7 +551,11 @@ export function createStudy(data: {
   slug: string;
   content_markdown: string;
   summary?: string;
-  format_type: 'simple' | 'standard' | 'comprehensive';
+  format_type: 'quick' | 'standard' | 'comprehensive';
+  /** One of the 5 study skeletons. Defaults to 'topical' if omitted. */
+  study_type?: 'passage' | 'person' | 'word' | 'topical' | 'book';
+  /** The user's original prompt that produced this study. Stored verbatim for future regen. */
+  source_prompt?: string;
   translation_used: string;
   created_by: number;
   category_id?: number;
@@ -559,9 +563,9 @@ export function createStudy(data: {
 }): number {
   const stmt = getDb().prepare(
     `INSERT INTO studies
-       (title, slug, content_markdown, summary, format_type, translation_used,
-        created_by, category_id, generation_metadata)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       (title, slug, content_markdown, summary, format_type, study_type, source_prompt,
+        translation_used, created_by, category_id, generation_metadata)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   );
   const params = [
     data.title,
@@ -569,6 +573,8 @@ export function createStudy(data: {
     data.content_markdown,
     data.summary ?? null,
     data.format_type,
+    data.study_type ?? 'topical',
+    data.source_prompt ?? null,
     data.translation_used,
     data.created_by,
     data.category_id ?? null,
@@ -727,7 +733,7 @@ export function getStudyDetail(slug: string, userId?: number): StudyDetail | nul
   const row = db.prepare(`
     SELECT
       s.id, s.title, s.slug, s.content_markdown, s.summary,
-      s.format_type, s.translation_used, s.current_translation,
+      s.format_type, s.study_type, s.source_prompt, s.translation_used, s.current_translation,
       s.is_public, s.is_featured,
       s.created_by, s.category_id, s.generation_metadata, s.created_at, s.updated_at,
       c.name AS category_name, c.slug AS category_slug,

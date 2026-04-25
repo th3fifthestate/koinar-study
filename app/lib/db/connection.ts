@@ -419,6 +419,137 @@ function runMigration(database: Database.Database): void {
       }
     }
 
+    // v18 → v19: Study generation structure pass.
+    //   - studies.format_type CHECK constraint widens to ('quick','standard','comprehensive')
+    //     and existing 'simple' rows are renamed to 'quick'. SQLite cannot ALTER a CHECK
+    //     constraint in place, so we use the documented rename-recreate-copy-rename pattern.
+    //   - studies gains a study_type column (passage|person|word|topical|book; default 'topical'
+    //     for pre-migration rows) and a source_prompt column (nullable; populated by
+    //     /api/study/generate going forward).
+    //   - study_gift_codes.format_locked CHECK constraint widens identically.
+    //
+    // Foreign key safety: studies is referenced by 7 child tables (study_tags, favorites,
+    // annotations, study_images, study_entity_annotations, saved_branch_maps, invite_codes).
+    // We use `PRAGMA defer_foreign_keys = ON` so FK validation happens at COMMIT (after
+    // the rename restores the 'studies' name); intermediate states with the table dropped
+    // are tolerated. SQLite resolves FKs by table NAME, so renaming studies_new -> studies
+    // preserves all child references.
+    //
+    // FTS5: dropping studies cascades to its triggers (studies_fts_insert/update/delete).
+    // The studies_fts virtual table itself persists but its rows reference now-dead rowids,
+    // so we rebuild it via `INSERT INTO studies_fts(studies_fts) VALUES('rebuild')` after
+    // the rename. Triggers are re-created against the new table here in the migration so
+    // future writes propagate to FTS; CREATE_TABLES at the top of runMigration is a no-op
+    // for these triggers (CREATE TRIGGER IF NOT EXISTS).
+    //
+    // currentVersion >= 1 guards against running on a fresh DB where CREATE_TABLES already
+    // built studies + study_gift_codes with the new schema; the rebuild would be wasted work.
+    if (currentVersion >= 1 && currentVersion < 19) {
+      database.prepare('PRAGMA defer_foreign_keys = ON').run();
+
+      database.prepare('DROP TRIGGER IF EXISTS studies_fts_insert').run();
+      database.prepare('DROP TRIGGER IF EXISTS studies_fts_update').run();
+      database.prepare('DROP TRIGGER IF EXISTS studies_fts_delete').run();
+
+      database.prepare(`
+        CREATE TABLE studies_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          slug TEXT NOT NULL UNIQUE,
+          content_markdown TEXT NOT NULL,
+          summary TEXT,
+          format_type TEXT NOT NULL DEFAULT 'comprehensive' CHECK (format_type IN ('quick', 'standard', 'comprehensive')),
+          study_type TEXT NOT NULL DEFAULT 'topical' CHECK (study_type IN ('passage', 'person', 'word', 'topical', 'book')),
+          source_prompt TEXT,
+          translation_used TEXT NOT NULL DEFAULT 'BSB',
+          is_public INTEGER NOT NULL DEFAULT 0,
+          is_featured INTEGER NOT NULL DEFAULT 0,
+          created_by INTEGER NOT NULL REFERENCES users(id),
+          category_id INTEGER REFERENCES categories(id),
+          generation_metadata TEXT,
+          original_content TEXT,
+          current_translation TEXT NOT NULL DEFAULT 'BSB',
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run();
+
+      database.prepare(`
+        INSERT INTO studies_new (
+          id, title, slug, content_markdown, summary, format_type, study_type, source_prompt,
+          translation_used, is_public, is_featured, created_by, category_id, generation_metadata,
+          original_content, current_translation, created_at, updated_at
+        )
+        SELECT
+          id, title, slug, content_markdown, summary,
+          CASE format_type WHEN 'simple' THEN 'quick' ELSE format_type END,
+          'topical',
+          NULL,
+          translation_used, is_public, is_featured, created_by, category_id, generation_metadata,
+          original_content, current_translation, created_at, updated_at
+        FROM studies
+      `).run();
+
+      database.prepare('DROP TABLE studies').run();
+      database.prepare('ALTER TABLE studies_new RENAME TO studies').run();
+
+      // Recreate FTS triggers against the new table. Identical to the definitions in
+      // schema.ts CREATE_TABLES — kept inline so this migration is self-contained.
+      database.prepare(`
+        CREATE TRIGGER studies_fts_insert AFTER INSERT ON studies BEGIN
+          INSERT INTO studies_fts(rowid, title, summary, content_markdown)
+          VALUES (new.id, new.title, new.summary, new.content_markdown);
+        END
+      `).run();
+      database.prepare(`
+        CREATE TRIGGER studies_fts_update AFTER UPDATE OF title, summary, content_markdown ON studies BEGIN
+          INSERT INTO studies_fts(studies_fts, rowid, title, summary, content_markdown)
+          VALUES ('delete', old.id, old.title, old.summary, old.content_markdown);
+          INSERT INTO studies_fts(rowid, title, summary, content_markdown)
+          VALUES (new.id, new.title, new.summary, new.content_markdown);
+        END
+      `).run();
+      database.prepare(`
+        CREATE TRIGGER studies_fts_delete AFTER DELETE ON studies BEGIN
+          INSERT INTO studies_fts(studies_fts, rowid, title, summary, content_markdown)
+          VALUES ('delete', old.id, old.title, old.summary, old.content_markdown);
+        END
+      `).run();
+
+      // Rebuild FTS index from the (newly-renamed) studies table — clears stale rowid
+      // entries inherited from the dropped old table.
+      database.prepare("INSERT INTO studies_fts(studies_fts) VALUES ('rebuild')").run();
+
+      // study_gift_codes: same dance, no FK dependents so simpler.
+      database.prepare(`
+        CREATE TABLE study_gift_codes_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          code TEXT NOT NULL UNIQUE,
+          user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          format_locked TEXT NOT NULL CHECK (format_locked IN ('quick', 'standard', 'comprehensive')),
+          max_uses INTEGER NOT NULL DEFAULT 1,
+          uses_remaining INTEGER NOT NULL CHECK (uses_remaining >= 0),
+          created_by INTEGER NOT NULL REFERENCES users(id),
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          expires_at TEXT
+        )
+      `).run();
+
+      database.prepare(`
+        INSERT INTO study_gift_codes_new (
+          id, code, user_id, format_locked, max_uses, uses_remaining, created_by, created_at, expires_at
+        )
+        SELECT
+          id, code, user_id,
+          CASE format_locked WHEN 'simple' THEN 'quick' ELSE format_locked END,
+          max_uses, uses_remaining, created_by, created_at, expires_at
+        FROM study_gift_codes
+      `).run();
+
+      database.prepare('DROP TABLE study_gift_codes').run();
+      database.prepare('ALTER TABLE study_gift_codes_new RENAME TO study_gift_codes').run();
+    }
+
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)
     // are applied before indexes that reference those columns are created.
     runStatements(database, CREATE_INDEXES);
