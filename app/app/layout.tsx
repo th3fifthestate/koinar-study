@@ -14,7 +14,7 @@ const fraunces = Fraunces({
   display: "swap",
   variable: "--font-display",
   axes: ["SOFT", "opsz"],
-  weight: ["400", "500", "600", "700"],
+  weight: "variable",
   style: ["normal", "italic"],
 });
 
