@@ -42,6 +42,15 @@
  *                            semantically-correct `subgroup_of` /
  *                            `member_of` edges. No information is lost.
  *                            Requires --commit.
+ *   --fix-chain-artifacts    Delete reciprocal rows whose inserts were
+ *                            themselves triggered by a reciprocal (source
+ *                            ends in `-reciprocal-reciprocal`). These come
+ *                            from the non-mutual `subgroup_of → includes →
+ *                            member_of` chain propagating a second hop when
+ *                            `--fix-missing-inverses` is run more than once.
+ *                            Carries no information — original + first-order
+ *                            reciprocal already capture the full relation.
+ *                            Requires --commit.
  *   --dry-run                Print changes but do not commit. Default for
  *                            --fix is DRY. You must pass --commit to actually
  *                            write.
@@ -131,9 +140,10 @@ const FIX_MISSING = argv.has('--fix-missing-inverses');
 const FIX_SELF_LOOPS = argv.has('--fix-self-loops');
 const FIX_CHRONOLOGY = argv.has('--fix-chronology');
 const FIX_FAMILY_ON_NON_PERSON = argv.has('--fix-family-on-non-person');
+const FIX_CHAIN_ARTIFACTS = argv.has('--fix-chain-artifacts');
 const COMMIT = argv.has('--commit');
 const DRY_RUN = argv.has('--dry-run') ||
-  ((FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON) && !COMMIT);
+  ((FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON || FIX_CHAIN_ARTIFACTS) && !COMMIT);
 
 /**
  * Canonical chronological order of biblical periods (earliest → latest).
@@ -258,6 +268,13 @@ function validate(edges: RelRow[]): ValidationReport {
     }
 
     if (spec.kind === 'no_inverse') continue;
+
+    // Skip rows that are themselves reciprocals. By construction, their
+    // inverse (the original that triggered their insertion) exists. Checking
+    // them would mis-propagate non-mutual chains on second+ runs — e.g.
+    // subgroup_of → includes → member_of inserts a chain-artifact member_of
+    // row on the second run if we don't gate here.
+    if (e.source && /-reciprocal$/.test(e.source)) continue;
 
     // Check for reciprocal row.
     const recip = reciprocalFor(e.relationship_type, e.relationship_label);
@@ -524,6 +541,46 @@ function fixFamilyOnNonPerson(edges: RelRow[], commit: boolean): number {
   return n;
 }
 
+/**
+ * Delete chain-artifact rows: reciprocal inserts that were themselves
+ * triggered by a reciprocal (source ends `-reciprocal-reciprocal`). Only
+ * non-mutual chains (currently just `subgroup_of → includes → member_of`)
+ * produce these when `--fix-missing-inverses` runs more than once. The
+ * validator's chain-guard (above) prevents new ones from forming; this
+ * cleans up the existing residue.
+ */
+function fixChainArtifacts(edges: RelRow[], commit: boolean): number {
+  const artifacts = edges.filter(e =>
+    e.source != null && /-reciprocal-reciprocal$/.test(e.source)
+  );
+
+  if (artifacts.length === 0) {
+    console.log('\nNo chain-artifact rows to fix.\n');
+    return 0;
+  }
+
+  console.log(
+    `\n${commit ? 'DELETING' : 'DRY-RUN (would delete)'} ${artifacts.length} chain-artifact rows:`
+  );
+  const byType: Record<string, number> = {};
+  for (const a of artifacts) byType[a.relationship_type] = (byType[a.relationship_type] ?? 0) + 1;
+  for (const [t, n] of Object.entries(byType)) {
+    console.log(`  ${t.padEnd(14)} ${n}`);
+  }
+
+  if (!commit) return artifacts.length;
+  const db = getDb();
+  const stmt = db.prepare('DELETE FROM entity_relationships WHERE id = ?');
+  let n = 0;
+  db.transaction(() => {
+    for (const a of artifacts) {
+      const r = stmt.run(a.id);
+      n += r.changes;
+    }
+  })();
+  return n;
+}
+
 function fixSelfLoops(report: ValidationReport, commit: boolean): number {
   const db = getDb();
   if (report.self_loops.length === 0) {
@@ -667,17 +724,22 @@ function main(): void {
     if (COMMIT) console.log(`\n✓ Deleted ${deleted} family-on-non-person rows.\n`);
     else console.log(`\n(dry-run) Would delete ${deleted}. Re-run with --commit.\n`);
   }
+  if (FIX_CHAIN_ARTIFACTS) {
+    const deleted = fixChainArtifacts(edges, COMMIT);
+    if (COMMIT) console.log(`\n✓ Deleted ${deleted} chain-artifact rows.\n`);
+    else console.log(`\n(dry-run) Would delete ${deleted}. Re-run with --commit.\n`);
+  }
   if (FIX_MISSING) {
     const inserted = fixMissingInverses(report, COMMIT);
     if (COMMIT) console.log(`\n✓ Inserted ${inserted} reciprocal rows.\n`);
     else console.log(`\n(dry-run) Would insert ${inserted}. Re-run with --commit.\n`);
   }
-  if (!FIX_MISSING && !FIX_SELF_LOOPS && !FIX_CHRONOLOGY && !FIX_FAMILY_ON_NON_PERSON &&
+  if (!FIX_MISSING && !FIX_SELF_LOOPS && !FIX_CHRONOLOGY && !FIX_FAMILY_ON_NON_PERSON && !FIX_CHAIN_ARTIFACTS &&
       (report.totals.missing_inverses > 0 || report.totals.self_loops > 0 || report.totals.contradictions > 0)) {
-    console.log(`To fix, re-run with  --fix-chronology --fix-self-loops --fix-family-on-non-person --fix-missing-inverses --commit`);
+    console.log(`To fix, re-run with  --fix-chronology --fix-self-loops --fix-family-on-non-person --fix-chain-artifacts --fix-missing-inverses --commit`);
   }
 
-  if (DRY_RUN && (FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON)) {
+  if (DRY_RUN && (FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON || FIX_CHAIN_ARTIFACTS)) {
     console.log('(DRY RUN — no writes performed. Add --commit to persist.)');
   }
 }
