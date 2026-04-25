@@ -44,37 +44,39 @@ const MAX_OUTPUT_TOKENS_PER_TIER: Record<FormatType, number> = {
 };
 
 /**
- * Per-study backfill plan. Each entry pairs a study id with:
- *   - the new tier (may be down-tiered from a too-ambitious original)
- *   - a regen prompt appropriate for that tier (Quick wants a question,
- *     Standard/Comprehensive wants a topic statement)
+ * Per-study backfill plan. Keyed by slug (stable across DB instances) so the
+ * same plan runs cleanly against local + prod even when row ids differ.
+ *
+ *   - newTier: may be down-tiered from a too-ambitious original
+ *   - regenPrompt: appropriate for the tier (Quick wants a question, Standard
+ *                  wants a topic/passage statement)
  */
 interface BackfillEntry {
-  id: number;
+  slug: string;
   newTier: FormatType;
   regenPrompt: string;
 }
 
 const PLAN: BackfillEntry[] = [
   // Originally-Comprehensive single-passage studies — re-tiered to Standard.
-  { id: 1, newTier: 'standard', regenPrompt: "Peter's Confession at Caesarea Philippi (Matthew 16:13-23): The Rock of Revelation" },
-  { id: 2, newTier: 'standard', regenPrompt: 'Peace That Guards the Mind: Anxiety and Philippians 4' },
-  { id: 3, newTier: 'standard', regenPrompt: 'Chosen Before the Foundation: Identity in Ephesians 1' },
-  { id: 6, newTier: 'standard', regenPrompt: 'How Long, O LORD: Habakkuk and Honest Doubt' },
-  { id: 9, newTier: 'standard', regenPrompt: 'Do Justice, Love Mercy, Walk Humbly: Micah 6:8 in Context' },
+  { slug: 'the-rock-of-revelation',     newTier: 'standard', regenPrompt: "Peter's Confession at Caesarea Philippi (Matthew 16:13-23): The Rock of Revelation" },
+  { slug: 'peace-that-guards-the-mind', newTier: 'standard', regenPrompt: 'Peace That Guards the Mind: Anxiety and Philippians 4' },
+  { slug: 'chosen-before-the-foundation', newTier: 'standard', regenPrompt: 'Chosen Before the Foundation: Identity in Ephesians 1' },
+  { slug: 'how-long-o-lord',            newTier: 'standard', regenPrompt: 'How Long, O LORD: Habakkuk and Honest Doubt' },
+  { slug: 'do-justice-love-mercy',      newTier: 'standard', regenPrompt: 'Do Justice, Love Mercy, Walk Humbly: Micah 6:8 in Context' },
 
   // Quick (questions). Reformulate title-as-statement → question for the
   // Quick tier's question-driven scripture-finder.
-  { id: 4, newTier: 'quick',    regenPrompt: 'What does it mean to offer my life as a living sacrifice (Romans 12)?' },
-  { id: 8, newTier: 'quick',    regenPrompt: 'How can I cultivate focus and solitude in a distracted age?' },
-  { id: 11, newTier: 'quick',   regenPrompt: 'How do I find hope when grief is overwhelming?' },
-  { id: 12, newTier: 'quick',   regenPrompt: 'What does Psalm 1 teach about the two paths — the wicked and the righteous?' },
+  { slug: 'a-living-sacrifice',         newTier: 'quick',    regenPrompt: 'What does it mean to offer my life as a living sacrifice (Romans 12)?' },
+  { slug: 'before-daybreak',            newTier: 'quick',    regenPrompt: 'How can I cultivate focus and solitude in a distracted age?' },
+  { slug: 'new-every-morning',          newTier: 'quick',    regenPrompt: 'How do I find hope when grief is overwhelming?' },
+  { slug: 'psalm-1-the-two-paths-delight-in-the-law-and-the-tree-by-the-water', newTier: 'quick', regenPrompt: 'What does Psalm 1 teach about the two paths — the wicked and the righteous?' },
 
   // Standard (preserved).
-  { id: 5,  newTier: 'standard', regenPrompt: 'At the Threshing Floor: Dating, Covenant, and the Story of Ruth and Boaz' },
-  { id: 7,  newTier: 'standard', regenPrompt: "Treasure and Worry: Jesus on Money in Matthew 6:19-34" },
-  { id: 10, newTier: 'standard', regenPrompt: 'Two Are Better Than One: Friendship in Ecclesiastes 4:9-12' },
-  { id: 14, newTier: 'standard', regenPrompt: 'The Life of Peter: From Fisherman to Shepherd' },
+  { slug: 'at-the-threshing-floor',     newTier: 'standard', regenPrompt: 'At the Threshing Floor: Dating, Covenant, and the Story of Ruth and Boaz' },
+  { slug: 'treasure-and-worry',         newTier: 'standard', regenPrompt: "Treasure and Worry: Jesus on Money in Matthew 6:19-34" },
+  { slug: 'two-are-better-than-one',    newTier: 'standard', regenPrompt: 'Two Are Better Than One: Friendship in Ecclesiastes 4:9-12' },
+  { slug: 'the-life-of-peter-from-fisherman-to-shepherd', newTier: 'standard', regenPrompt: 'The Life of Peter: From Fisherman to Shepherd' },
 ];
 
 const COST_RATES = {
@@ -115,13 +117,13 @@ function computeCost(usage: {
   );
 }
 
-async function regenerate(entry: BackfillEntry): Promise<BackfillResult> {
+async function regenerate(entry: BackfillEntry): Promise<BackfillResult | null> {
   const db = getDb();
   const study = db
     .prepare(
-      'SELECT id, slug, title, format_type, category_id, summary, is_public, is_featured, created_at FROM studies WHERE id = ?'
+      'SELECT id, slug, title, format_type, category_id, summary, is_public, is_featured, created_at FROM studies WHERE slug = ?'
     )
-    .get(entry.id) as
+    .get(entry.slug) as
     | {
         id: number;
         slug: string;
@@ -134,7 +136,7 @@ async function regenerate(entry: BackfillEntry): Promise<BackfillResult> {
         created_at: string;
       }
     | undefined;
-  if (!study) throw new Error(`Study id ${entry.id} not found`);
+  if (!study) return null; // slug not present in this DB — skip silently
 
   const apiKey = config.ai.anthropicApiKey;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY missing');
@@ -300,22 +302,22 @@ async function regenerate(entry: BackfillEntry): Promise<BackfillResult> {
     entry.regenPrompt,
     generationMetadata,
     SEED_USER_ID,
-    entry.id
+    study.id
   );
 
   // Replace tags (column is tag_name, mirroring lib/db/queries.ts:setStudyTags)
-  db.prepare('DELETE FROM study_tags WHERE study_id = ?').run(entry.id);
+  db.prepare('DELETE FROM study_tags WHERE study_id = ?').run(study.id);
   if (metadata.tags.length > 0) {
     const insertTag = db.prepare('INSERT INTO study_tags (study_id, tag_name) VALUES (?, ?)');
     const safeTags = metadata.tags.map((t) => t.slice(0, 50)).slice(0, 20);
-    for (const tag of safeTags) insertTag.run(entry.id, tag);
+    for (const tag of safeTags) insertTag.run(study.id, tag);
   }
 
   // Drop entity annotations — render-fallback annotator will re-run on first read.
-  db.prepare('DELETE FROM study_entity_annotations WHERE study_id = ?').run(entry.id);
+  db.prepare('DELETE FROM study_entity_annotations WHERE study_id = ?').run(study.id);
 
   return {
-    id: entry.id,
+    id: study.id,
     slug: study.slug,
     newTier: entry.newTier,
     studyType: metadata.study_type,
@@ -330,42 +332,44 @@ async function regenerate(entry: BackfillEntry): Promise<BackfillResult> {
   };
 }
 
-function parseIdsArg(): number[] | null {
-  const idx = process.argv.indexOf('--ids');
+function parseSlugsArg(): Set<string> | null {
+  const idx = process.argv.indexOf('--slugs');
   if (idx < 0) return null;
   const raw = process.argv[idx + 1];
   if (!raw) return null;
-  return raw
-    .split(',')
-    .map((s) => parseInt(s.trim(), 10))
-    .filter((n) => Number.isFinite(n));
+  return new Set(raw.split(',').map((s) => s.trim()).filter(Boolean));
 }
 
 async function main() {
-  const filterIds = parseIdsArg();
-  const targets = filterIds
-    ? PLAN.filter((p) => filterIds.includes(p.id))
+  const filterSlugs = parseSlugsArg();
+  const targets = filterSlugs
+    ? PLAN.filter((p) => filterSlugs.has(p.slug))
     : PLAN;
 
   if (targets.length === 0) {
-    console.error('No targets matched. Use --ids 1,2,3 or run without args for all.');
+    console.error('No targets matched. Use --slugs slug-a,slug-b or run without args for all.');
     process.exit(1);
   }
 
-  console.log(`\n  Phase 2 backfill — ${targets.length} studies\n`);
+  console.log(`\n  Phase 2 backfill — ${targets.length} studies in plan\n`);
   for (const t of targets) {
-    console.log(`    ${String(t.id).padStart(2, ' ')}  ${t.newTier.padEnd(13)}  ${t.regenPrompt}`);
+    console.log(`    ${t.newTier.padEnd(13)}  ${t.slug}`);
   }
   console.log('');
 
   const results: BackfillResult[] = [];
+  const skipped: string[] = [];
   let totalCost = 0;
 
   for (const entry of targets) {
-    const start = Date.now();
-    process.stdout.write(`  → [${entry.id}] regenerating as ${entry.newTier} ... `);
+    process.stdout.write(`  → ${entry.slug.padEnd(60)}  (${entry.newTier}) ... `);
     try {
       const r = await regenerate(entry);
+      if (r === null) {
+        console.log('SKIP (slug not in this DB)');
+        skipped.push(entry.slug);
+        continue;
+      }
       results.push(r);
       totalCost += r.estimatedCost;
       console.log(
@@ -375,14 +379,16 @@ async function main() {
       console.log(`FAILED: ${err instanceof Error ? err.message : String(err)}`);
       throw err;
     }
-    void start;
   }
 
-  console.log(`\n  ✔ ${results.length} studies backfilled · total cost $${totalCost.toFixed(2)}\n`);
-  console.log('  Per-study breakdown:');
+  console.log(`\n  ✔ ${results.length} studies backfilled · total cost $${totalCost.toFixed(2)}`);
+  if (skipped.length > 0) {
+    console.log(`  ⊘ ${skipped.length} skipped (not present in this DB): ${skipped.join(', ')}`);
+  }
+  console.log('\n  Per-study breakdown:');
   for (const r of results) {
     console.log(
-      `    ${String(r.id).padStart(2)}  ${r.newTier.padEnd(13)} · ${r.studyType.padEnd(8)} · ${r.contentChars.toLocaleString().padStart(7)} chars · $${r.estimatedCost.toFixed(2)} · ${r.toolsCalled.length} tools`
+      `    [${String(r.id).padStart(2)}]  ${r.newTier.padEnd(13)} · ${r.studyType.padEnd(8)} · ${r.contentChars.toLocaleString().padStart(7)} chars · $${r.estimatedCost.toFixed(2)} · ${r.toolsCalled.length} tools  ${r.slug}`
     );
   }
 }
