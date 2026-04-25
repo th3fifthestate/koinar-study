@@ -299,16 +299,25 @@ function inExcludedRange(position: number, ranges: Range[]): boolean {
 }
 
 /**
- * Reject any match whose surface text is fully lowercase. Proper nouns in
- * running English prose are always capitalized — a lowercase "mark" in
- * "mark my words" is the verb, not the evangelist; a lowercase "peter" in
- * "peter out" is the verb, not the apostle. The regex is case-insensitive
- * so we can match sentence-initial "Mark" and ALL-CAPS headings, but we
- * reject the lowercase forms that almost always resolve to a common English
- * word rather than the biblical figure.
+ * Reject any match whose surface text is fully lowercase, but ONLY when at
+ * least one candidate is a `person` entity. The lowercase filter is
+ * specifically for the proper-noun-homograph problem — "mark my words" is
+ * the verb, not the evangelist; "peter out" is the verb, not the apostle.
+ *
+ * For non-person entities, lowercase surface is legitimate:
+ *   - concepts ("grace", "covenant", "righteousness") routinely appear
+ *     lowercase in study prose and surfacing them is desired,
+ *   - place transliterations ("petra" the Greek for "rock") and theological
+ *     compounds ("kinsman-redeemer") are not English-word homographs.
+ *
+ * Custom and culture/time_period entities are also exempt because their
+ * canonical forms are usually multi-word phrases that don't collide with
+ * everyday English words.
  */
-function hasProperCase(surfaceText: string): boolean {
-  return surfaceText !== surfaceText.toLowerCase();
+function hasProperCase(surfaceText: string, candidates: Entity[]): boolean {
+  if (surfaceText !== surfaceText.toLowerCase()) return true;
+  // Lowercase surface — reject only if any candidate is a person entity.
+  return !candidates.some(c => c.entity_type === 'person');
 }
 
 // ─── Disambiguation ───────────────────────────────────────────────────────────
@@ -352,43 +361,28 @@ function disambiguate(
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
- * Generates entity annotations for a study by matching known entity names
- * against the study text. Only runs if the study has zero annotations or
- * the content hash has changed. Results are persisted to study_entity_annotations.
+ * Pure helper: runs the matching pipeline against `contentMarkdown` and
+ * returns the proposed annotation rows without touching the DB. Used by
+ * `annotateStudyIfNeeded` (persistence path) AND by `scripts/rescan-
+ * annotations.ts` (dry-run diff path) so both call sites share one code
+ * path. The entity cache is still loaded here — that's a read, not a
+ * write — so this remains side-effect-free with respect to study data.
  */
-export async function annotateStudyIfNeeded(
+export function computeAnnotationsForContent(
   studyId: number,
   contentMarkdown: string
-): Promise<StudyEntityAnnotation[]> {
-  // Normalize CRLF → LF so blockquote offset accounting is consistent
+): { annotations: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[]; contentHash: string } {
   const text = contentMarkdown.replace(/\r\n/g, '\n');
   const contentHash = crypto.createHash('sha256').update(text).digest('hex');
 
-  // 1. Check existing annotations
-  const existing = getAnnotationsForStudy(studyId);
-  if (existing.length > 0) {
-    // AI-generated annotations take priority — don't overwrite with render fallback
-    const hasAiAnnotations = existing.some((a) => a.annotation_source === 'ai_generation');
-    // Cache hit if any annotation matches the current content hash (skip nulls)
-    const hashMatches = existing.some((a) => a.content_hash != null && a.content_hash === contentHash);
-    if (hashMatches || hasAiAnnotations) return existing;
-    // Hash mismatch on render-fallback annotations — content changed, re-annotate
-    deleteAnnotationsForStudy(studyId);
-  }
-
-  // 2. Load entity cache (auto-rebuilds when entities are updated)
   const { nameToEntities, regex } = getEntityCache();
 
-  // 3. Build excluded ranges (code blocks + blockquote lines + idiomatic
-  //    phrases that use a biblical name figuratively, e.g. "Adam's apple",
-  //    "Solomon's seal", "raising Cain").
   const excludedRanges = [
     ...getExcludedRanges(text),
     ...getIdiomRanges(text),
   ];
 
-  // 4. Match entity names — first mention only, skip excluded ranges
-  const toInsert: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+  const annotations: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
   const seenEntityIds = new Set<string>();
 
   // Clone regex so matchAll state is independent across calls
@@ -402,12 +396,11 @@ export async function annotateStudyIfNeeded(
 
     if (inExcludedRange(startOffset, excludedRanges)) continue;
 
-    // Fully-lowercase surface text almost always means the English word,
-    // not the proper name ("mark my words" ≠ the evangelist Mark).
-    if (!hasProperCase(matchedText)) continue;
-
     const candidates = nameToEntities.get(normalizedName);
     if (!candidates || candidates.length === 0) continue;
+
+    // Lowercase surface is OK only for all-concept candidates.
+    if (!hasProperCase(matchedText, candidates)) continue;
 
     const entity = disambiguate(normalizedName, candidates, text, startOffset);
     if (!entity) continue;
@@ -415,7 +408,7 @@ export async function annotateStudyIfNeeded(
     if (seenEntityIds.has(entity.id)) continue;
     seenEntityIds.add(entity.id);
 
-    toInsert.push({
+    annotations.push({
       study_id: studyId,
       entity_id: entity.id,
       surface_text: matchedText,
@@ -426,7 +419,35 @@ export async function annotateStudyIfNeeded(
     });
   }
 
-  // 5. Persist and return
+  return { annotations, contentHash };
+}
+
+/**
+ * Generates entity annotations for a study by matching known entity names
+ * against the study text. Only runs if the study has zero annotations or
+ * the content hash has changed. Results are persisted to study_entity_annotations.
+ */
+export async function annotateStudyIfNeeded(
+  studyId: number,
+  contentMarkdown: string
+): Promise<StudyEntityAnnotation[]> {
+  const { annotations: toInsert, contentHash } = computeAnnotationsForContent(
+    studyId,
+    contentMarkdown
+  );
+
+  // Check existing annotations and decide whether to skip / overwrite.
+  const existing = getAnnotationsForStudy(studyId);
+  if (existing.length > 0) {
+    // AI-generated annotations take priority — don't overwrite with render fallback
+    const hasAiAnnotations = existing.some((a) => a.annotation_source === 'ai_generation');
+    // Cache hit if any annotation matches the current content hash (skip nulls)
+    const hashMatches = existing.some((a) => a.content_hash != null && a.content_hash === contentHash);
+    if (hashMatches || hasAiAnnotations) return existing;
+    // Hash mismatch on render-fallback annotations — content changed, re-annotate
+    deleteAnnotationsForStudy(studyId);
+  }
+
   if (toInsert.length > 0) {
     insertStudyAnnotations(toInsert);
   }

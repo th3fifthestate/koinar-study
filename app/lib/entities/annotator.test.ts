@@ -311,6 +311,76 @@ describe('annotateStudyIfNeeded', () => {
       expect(insertStudyAnnotations).not.toHaveBeenCalled();
     });
 
+    it('annotates lowercase concept entities (e.g. "grace", "covenant")', async () => {
+      // The lowercase filter is for person-name homographs ("mark my words"),
+      // not for theological concepts which routinely appear lowercase in
+      // study prose ("the grace of God flows through the covenant").
+      setupEntityDb([
+        makeEntity({ id: 'GRACE', canonical_name: 'Grace', entity_type: 'concept' }),
+        makeEntity({ id: 'COVENANT', canonical_name: 'Covenant', entity_type: 'concept' }),
+      ]);
+
+      const inserted: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+      vi.mocked(insertStudyAnnotations).mockImplementation((annotations) => {
+        inserted.push(...annotations);
+      });
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([
+          makeAnnotation({ entity_id: 'GRACE', surface_text: 'grace' }),
+          makeAnnotation({ entity_id: 'COVENANT', surface_text: 'covenant' }),
+        ]);
+
+      await annotateStudyIfNeeded(1, 'the grace of God flows through the covenant.');
+
+      expect(inserted).toHaveLength(2);
+      const entityIds = inserted.map(a => a.entity_id).sort();
+      expect(entityIds).toEqual(['COVENANT', 'GRACE']);
+    });
+
+    it('annotates lowercase place transliterations like "petra"', async () => {
+      // "petra" is the Greek word for "rock" — appears lowercase in scholarly
+      // transliteration. Not an English-word homograph; should annotate.
+      setupEntityDb([
+        makeEntity({ id: 'PETRA', canonical_name: 'Petra', entity_type: 'place' }),
+      ]);
+
+      const inserted: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+      vi.mocked(insertStudyAnnotations).mockImplementation((annotations) => {
+        inserted.push(...annotations);
+      });
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([makeAnnotation({ entity_id: 'PETRA', surface_text: 'petra' })]);
+
+      await annotateStudyIfNeeded(1, 'Jesus plays on the Greek petra here.');
+
+      expect(inserted).toHaveLength(1);
+      expect(inserted[0].entity_id).toBe('PETRA');
+    });
+
+    it('still rejects lowercase when ANY candidate is a person (homograph guard)', async () => {
+      // If "mark" matches both a person (MARK_G3138) and a concept, the
+      // lowercase filter still applies — we err on the side of suppressing
+      // the proper-noun match in the "mark my words" case.
+      setupEntityDb([
+        makeEntity({ id: 'MARK_G3138', canonical_name: 'Mark', entity_type: 'person' }),
+        makeEntity({
+          id: 'MARK_OF_BEAST',
+          canonical_name: 'Mark of the beast',
+          entity_type: 'concept',
+          aliases: JSON.stringify(['mark']),
+        }),
+      ]);
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([]);
+
+      await annotateStudyIfNeeded(1, 'You mark my words about this.');
+
+      expect(insertStudyAnnotations).not.toHaveBeenCalled();
+    });
+
     it('skips matches that fall inside an idiomatic phrase ("Adam\'s apple")', async () => {
       setupEntityDb([
         makeEntity({ id: 'ADAM_H121', canonical_name: 'Adam' }),
