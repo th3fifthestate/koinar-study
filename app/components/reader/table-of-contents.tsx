@@ -162,8 +162,8 @@ function DotSpineList({
                 className="relative flex w-full cursor-pointer items-center gap-3 pl-6 pr-2 py-1 text-left text-sm transition-all duration-300 ease-out hover:opacity-100"
                 style={{
                   color: isActive
-                    ? 'var(--reader-display, var(--stone-700))'
-                    : 'var(--reader-ink-soft, var(--stone-500))',
+                    ? 'var(--stone-700)'
+                    : 'var(--stone-500)',
                 }}
               >
                 {/* Rail marker dot — hollow, always visible at low opacity.
@@ -185,8 +185,8 @@ function DotSpineList({
                     border: disableGlider
                       ? isActive
                         ? 'none'
-                        : `1px solid var(--reader-ink-soft, var(--stone-400))`
-                      : `1px solid var(--reader-ink-soft, var(--stone-400))`,
+                        : `1px solid var(--stone-400)`
+                      : `1px solid var(--stone-400)`,
                     opacity: disableGlider
                       ? isActive ? 1 : 0.55
                       : 0.4,
@@ -251,7 +251,7 @@ export function TableOfContents({ headings, activeId }: TableOfContentsProps) {
     >
       <p
         className="mb-4 pl-6 text-[0.65rem] font-medium uppercase tracking-[0.2em]"
-        style={{ color: 'var(--reader-ink-soft, var(--stone-500))' }}
+        style={{ color: 'var(--stone-500)' }}
       >
         Contents
       </p>
