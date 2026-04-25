@@ -38,7 +38,7 @@ export function CitationFooter({
   if (!citation) return null;
 
   return (
-    <footer className="mt-8 border-t border-border/40 pt-4 text-center text-xs text-muted-foreground">
+    <footer className="mt-16 border-t border-border/40 px-8 pt-12 pb-16 text-center text-xs text-muted-foreground">
       <p>{citation.short}</p>
       {citation.publisherLink && (
         <a
