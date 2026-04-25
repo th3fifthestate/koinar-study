@@ -14,7 +14,7 @@ const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 30 });
 
 const createSchema = z.object({
   user_id: z.number().int().positive(),
-  format_locked: z.enum(['simple', 'standard', 'comprehensive']),
+  format_locked: z.enum(['quick', 'standard', 'comprehensive']),
   max_uses: z.number().int().min(1).max(100).default(1),
   expires_at: z.string().datetime({ offset: true }).nullable().optional(),
 });
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     .all(pg.pageSize, pg.offset) as Array<{
     id: number;
     code: string;
-    format_locked: 'simple' | 'standard' | 'comprehensive';
+    format_locked: 'quick' | 'standard' | 'comprehensive';
     max_uses: number;
     uses_remaining: number;
     created_at: string;

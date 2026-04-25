@@ -208,7 +208,7 @@ export function RefineBand({ categories }: RefineBandProps) {
               className="font-body text-[1rem] text-[var(--stone-700)] bg-transparent border-b border-[var(--stone-200)] outline-none cursor-pointer pb-0.5"
             >
               <option value="">Any depth</option>
-              <option value="simple">Simple</option>
+              <option value="quick">Quick</option>
               <option value="standard">Standard</option>
               <option value="comprehensive">Comprehensive</option>
             </select>

@@ -21,7 +21,7 @@ import { logger } from '@/lib/logger';
 const isRateLimited = createRateLimiter({ windowMs: 300_000, max: 10 });
 
 const FORMAT_LABELS: Record<string, string> = {
-  simple: 'Simple',
+  quick: 'Quick',
   standard: 'Standard',
   comprehensive: 'Comprehensive',
 };

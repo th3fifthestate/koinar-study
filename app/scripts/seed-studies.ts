@@ -22,7 +22,7 @@ import { getDb } from '../lib/db/connection';
 
 const db = getDb();
 
-type FormatType = 'simple' | 'standard' | 'comprehensive';
+type FormatType = 'quick' | 'standard' | 'comprehensive';
 type TranslationId = 'BSB' | 'KJV' | 'WEB';
 
 interface SeedStudy {
@@ -149,7 +149,7 @@ Every verb in this passage is passive or divine. *Chose us. Predestined us. Adop
     slug: 'a-living-sacrifice',
     summary:
       'Not a verse about life plans, but a passage about a life surrendered. Paul redefines "calling" through the body, the mind, and the gifts.',
-    formatType: 'simple',
+    formatType: 'quick',
     translation: 'BSB',
     categoryId: 3,
     isFeatured: false,
@@ -345,7 +345,7 @@ The verb **ζητέω (zēteō, G2212)** is present imperative — "keep seeking
     slug: 'before-daybreak',
     summary:
       'Mark 1:35-39. The busiest day of Jesus\' early ministry is followed by His withdrawal to pray before dawn. A study in solitude for a distracted age.',
-    formatType: 'simple',
+    formatType: 'quick',
     translation: 'WEB',
     categoryId: 9,
     isFeatured: false,
@@ -502,7 +502,7 @@ Chapter 4 begins with the Teacher observing oppression and finding no comforter 
     slug: 'new-every-morning',
     summary:
       'One of the Bible\'s most quoted promises sits at the exact center of its bleakest book. A study in lament that makes room for hope.',
-    formatType: 'simple',
+    formatType: 'quick',
     translation: 'KJV',
     categoryId: 1,
     isFeatured: false,

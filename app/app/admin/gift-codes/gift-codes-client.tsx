@@ -27,7 +27,7 @@ interface AdminGiftCodeDTO {
   id: number;
   code: string;
   recipient_username: string;
-  format_locked: 'simple' | 'standard' | 'comprehensive';
+  format_locked: 'quick' | 'standard' | 'comprehensive';
   max_uses: number;
   uses_remaining: number;
   created_at: string;
@@ -54,7 +54,7 @@ const STATUS_VARIANTS = {
 };
 
 const FORMAT_VARIANTS = {
-  simple: 'outline' as const,
+  quick: 'outline' as const,
   standard: 'secondary' as const,
   comprehensive: 'default' as const,
 };
@@ -73,7 +73,7 @@ export default function GiftCodesPage() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
     user_id: '',
-    format_locked: 'standard' as 'simple' | 'standard' | 'comprehensive',
+    format_locked: 'standard' as 'quick' | 'standard' | 'comprehensive',
     max_uses: '1',
     expires_at: '',
   });
@@ -387,7 +387,7 @@ export default function GiftCodesPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="simple">Simple</SelectItem>
+                  <SelectItem value="quick">Quick</SelectItem>
                   <SelectItem value="standard">Standard</SelectItem>
                   <SelectItem value="comprehensive">Comprehensive</SelectItem>
                 </SelectContent>

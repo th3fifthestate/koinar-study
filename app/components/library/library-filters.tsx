@@ -115,7 +115,7 @@ export function LibraryFilters({ categories, isLoggedIn }: LibraryFiltersProps) 
               className="font-body text-[13px] text-[var(--stone-700)] border border-[var(--stone-200)] rounded px-3 py-1.5 bg-[var(--stone-100)] outline-none cursor-pointer"
             >
               <option value="">All Formats</option>
-              <option value="simple">Simple</option>
+              <option value="quick">Quick</option>
               <option value="standard">Standard</option>
               <option value="comprehensive">Comprehensive</option>
             </select>
