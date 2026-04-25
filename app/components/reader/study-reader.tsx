@@ -298,18 +298,9 @@ function StudyReaderContent({
 
       <div className="relative mx-auto max-w-7xl px-4">
         <StudyHeader
-          title={study.title}
-          summary={study.summary}
-          categoryName={study.category_name}
-          formatType={study.format_type}
-          translationUsed={study.translation_used}
-          authorDisplayName={study.author_display_name}
-          tags={study.tags}
-          favoriteCount={study.favorite_count}
-          annotationCount={study.annotation_count}
-          createdAt={study.created_at}
           studyId={study.id}
           isFavorited={isFavorited}
+          favoriteCount={study.favorite_count}
           fontSize={fontSize}
           onFontSizeChange={setFontSize}
           mode={mode}
