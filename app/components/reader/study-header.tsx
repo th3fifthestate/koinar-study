@@ -40,7 +40,7 @@ interface StudyHeaderProps {
 }
 
 const FORMAT_LABELS: Record<string, string> = {
-  simple: 'Simple',
+  quick: 'Quick',
   standard: 'Standard',
   comprehensive: 'Comprehensive',
 };

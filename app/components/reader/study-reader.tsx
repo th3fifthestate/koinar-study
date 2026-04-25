@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
+import { VerificationPanel } from './verification-panel';
 import type { TranslationAvailability } from '@/lib/translations/registry';
 import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-failure';
 
@@ -37,6 +38,22 @@ interface StudyReaderProps {
   entities?: Entity[];
   heroNeedsScrim?: boolean;
   benchEnabled?: boolean;
+  /** When true, renders the admin-only VerificationPanel below the article. */
+  isAdmin?: boolean;
+}
+
+/**
+ * Defensive strip for the `verification-audit` code fence. New studies
+ * (post-Phase-1) have this fence removed server-side in
+ * `app/api/study/generate/route.ts` onFinish. Old studies generated under
+ * the previous prompt may still carry the fence in `content_markdown`;
+ * we strip it on render so it never reaches the public reader. The audit
+ * data persists through `generation_metadata.queries` for admins.
+ */
+const VERIFICATION_AUDIT_FENCE = /```verification-audit[\s\S]*?```/g;
+function stripVerificationAuditFence(markdown: string): string {
+  if (!markdown.includes('```verification-audit')) return markdown;
+  return markdown.replace(VERIFICATION_AUDIT_FENCE, '').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 // Count individual verses referenced in blockquote citation lines. Used to
@@ -88,11 +105,18 @@ export function StudyReader({
   entities = [],
   heroNeedsScrim,
   benchEnabled = false,
+  isAdmin = false,
 }: StudyReaderProps) {
   const { prefs, setFontSize, setAnnotationFullContextHeight, resetPrefs } = useReaderPrefs();
   const fontSize = prefs.fontSize;
 
-  const [displayContent, setDisplayContent] = useState(study.content_markdown);
+  // Strip any stray verification-audit fences from old studies before
+  // they hit the renderer. New studies don't carry the fence in markdown.
+  const initialContent = useMemo(
+    () => stripVerificationAuditFence(study.content_markdown),
+    [study.content_markdown],
+  );
+  const [displayContent, setDisplayContent] = useState(initialContent);
   const [currentTranslation, setCurrentTranslation] = useState(
     study.current_translation ?? 'BSB',
   );
@@ -126,7 +150,10 @@ export function StudyReader({
         truncated: boolean;
         versesSwapped: number;
       };
-      setDisplayContent(data.content);
+      // Defensive: even after a translation swap, strip any stray
+      // verification-audit fence the swap-engine might preserve from old
+      // study content. New studies don't ship with the fence in markdown.
+      setDisplayContent(stripVerificationAuditFence(data.content));
       setCurrentTranslation(data.translation);
       setDisplayVerseCount(data.versesSwapped);
       if (data.truncated) {
@@ -143,7 +170,7 @@ export function StudyReader({
     }
   }, [currentTranslation, study.id]);
 
-  const headings = useMemo(() => extractHeadings(study.content_markdown), [study.content_markdown]);
+  const headings = useMemo(() => extractHeadings(initialContent), [initialContent]);
   const headingIds = useMemo(() => headings.map((h) => h.id), [headings]);
 
   useReadingProgress(study.slug);
@@ -169,6 +196,7 @@ export function StudyReader({
         onTranslationSelect={handleTranslationSelect}
         heroNeedsScrim={heroNeedsScrim}
         benchEnabled={benchEnabled}
+        isAdmin={isAdmin}
       />
     </EntityLayerProvider>
   );
@@ -193,6 +221,7 @@ function StudyReaderContent({
   onTranslationSelect,
   heroNeedsScrim,
   benchEnabled,
+  isAdmin,
 }: {
   study: StudyDetail;
   isFavorited: boolean;
@@ -214,6 +243,7 @@ function StudyReaderContent({
   onTranslationSelect: (t: string) => Promise<void>;
   heroNeedsScrim?: boolean;
   benchEnabled: boolean;
+  isAdmin: boolean;
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
@@ -326,6 +356,15 @@ function StudyReaderContent({
                 studyId={study.id}
                 verseCount={displayVerseCount}
               />
+
+              {/* Admin-only verification audit panel — renders the SQL/tool
+                  queries the LLM emitted at generation time. Public readers
+                  never see this; the panel checks isAdmin before rendering
+                  and the underlying data lives in generation_metadata.queries
+                  (not in the rendered markdown). */}
+              {isAdmin && (
+                <VerificationPanel generationMetadata={study.generation_metadata} />
+              )}
             </article>
 
             {/* Annotation popover on text selection.
