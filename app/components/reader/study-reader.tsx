@@ -25,6 +25,8 @@ import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
 import { VerificationPanel } from './verification-panel';
+import { Bed } from './bed';
+import { splitByH2, bedForSection } from '@/lib/reader/split-by-h2';
 import type { TranslationAvailability } from '@/lib/translations/registry';
 import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-failure';
 
@@ -332,6 +334,12 @@ function StudyReaderContent({
   // Apply highlights to the DOM when annotations change
   useHighlightLayer(contentRef, annotations, annotationsLoading, handleAnnotationClick);
 
+  // Slice the markdown by H2 boundaries so each section can sit on its
+  // own full-bleed Bed. We keep the H2 line inside the section markdown
+  // (option B from Task 15) so MarkdownRenderer's section-tracking refs
+  // (Cross-References, Historical Context) keep firing as before.
+  const sections = useMemo(() => splitByH2(displayContent), [displayContent]);
+
   return (
     <ReaderSurface>
       <ReadingProgress />
@@ -380,48 +388,57 @@ function StudyReaderContent({
             <TableOfContents headings={headings} activeId={activeId} />
           </aside>
 
-          {/* Main content — text sits directly on the paper surface. The
-              column flex-1's to fill the remaining width inside the
-              outer max-w-6xl frame, yielding a generous reading measure
-              without a dead right band. A soft upper cap prevents
-              pathological line lengths on extra-wide displays. */}
+          {/* Main content — bed stack. Each H2 section sits on its own
+              full-bleed Bed; the Bed centers the reading column at 880px
+              internally, so the outer column doesn't impose its own
+              narrow max-width. The MarkdownRenderer still renders the H2
+              lines (option B from Task 15) so its section-tracking refs
+              (Cross-References, Historical Context) keep firing. */}
           <main className="relative min-w-0 flex-1">
-            <article className="relative max-w-[95ch] py-4 md:py-6">
-              <CopyGuard
-                currentTranslation={currentTranslation}
-                surface={{ kind: 'reader', studyId: String(study.id) }}
-              >
-                <div ref={contentRef}>
-                  <MarkdownRenderer
-                    content={displayContent}
-                    images={study.images}
-                    fontSize={fontSize}
-                  />
-                </div>
-              </CopyGuard>
+            <CopyGuard
+              currentTranslation={currentTranslation}
+              surface={{ kind: 'reader', studyId: String(study.id) }}
+            >
+              <div ref={contentRef}>
+                {sections.map((section, idx) => (
+                  <Bed
+                    key={section.slug}
+                    id={section.slug}
+                    data-section-key={section.key}
+                    variant={bedForSection(section, idx, mode)}
+                    pattern={section.key === 'scripture-references' ? 'olive' : undefined}
+                  >
+                    <MarkdownRenderer
+                      content={section.markdown}
+                      images={study.images}
+                      fontSize={fontSize}
+                    />
+                  </Bed>
+                ))}
+              </div>
+            </CopyGuard>
 
-              {/* Margin notes for annotations with type 'note' */}
-              <AnnotationNotes
-                annotations={annotations}
-                contentRef={contentRef}
-                onDelete={deleteAnnotation}
-              />
+            {/* Margin notes for annotations with type 'note' */}
+            <AnnotationNotes
+              annotations={annotations}
+              contentRef={contentRef}
+              onDelete={deleteAnnotation}
+            />
 
-              <CitationFooter
-                currentTranslation={currentTranslation}
-                studyId={study.id}
-                verseCount={displayVerseCount}
-              />
+            <CitationFooter
+              currentTranslation={currentTranslation}
+              studyId={study.id}
+              verseCount={displayVerseCount}
+            />
 
-              {/* Admin-only verification audit panel — renders the SQL/tool
-                  queries the LLM emitted at generation time. Public readers
-                  never see this; the panel checks isAdmin before rendering
-                  and the underlying data lives in generation_metadata.queries
-                  (not in the rendered markdown). */}
-              {isAdmin && (
-                <VerificationPanel generationMetadata={study.generation_metadata} />
-              )}
-            </article>
+            {/* Admin-only verification audit panel — renders the SQL/tool
+                queries the LLM emitted at generation time. Public readers
+                never see this; the panel checks isAdmin before rendering
+                and the underlying data lives in generation_metadata.queries
+                (not in the rendered markdown). */}
+            {isAdmin && (
+              <VerificationPanel generationMetadata={study.generation_metadata} />
+            )}
 
             {/* Annotation popover on text selection.
                 Key forces instant remount on new selection (kill-and-restart
