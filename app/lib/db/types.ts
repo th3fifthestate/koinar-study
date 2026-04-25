@@ -338,6 +338,13 @@ export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_conte
     related_entity_name: string;
     related_entity_type: string;
     /**
+     * Disambiguation epithet for the related entity (e.g. "Antipas" for Herod
+     * Antipas, "of Bethany" for Mary of Bethany). Null when the related entity
+     * has no disambiguation_note set. Surfaces on related-entity cards so
+     * collision-cluster names render as "Herod (Antipas)" / "Mary (of Bethany)".
+     */
+    related_entity_disambiguation_note: string | null;
+    /**
      * Direction-aware label. Equal to `relationship_label` when the current
      * entity is on the `from` side of the edge; inverted (via the
      * relationship-direction registry) when the current entity is on the

@@ -22,8 +22,8 @@ const ENTITIES_TO_CHECK = [
   'MARY_G3137K',
   'ALPHAEUS_G0256',
   // Family with lots of edges (sanity: not duplicated)
-  'DAVID_H1732G',
-  'JACOB_H3290G',
+  'DAVID_H1732',
+  'JACOB_G2384G',
   // Asymmetric geography
   'BETHLEHEM',
   'JUDEA_REGION',
@@ -66,7 +66,10 @@ function main() {
       } else {
         const r = rows[0]!;
         const side = r.from_entity_id === id ? 'from' : 'to';
-        console.log(`    · ${r.related_entity_name.padEnd(24)} "${r.displayed_label}"  [${r.relationship_type}, ${side}]`);
+        const disambig = r.related_entity_disambiguation_note
+          ? ` (${r.related_entity_disambiguation_note})`
+          : '';
+        console.log(`    · ${(r.related_entity_name + disambig).padEnd(40)} "${r.displayed_label}"  [${r.relationship_type}, ${side}]`);
       }
     }
   }

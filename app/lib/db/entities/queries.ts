@@ -17,7 +17,14 @@ import { labelForSide } from '../../entities/relationship-direction';
 type FetchedRelationship = EntityRelationship & {
   related_entity_name: string;
   related_entity_type: string;
+  related_entity_disambiguation_note: string | null;
   displayed_label: string;
+};
+
+type RawJoinedRel = EntityRelationship & {
+  related_entity_name: string;
+  related_entity_type: string;
+  related_entity_disambiguation_note: string | null;
 };
 
 function fetchRelationships(
@@ -34,25 +41,28 @@ function fetchRelationships(
   // types (descended_from, flows_into, during_period) and any new type that's
   // been added since the last reciprocal-backfill run. These get a
   // direction-aware `displayed_label` so the card still reads correctly.
+  //
+  // Both passes also return `related_entity_disambiguation_note` so the UI
+  // can show "Herod (Antipas)" / "Mary (the mother of John Mark)" on
+  // related-entity cards when there are name collisions.
   const fromRows = db
     .prepare(
       `SELECT er.*,
-              e_to.canonical_name AS related_entity_name,
-              e_to.entity_type    AS related_entity_type
+              e_to.canonical_name      AS related_entity_name,
+              e_to.entity_type         AS related_entity_type,
+              e_to.disambiguation_note AS related_entity_disambiguation_note
          FROM entity_relationships er
          LEFT JOIN entities e_to ON er.to_entity_id = e_to.id
         WHERE er.from_entity_id = ?`
     )
-    .all(entityId) as (EntityRelationship & {
-      related_entity_name: string;
-      related_entity_type: string;
-    })[];
+    .all(entityId) as RawJoinedRel[];
 
   const orphanToRows = db
     .prepare(
       `SELECT er.*,
-              e_from.canonical_name AS related_entity_name,
-              e_from.entity_type    AS related_entity_type
+              e_from.canonical_name      AS related_entity_name,
+              e_from.entity_type         AS related_entity_type,
+              e_from.disambiguation_note AS related_entity_disambiguation_note
          FROM entity_relationships er
          LEFT JOIN entities e_from ON er.from_entity_id = e_from.id
         WHERE er.to_entity_id = ?
@@ -62,10 +72,7 @@ function fetchRelationships(
                AND er2.to_entity_id   = er.from_entity_id
           )`
     )
-    .all(entityId) as (EntityRelationship & {
-      related_entity_name: string;
-      related_entity_type: string;
-    })[];
+    .all(entityId) as RawJoinedRel[];
 
   const out: FetchedRelationship[] = [];
   for (const r of fromRows) {

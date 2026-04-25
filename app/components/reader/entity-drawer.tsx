@@ -71,12 +71,14 @@ function EntityBreadcrumbs({
 
 function RelatedEntityCard({
   name,
+  disambiguation,
   entityType,
   relationshipLabel,
   quickGlance,
   onClick,
 }: {
   name: string;
+  disambiguation?: string | null;
   entityType: string;
   relationshipLabel: string;
   quickGlance?: string | null;
@@ -89,9 +91,14 @@ function RelatedEntityCard({
       onClick={onClick}
       className="w-full rounded-lg border border-[var(--stone-200)] p-3 text-left transition-colors hover:border-[var(--sage-300)] hover:bg-[var(--stone-50)] dark:border-[var(--stone-700)] dark:hover:border-[var(--sage-500)] dark:hover:bg-[var(--stone-900)]"
     >
-      <div className="flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+      <div className="flex items-baseline gap-2">
+        <Icon className="h-3.5 w-3.5 shrink-0 self-center text-muted-foreground" />
         <span className="font-display text-sm font-medium">{name}</span>
+        {disambiguation && (
+          <span className="truncate text-xs italic text-muted-foreground">
+            {disambiguation}
+          </span>
+        )}
       </div>
       <p className="mt-0.5 text-xs text-muted-foreground">{relationshipLabel}</p>
       {quickGlance && (
@@ -341,6 +348,7 @@ function DrawerEntityContent({
                 <RelatedEntityCard
                   key={rel.id}
                   name={rel.related_entity_name}
+                  disambiguation={rel.related_entity_disambiguation_note}
                   entityType={rel.related_entity_type}
                   relationshipLabel={label}
                   quickGlance={relatedEntity?.quick_glance}
