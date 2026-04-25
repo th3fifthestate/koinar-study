@@ -379,22 +379,25 @@ function StudyReaderContent({
         );
       })()}
 
-      <div className="relative mx-auto max-w-7xl px-4">
-        <div className="flex gap-8 lg:gap-20 xl:gap-28">
-          {/* Desktop TOC — sits out in the left gutter, away from the
-              reading column so labels don't crowd the text. Dot-spine
-              doesn't need a full text column; labels truncate. */}
-          <aside className="hidden w-60 shrink-0 lg:block">
-            <TableOfContents headings={headings} activeId={activeId} />
-          </aside>
+      {/* Body grid — TOC + bed stack, full viewport width. No outer
+          max-width: spec §4 calls for full-viewport-width section beds,
+          so TOC owns its 240px gutter and the bed stack fills the rest
+          of the viewport. The Bed component centers its internal reading
+          column at 880px, so we don't need an outer max-width here. */}
+      <div className="relative flex w-full">
+        {/* Desktop TOC — sits out in the left gutter, away from the
+            reading column so labels don't crowd the text. Dot-spine
+            doesn't need a full text column; labels truncate. */}
+        <aside className="hidden w-60 shrink-0 lg:block">
+          <TableOfContents headings={headings} activeId={activeId} />
+        </aside>
 
-          {/* Main content — bed stack. Each H2 section sits on its own
-              full-bleed Bed; the Bed centers the reading column at 880px
-              internally, so the outer column doesn't impose its own
-              narrow max-width. The MarkdownRenderer still renders the H2
-              lines (option B from Task 15) so its section-tracking refs
-              (Cross-References, Historical Context) keep firing. */}
-          <main className="relative min-w-0 flex-1">
+        {/* Main content — bed stack. Each H2 section sits on its own
+            full-bleed Bed; the Bed centers the reading column at 880px
+            internally. The MarkdownRenderer still renders the H2 lines
+            (option B from Task 15) so its section-tracking refs
+            (Cross-References, Historical Context) keep firing. */}
+        <main className="relative min-w-0 flex-1">
             <CopyGuard
               currentTranslation={currentTranslation}
               surface={{ kind: 'reader', studyId: String(study.id) }}
@@ -497,8 +500,7 @@ function StudyReaderContent({
                 onAnnotationFullContextHeightChange={onAnnotationFullContextHeightChange}
               />
             )}
-          </main>
-        </div>
+        </main>
       </div>
 
       {/* Mobile TOC */}
