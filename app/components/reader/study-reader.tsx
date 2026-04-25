@@ -73,6 +73,54 @@ function countCitedVerses(markdown: string): number {
   return total;
 }
 
+function capitalize(s: string): string {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+}
+
+function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+/**
+ * Best-effort split of a study title into editorial hero parts.
+ *
+ * Titles like "The Life of Peter: From Fisherman to Shepherd" split as:
+ *   italLine    = "The Life of"
+ *   displayLine = "Peter"
+ *   subtitle    = "From Fisherman to Shepherd"
+ *
+ * Titles without a clear noun pattern fall back to:
+ *   italLine    = ""
+ *   displayLine = full title
+ *   subtitle    = undefined
+ */
+function splitTitle(title: string): {
+  italLine: string;
+  displayLine: string;
+  subtitle: string | undefined;
+} {
+  const colonMatch = title.match(/^(.*?):\s*(.+)$/);
+  if (colonMatch) {
+    const [, before, after] = colonMatch;
+    const beforeWords = before.trim().split(/\s+/);
+    if (beforeWords.length > 1) {
+      const displayLine = beforeWords[beforeWords.length - 1];
+      const italLine = beforeWords.slice(0, -1).join(' ');
+      return { italLine, displayLine, subtitle: after.trim() };
+    }
+    return { italLine: '', displayLine: before.trim(), subtitle: after.trim() };
+  }
+  return { italLine: '', displayLine: title, subtitle: undefined };
+}
+
 function extractHeadings(markdown: string): HeadingItem[] {
   const headings: HeadingItem[] = [];
   const slugCounts = new Map<string, number>();
@@ -224,7 +272,7 @@ function StudyReaderContent({
   displayVerseCount,
   translating,
   onTranslationSelect,
-  heroNeedsScrim,
+  heroNeedsScrim: _heroNeedsScrim,
   benchEnabled,
   isAdmin,
 }: {
@@ -288,34 +336,42 @@ function StudyReaderContent({
     <ReaderSurface>
       <ReadingProgress />
 
-      {study.featured_image_url && (
-        <StudyHero
-          imageUrl={study.featured_image_url}
-          title={study.title}
-          heroNeedsScrim={heroNeedsScrim}
-        />
-      )}
+      {(() => {
+        const { italLine, displayLine, subtitle } = splitTitle(study.title);
+        return (
+          <StudyHero
+            eyebrow={`A ${capitalize(study.format_type)} Study`}
+            italLine={italLine}
+            displayLine={displayLine}
+            subtitle={subtitle}
+            byline={study.author_display_name ?? study.author_username}
+            date={formatDate(study.created_at)}
+            tags={[study.format_type, study.translation_used].filter(Boolean) as string[]}
+            chrome={
+              <StudyHeader
+                studyId={study.id}
+                isFavorited={isFavorited}
+                favoriteCount={study.favorite_count}
+                fontSize={fontSize}
+                onFontSizeChange={setFontSize}
+                mode={mode}
+                onModeChange={setMode}
+                onResetPrefs={resetPrefs}
+                showEntityAnnotations={showAnnotations}
+                onEntityAnnotationsToggle={setShowAnnotations}
+                entityAnnotationCount={entityAnnotationCount}
+                onOpenMap={() => setBranchMapOpen(true)}
+                translations={translations}
+                currentTranslation={currentTranslation}
+                onTranslationSelect={onTranslationSelect}
+                translating={translating}
+              />
+            }
+          />
+        );
+      })()}
 
       <div className="relative mx-auto max-w-7xl px-4">
-        <StudyHeader
-          studyId={study.id}
-          isFavorited={isFavorited}
-          favoriteCount={study.favorite_count}
-          fontSize={fontSize}
-          onFontSizeChange={setFontSize}
-          mode={mode}
-          onModeChange={setMode}
-          onResetPrefs={resetPrefs}
-          showEntityAnnotations={showAnnotations}
-          onEntityAnnotationsToggle={setShowAnnotations}
-          entityAnnotationCount={entityAnnotationCount}
-          onOpenMap={() => setBranchMapOpen(true)}
-          translations={translations}
-          currentTranslation={currentTranslation}
-          onTranslationSelect={onTranslationSelect}
-          translating={translating}
-        />
-
         <div className="flex gap-8 lg:gap-20 xl:gap-28">
           {/* Desktop TOC — sits out in the left gutter, away from the
               reading column so labels don't crowd the text. Dot-spine

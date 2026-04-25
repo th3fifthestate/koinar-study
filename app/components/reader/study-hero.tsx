@@ -1,109 +1,145 @@
+// app/components/reader/study-hero.tsx
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import Image from 'next/image';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { useTodPalette } from '@/lib/reader/use-tod-palette';
-import { READER_MOTION_HERO_MOOD } from '@/lib/motion/reader';
-import type { TodBucket } from '@/lib/home/tod-bucket';
+import { type ReactNode } from 'react';
+import { OlivePattern } from './patterns/olive';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
 
-/** Top scrim opacity keyed by time-of-day bucket. */
-const TOP_SCRIM_OPACITY: Record<TodBucket, number> = {
-  dawn:    0.04,
-  morning: 0.02,
-  midday:  0.03,
-  golden:  0.08,
-  evening: 0.10,
-  night:   0.12,
-};
-
-interface StudyHeroProps {
-  imageUrl: string;
-  title: string;
-  heroNeedsScrim?: boolean;
+export interface StudyHeroProps {
+  /** "A Standard Study" / "A Quick Study" — italic eyebrow framing. */
+  eyebrow: string;
+  /** Italic top line of the title. E.g., "The Life of". */
+  italLine: string;
+  /** Uppercase display line. E.g., "Peter". */
+  displayLine: string;
+  /** Italic subtitle below the title. E.g., "From Fisherman to Shepherd". */
+  subtitle?: string;
+  /** Author display name. E.g., "Koinar Team". */
+  byline: string;
+  /** Pre-formatted date string. */
+  date: string;
+  /** Tag chips — typically the study type and translation. */
+  tags?: string[];
+  /** Chrome cluster (StudyHeader) injected at the bottom of the hero. */
+  chrome?: ReactNode;
+  /** Backlink target. Defaults to /library. */
+  backlinkHref?: string;
+  /** Backlink label. Defaults to "Back to Library". */
+  backlinkLabel?: string;
 }
 
-export function StudyHero({ imageUrl, title, heroNeedsScrim }: StudyHeroProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  // TOD palette for bottom vignette gradient opacity
-  const { bucket, gradientOpacity } = useTodPalette();
-
-  // Mount transition: overlays fade from opacity 0 → final value on first paint
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    const id = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(id);
-  }, []);
-
-  const transitionStyle = prefersReducedMotion
-    ? undefined
-    : { transition: `opacity ${READER_MOTION_HERO_MOOD.duration}ms ${READER_MOTION_HERO_MOOD.easing}` };
-
-  // Bottom vignette: stone-900 rgba keyed off gradientOpacity
-  const vignetteOpacity = mounted ? 1 : 0;
-
-  // Top scrim: TOD-keyed, with heroNeedsScrim floor at 0.20
-  const rawScrimOpacity = TOP_SCRIM_OPACITY[bucket];
-  const finalScrimOpacity = heroNeedsScrim
-    ? Math.max(0.20, rawScrimOpacity)
-    : rawScrimOpacity;
+/**
+ * Editorial hero. Centered chapter-title-page composition: italic
+ * eyebrow with hairlines → italic + uppercase title stack → italic
+ * subtitle → byline → 56px rule → tag chips → chrome cluster.
+ *
+ * Atmospheric layer: olive-branch pattern overlay + radial gradient
+ * wash.
+ *
+ * Spec: §4 (layout), §5 (atmosphere), §10.1 (typography verification).
+ */
+export function StudyHero({
+  eyebrow,
+  italLine,
+  displayLine,
+  subtitle,
+  byline,
+  date,
+  tags = [],
+  chrome,
+  backlinkHref = '/library',
+  backlinkLabel = 'Back to Library',
+}: StudyHeroProps) {
+  const { prefs } = useReaderPrefs();
+  const mode = prefs.mode ?? 'light';
 
   return (
-    <div
-      ref={ref}
-      className="relative h-[40vh] min-h-[300px] overflow-hidden md:h-[60vh] md:min-h-[400px]"
-    >
-      <motion.div
-        style={prefersReducedMotion ? undefined : { y }}
-        className="absolute inset-0"
-      >
-        <Image
-          src={imageUrl}
-          alt={`Hero image for ${title}`}
-          fill
-          sizes="100vw"
-          priority
-          className="object-cover"
-          style={
-            prefersReducedMotion
-              ? undefined
-              : { animation: 'kenBurns 30s ease-in-out infinite alternate' }
-          }
-        />
-      </motion.div>
-
-      {/* Top scrim — seats title against image */}
+    <header className="relative w-full overflow-hidden bg-[var(--hero-bg)] px-8 pb-32 pt-44 text-center">
+      {/* Atmospheric radial wash */}
       <div
-        className="absolute inset-x-0 top-0 h-[40%] pointer-events-none"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
         style={{
-          background: `linear-gradient(to bottom, rgba(28,25,23,${finalScrimOpacity}) 0%, rgba(28,25,23,0) 100%)`,
-          opacity: mounted ? 1 : 0,
-          ...transitionStyle,
+          background: `
+            radial-gradient(ellipse 720px 520px at 50% 30%, rgba(196,154,108,0.10), transparent 65%),
+            radial-gradient(ellipse 600px 400px at 50% 80%, rgba(107,128,96,0.06), transparent 70%)
+          `,
         }}
       />
 
-      {/* Bottom vignette — scroll-linked opacity + TOD gradient opacity */}
-      <motion.div
-        style={prefersReducedMotion ? undefined : { opacity }}
-        className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
+      {/* Olive pattern overlay */}
+      <OlivePattern mode={mode} />
+
+      {/* Backlink — top-left absolute */}
+      <a
+        href={backlinkHref}
+        className="absolute left-8 top-7 z-10 inline-flex items-center gap-2 text-[0.78rem] font-medium tracking-[0.06em] text-[var(--stone-700)] hover:text-[var(--stone-900)] dark:text-[var(--stone-300)] dark:hover:text-[var(--stone-100)]"
       >
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(to top, rgba(28,25,23,${gradientOpacity}) 0%, rgba(28,25,23,0) 100%)`,
-            opacity: vignetteOpacity,
-            ...transitionStyle,
-          }}
-        />
-      </motion.div>
-    </div>
+        <span aria-hidden className="text-[0.95rem] opacity-70">←</span>
+        {backlinkLabel}
+      </a>
+
+      <div className="relative z-[1] mx-auto max-w-[880px]">
+        {/* Italic eyebrow with hairlines */}
+        <div className="mb-9 inline-flex items-center gap-4 font-display text-[1.05rem] italic text-[var(--stone-700)] dark:text-[var(--stone-200)]">
+          <span aria-hidden className="h-px w-9 bg-[var(--warmth)] opacity-55" />
+          {eyebrow}
+          <span aria-hidden className="h-px w-9 bg-[var(--warmth)] opacity-55" />
+        </div>
+
+        {/* Title — italic line stacked on uppercase line */}
+        <div className="mb-7 leading-none">
+          <span
+            className="block font-display text-[clamp(2.2rem,4.2vw,3.4rem)] italic font-normal mb-3.5 tracking-[-0.005em] text-[var(--stone-900)] dark:text-[var(--stone-100)]"
+            style={{ fontFeatureSettings: '"dlig" on, "liga" on' }}
+          >
+            {italLine}
+          </span>
+          <span
+            className="block font-display text-[clamp(4rem,9.5vw,8rem)] font-semibold uppercase tracking-[-0.012em] leading-[0.95] text-[var(--stone-900)] dark:text-[var(--stone-50)]"
+            style={{ fontFeatureSettings: '"case" on, "dlig" on, "liga" on, "lnum" on' }}
+          >
+            {displayLine}
+          </span>
+        </div>
+
+        {/* Italic subtitle */}
+        {subtitle && (
+          <p className="mb-6 mt-7 font-body text-[1.1rem] italic text-[var(--stone-700)] dark:text-[var(--stone-200)]">
+            {subtitle}
+          </p>
+        )}
+
+        {/* Byline (Geist uppercase letterspaced) */}
+        <p className="mb-11 text-[0.78rem] uppercase tracking-[0.08em] text-[var(--stone-500)] dark:text-[var(--stone-400)]">
+          by {byline}
+          <span
+            aria-hidden
+            className="mx-3.5 inline-block h-[3px] w-[3px] rounded-full bg-[var(--stone-500)] align-middle opacity-60"
+          />
+          {date}
+        </p>
+
+        {/* Hairline rule */}
+        <div className="mx-auto mb-9 h-px w-14 bg-[var(--stone-900)] opacity-[0.32] dark:bg-[var(--stone-100)] dark:opacity-50" />
+
+        {/* Tag chips */}
+        {tags.length > 0 && (
+          <div className="mb-9 inline-flex items-center gap-2">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-[rgba(107,128,96,0.18)] bg-[rgba(107,128,96,0.08)] px-3.5 py-[5px] text-[0.66rem] font-medium uppercase tracking-[0.18em] text-[var(--sage-700)] dark:border-[rgba(168,184,160,0.25)] dark:bg-[rgba(168,184,160,0.10)] dark:text-[var(--sage-300)]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Chrome cluster */}
+        {chrome && <div className="relative z-[1]">{chrome}</div>}
+      </div>
+    </header>
   );
 }

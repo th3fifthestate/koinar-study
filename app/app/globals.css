@@ -119,6 +119,10 @@
   --bed-toc:    var(--stone-100);           /* TOC chip — one shade darker than page */
   --bed-toc-rule: var(--stone-200);         /* TOC right-border separator */
 
+  /* Editorial hero bg — page bg in each mode (NOT bed-cream, which is
+     the inversion section in dark). */
+  --hero-bg:    var(--bed-cream);
+
   /* Accents that flip per mode */
   --reader-accent:        var(--sage-500);  /* H3 hairline, scripture left-border, active TOC dot */
   --reader-accent-deep:   var(--sage-700);  /* drop cap, Greek glosses */
@@ -134,6 +138,9 @@
 
   --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
   --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */
+
+  /* Editorial hero bg — bed-ink is the page bg in dark. */
+  --hero-bg:    var(--bed-ink);
 
   /* Accents flipped */
   --reader-accent:        var(--warmth);
