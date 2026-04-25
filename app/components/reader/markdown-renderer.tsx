@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, type ReactNode, type ComponentType } from 'react';
+import { createContext, useContext, useMemo, useRef, type ReactNode, type ComponentType } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { StudyImage } from '@/lib/db/types';
@@ -25,6 +25,14 @@ const FONT_SIZE_CLASSES: Record<FontSize, string> = {
   medium: 'text-lg',
   large: 'text-xl',
 };
+
+// ─── Blockquote nesting context ───────────────────────────────────────────────
+// True when the current subtree is rendered inside a <blockquote>. Used to
+// skip entity-annotation wrapping in scripture blockquotes — the LLM is told
+// (system-prompt rule 5) not to annotate references inside blockquotes, and
+// the global surface-form regex would otherwise spread prose annotations into
+// blockquote text (the "Simon Peter" appearing as "Simon the tanner" bug).
+const InsideBlockquoteContext = createContext(false);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -267,7 +275,11 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         );
       },
       blockquote: ({ children }: MdProps) => (
-        <ScriptureBlock>{children}</ScriptureBlock>
+        <ScriptureBlock>
+          <InsideBlockquoteContext.Provider value={true}>
+            {children}
+          </InsideBlockquoteContext.Provider>
+        </ScriptureBlock>
       ),
       p: ({ children, node, ...props }: MdProps) => {
         const text = extractTextContent(children);
@@ -275,10 +287,16 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
           return <HistoricalContext>{children}</HistoricalContext>;
         }
 
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const insideBlockquote = useContext(InsideBlockquoteContext);
+
         let processedChildren = children;
 
-        // Apply entity annotations
-        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+        // Apply entity annotations \u2014 but NOT inside blockquotes. The LLM is
+        // told (system-prompt rule 5) not to annotate references inside
+        // scripture blockquotes, and the global surface-form regex would
+        // otherwise spread prose annotations into blockquote text.
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex && !insideBlockquote) {
           processedChildren = wrapEntityTermsInChildren(
             processedChildren,
             entityCtx.annotationRegex,
@@ -308,8 +326,10 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         <ol className="mb-4 ml-6 list-decimal space-y-1" {...props}>{children}</ol>
       ),
       li: ({ children, node, ...props }: MdProps) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const insideBlockquote = useContext(InsideBlockquoteContext);
         let processedChildren = children;
-        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex && !insideBlockquote) {
           processedChildren = wrapEntityTermsInChildren(
             processedChildren,
             entityCtx.annotationRegex,
@@ -345,8 +365,10 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         </th>
       ),
       td: ({ children, node, ...props }: MdProps) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const insideBlockquote = useContext(InsideBlockquoteContext);
         let processedChildren = children;
-        if (entityCtx?.showAnnotations && entityCtx.annotationRegex) {
+        if (entityCtx?.showAnnotations && entityCtx.annotationRegex && !insideBlockquote) {
           processedChildren = wrapEntityTermsInChildren(
             processedChildren,
             entityCtx.annotationRegex,
