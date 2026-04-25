@@ -197,7 +197,7 @@ describe('POST /api/study/generate', () => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Psalm 1 — the two paths: a short study',
-        format: 'simple',
+        format: 'quick',
         translation: 'bsb',
       }),
     })
@@ -244,6 +244,46 @@ describe('POST /api/study/generate', () => {
     expect(genMeta.tools_called).toContain('query_verse')
     expect(genMeta.model).toBe('claude-opus-4-6')
   })
+
+  // -----------------------------------------------------------------
+  // Phase 1 persistence: study_type + source_prompt + audit queries
+  // -----------------------------------------------------------------
+  // These fields land in the studies table (study_type, source_prompt) and
+  // in generation_metadata.queries. The fixture SSE deliberately omits the
+  // json-metadata and verification-audit fences so this test exercises the
+  // *fallback* branches: missing study_type → 'topical', missing audit fence
+  // → empty array. A separate snapshot test in CI exercises the full-fence
+  // path against a captured live response.
+  it('persists study_type (defaulting to topical), source_prompt, and an empty queries array when fences are absent', async () => {
+    const req = new Request('http://localhost/api/study/generate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'Psalm 1 — the two paths: a short study',
+        format: 'standard',
+        translation: 'bsb',
+      }),
+    })
+    await POST(req).then((r) => r.text())
+
+    expect(vi.mocked(createStudy).mock.calls.length).toBeGreaterThan(0)
+    const savedStudy = vi.mocked(createStudy).mock.calls[0][0]
+
+    // Column-level fields land on the row directly, not in metadata JSON.
+    expect(savedStudy.study_type).toBe('topical')
+    expect(savedStudy.source_prompt).toContain('Psalm 1')
+
+    // generation_metadata should also carry the duplicate study_type (so the
+    // generation-time value is preserved even if an admin re-classifies the
+    // row later) and an empty queries array (the fixture omits the fence).
+    const genMeta = JSON.parse(savedStudy.generation_metadata!) as {
+      study_type?: string
+      queries?: unknown[]
+    }
+    expect(genMeta.study_type).toBe('topical')
+    expect(Array.isArray(genMeta.queries)).toBe(true)
+    expect(genMeta.queries).toHaveLength(0)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -280,7 +320,7 @@ describe('POST /api/study/generate — admin step-up gate', () => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Psalm 1 — the two paths: a short study',
-        format: 'simple',
+        format: 'quick',
         translation: 'bsb',
       }),
     })
@@ -305,7 +345,7 @@ describe('POST /api/study/generate — admin step-up gate', () => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Psalm 1 — the two paths: a short study',
-        format: 'simple',
+        format: 'quick',
         translation: 'bsb',
       }),
     })
@@ -332,7 +372,7 @@ describe('POST /api/study/generate — admin step-up gate', () => {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Psalm 1 — the two paths: a short study',
-        format: 'simple',
+        format: 'quick',
         translation: 'bsb',
       }),
     })
