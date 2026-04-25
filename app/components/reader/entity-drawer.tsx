@@ -332,14 +332,19 @@ function DrawerEntityContent({
               const relatedId =
                 rel.from_entity_id === entityId ? rel.to_entity_id : rel.from_entity_id;
               const relatedEntity = entityMap.get(relatedId);
+              // `displayed_label` flips to the inverse for asymmetric types
+              // (parent_of ↔ child_of, located_in ↔ contains, etc.) when the
+              // current entity is on the `to` side of the edge. See
+              // lib/entities/relationship-direction.ts.
+              const label = rel.displayed_label ?? rel.relationship_label;
               return (
                 <RelatedEntityCard
                   key={rel.id}
                   name={rel.related_entity_name}
                   entityType={rel.related_entity_type}
-                  relationshipLabel={rel.relationship_label}
+                  relationshipLabel={label}
                   quickGlance={relatedEntity?.quick_glance}
-                  onClick={() => navigateToEntity(relatedId, rel.relationship_label)}
+                  onClick={() => navigateToEntity(relatedId, label)}
                 />
               );
             })}

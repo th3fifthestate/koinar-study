@@ -8,29 +8,79 @@ import type {
   SavedBranchMap,
 } from '../types';
 import { getDb } from '../connection';
+import { labelForSide } from '../../entities/relationship-direction';
 
 // ==============================
 // READ
 // ==============================
 
+type FetchedRelationship = EntityRelationship & {
+  related_entity_name: string;
+  related_entity_type: string;
+  displayed_label: string;
+};
+
 function fetchRelationships(
   db: ReturnType<typeof getDb>,
   entityId: string
-): (EntityRelationship & { related_entity_name: string; related_entity_type: string })[] {
-  return db
+): FetchedRelationship[] {
+  // Primary pass: every edge where the current entity is the SUBJECT (from
+  // side). After the reciprocal backfill every registered asymmetric /
+  // symmetric pair has a `from` row on each side, so this query alone covers
+  // ~99.97% of drawer rows without duplicates.
+  //
+  // Fallback pass: pick up any edge where the entity is on the `to` side but
+  // no matching reciprocal exists. This catches the handful of `no_inverse`
+  // types (descended_from, flows_into, during_period) and any new type that's
+  // been added since the last reciprocal-backfill run. These get a
+  // direction-aware `displayed_label` so the card still reads correctly.
+  const fromRows = db
     .prepare(
       `SELECT er.*,
-        CASE WHEN er.from_entity_id = ? THEN e_to.canonical_name ELSE e_from.canonical_name END AS related_entity_name,
-        CASE WHEN er.from_entity_id = ? THEN e_to.entity_type   ELSE e_from.entity_type   END AS related_entity_type
-       FROM entity_relationships er
-       LEFT JOIN entities e_to   ON er.to_entity_id   = e_to.id
-       LEFT JOIN entities e_from ON er.from_entity_id = e_from.id
-       WHERE er.from_entity_id = ? OR er.to_entity_id = ?`
+              e_to.canonical_name AS related_entity_name,
+              e_to.entity_type    AS related_entity_type
+         FROM entity_relationships er
+         LEFT JOIN entities e_to ON er.to_entity_id = e_to.id
+        WHERE er.from_entity_id = ?`
     )
-    .all(entityId, entityId, entityId, entityId) as (EntityRelationship & {
+    .all(entityId) as (EntityRelationship & {
       related_entity_name: string;
       related_entity_type: string;
     })[];
+
+  const orphanToRows = db
+    .prepare(
+      `SELECT er.*,
+              e_from.canonical_name AS related_entity_name,
+              e_from.entity_type    AS related_entity_type
+         FROM entity_relationships er
+         LEFT JOIN entities e_from ON er.from_entity_id = e_from.id
+        WHERE er.to_entity_id = ?
+          AND NOT EXISTS (
+            SELECT 1 FROM entity_relationships er2
+             WHERE er2.from_entity_id = er.to_entity_id
+               AND er2.to_entity_id   = er.from_entity_id
+          )`
+    )
+    .all(entityId) as (EntityRelationship & {
+      related_entity_name: string;
+      related_entity_type: string;
+    })[];
+
+  const out: FetchedRelationship[] = [];
+  for (const r of fromRows) {
+    out.push({
+      ...r,
+      displayed_label: labelForSide(r.relationship_type, r.relationship_label, 'from'),
+    });
+  }
+  for (const r of orphanToRows) {
+    out.push({
+      ...r,
+      displayed_label: labelForSide(r.relationship_type, r.relationship_label, 'to'),
+    });
+  }
+  return out;
 }
 
 export function getEntityDetail(entityId: string): EntityDetail | null {

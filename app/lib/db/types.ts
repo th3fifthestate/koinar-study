@@ -334,7 +334,17 @@ export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_conte
   geographic_context: { lat: number; lon: number; region: string } | null;
   verse_refs: EntityVerseRef[];
   citations: EntityCitation[];
-  relationships: (EntityRelationship & { related_entity_name: string; related_entity_type: string })[];
+  relationships: (EntityRelationship & {
+    related_entity_name: string;
+    related_entity_type: string;
+    /**
+     * Direction-aware label. Equal to `relationship_label` when the current
+     * entity is on the `from` side of the edge; inverted (via the
+     * relationship-direction registry) when the current entity is on the
+     * `to` side. Always use this for rendering instead of `relationship_label`.
+     */
+    displayed_label: string;
+  })[];
 }
 
 // ============================================================
