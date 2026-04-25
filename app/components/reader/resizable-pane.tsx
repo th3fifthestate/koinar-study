@@ -101,11 +101,12 @@ export function ResizablePane({
 }: ResizablePaneProps) {
   const mobile = useIsMobile();
   const [dragging, setDragging] = React.useState(false);
-  const [maxWidth, setMaxWidth] = React.useState(() =>
-    typeof window !== 'undefined'
-      ? Math.round(window.innerWidth * MAX_WIDTH_RATIO)
-      : 960
-  );
+  // SSR-safe constant initial value. The useEffect below syncs to the actual
+  // viewport on first client render. Initializing from window.innerWidth here
+  // would cause a hydration mismatch between the SSR HTML (960) and the first
+  // client render (computed from window.innerWidth), since the markup is
+  // emitted server-side before the client knows the viewport size.
+  const [maxWidth, setMaxWidth] = React.useState(960);
   const paneRef = React.useRef<HTMLDivElement>(null);
   const handleRef = React.useRef<HTMLDivElement>(null);
 

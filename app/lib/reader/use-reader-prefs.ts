@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 const PREFS_KEY = 'koinar:reader:prefs';
 const LEGACY_FONT_SIZE_KEY = 'koinar:reader:fontSize';
+const PREFS_UPDATE_EVENT = 'koinar:reader-prefs-update';
 
 export interface ReaderPrefs {
   fontSize: 'small' | 'medium' | 'large';
@@ -63,6 +64,16 @@ function writePrefsToStorage(prefs: ReaderPrefs, onError: (err: unknown) => void
   }
 }
 
+/**
+ * Broadcasts a same-tab prefs update so every other useReaderPrefs() consumer
+ * in the same window can sync its in-memory state. The browser's `storage`
+ * event only fires for OTHER tabs — same-tab writes need this custom event.
+ */
+function broadcastPrefsUpdate(prefs: ReaderPrefs): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent<ReaderPrefs>(PREFS_UPDATE_EVENT, { detail: prefs }));
+}
+
 export function useReaderPrefs(): {
   prefs: ReaderPrefs;
   setFontSize: (size: 'small' | 'medium' | 'large') => void;
@@ -116,10 +127,25 @@ export function useReaderPrefs(): {
     return () => window.removeEventListener('storage', handleStorageEvent);
   }, []);
 
+  // Same-tab sync: listen for our custom event broadcast by setters in this
+  // window. Without this, multiple useReaderPrefs() consumers in the same
+  // tab would each hold their own state and only the calling instance would
+  // see the update — which is what caused the mode toggle to require a
+  // refresh before ReaderSurface picked up the new data-mode.
+  useEffect(() => {
+    function handlePrefsUpdate(e: Event) {
+      const detail = (e as CustomEvent<ReaderPrefs>).detail;
+      if (detail) setPrefs(detail);
+    }
+    window.addEventListener(PREFS_UPDATE_EVENT, handlePrefsUpdate);
+    return () => window.removeEventListener(PREFS_UPDATE_EVENT, handlePrefsUpdate);
+  }, []);
+
   const setFontSize = useCallback((size: 'small' | 'medium' | 'large') => {
     setPrefs((prev) => {
       const next = { ...prev, fontSize: size };
       writePrefsToStorage(next, handleStorageError);
+      broadcastPrefsUpdate(next);
       return next;
     });
   }, [handleStorageError]);
@@ -128,6 +154,7 @@ export function useReaderPrefs(): {
     setPrefs((prev) => {
       const next = { ...prev, mode };
       writePrefsToStorage(next, handleStorageError);
+      broadcastPrefsUpdate(next);
       return next;
     });
   }, [handleStorageError]);
@@ -136,6 +163,7 @@ export function useReaderPrefs(): {
     setPrefs((prev) => {
       const next = { ...prev, annotationFullContextHeight: px };
       writePrefsToStorage(next, handleStorageError);
+      broadcastPrefsUpdate(next);
       return next;
     });
   }, [handleStorageError]);
@@ -147,6 +175,7 @@ export function useReaderPrefs(): {
       // ignore
     }
     setPrefs(DEFAULT_PREFS);
+    broadcastPrefsUpdate(DEFAULT_PREFS);
   }, []);
 
   return { prefs, setFontSize, setMode, setAnnotationFullContextHeight, resetPrefs };
