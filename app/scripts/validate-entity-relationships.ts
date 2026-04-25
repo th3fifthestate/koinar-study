@@ -32,6 +32,16 @@
  *                            list in CHRONOLOGY_ORDER. Deletes the
  *                            chronologically-wrong direction of each pair.
  *                            Requires --commit.
+ *   --fix-family-on-non-person
+ *                            Delete `parent_of` / `child_of` / `sibling_of`
+ *                            edges where either endpoint is NOT of
+ *                            entity_type='person'. TIPNR / biblical_text
+ *                            source data applies family predicates to
+ *                            people-groups (tribes, cultures), producing
+ *                            duplicate cards in the drawer alongside the
+ *                            semantically-correct `subgroup_of` /
+ *                            `member_of` edges. No information is lost.
+ *                            Requires --commit.
  *   --dry-run                Print changes but do not commit. Default for
  *                            --fix is DRY. You must pass --commit to actually
  *                            write.
@@ -65,6 +75,8 @@ type RelRow = {
   source: string | null;
   from_name: string | null;
   to_name: string | null;
+  from_type: string | null;
+  to_type: string | null;
   from_exists: number;
   to_exists: number;
 };
@@ -118,9 +130,10 @@ const argv = new Set(process.argv.slice(2));
 const FIX_MISSING = argv.has('--fix-missing-inverses');
 const FIX_SELF_LOOPS = argv.has('--fix-self-loops');
 const FIX_CHRONOLOGY = argv.has('--fix-chronology');
+const FIX_FAMILY_ON_NON_PERSON = argv.has('--fix-family-on-non-person');
 const COMMIT = argv.has('--commit');
 const DRY_RUN = argv.has('--dry-run') ||
-  ((FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY) && !COMMIT);
+  ((FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON) && !COMMIT);
 
 /**
  * Canonical chronological order of biblical periods (earliest → latest).
@@ -174,6 +187,8 @@ function loadAllEdges(): RelRow[] {
               er.source,
               e_from.canonical_name AS from_name,
               e_to.canonical_name   AS to_name,
+              e_from.entity_type    AS from_type,
+              e_to.entity_type      AS to_type,
               CASE WHEN e_from.id IS NULL THEN 0 ELSE 1 END AS from_exists,
               CASE WHEN e_to.id   IS NULL THEN 0 ELSE 1 END AS to_exists
          FROM entity_relationships er
@@ -456,6 +471,59 @@ function fixChronologyContradictions(
   return n;
 }
 
+/**
+ * Delete `parent_of` / `child_of` / `sibling_of` edges where either endpoint
+ * is NOT of entity_type='person'. These come from TIPNR / biblical_text seed
+ * data applying family predicates to people-groups (tribes, cultures). They
+ * double-up with the semantically-correct `subgroup_of` / `member_of` /
+ * `includes` edges and show up as duplicate cards in the entity drawer.
+ *
+ * Operates on the raw edge list, not the report, because this sweep is
+ * orthogonal to the missing-inverse / contradiction analysis.
+ */
+function fixFamilyOnNonPerson(edges: RelRow[], commit: boolean): number {
+  const FAMILY_TYPES = new Set(['parent_of', 'child_of', 'sibling_of']);
+  const offenders = edges.filter(e =>
+    FAMILY_TYPES.has(e.relationship_type) &&
+    e.from_exists === 1 &&
+    e.to_exists === 1 &&
+    (e.from_type !== 'person' || e.to_type !== 'person')
+  );
+
+  if (offenders.length === 0) {
+    console.log('\nNo family-on-non-person edges to fix.\n');
+    return 0;
+  }
+
+  console.log(
+    `\n${commit ? 'DELETING' : 'DRY-RUN (would delete)'} ${offenders.length} family-type edges on non-person entities:`
+  );
+  // Group by type for a compact summary.
+  const byType: Record<string, number> = {};
+  for (const o of offenders) byType[o.relationship_type] = (byType[o.relationship_type] ?? 0) + 1;
+  for (const [t, n] of Object.entries(byType)) {
+    console.log(`  ${t.padEnd(12)} ${n}`);
+  }
+  console.log('');
+  for (const o of offenders) {
+    console.log(
+      `  · id=${o.id}  ${o.from_name ?? o.from_entity_id} [${o.from_type}] ${o.relationship_type} ${o.to_name ?? o.to_entity_id} [${o.to_type}]`
+    );
+  }
+
+  if (!commit) return offenders.length;
+  const db = getDb();
+  const stmt = db.prepare('DELETE FROM entity_relationships WHERE id = ?');
+  let n = 0;
+  db.transaction(() => {
+    for (const o of offenders) {
+      const r = stmt.run(o.id);
+      n += r.changes;
+    }
+  })();
+  return n;
+}
+
 function fixSelfLoops(report: ValidationReport, commit: boolean): number {
   const db = getDb();
   if (report.self_loops.length === 0) {
@@ -581,6 +649,9 @@ function main(): void {
   // IMPORTANT: chronology contradictions must be resolved BEFORE inserting
   // reciprocals, otherwise the backfill would happily insert succeeded_by
   // reciprocals for both directions and double the chronology damage.
+  //
+  // Family-on-non-person must also run BEFORE --fix-missing-inverses, so we
+  // never insert a reciprocal for an edge we're about to delete.
   if (FIX_CHRONOLOGY) {
     const deleted = fixChronologyContradictions(report, COMMIT);
     if (COMMIT) console.log(`\n✓ Deleted ${deleted} chronologically-wrong preceded_by rows.\n`);
@@ -591,17 +662,22 @@ function main(): void {
     if (COMMIT) console.log(`\n✓ Deleted ${deleted} self-loop rows.\n`);
     else console.log(`\n(dry-run) Would delete ${deleted}. Re-run with --commit.\n`);
   }
+  if (FIX_FAMILY_ON_NON_PERSON) {
+    const deleted = fixFamilyOnNonPerson(edges, COMMIT);
+    if (COMMIT) console.log(`\n✓ Deleted ${deleted} family-on-non-person rows.\n`);
+    else console.log(`\n(dry-run) Would delete ${deleted}. Re-run with --commit.\n`);
+  }
   if (FIX_MISSING) {
     const inserted = fixMissingInverses(report, COMMIT);
     if (COMMIT) console.log(`\n✓ Inserted ${inserted} reciprocal rows.\n`);
     else console.log(`\n(dry-run) Would insert ${inserted}. Re-run with --commit.\n`);
   }
-  if (!FIX_MISSING && !FIX_SELF_LOOPS && !FIX_CHRONOLOGY &&
+  if (!FIX_MISSING && !FIX_SELF_LOOPS && !FIX_CHRONOLOGY && !FIX_FAMILY_ON_NON_PERSON &&
       (report.totals.missing_inverses > 0 || report.totals.self_loops > 0 || report.totals.contradictions > 0)) {
-    console.log(`To fix, re-run with  --fix-chronology --fix-self-loops --fix-missing-inverses --commit`);
+    console.log(`To fix, re-run with  --fix-chronology --fix-self-loops --fix-family-on-non-person --fix-missing-inverses --commit`);
   }
 
-  if (DRY_RUN && (FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY)) {
+  if (DRY_RUN && (FIX_MISSING || FIX_SELF_LOOPS || FIX_CHRONOLOGY || FIX_FAMILY_ON_NON_PERSON)) {
     console.log('(DRY RUN — no writes performed. Add --commit to persist.)');
   }
 }
