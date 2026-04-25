@@ -6,7 +6,7 @@ interface DepthBarsProps {
   format: Format;
 }
 
-const DEPTHS: Record<Format, number> = { simple: 1, standard: 2, comprehensive: 3 };
+const DEPTHS: Record<Format, number> = { quick: 1, standard: 2, comprehensive: 3 };
 
 export function DepthBars({ format }: DepthBarsProps) {
   const count = DEPTHS[format];

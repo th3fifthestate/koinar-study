@@ -153,6 +153,7 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
             value={prompt}
             onChange={setPrompt}
             disabled={false}
+            format={format}
             error={promptError}
             autoFocus
           />
@@ -172,7 +173,7 @@ export function GenerateClient({ user: _user, entitlement }: GenerateClientProps
         <div className="mt-6 flex flex-col items-center gap-3">
           <button
             onClick={handleSubmit}
-            disabled={!canGenerate || prompt.trim().length < 10}
+            disabled={!canGenerate || prompt.trim().length < 5}
             aria-label="Begin a study"
             className="w-full md:w-auto bg-[var(--sage-500)] hover:bg-[var(--sage-700)] text-[var(--stone-50)] text-sm font-semibold tracking-[0.12em] uppercase px-8 py-3 rounded-md transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage-500)] disabled:opacity-40 disabled:cursor-not-allowed"
           >

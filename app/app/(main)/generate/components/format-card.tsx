@@ -21,23 +21,23 @@ const CARD_DATA: Record<
     costRange: string;
   }
 > = {
-  simple: {
-    name: 'Simple',
-    tagline: 'A brief devotional.',
-    body: 'Focused on the key contextual moves and one or two cross-references. ~500–1,500 words.',
-    costRange: 'Approx. $0.10–0.20',
+  quick: {
+    name: 'Quick',
+    tagline: 'Ask a question. Get the scriptures that speak to it.',
+    body: 'A scripture-finder, not a study. Surfaces 3–6 verses and 1–3 narratives that address your question, each grounded in the full seven-step research protocol. No counsel or personal application — just "read these in context." ~600–1,200 words.',
+    costRange: 'Approx. $0.40–0.80',
   },
   standard: {
     name: 'Standard',
     tagline: 'Thorough with room to breathe.',
-    body: 'Full context for each passage cited, two to three cross-references per point, original-language notes on key terms. ~1,500–3,000 words.',
-    costRange: 'Approx. $0.30–0.60',
+    body: 'Rigid skeleton: Summary, four-part scripture references, four to eight body sections (each with text, historical context, original-language word study, key insight, and cross-references), key themes, OT/NT echoes, and conclusion. ~2,500–3,000 words.',
+    costRange: 'Approx. $0.40–0.70',
   },
   comprehensive: {
     name: 'Comprehensive',
     tagline: 'The seven-step protocol in full.',
-    body: 'Full context, multiple cross-references, original-language analysis for every key term, historical setting where named sources support it. ~3,000–5,000 words.',
-    costRange: 'Approx. $0.70–1.50',
+    body: 'Standard skeleton plus book/domain context, preceding context, verse-by-verse subdivisions inside every body section, following context, and a legacy-and-echoes table tracing the subject across the canon. ~4,500–6,000 words.',
+    costRange: 'Approx. $1.00–1.80',
   },
 };
 

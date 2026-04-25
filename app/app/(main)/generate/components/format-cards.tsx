@@ -10,7 +10,7 @@ interface FormatCardsProps {
   disabled: boolean;
 }
 
-const FORMATS: Format[] = ['simple', 'standard', 'comprehensive'];
+const FORMATS: Format[] = ['quick', 'standard', 'comprehensive'];
 
 export function FormatCards({ selected, onSelect, entitlement, disabled }: FormatCardsProps) {
   return (

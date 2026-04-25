@@ -1,4 +1,4 @@
-export type Format = 'simple' | 'standard' | 'comprehensive';
+export type Format = 'quick' | 'standard' | 'comprehensive';
 export type Translation = 'bsb'; // only BSB on /generate
 
 export type GiftCredits = Partial<Record<Format, number>>;

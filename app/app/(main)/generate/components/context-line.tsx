@@ -9,7 +9,7 @@ interface ContextLineProps {
 }
 
 const FORMAT_LABELS: Record<Format, string> = {
-  simple: 'Simple',
+  quick: 'Quick',
   standard: 'Standard',
   comprehensive: 'Comprehensive',
 };

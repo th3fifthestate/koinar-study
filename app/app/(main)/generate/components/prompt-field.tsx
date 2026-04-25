@@ -2,20 +2,22 @@
 
 import { useState } from 'react';
 import { usePlaceholderRotation } from '../lib/placeholder-rotation';
+import type { Format } from '../types';
 
 interface PromptFieldProps {
   value: string;
   onChange: (v: string) => void;
   disabled: boolean;
+  format: Format;
   error?: string;
   autoFocus?: boolean;
 }
 
-export function PromptField({ value, onChange, disabled, error, autoFocus }: PromptFieldProps) {
+export function PromptField({ value, onChange, disabled, format, error, autoFocus }: PromptFieldProps) {
   const [focused, setFocused] = useState(false);
-  const placeholder = usePlaceholderRotation(!value);
+  const placeholder = usePlaceholderRotation(!value, format);
 
-  const isCharMeterAlert = value.length < 10 || value.length > 1900;
+  const isCharMeterAlert = value.length < 5 || value.length > 1900;
 
   return (
     <div className="flex flex-col gap-2">
@@ -25,7 +27,7 @@ export function PromptField({ value, onChange, disabled, error, autoFocus }: Pro
         className="text-[var(--stone-700)] uppercase tracking-[0.18em] font-semibold"
         style={{ fontSize: '0.7rem' }}
       >
-        A verse, a passage, or a question
+        {format === 'quick' ? 'Your question' : 'A verse, a passage, or a question'}
       </label>
 
       {/* Textarea */}
@@ -67,7 +69,9 @@ export function PromptField({ value, onChange, disabled, error, autoFocus }: Pro
         className="text-[var(--stone-700)] italic"
         style={{ fontSize: '1rem' }}
       >
-        A verse reference or a question. 10–2,000 characters.
+        {format === 'quick'
+          ? 'A question you want Scripture to address. 5\u20132,000 characters.'
+          : 'A verse reference or a question. 5\u20132,000 characters.'}
       </p>
 
       {/* Inline validation error */}

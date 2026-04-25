@@ -23,7 +23,7 @@ export function RigorPanel() {
         </h2>
         <p className="font-body text-[var(--stone-700)] text-base mb-5 leading-relaxed">
           Every verse in a Koinar study goes through the same seven-step protocol. This is why a
-          Simple study is honest and a Comprehensive one is thorough — the checks do not change,
+          Quick answer is honest and a Comprehensive study is thorough — the checks do not change,
           only how much of the work shows on the page.
         </p>
         <ol className="space-y-2">

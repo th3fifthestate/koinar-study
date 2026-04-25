@@ -209,13 +209,13 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
 
   const submit = useCallback(async (prompt: string, format: Format) => {
     // Client-side validation
-    if (prompt.trim().length < 10) {
+    if (prompt.trim().length < 5) {
       dispatch({
         type: 'validate-fail',
         prompt,
         format,
         entitlement: entitlementRef.current,
-        errors: { prompt: 'A little more to work with — at least ten characters.' },
+        errors: { prompt: 'A little more to work with — at least five characters.' },
       });
       return;
     }
@@ -302,7 +302,7 @@ export function useGenerateStream(entitlement: Entitlement): UseGenerateStreamRe
 
       // Emit tool-call phrases on a timed schedule to give the UI something to show
       const phraseInterval =
-        format === 'simple' ? 4_500 : format === 'standard' ? 5_000 : 5_500;
+        format === 'quick' ? 4_500 : format === 'standard' ? 5_000 : 5_500;
 
       const toolCallTimer = setInterval(() => {
         const phrase = GENERIC_PHRASES[phraseIndexRef.current % GENERIC_PHRASES.length];

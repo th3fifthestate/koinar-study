@@ -12,13 +12,13 @@ interface CreditsBannerProps {
 }
 
 const FORMAT_LABELS: Record<Format, string> = {
-  simple: 'Simple',
+  quick: 'Quick',
   standard: 'Standard',
   comprehensive: 'Comprehensive',
 };
 
 // Deterministic column order so the banner reads the same way every render.
-const FORMAT_ORDER: Format[] = ['simple', 'standard', 'comprehensive'];
+const FORMAT_ORDER: Format[] = ['quick', 'standard', 'comprehensive'];
 
 export function CreditsBanner({ entitlement }: CreditsBannerProps) {
   if (entitlement.kind !== 'gift') return null;
