@@ -47,11 +47,21 @@ export function StudyHero({
   date,
   tags = [],
   chrome,
-  backlinkHref = '/library',
+  backlinkHref = '/',
   backlinkLabel = 'Back to Library',
 }: StudyHeroProps) {
   const { prefs } = useReaderPrefs();
   const mode = prefs.mode ?? 'light';
+
+  // Length-aware display sizing — short titles ("PETER") get the dramatic
+  // 9.5vw treatment; long question-titles (Quick studies) scale down so
+  // they don't fill the viewport vertically.
+  const len = displayLine.length;
+  const displaySize =
+    len <= 12  ? 'clamp(4rem, 9.5vw, 8rem)'   // "PETER", "MOSES"
+    : len <= 24  ? 'clamp(3rem, 6.5vw, 5.5rem)' // "JOHN THE BAPTIST"
+    : len <= 48  ? 'clamp(2.2rem, 4.2vw, 3.6rem)' // "Why Circumcision Was Required"
+    : 'clamp(1.8rem, 3.2vw, 2.8rem)';            // very long Quick questions
 
   return (
     <header className="relative w-full overflow-hidden bg-[var(--hero-bg)] px-8 pb-32 pt-44 text-center">
@@ -96,8 +106,11 @@ export function StudyHero({
             {italLine}
           </span>
           <span
-            className="block font-display text-[clamp(4rem,9.5vw,8rem)] font-semibold uppercase tracking-[-0.012em] leading-[0.95] text-[var(--stone-900)] dark:text-[var(--stone-50)]"
-            style={{ fontFeatureSettings: '"case" on, "dlig" on, "liga" on, "lnum" on' }}
+            className="block font-display font-semibold uppercase tracking-[-0.012em] leading-[0.95] text-[var(--stone-900)] dark:text-[var(--stone-50)]"
+            style={{
+              fontSize: displaySize,
+              fontFeatureSettings: '"case" on, "dlig" on, "liga" on, "lnum" on',
+            }}
           >
             {displayLine}
           </span>
