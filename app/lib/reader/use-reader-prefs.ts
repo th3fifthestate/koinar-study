@@ -7,13 +7,14 @@ const LEGACY_FONT_SIZE_KEY = 'koinar:reader:fontSize';
 
 export interface ReaderPrefs {
   fontSize: 'small' | 'medium' | 'large';
-  mode?: 'dark' | 'light' | 'sepia'; // 28c will write this; 28b leaves undefined
+  mode?: 'dark' | 'light'; // light is default when undefined
   annotationFullContextHeight?: number; // px integer, H4 spec
 }
 
 const DEFAULT_PREFS: ReaderPrefs = { fontSize: 'medium' };
 
 const VALID_FONT_SIZES = new Set<string>(['small', 'medium', 'large']);
+const VALID_MODES = new Set<string>(['dark', 'light']);
 
 function readPrefsFromStorage(onError: (err: unknown) => void): ReaderPrefs | null {
   try {
@@ -42,8 +43,12 @@ function readPrefsFromStorage(onError: (err: unknown) => void): ReaderPrefs | nu
       parsed.fontSize && VALID_FONT_SIZES.has(parsed.fontSize)
         ? parsed.fontSize
         : DEFAULT_PREFS.fontSize;
+    const mode =
+      parsed.mode && VALID_MODES.has(parsed.mode)
+        ? (parsed.mode as ReaderPrefs['mode'])
+        : undefined;
 
-    return { ...DEFAULT_PREFS, ...parsed, fontSize };
+    return { ...DEFAULT_PREFS, ...parsed, fontSize, mode };
   } catch (err) {
     onError(err);
     return null;
@@ -61,6 +66,7 @@ function writePrefsToStorage(prefs: ReaderPrefs, onError: (err: unknown) => void
 export function useReaderPrefs(): {
   prefs: ReaderPrefs;
   setFontSize: (size: 'small' | 'medium' | 'large') => void;
+  setMode: (mode: 'dark' | 'light') => void;
   setAnnotationFullContextHeight: (px: number) => void;
   resetPrefs: () => void;
 } {
@@ -96,7 +102,11 @@ export function useReaderPrefs(): {
           parsed.fontSize && VALID_FONT_SIZES.has(parsed.fontSize)
             ? parsed.fontSize
             : DEFAULT_PREFS.fontSize;
-        setPrefs({ ...DEFAULT_PREFS, ...parsed, fontSize });
+        const mode =
+          parsed.mode && VALID_MODES.has(parsed.mode)
+            ? (parsed.mode as ReaderPrefs['mode'])
+            : undefined;
+        setPrefs({ ...DEFAULT_PREFS, ...parsed, fontSize, mode });
       } catch {
         // Malformed value from another tab — ignore.
       }
@@ -109,6 +119,14 @@ export function useReaderPrefs(): {
   const setFontSize = useCallback((size: 'small' | 'medium' | 'large') => {
     setPrefs((prev) => {
       const next = { ...prev, fontSize: size };
+      writePrefsToStorage(next, handleStorageError);
+      return next;
+    });
+  }, [handleStorageError]);
+
+  const setMode = useCallback((mode: 'dark' | 'light') => {
+    setPrefs((prev) => {
+      const next = { ...prev, mode };
       writePrefsToStorage(next, handleStorageError);
       return next;
     });
@@ -131,5 +149,5 @@ export function useReaderPrefs(): {
     setPrefs(DEFAULT_PREFS);
   }, []);
 
-  return { prefs, setFontSize, setAnnotationFullContextHeight, resetPrefs };
+  return { prefs, setFontSize, setMode, setAnnotationFullContextHeight, resetPrefs };
 }
