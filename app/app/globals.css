@@ -580,3 +580,18 @@ body {
 [data-mode="dark"] [data-toc-active="true"] {
   box-shadow: 0 0 0 5px rgba(196, 154, 108, 0.15) !important;
 }
+
+/* ── Mode-flip transitions ──
+ * When [data-mode] flips light↔dark, every reader element consuming the
+ * bed-* / --reader-accent* CSS variables would snap instantly. Apply a
+ * smooth 500ms transition to the reader subtree so the palette eases in.
+ * Scoped to the reader so the rest of the app stays unaffected.
+ */
+[data-reader-surface],
+[data-reader-surface] [data-bed],
+[data-reader-surface] header,
+[data-reader-surface] aside,
+[data-reader-surface] blockquote,
+[data-reader-surface] .historical-context {
+  transition: background-color 500ms ease, color 500ms ease, border-color 500ms ease;
+}
