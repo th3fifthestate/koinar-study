@@ -470,3 +470,67 @@ body {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+/* ── Editorial bullet list inside the Historical Context section
+ *    (and any list the renderer tags with .historical-context). The
+ *    renderer applies the class to ULs that follow an H3 whose text is
+ *    "Historical Context". Outside-source items get data-outside="true"
+ *    when their first text node starts with ⛰️. ── */
+
+.historical-context ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 32px;
+}
+
+.historical-context li {
+  margin-bottom: 14px;
+  padding-left: 32px;
+  position: relative;
+  color: var(--stone-900);
+  line-height: 1.7;
+  font-size: 1.0125rem;
+}
+[data-mode="dark"] .historical-context li {
+  color: var(--stone-100);
+}
+
+.historical-context li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 18px;
+  height: 1px;
+  background: var(--stone-500);
+  opacity: 0.5;
+}
+[data-mode="dark"] .historical-context li::before {
+  background: var(--stone-300);
+}
+
+.historical-context li strong {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--stone-700);
+  font-weight: 600;
+  margin-right: 10px;
+}
+[data-mode="dark"] .historical-context li strong {
+  color: var(--stone-200);
+}
+
+/* Outside-source items: warmth mountain icon replaces the hairline. */
+.historical-context li[data-outside="true"]::before {
+  content: '⛰';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  font-size: 0.92rem;
+  color: var(--warmth);
+  opacity: 1;
+}
