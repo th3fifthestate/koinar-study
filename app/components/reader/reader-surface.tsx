@@ -1,129 +1,31 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
-import { bucketForHour, type TodBucket } from '@/lib/home/tod-bucket';
-import { getReaderPalette } from '@/lib/reader/reader-tones';
-
-/**
- * Paper grain — fractal-noise SVG baked into a data URI. Same texture
- * vocabulary as the home library band so the surfaces feel related.
- */
-// Light-mode grain: dark specks baked into ivory via multiply.
-const GRAIN_SVG_LIGHT =
-  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.36  0 0 0 0 0.33  0 0 0 0 0.29  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/></svg>";
-
-// Dark-mode grain: warm highlights baked into walnut via overlay/screen so
-// fiber actually surfaces against near-black paper.
-const GRAIN_SVG_DARK =
-  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.82  0 0 0 0 0.72  0 0 0 0 0.56  0 0 0 0.65 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>";
+import { type ReactNode } from 'react';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
 
 interface ReaderSurfaceProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
- * Wraps the reader in a TOD-aware, tonal paper surface with grain and
- * subtle radial washes. Exposes CSS variables (`--reader-*`) that
- * descendants (markdown, TOC, chrome) can consume for ink, rules, and
- * accent colors — giving the reader a cohesive paper voice without
- * hard-coding per-component colors.
+ * Applies the reader's data-mode attribute (light|dark) to a wrapping div.
+ * Bed-color CSS variables and accent variables live in globals.css under
+ * [data-mode="light"] / [data-mode="dark"] selectors.
  *
- * Hydrates on client to read the current hour + color scheme, then
- * updates CSS vars. Defaults to `evening` + light to avoid SSR flash.
+ * Default to light on first paint to avoid SSR flash; persisted choice
+ * comes through after hydration via useReaderPrefs.
  */
 export function ReaderSurface({ children }: ReaderSurfaceProps) {
-  const [bucket, setBucket] = useState<TodBucket>('evening');
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setBucket(bucketForHour(new Date().getHours()));
-    const syncDark = () => {
-      const fromClass = document.documentElement.classList.contains('dark');
-      const fromMq = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDark(fromClass || fromMq);
-    };
-    syncDark();
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    mq.addEventListener('change', syncDark);
-    // Observe root class changes for manual dark-mode toggles.
-    const observer = new MutationObserver(syncDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    return () => {
-      mq.removeEventListener('change', syncDark);
-      observer.disconnect();
-    };
-  }, []);
-
-  const p = getReaderPalette(bucket, isDark ? 'dark' : 'light');
-
-  const surfaceStyle: CSSProperties = {
-    '--reader-paper': p.paper,
-    '--reader-paper-deep': p.paperDeep,
-    '--reader-ink': p.ink,
-    '--reader-ink-soft': p.inkSoft,
-    '--reader-display': p.display,
-    '--reader-rule': p.rule,
-    '--reader-accent-warmth': p.accentWarmth,
-    '--reader-accent-sage': p.accentSage,
-    '--reader-entity': p.entityUnderline,
-    backgroundColor: p.paper,
-    color: p.ink,
-  } as CSSProperties;
+  const { prefs } = useReaderPrefs();
+  const mode = prefs.mode ?? 'light';
 
   return (
     <div
       data-reader-surface
-      data-tod={bucket}
-      data-dark={isDark ? 'true' : 'false'}
-      className={`relative min-h-screen transition-colors duration-[1200ms] ${isDark ? 'dark' : ''}`}
-      style={surfaceStyle}
+      data-mode={mode}
+      className="reader-surface relative min-h-screen"
     >
-      {/* Tonal wash layer — warmth glow + sage drift sitting over the
-          paper. Uses `fixed` positioning so the washes stay locked to
-          the viewport as the reader scrolls, reading like ambient light
-          coming through a window rather than a single top-of-page
-          vignette. The grain (which IS tied to content) drifts across
-          it, preserving the sense of paper movement. Pointer-events
-          disabled; sits behind z-10 content. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 70vw 55vh at 14% 8%, ${p.washWarmth}, transparent 62%),
-            radial-gradient(ellipse 65vw 70vh at 92% 22%, ${p.washSage}, transparent 65%),
-            radial-gradient(ellipse 60vw 65vh at 30% 75%, ${p.washWarmth}, transparent 70%),
-            radial-gradient(ellipse 55vw 60vh at 85% 92%, ${p.washSage}, transparent 70%)
-          `,
-        }}
-      />
-
-      {/* Paper grain — tiled SVG noise. Fixed attachment so it behaves like
-          paper fiber regardless of scroll. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage: `url("${isDark ? GRAIN_SVG_DARK : GRAIN_SVG_LIGHT}")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '320px 320px',
-          opacity: isDark ? 0.38 : 0.55,
-          mixBlendMode: isDark ? 'overlay' : 'multiply',
-        }}
-      />
-
-      {/*
-        Content column. When the Entity pane is open on md+ screens,
-        `--reader-pane-width` is set on <html> and this wrapper shrinks
-        by that amount so the study text reflows instead of being covered.
-        Margin + conditional transition are defined as `.reader-content`
-        in `app/globals.css`; keeping them out of arbitrary Tailwind
-        selectors avoids brittle nesting.
-      */}
-      <div className="reader-content relative z-10">{children}</div>
+      <div className="reader-content relative">{children}</div>
     </div>
   );
 }
