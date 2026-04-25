@@ -111,6 +111,76 @@ const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
     candidates: ['PAUL_G3972G'],
     contextKeywords: {},
   },
+  // ── OT/NT clusters with very high homograph counts ────────────────────────
+  // Default to the most-likely-to-appear-in-a-study candidate; context
+  // keywords pin the secondary figure when their distinguishing terms appear
+  // in the surrounding 200-char window.
+  zechariah: {
+    // Default: post-exilic prophet (book of Zechariah). Famous secondary
+    // figures: NT priest father of John the Baptist; king of Israel; the
+    // Zechariah son of Jehoiada stoned in 2 Chronicles 24.
+    candidates: [
+      'ZECHARIAH_H2148v',  // post-exilic prophet — book of Zechariah
+      'ZECHARIAH_G2197H',  // priest, father of John the Baptist (Luke 1)
+      'ZECHARIAH_H2148P',  // king of Israel, son of Jeroboam II
+      'ZECHARIAH_H2148w',  // son of Jehoiada — stoned, 2 Chr 24
+    ],
+    contextKeywords: {
+      ZECHARIAH_H2148v: ['haggai', 'darius', 'temple', 'rebuild', 'post-exilic', 'returnees', 'visions', 'branch', 'book of zechariah'],
+      ZECHARIAH_G2197H: ['elizabeth', 'gabriel', 'priest', 'temple incense', 'mute', 'john the baptist', 'luke 1', 'abijah'],
+      ZECHARIAH_H2148P: ['jeroboam', 'shallum', 'king of israel', 'six months', '2 kings 14', 'jehu'],
+      ZECHARIAH_H2148w: ['jehoiada', 'joash', 'stoned', 'temple court', 'between the temple and the altar', '2 chronicles 24'],
+    },
+  },
+  jonathan: {
+    // Default: son of Saul (David's friend). The other Jonathans are obscure.
+    candidates: ['JONATHAN_H3083H'],
+    contextKeywords: {
+      JONATHAN_H3083H: ['saul', 'david', 'philistines', 'gilboa', 'mephibosheth', 'ahinoam', 'covenant', 'arrows', 'jashobeam'],
+    },
+  },
+  michael: {
+    // Default: archangel (Daniel 10/12, Jude 9, Rev 12). All other Michaels
+    // are genealogical Hebrew rows that rarely surface in study text.
+    candidates: ['MICHAEL_H4317Q'],
+    contextKeywords: {
+      MICHAEL_H4317Q: ['archangel', 'daniel', 'gabriel', 'prince', 'angelic', 'devil', 'body of moses', 'jude 1', 'revelation 12', 'dragon'],
+    },
+  },
+  joel: {
+    // Default: prophet of the book of Joel (son of Pethuel).
+    candidates: ['JOEL_H3100T'],
+    contextKeywords: {
+      JOEL_H3100T: ['pethuel', 'locusts', 'day of the lord', 'pour out my spirit', 'pentecost', 'book of joel', 'prophet'],
+    },
+  },
+  obadiah: {
+    // Default: prophet of the book of Obadiah (vision against Edom).
+    // Secondary: Ahab's steward who hid 100 prophets in the cave.
+    candidates: ['OBADIAH_H5662R', 'OBADIAH_H5662G'],
+    contextKeywords: {
+      OBADIAH_H5662R: ['edom', 'esau', 'vision', 'mount zion', 'book of obadiah', 'minor prophet'],
+      OBADIAH_H5662G: ['ahab', 'jezebel', 'elijah', 'cave', 'hundred prophets', 'household', 'steward', '1 kings 18'],
+    },
+  },
+  zadok: {
+    // Default: David's chief priest (line continues through Solomon).
+    // Secondary: NT-genealogy Zadok in Matthew 1.
+    candidates: ['ZADOK_H6659G', 'ZADOK_G4524'],
+    contextKeywords: {
+      ZADOK_H6659G: ['ahitub', 'abiathar', 'david', 'solomon', 'high priest', 'ark', 'anoint', 'absalom', 'adonijah'],
+      ZADOK_G4524: ['matthew 1', 'genealogy of jesus', 'azor', 'achim'],
+    },
+  },
+  daniel: {
+    // Default: Daniel of the book of Daniel (lions' den, exile).
+    // Secondary: priest of Ithamar's line in 1 Chr 3 / Ezra 8.
+    candidates: ['DANIEL_H1840G', 'DANIEL_H1841G'],
+    contextKeywords: {
+      DANIEL_H1840G: ['nebuchadnezzar', 'belteshazzar', 'lions', 'den', 'babylon', 'darius', 'shadrach', 'meshach', 'abednego', 'visions', 'seventy weeks', 'book of daniel', 'exile'],
+      DANIEL_H1841G: ['ithamar', 'ezra 8', 'priest', '1 chronicles 3'],
+    },
+  },
 };
 
 // ─── Entity Cache ─────────────────────────────────────────────────────────────
