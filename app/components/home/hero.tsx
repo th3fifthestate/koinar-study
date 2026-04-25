@@ -8,7 +8,7 @@ import {
   eyebrowForDay,
   TOD_IMAGES,
 } from '@/lib/home/tod-bucket';
-import { useTodPalette } from '@/lib/reader/use-tod-palette';
+import { useTodPalette } from '@/lib/home/use-tod-palette';
 import type { StudySummary } from '@/lib/db/types';
 import type { Category } from '@/lib/db/types';
 
@@ -21,7 +21,7 @@ interface HeroProps {
 
 export function Hero({ username: _username, firstName, featuredStudy, categories }: HeroProps) {
   // Hydrate with Evening to avoid SSR/client mismatch; update on mount to client time.
-  const { bucket, gradientOpacity } = useTodPalette('dark');
+  const { bucket, gradientOpacity } = useTodPalette();
   const [dayOfWeek, setDayOfWeek] = useState(0);
 
   useEffect(() => {
