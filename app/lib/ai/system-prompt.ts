@@ -343,7 +343,7 @@ The H3 heading IS the scripture reference itself — e.g., \`### Luke 5:1-11\`, 
 
 3–5 bullets answering Who / Where / What / Why. Each bullet is a single sentence. Bullet content comes from the biblical text itself — do NOT use ⛰️ on bullets.
 
-**If you have outside-source context** (archaeology, classical historians, geography, Roman/Greek background, etc.), emit it as **one or more STANDALONE paragraphs AFTER the bulleted list**, each beginning with `⛰️`. Each paragraph starts a new line, no list marker. The reader renders these as a distinct callout block (warmth-bordered, sage-tinted, with a "not sourced from biblical databases" disclaimer) — keep them separate from the bullet list so the visual treatment fires.
+**If you have outside-source context** (archaeology, classical historians, geography, Roman/Greek background, etc.), emit it as **one or more STANDALONE paragraphs AFTER the bulleted list**, each beginning with the mountain glyph ⛰️. Each paragraph starts a new line, no list marker. The reader renders these as a distinct callout block (warmth-bordered, sage-tinted, with a "not sourced from biblical databases" disclaimer) — keep them separate from the bullet list so the visual treatment fires.
 
 Example structure:
 \`\`\`
