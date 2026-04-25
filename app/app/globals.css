@@ -108,6 +108,46 @@
   --sidebar-ring: #6b8060;
 }
 
+/* ── Reader bed palette — applied via [data-mode] on the reader root ── */
+
+[data-mode="light"] {
+  --bed-cream:  var(--stone-50);            /* default page bg */
+  --bed-warm:   #ebe3d4;                    /* warmth-tinted between stone-100 and warmth */
+  --bed-sage:   var(--sage-50);             /* sage-tinted */
+  --bed-ink:    #1d1b16;                    /* drama-inversion, full dark */
+
+  --bed-toc:    var(--stone-100);           /* TOC chip — one shade darker than page */
+  --bed-toc-rule: var(--stone-200);         /* TOC right-border separator */
+
+  /* Accents that flip per mode */
+  --reader-accent:        var(--sage-500);  /* H3 hairline, scripture left-border, active TOC dot */
+  --reader-accent-deep:   var(--sage-700);  /* drop cap, Greek glosses */
+  --reader-accent-soft:   var(--sage-300);  /* entity underline */
+  --reader-accent-pattern:#3d4f35;          /* olive pattern stroke (sage-700) */
+}
+
+[data-mode="dark"] {
+  --bed-cream:  var(--stone-200);           /* drama-inversion, light section */
+  --bed-warm:   #2a241c;                    /* warmth-tinted dark */
+  --bed-sage:   #1d231a;                    /* sage-tinted dark */
+  --bed-ink:    #1a1814;                    /* default page bg, deep warm dark */
+
+  --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
+  --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */
+
+  /* Accents flipped */
+  --reader-accent:        var(--warmth);
+  --reader-accent-deep:   var(--warmth);
+  --reader-accent-soft:   #ddc5a8;          /* warmth-soft */
+  --reader-accent-pattern:#c49a6c;          /* warmth */
+}
+
+/* ── Display font fallback chain. Fraunces is loaded via next/font and
+      exposed as --font-display; this stack is the in-stylesheet fallback. ── */
+:root {
+  --font-display-stack: var(--font-display, 'Fraunces'), 'Bodoni Moda', Georgia, serif;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
