@@ -53,10 +53,10 @@ function useHeadingScroll() {
       return;
     }
     const needle = text.trim();
-    const match = Array.from(
-      document.querySelectorAll('article h1, article h2, article h3, article h4'),
+    const found = Array.from(
+      document.querySelectorAll('main h1, main h2, main h3, main h4, [data-reader-surface] h1, [data-reader-surface] h2, [data-reader-surface] h3, [data-reader-surface] h4'),
     ).find((el) => el.textContent?.trim() === needle);
-    match?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    found?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 }
 

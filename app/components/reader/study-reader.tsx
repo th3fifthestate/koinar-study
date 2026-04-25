@@ -124,22 +124,40 @@ function splitTitle(title: string): {
 }
 
 function extractHeadings(markdown: string): HeadingItem[] {
+  // H3 / H4 ids are prefixed by their parent H2 slug to avoid collisions
+  // when multiple bed-stacked sections emit the same sub-heading names
+  // (Text, Historical Context, Greek/Hebrew Word Study, etc.). The per-bed
+  // MarkdownRenderer applies the same prefix via its idPrefix prop.
   const headings: HeadingItem[] = [];
-  const slugCounts = new Map<string, number>();
-  const pattern = /^(#{2,4})\s+(.+)$/gm;
-  let match: RegExpExecArray | null;
+  const topLevelCounts = new Map<string, number>();
+  const sectionCounts = new Map<string, number>();
+  let currentH2Slug = '';
 
-  while ((match = pattern.exec(markdown)) !== null) {
-    const level = match[1].length;
-    const text = match[2].trim();
+  const pattern = /^(#{2,4})\s+(.+)$/gm;
+  let m: RegExpExecArray | null;
+
+  while ((m = pattern.exec(markdown)) !== null) {
+    const level = m[1].length;
+    const text = m[2].trim();
     const base = text
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    const count = slugCounts.get(base) ?? 0;
-    slugCounts.set(base, count + 1);
-    const id = count === 0 ? base : `${base}-${count}`;
+    let id: string;
+    if (level === 2) {
+      const count = topLevelCounts.get(base) ?? 0;
+      topLevelCounts.set(base, count + 1);
+      const suffixed = count === 0 ? base : `${base}-${count}`;
+      currentH2Slug = suffixed;
+      sectionCounts.clear();
+      id = suffixed;
+    } else {
+      const count = sectionCounts.get(base) ?? 0;
+      sectionCounts.set(base, count + 1);
+      const suffixed = count === 0 ? base : `${base}-${count}`;
+      id = currentH2Slug ? `${currentH2Slug}--${suffixed}` : suffixed;
+    }
 
     headings.push({ id, text, level });
   }
@@ -415,6 +433,7 @@ function StudyReaderContent({
                       content={section.markdown}
                       images={study.images}
                       fontSize={fontSize}
+                      idPrefix={section.slug}
                     />
                   </Bed>
                 ))}

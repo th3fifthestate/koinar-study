@@ -18,6 +18,14 @@ interface MarkdownRendererProps {
   content: string;
   images: StudyImage[];
   fontSize: FontSize;
+  /**
+   * Prefix applied to every heading id. When the same renderer is used
+   * across multiple bed-stacked sections (each with its own MarkdownRenderer
+   * instance), each bed needs a different prefix so duplicate H3 names
+   * (Text, Historical Context, etc.) don't collide on the rendered DOM.
+   * Format: `${prefix}--${slug}`.
+   */
+  idPrefix?: string;
 }
 
 const FONT_SIZE_CLASSES: Record<FontSize, string> = {
@@ -63,8 +71,9 @@ function stripLeadingMountain(children: ReactNode): ReactNode {
   return children;
 }
 
-function createSlugify() {
+function createSlugify(prefix?: string) {
   const counters = new Map<string, number>();
+  const pfx = prefix ? `${prefix}--` : '';
   return {
     slugify(children: ReactNode): string {
       const text = extractTextContent(children);
@@ -75,7 +84,8 @@ function createSlugify() {
 
       const count = counters.get(base) ?? 0;
       counters.set(base, count + 1);
-      return count === 0 ? base : `${base}-${count}`;
+      const suffixed = count === 0 ? base : `${base}-${count}`;
+      return `${pfx}${suffixed}`;
     },
     reset() {
       counters.clear();
@@ -228,11 +238,11 @@ function buildSections(content: string, images: StudyImage[]): ContentSection[] 
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function MarkdownRenderer({ content, images, fontSize }: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, images, fontSize, idPrefix }: MarkdownRendererProps) {
   const sections = useMemo(() => buildSections(content, images), [content, images]);
 
   // Instance-scoped state — safe across concurrent SSR renders
-  const slugRef = useRef(createSlugify());
+  const slugRef = useRef(createSlugify(idPrefix));
   const crossRefSectionRef = useRef(false);
   const historicalContextSectionRef = useRef<boolean>(false);
   const entityCtx = useEntityLayerOptional();
@@ -252,7 +262,13 @@ export function MarkdownRenderer({ content, images, fontSize }: MarkdownRenderer
         );
       },
       h2: ({ children, node, ...props }: MdProps) => {
-        const id = slugify(children);
+        // When the renderer is invoked with an idPrefix (i.e., inside a Bed),
+        // the parent <section id={section.slug}> already provides the anchor
+        // for TOC navigation. Skipping the H2 id here avoids two-anchor
+        // collisions on the same target. Without idPrefix (standalone use)
+        // the H2 self-anchors via slugify. The H3/H4 counter map only tracks
+        // H3/H4 slugs, so skipping the H2 doesn't disturb sibling counters.
+        const id = idPrefix ? undefined : slugify(children);
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
         historicalContextSectionRef.current = /historical\s*context/i.test(text);
