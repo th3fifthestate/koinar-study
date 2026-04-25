@@ -68,10 +68,17 @@ function writePrefsToStorage(prefs: ReaderPrefs, onError: (err: unknown) => void
  * Broadcasts a same-tab prefs update so every other useReaderPrefs() consumer
  * in the same window can sync its in-memory state. The browser's `storage`
  * event only fires for OTHER tabs — same-tab writes need this custom event.
+ *
+ * Deferred via queueMicrotask so the dispatch happens AFTER the calling
+ * setter's React state update commits. Otherwise listening instances would
+ * call setPrefs synchronously during the caller's render, triggering
+ * "Cannot update a component while rendering a different component."
  */
 function broadcastPrefsUpdate(prefs: ReaderPrefs): void {
   if (typeof window === 'undefined') return;
-  window.dispatchEvent(new CustomEvent<ReaderPrefs>(PREFS_UPDATE_EVENT, { detail: prefs }));
+  queueMicrotask(() => {
+    window.dispatchEvent(new CustomEvent<ReaderPrefs>(PREFS_UPDATE_EVENT, { detail: prefs }));
+  });
 }
 
 export function useReaderPrefs(): {
