@@ -310,6 +310,46 @@ describe('annotateStudyIfNeeded', () => {
 
       expect(insertStudyAnnotations).not.toHaveBeenCalled();
     });
+
+    it('skips matches that fall inside an idiomatic phrase ("Adam\'s apple")', async () => {
+      setupEntityDb([
+        makeEntity({ id: 'ADAM_H121', canonical_name: 'Adam' }),
+      ]);
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([]);
+
+      await annotateStudyIfNeeded(1, "He has a prominent Adam's apple.");
+
+      expect(insertStudyAnnotations).not.toHaveBeenCalled();
+    });
+
+    it('skips "raising Cain" but still annotates Cain elsewhere in the text', async () => {
+      setupEntityDb([
+        makeEntity({ id: 'CAIN_H7014', canonical_name: 'Cain' }),
+      ]);
+
+      const inserted: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
+      vi.mocked(insertStudyAnnotations).mockImplementation((annotations) => {
+        inserted.push(...annotations);
+      });
+      vi.mocked(getAnnotationsForStudy)
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([
+          makeAnnotation({ entity_id: 'CAIN_H7014', surface_text: 'Cain' }),
+        ]);
+
+      // First mention is in the idiom (skip), second is a direct reference.
+      // Annotator only annotates first valid mention per entity, so we expect
+      // exactly one row pointing at the second occurrence.
+      const text = 'They were raising Cain at the picnic. Later we read about Cain in Genesis.';
+      await annotateStudyIfNeeded(1, text);
+
+      expect(inserted).toHaveLength(1);
+      expect(inserted[0].entity_id).toBe('CAIN_H7014');
+      // Verify it landed on the *second* occurrence, not inside the idiom.
+      expect(inserted[0].start_offset).toBeGreaterThan(text.indexOf('picnic'));
+    });
   });
 
   describe('disambiguation', () => {

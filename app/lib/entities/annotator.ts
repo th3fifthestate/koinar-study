@@ -8,6 +8,7 @@ import {
   insertStudyAnnotations,
   deleteAnnotationsForStudy,
 } from '@/lib/db/entities/queries';
+import { getIdiomRanges } from './idiom-phrases';
 
 // ─── Disambiguation Config ────────────────────────────────────────────────────
 
@@ -378,8 +379,13 @@ export async function annotateStudyIfNeeded(
   // 2. Load entity cache (auto-rebuilds when entities are updated)
   const { nameToEntities, regex } = getEntityCache();
 
-  // 3. Build excluded ranges (code blocks + blockquote lines)
-  const excludedRanges = getExcludedRanges(text);
+  // 3. Build excluded ranges (code blocks + blockquote lines + idiomatic
+  //    phrases that use a biblical name figuratively, e.g. "Adam's apple",
+  //    "Solomon's seal", "raising Cain").
+  const excludedRanges = [
+    ...getExcludedRanges(text),
+    ...getIdiomRanges(text),
+  ];
 
   // 4. Match entity names — first mention only, skip excluded ranges
   const toInsert: Omit<StudyEntityAnnotation, 'id' | 'created_at'>[] = [];
