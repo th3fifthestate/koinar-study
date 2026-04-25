@@ -329,7 +329,7 @@ function StudyReaderContent({
           {/* Desktop TOC — sits out in the left gutter, away from the
               reading column so labels don't crowd the text. Dot-spine
               doesn't need a full text column; labels truncate. */}
-          <aside className="hidden w-44 shrink-0 lg:block">
+          <aside className="hidden w-60 shrink-0 lg:block">
             <TableOfContents headings={headings} activeId={activeId} />
           </aside>
 

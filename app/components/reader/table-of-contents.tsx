@@ -139,7 +139,7 @@ function DotSpineList({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-[5px] top-2 bottom-2 w-px"
-        style={{ backgroundColor: 'var(--reader-rule, var(--stone-200))' }}
+        style={{ backgroundColor: 'var(--bed-toc-rule, var(--stone-200))' }}
       />
 
       <ul ref={ulRef} className="relative space-y-2">
@@ -171,6 +171,7 @@ function DotSpineList({
                     When glider is disabled (mobile): use the old filled-dot behavior. */}
                 <span
                   aria-hidden="true"
+                  data-toc-active={disableGlider && isActive ? 'true' : undefined}
                   className="absolute top-1/2 -translate-y-1/2 rounded-full transition-all duration-300 ease-out"
                   style={{
                     left: `${dotOffset}px`,
@@ -178,7 +179,7 @@ function DotSpineList({
                     height: `${dotSize}px`,
                     backgroundColor: disableGlider
                       ? isActive
-                        ? 'var(--reader-accent-sage, var(--sage-500))'
+                        ? 'var(--reader-accent, var(--sage-500))'
                         : 'transparent'
                       : 'transparent',
                     border: disableGlider
@@ -192,6 +193,9 @@ function DotSpineList({
                     transform: disableGlider
                       ? `translateY(-50%) scale(${isActive ? 1.1 : 1})`
                       : 'translateY(-50%)',
+                    boxShadow: disableGlider && isActive
+                      ? '0 0 0 5px rgba(107, 128, 96, 0.10)'
+                      : undefined,
                   }}
                 />
 
@@ -212,13 +216,15 @@ function DotSpineList({
         {!disableGlider && (
           <div
             aria-hidden="true"
+            data-toc-active="true"
             className="pointer-events-none absolute"
             style={{
               left: '2px',
               width: `${GLIDER_SIZE}px`,
               height: `${GLIDER_SIZE}px`,
               borderRadius: '50%',
-              backgroundColor: 'var(--reader-accent-sage, var(--sage-500))',
+              backgroundColor: 'var(--reader-accent, var(--sage-500))',
+              boxShadow: '0 0 0 5px rgba(107, 128, 96, 0.10)',
               top: 0,
               transform: `translateY(${activeOffset}px)`,
               transition: gliderTransition,
@@ -236,7 +242,13 @@ export function TableOfContents({ headings, activeId }: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
+    <div
+      className="sticky top-0 h-screen w-60 overflow-y-auto border-r px-6 py-8"
+      style={{
+        backgroundColor: 'var(--bed-toc, var(--stone-100))',
+        borderColor: 'var(--bed-toc-rule, var(--stone-200))',
+      }}
+    >
       <p
         className="mb-4 pl-6 text-[0.65rem] font-medium uppercase tracking-[0.2em]"
         style={{ color: 'var(--reader-ink-soft, var(--stone-500))' }}

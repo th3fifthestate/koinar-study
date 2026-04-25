@@ -566,3 +566,10 @@ body {
   display: inline-block;
   margin-top: 16px;
 }
+
+/* ── TOC active-dot halo: in dark mode flip the sage tint to a warmth
+ *    glow so it harmonises with var(--reader-accent) = warmth. The light
+ *    mode halo (sage rgba) is set inline in table-of-contents.tsx. ── */
+[data-mode="dark"] [data-toc-active="true"] {
+  box-shadow: 0 0 0 5px rgba(196, 154, 108, 0.15) !important;
+}
