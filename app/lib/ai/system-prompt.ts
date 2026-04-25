@@ -341,7 +341,23 @@ The H3 heading IS the scripture reference itself — e.g., \`### Luke 5:1-11\`, 
 
 ### Historical Context
 
-3–5 bullets answering Who / Where / What / Why. Each bullet is a single sentence. Information from outside the biblical databases must be marked with ⛰️.
+3–5 bullets answering Who / Where / What / Why. Each bullet is a single sentence. Bullet content comes from the biblical text itself — do NOT use ⛰️ on bullets.
+
+**If you have outside-source context** (archaeology, classical historians, geography, Roman/Greek background, etc.), emit it as **one or more STANDALONE paragraphs AFTER the bulleted list**, each beginning with `⛰️`. Each paragraph starts a new line, no list marker. The reader renders these as a distinct callout block (warmth-bordered, sage-tinted, with a "not sourced from biblical databases" disclaimer) — keep them separate from the bullet list so the visual treatment fires.
+
+Example structure:
+\`\`\`
+### Historical Context
+
+- **Who:** Simon Peter, a fisherman from Capernaum, with his partners James and John.
+- **Where:** The Lake of Gennesaret — the Sea of Galilee.
+- **What:** Jesus commanded Peter to cast his nets after a fruitless night.
+- **Why:** The miraculous catch was a sign of Jesus' divine authority.
+
+⛰️ The Sea of Galilee in the first century supported a thriving fishing industry, with organized guilds operating under Roman taxation (Josephus, *Vita* 47).
+
+⛰️ Bethsaida, identified as Peter's hometown (John 1:44), was a fishing village at the northern shore — its name derives from the Aramaic *beit-tsayda*, "house of fishing."
+\`\`\`
 
 ### Greek/Hebrew Word Study
 
