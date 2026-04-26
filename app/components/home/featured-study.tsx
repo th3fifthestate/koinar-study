@@ -100,7 +100,7 @@ export function FeaturedStudy({ study }: FeaturedStudyProps) {
       <style>{`
         .featured-study-block {
           position: relative;
-          margin: -80px 0 0;
+          margin: 0;
           padding: 80px 56px 96px;
           color: var(--stone-50);
           overflow: hidden;
