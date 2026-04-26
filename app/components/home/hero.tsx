@@ -88,7 +88,8 @@ export function Hero({ username, firstName, displayName, isAdmin = false }: Hero
         .koinar-hero {
           display: grid;
           grid-template-columns: 1.35fr 1fr;
-          min-height: 600px;
+          min-height: 100vh;
+          min-height: 100dvh;
           background: #f7f6f3;
           position: relative;
         }
@@ -129,8 +130,9 @@ export function Hero({ username, firstName, displayName, isAdmin = false }: Hero
         @media (max-width: 768px) {
           .koinar-hero {
             grid-template-columns: 1fr;
-            grid-template-rows: 50vh auto;
-            min-height: 0;
+            grid-template-rows: 55vh 1fr;
+            min-height: 100vh;
+            min-height: 100dvh;
           }
           .koinar-hero-text {
             padding: 32px 24px 40px;
