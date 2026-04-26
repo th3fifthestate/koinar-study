@@ -117,6 +117,14 @@
   --bed-ink:    #1d1b16;                    /* drama-inversion, full dark */
   --bed-threshold: #f1eee5;                  /* library threshold — between cream and warm */
 
+  /* Mode-keyed text tokens — used by the home library subtree so the
+     redesign's typography flips with the bed. Reader-only components
+     keep using the reader-* tokens. */
+  --text-primary:   var(--stone-900);
+  --text-secondary: var(--stone-700);
+  --text-muted:     var(--stone-500);
+  --text-rule:      rgba(77, 73, 67, 0.18);  /* hairlines, card borders */
+
   --bed-toc:    var(--stone-100);           /* TOC chip — one shade darker than page */
   --bed-toc-rule: var(--stone-200);         /* TOC right-border separator */
 
@@ -137,6 +145,12 @@
   --bed-sage:   #1d231a;                    /* sage-tinted dark */
   --bed-ink:    #1a1814;                    /* default page bg, deep warm dark */
   --bed-threshold: #28241d;                  /* library threshold — between warm and ink in dark */
+
+  /* Mode-keyed text tokens flipped */
+  --text-primary:   #f4f1ea;                 /* near-cream for headings on dark beds */
+  --text-secondary: #c4bfb3;                 /* stone-300 for body */
+  --text-muted:     #8a8478;                 /* slightly lighter than stone-500 for legibility */
+  --text-rule:      rgba(255, 255, 255, 0.14);
 
   --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
   --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */

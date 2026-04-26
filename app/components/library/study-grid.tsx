@@ -20,10 +20,10 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
   if (hasFilters) {
     return (
       <div className="py-24 text-center">
-        <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
+        <p className="font-display font-normal text-[1.75rem] text-[var(--text-primary)] mb-3">
           <em>Nothing answers that refine.</em>
         </p>
-        <p className="font-body text-[1rem] text-[var(--stone-700)] mb-6">
+        <p className="font-body text-[1rem] text-[var(--text-secondary)] mb-6">
           Clear a filter or widen the search.
         </p>
         <a
@@ -37,7 +37,7 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
   }
   return (
     <div className="py-24 text-center">
-      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--text-primary)] mb-3">
         <em>No studies found.</em>
       </p>
     </div>
@@ -47,10 +47,10 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
 function NoFavorites() {
   return (
     <div className="py-24 text-center">
-      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--text-primary)] mb-3">
         <em>No favorites yet.</em>
       </p>
-      <p className="font-body text-[1rem] text-[var(--stone-700)] mb-6">
+      <p className="font-body text-[1rem] text-[var(--text-secondary)] mb-6">
         Tap the heart on any reading to save it here.
       </p>
       <Link
@@ -137,7 +137,7 @@ export function StudyGrid({
               className="study-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
               style={{
                 gap: 0,
-                borderTop: '1px solid rgba(77, 73, 67, 0.18)',
+                borderTop: '1px solid var(--text-rule)',
               }}
             >
               {studies.map((study, idx) => (
@@ -149,7 +149,7 @@ export function StudyGrid({
               <div className="text-center mt-[60px]">
                 <a
                   href={`/?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), page: String(currentPage + 1) }).toString()}`}
-                  className="font-display font-normal italic text-[1.25rem] text-[var(--warmth)] hover:text-[var(--stone-900)] transition-colors"
+                  className="font-display font-normal italic text-[1.25rem] text-[var(--warmth)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   Continue the library →
                 </a>
@@ -163,8 +163,8 @@ export function StudyGrid({
           suppress border-right on the last column at each breakpoint via :nth-child. */}
       <style>{`
         .study-grid > .study-card-cell {
-          border-right: 1px solid rgba(77, 73, 67, 0.14);
-          border-bottom: 1px solid rgba(77, 73, 67, 0.18);
+          border-right: 1px solid var(--text-rule);
+          border-bottom: 1px solid var(--text-rule);
         }
         /* Mobile (1 col) — no border-right on any */
         @media (max-width: 767px) {

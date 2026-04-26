@@ -78,8 +78,8 @@ export function LibraryThreshold() {
         padding: '80px 56px 64px',
         position: 'relative',
         isolation: 'isolate',
-        borderTop: '1px solid rgba(77, 73, 67, 0.10)',
-        borderBottom: '1px solid rgba(77, 73, 67, 0.08)',
+        borderTop: '1px solid var(--text-rule)',
+        borderBottom: '1px solid var(--text-rule)',
         display: 'grid',
         gridTemplateColumns: '1fr 1.45fr',
         gap: '64px',
@@ -108,7 +108,7 @@ export function LibraryThreshold() {
             fontWeight: 400,
             fontSize: '1rem',
             letterSpacing: '0.04em',
-            color: 'var(--stone-700)',
+            color: 'var(--text-secondary)',
             marginBottom: '18px',
             display: 'flex',
             alignItems: 'center',
@@ -141,7 +141,7 @@ export function LibraryThreshold() {
           style={{
             fontFamily: 'var(--font-display)',
             lineHeight: 0.96,
-            color: 'var(--stone-900)',
+            color: 'var(--text-primary)',
             margin: '0 0 14px',
           }}
         >
@@ -191,7 +191,7 @@ export function LibraryThreshold() {
             fontStyle: 'italic',
             fontSize: '1.05rem',
             lineHeight: 1.6,
-            color: 'var(--stone-700)',
+            color: 'var(--text-secondary)',
             maxWidth: '380px',
             margin: '0 0 26px',
           }}
@@ -206,7 +206,7 @@ export function LibraryThreshold() {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            borderBottom: '1px solid rgba(77, 73, 67, 0.3)',
+            borderBottom: '1px solid var(--text-rule)',
             padding: '10px 0',
             marginBottom: '22px',
             maxWidth: '380px',
@@ -219,7 +219,7 @@ export function LibraryThreshold() {
             style={{
               width: '14px',
               height: '14px',
-              color: 'var(--stone-700)',
+              color: 'var(--text-secondary)',
               flex: '0 0 14px',
             }}
           />
@@ -238,7 +238,7 @@ export function LibraryThreshold() {
               fontFamily: 'var(--font-body)',
               fontStyle: 'italic',
               fontSize: '0.95rem',
-              color: 'var(--stone-700)',
+              color: 'var(--text-secondary)',
               padding: 0,
               minWidth: 0,
             }}
@@ -290,7 +290,7 @@ function pillStyle(active: boolean): React.CSSProperties {
     textTransform: 'uppercase',
     color: active ? 'var(--stone-50)' : 'var(--stone-700)',
     background: active ? 'var(--stone-900)' : 'transparent',
-    border: `1px solid ${active ? 'var(--stone-900)' : 'rgba(77, 73, 67, 0.25)'}`,
+    border: `1px solid ${active ? 'var(--stone-900)' : 'var(--text-rule)'}`,
     padding: '8px 14px',
     borderRadius: '99px',
     cursor: 'pointer',

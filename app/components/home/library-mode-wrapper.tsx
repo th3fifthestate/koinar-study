@@ -20,8 +20,28 @@ interface LibraryModeWrapperProps {
 export function LibraryModeWrapper({ children, className = 'relative' }: LibraryModeWrapperProps) {
   const { prefs } = useReaderPrefs();
   return (
-    <div data-mode={prefs.mode ?? 'light'} className={className}>
-      {children}
-    </div>
+    <>
+      <style>{`
+        .koinar-library-mode-wrapper,
+        .koinar-library-mode-wrapper * {
+          transition:
+            background-color 0.5s ease,
+            color 0.4s ease,
+            border-color 0.4s ease,
+            fill 0.4s ease,
+            stroke 0.4s ease;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .koinar-library-mode-wrapper,
+          .koinar-library-mode-wrapper * { transition: none; }
+        }
+      `}</style>
+      <div
+        data-mode={prefs.mode ?? 'light'}
+        className={`koinar-library-mode-wrapper ${className}`}
+      >
+        {children}
+      </div>
+    </>
   );
 }

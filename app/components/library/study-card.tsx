@@ -51,7 +51,7 @@ export function StudyCard({ study, index }: StudyCardProps) {
             right: '28px',
             fontSize: '10px',
             letterSpacing: '0.16em',
-            color: 'var(--stone-500)',
+            color: 'var(--text-muted)',
           }}
         >
           No. {numLabel}
@@ -92,7 +92,7 @@ export function StudyCard({ study, index }: StudyCardProps) {
             fontWeight: 400,
             fontSize: '1.85rem',
             lineHeight: 1.05,
-            color: 'var(--stone-900)',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.005em',
             fontVariationSettings: '"opsz" 96',
             margin: '6px 0 18px',
@@ -111,7 +111,7 @@ export function StudyCard({ study, index }: StudyCardProps) {
               fontStyle: 'italic',
               fontSize: '0.95rem',
               lineHeight: 1.55,
-              color: 'var(--stone-700)',
+              color: 'var(--text-secondary)',
               borderLeft: '1px solid var(--reader-accent)',
               paddingLeft: '14px',
               opacity: 0.92,
@@ -133,11 +133,11 @@ export function StudyCard({ study, index }: StudyCardProps) {
             justifyContent: 'space-between',
             alignItems: 'baseline',
             paddingTop: '14px',
-            borderTop: '1px solid rgba(77, 73, 67, 0.14)',
+            borderTop: '1px solid var(--text-rule)',
             fontSize: '9px',
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: 'var(--stone-500)',
+            color: 'var(--text-muted)',
           }}
         >
           <span>{footerLeft}</span>
@@ -145,7 +145,7 @@ export function StudyCard({ study, index }: StudyCardProps) {
             aria-hidden="true"
             className="study-card-arrow inline-block transition-[transform,color] duration-200 group-hover:translate-x-[4px] group-hover:text-[var(--reader-accent-deep)]"
             style={{
-              color: 'var(--stone-700)',
+              color: 'var(--text-secondary)',
             }}
           >
             →

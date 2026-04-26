@@ -46,7 +46,7 @@ export function EditorialAside({ quote }: EditorialAsideProps) {
           font-weight: 400;
           font-size: clamp(1.6rem, 2.8vw, 2.4rem);
           line-height: 1.25;
-          color: var(--stone-900);
+          color: var(--text-primary);
           margin: 0 0 30px;
           font-variation-settings: "opsz" 144;
         }
