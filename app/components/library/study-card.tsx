@@ -102,10 +102,11 @@ export function StudyCard({ study, index }: StudyCardProps) {
         </h3>
 
         {/* Excerpt — only render when we have summary text, otherwise the
-            sage left-border floats as a stray hairline above the footer. */}
+            sage left-border floats as a stray hairline above the footer.
+            Hidden on mobile to keep the grid scannable. */}
         {study.summary ? (
           <div
-            className="font-body"
+            className="study-card-excerpt font-body"
             style={{
               fontStyle: 'italic',
               fontSize: '0.95rem',
@@ -121,7 +122,7 @@ export function StudyCard({ study, index }: StudyCardProps) {
             {study.summary}
           </div>
         ) : (
-          <div style={{ flex: 1, marginBottom: '22px' }} aria-hidden="true" />
+          <div className="study-card-excerpt" style={{ flex: 1, marginBottom: '22px' }} aria-hidden="true" />
         )}
 
         {/* Footer */}

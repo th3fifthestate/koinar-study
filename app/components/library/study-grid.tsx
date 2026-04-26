@@ -93,7 +93,23 @@ export function StudyGrid({
       <style>{`
         .study-grid-bed { padding: 80px 56px 110px; }
         @media (max-width: 768px) {
-          .study-grid-bed { padding: 56px 24px 72px; }
+          .study-grid-bed { padding: 56px 0 72px; }
+          /* Compact TOC-style cards: drop the excerpt, tighten padding,
+             scale the title down so the index page reads scannable
+             instead of a 14-screen scroll. */
+          .study-grid-bed .study-card-link {
+            padding: 20px 24px 18px !important;
+            min-height: 0 !important;
+          }
+          .study-grid-bed .study-card-excerpt { display: none; }
+          .study-grid-bed .study-card-link h3 {
+            font-size: 1.35rem !important;
+            margin: 4px 0 12px !important;
+          }
+          .study-grid-bed .study-card-link [class*='font-sans'][style*='top'] {
+            top: 22px !important;
+            right: 24px !important;
+          }
         }
       `}</style>
       {/* Faint olive-dot pattern overlay */}
