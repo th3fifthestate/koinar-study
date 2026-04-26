@@ -99,7 +99,7 @@ export function Hero({ username, firstName, displayName, isAdmin = false }: Hero
         }
         .koinar-hero-text {
           background: #f7f6f3;
-          padding: 48px 56px 56px;
+          padding: 48px 56px 14vh;
           display: grid;
           grid-template-rows: auto 1fr auto;
           position: relative;
@@ -346,25 +346,25 @@ export function Hero({ username, firstName, displayName, isAdmin = false }: Hero
           {/* Chevron — absolute bottom-center of the right column */}
           <svg
             className="koinar-hero-chevron"
-            width="20"
-            height="20"
+            width="40"
+            height="40"
             viewBox="0 0 20 20"
             fill="none"
             aria-hidden="true"
             style={{
               position: 'absolute',
-              bottom: '18px',
+              bottom: '36px',
               left: '50%',
               transform: 'translateX(-50%)',
-              color: 'var(--stone-700)',
-              opacity: 0.6,
+              color: 'var(--sage-500)',
             }}
           >
             <path
               d="M5 8 L10 13 L15 8"
               stroke="currentColor"
-              strokeWidth="1.2"
+              strokeWidth="2.4"
               strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </div>

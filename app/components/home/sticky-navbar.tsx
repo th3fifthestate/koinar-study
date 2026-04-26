@@ -108,7 +108,7 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
       `}</style>
 
       <nav
-        className="koinar-sticky-navbar sticky top-0 z-50 flex items-center justify-between"
+        className="koinar-sticky-navbar fixed top-0 left-0 right-0 z-50 flex items-center justify-between"
         style={{
           padding: '22px 56px',
           opacity: scrolled ? 1 : 0,
