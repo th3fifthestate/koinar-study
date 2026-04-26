@@ -1,10 +1,9 @@
 // app/app/page.tsx
 import { getSession } from '@/lib/auth/session';
-import { getStudies, getAllCategories, getUserFavoriteIds, getFeaturedStudies } from '@/lib/db/queries';
+import { getStudies, getUserFavoriteIds, getFeaturedStudies } from '@/lib/db/queries';
 import { StickyNavbar } from '@/components/home/sticky-navbar';
 import { Hero } from '@/components/home/hero';
 import { LibraryThreshold } from '@/components/home/library-threshold';
-import { RefineBand } from '@/components/home/refine-band';
 import { StudyGrid } from '@/components/library/study-grid';
 import { GenerateInvitationCard } from '@/components/home/generate-invitation-card';
 import { EditorialAside } from '@/components/home/editorial-aside';
@@ -50,7 +49,7 @@ export default async function HomePage({
   const limit = 24;
 
   // Parallel data fetches
-  const [{ studies, totalCount }, categories, featured] = await Promise.all([
+  const [{ studies, totalCount }, featured] = await Promise.all([
     Promise.resolve(
       getStudies({
         page,
@@ -63,7 +62,6 @@ export default async function HomePage({
         ...(favoritesOnly ? { favoritesOfUserId: session.userId } : {}),
       })
     ),
-    Promise.resolve(getAllCategories()),
     Promise.resolve(getFeaturedStudies(3)),
   ]);
 
@@ -106,8 +104,6 @@ export default async function HomePage({
         {/* Zone 2 — Library proper */}
         <section>
           <LibraryThreshold />
-
-          <RefineBand categories={categories} />
 
           <div
             className="border-b border-[var(--stone-200)] dark:border-[var(--stone-700)] relative"

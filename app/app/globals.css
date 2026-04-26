@@ -620,6 +620,43 @@ body {
   box-shadow: 0 0 0 5px rgba(196, 154, 108, 0.15) !important;
 }
 
+/* ── Library threshold olive-sprig pattern ──
+ * The library threshold (`app/components/home/library-threshold.tsx`) tiles
+ * an olive-sprig SVG over its bed. The SVG is encoded as a data-URI inside
+ * a `background-image`, which means it can't reference `--reader-accent-pattern`
+ * directly — so we ship two URI variants (sage-700 stroke for light, warmth
+ * stroke for dark) and gate them by the wrapping `[data-mode]` set on
+ * `<LibraryModeWrapper>`. Pattern path matches v8 mockup `.threshold::before`.
+ */
+.library-threshold-pattern {
+  position: absolute;
+  inset: 0;
+  background-size: 180px 180px;
+  background-repeat: repeat;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+}
+[data-mode="light"] .library-threshold-pattern {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%233d4f35' stroke-width='0.9' stroke-linecap='round'><path d='M20 30 Q60 40 90 70 Q120 100 160 110'/><ellipse cx='30' cy='30' rx='9' ry='2.6' transform='rotate(-28 30 30)'/><ellipse cx='52' cy='44' rx='9' ry='2.6' transform='rotate(22 52 44)'/><ellipse cx='74' cy='56' rx='9' ry='2.6' transform='rotate(-22 74 56)'/><ellipse cx='98' cy='76' rx='9' ry='2.6' transform='rotate(35 98 76)'/><ellipse cx='122' cy='92' rx='9' ry='2.6' transform='rotate(-28 122 92)'/><ellipse cx='146' cy='106' rx='9' ry='2.6' transform='rotate(22 146 106)'/><path d='M14 162 Q52 132 82 112 Q112 92 152 72'/><ellipse cx='26' cy='152' rx='9' ry='2.6' transform='rotate(38 26 152)'/><ellipse cx='50' cy='132' rx='9' ry='2.6' transform='rotate(-30 50 132)'/><ellipse cx='74' cy='116' rx='9' ry='2.6' transform='rotate(42 74 116)'/><ellipse cx='100' cy='100' rx='9' ry='2.6' transform='rotate(-28 100 100)'/><ellipse cx='126' cy='86' rx='9' ry='2.6' transform='rotate(38 126 86)'/></g></svg>");
+}
+[data-mode="dark"] .library-threshold-pattern {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%23c49a6c' stroke-width='0.9' stroke-linecap='round'><path d='M20 30 Q60 40 90 70 Q120 100 160 110'/><ellipse cx='30' cy='30' rx='9' ry='2.6' transform='rotate(-28 30 30)'/><ellipse cx='52' cy='44' rx='9' ry='2.6' transform='rotate(22 52 44)'/><ellipse cx='74' cy='56' rx='9' ry='2.6' transform='rotate(-22 74 56)'/><ellipse cx='98' cy='76' rx='9' ry='2.6' transform='rotate(35 98 76)'/><ellipse cx='122' cy='92' rx='9' ry='2.6' transform='rotate(-28 122 92)'/><ellipse cx='146' cy='106' rx='9' ry='2.6' transform='rotate(22 146 106)'/><path d='M14 162 Q52 132 82 112 Q112 92 152 72'/><ellipse cx='26' cy='152' rx='9' ry='2.6' transform='rotate(38 26 152)'/><ellipse cx='50' cy='132' rx='9' ry='2.6' transform='rotate(-30 50 132)'/><ellipse cx='74' cy='116' rx='9' ry='2.6' transform='rotate(42 74 116)'/><ellipse cx='100' cy='100' rx='9' ry='2.6' transform='rotate(-28 100 100)'/><ellipse cx='126' cy='86' rx='9' ry='2.6' transform='rotate(38 126 86)'/></g></svg>");
+  /* Multiply on dark beds erases warm strokes — switch to screen so the warmth
+     stroke remains visible against the deep threshold bg. */
+  mix-blend-mode: screen;
+  opacity: 0.22;
+}
+
+/* Search underline darkens on focus-within; non-active pills warm on hover. */
+.threshold-search-label:focus-within {
+  border-color: var(--stone-900) !important;
+}
+.library-threshold-pill[data-active="false"]:hover {
+  border-color: var(--stone-700) !important;
+}
+
 /* ── Mode-flip transitions ──
  * When [data-mode] flips light↔dark, every reader element consuming the
  * bed-* / --reader-accent* CSS variables would snap instantly. Apply a
