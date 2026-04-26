@@ -35,7 +35,7 @@ export function Footer() {
   const monthDay = `${MONTHS[now.getMonth()]} ${now.getDate()}, ${year}`;
 
   return (
-    <footer className="bg-[var(--stone-900)] text-[var(--stone-200)] px-14 pt-24 pb-9">
+    <footer className="bg-[var(--stone-900)] text-[var(--stone-200)] px-6 md:px-14 pt-16 md:pt-24 pb-9">
       <div className="mx-auto max-w-[1280px] mb-16 grid gap-12 md:gap-24 grid-cols-1 md:[grid-template-columns:1.4fr_1fr_1fr]">
         <div>
           <div

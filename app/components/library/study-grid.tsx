@@ -88,9 +88,14 @@ export function StudyGrid({
       className="study-grid-bed relative"
       style={{
         background: 'var(--bed-warm)',
-        padding: '80px 56px 110px',
       }}
     >
+      <style>{`
+        .study-grid-bed { padding: 80px 56px 110px; }
+        @media (max-width: 768px) {
+          .study-grid-bed { padding: 56px 24px 72px; }
+        }
+      `}</style>
       {/* Faint olive-dot pattern overlay */}
       <div
         aria-hidden="true"

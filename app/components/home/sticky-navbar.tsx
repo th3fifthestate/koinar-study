@@ -105,6 +105,12 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
           border-color: var(--stone-200);
           color: var(--stone-50);
         }
+        @media (max-width: 768px) {
+          .koinar-sticky-navbar { padding: 14px 18px !important; }
+          .koinar-sticky-navbar .nav-item-label { display: none; }
+          .koinar-sticky-navbar .nav-cluster { gap: 14px !important; }
+          .koinar-sticky-navbar .navbar-mark { font-size: 13px !important; letter-spacing: 0.36em !important; }
+        }
       `}</style>
 
       <nav
@@ -130,7 +136,7 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
           KOINAR
         </Link>
 
-        <div className="flex items-center gap-7">
+        <div className="nav-cluster flex items-center gap-7">
           <Link
             href="/generate"
             className="nav-item flex items-center gap-2 font-display uppercase"
@@ -141,7 +147,7 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
             }}
           >
             <Pencil className="h-[14px] w-[14px]" strokeWidth={1.4} />
-            <span>New Study</span>
+            <span className="nav-item-label">New Study</span>
           </Link>
 
           {isAdmin ? (
@@ -155,7 +161,7 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
               }}
             >
               <LayoutGrid className="h-[14px] w-[14px]" strokeWidth={1.4} />
-              <span>Study Bench</span>
+              <span className="nav-item-label">Study Bench</span>
             </Link>
           ) : (
             <button
@@ -171,7 +177,7 @@ export function StickyNavbar({ username, displayName, isAdmin = false }: StickyN
               }}
             >
               <LayoutGrid className="h-[14px] w-[14px]" strokeWidth={1.4} />
-              <span>Study Bench</span>
+              <span className="nav-item-label">Study Bench</span>
             </button>
           )}
 

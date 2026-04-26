@@ -72,6 +72,7 @@ export function LibraryThreshold() {
 
   return (
     <section
+      className="koinar-threshold"
       style={{
         backgroundColor: 'var(--bed-threshold)',
         padding: '80px 56px 64px',
@@ -85,6 +86,15 @@ export function LibraryThreshold() {
         alignItems: 'center',
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .koinar-threshold {
+            padding: 56px 24px 40px !important;
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+          }
+        }
+      `}</style>
       {/* Tiled olive-sprig pattern overlay (mode-aware via globals.css) */}
       <div className="library-threshold-pattern" aria-hidden="true" />
 

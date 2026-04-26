@@ -14,6 +14,9 @@ export function EditorialAside({ quote }: EditorialAsideProps) {
           text-align: center;
           position: relative;
         }
+        @media (max-width: 768px) {
+          .colloquy { padding: 72px 24px; }
+        }
         .colloquy::before {
           content: '';
           position: absolute;

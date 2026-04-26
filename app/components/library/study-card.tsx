@@ -101,23 +101,28 @@ export function StudyCard({ study, index }: StudyCardProps) {
           {study.title}
         </h3>
 
-        {/* Excerpt */}
-        <div
-          className="font-body"
-          style={{
-            fontStyle: 'italic',
-            fontSize: '0.95rem',
-            lineHeight: 1.55,
-            color: 'var(--stone-700)',
-            borderLeft: '1px solid var(--reader-accent)',
-            paddingLeft: '14px',
-            opacity: 0.92,
-            marginBottom: '22px',
-            flex: 1,
-          }}
-        >
-          {study.summary ?? ''}
-        </div>
+        {/* Excerpt — only render when we have summary text, otherwise the
+            sage left-border floats as a stray hairline above the footer. */}
+        {study.summary ? (
+          <div
+            className="font-body"
+            style={{
+              fontStyle: 'italic',
+              fontSize: '0.95rem',
+              lineHeight: 1.55,
+              color: 'var(--stone-700)',
+              borderLeft: '1px solid var(--reader-accent)',
+              paddingLeft: '14px',
+              opacity: 0.92,
+              marginBottom: '22px',
+              flex: 1,
+            }}
+          >
+            {study.summary}
+          </div>
+        ) : (
+          <div style={{ flex: 1, marginBottom: '22px' }} aria-hidden="true" />
+        )}
 
         {/* Footer */}
         <div
