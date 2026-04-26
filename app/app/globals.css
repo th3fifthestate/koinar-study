@@ -745,15 +745,6 @@ body {
   color: var(--text-muted);
   font-variation-settings: normal;
 }
-.study-shelf-view-all {
-  font-family: var(--font-display); font-style: italic;
-  font-size: 1.05rem; color: var(--warmth);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(196, 154, 108, 0.45);
-  padding-bottom: 2px;
-}
-.study-shelf-view-all:hover { border-bottom-color: var(--warmth); }
-
 .study-shelf-track-wrap { position: relative; }
 .study-shelf-track {
   display: flex;

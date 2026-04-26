@@ -168,7 +168,6 @@ export default async function HomePage({
                 label="In this issue"
                 studies={inThisIssue}
                 meta={`No. ${dayOfYear} · ${inThisIssue.length} reading${inThisIssue.length === 1 ? '' : 's'}`}
-                viewAllHref="/?sort=newest"
               />
 
               {CATEGORY_SHELF_ORDER.map((slug) => {
@@ -180,7 +179,6 @@ export default async function HomePage({
                     key={slug}
                     label={cfg.displayName}
                     studies={shelfStudies}
-                    categorySlug={slug}
                   />
                 );
               })}
