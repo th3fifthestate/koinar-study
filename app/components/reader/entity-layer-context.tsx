@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Entity, EntityDetail, StudyEntityAnnotation } from '@/lib/db/types';
+import { isAmbiguousSurface } from '@/lib/entities/ambiguous-names';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -96,6 +97,17 @@ export function EntityLayerProvider({
 
     for (const ann of annotations) {
       const key = ann.surface_text.toLowerCase();
+      // Surfaces in AMBIGUOUS_NAME_KEYS (bare "James", "Simon", "Mary",
+      // "Joseph", "John", "Judas", "Herod") have multiple possible
+      // entity referents. The renderer's surface-form regex is global and
+      // would spread a single LLM annotation across all matching surface
+      // mentions in prose — incorrectly tagging "James the apostle son
+      // of Zebedee" as "James the brother of Jesus" if both appear in
+      // the same study. Drop these surfaces from the lookup; surrounding
+      // prose disambiguates better than a wrong tooltip would.
+      // Multi-word surfaces like "Simon Peter" or "James the brother
+      // of Jesus" are NOT bare-name matches and remain.
+      if (isAmbiguousSurface(ann.surface_text)) continue;
       if (!lookup.has(key)) {
         lookup.set(key, ann.entity_id);
         surfaces.push(ann.surface_text);

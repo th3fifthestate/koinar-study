@@ -22,7 +22,12 @@ interface AmbigConfig {
 // Entity IDs use Strong's-suffixed format: NAME_STRONGS (e.g. HEROD_G2264G).
 // When multiple entities share a canonical name, we use context keywords within
 // a 200-char window to pick the most likely individual.
-const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
+//
+// The keys of this map are the canonical-form lowercase surfaces with multiple
+// possible referents. The reader-side EntityLayerProvider filters annotations
+// whose surface matches one of these keys — see ambiguous-names.ts for the
+// renderer's reuse of this list.
+export const AMBIGUOUS_NAMES: Record<string, AmbigConfig> = {
   herod: {
     candidates: ['HEROD_G2264G', 'HEROD_G2264H', 'HEROD_G2264I'],
     contextKeywords: {
