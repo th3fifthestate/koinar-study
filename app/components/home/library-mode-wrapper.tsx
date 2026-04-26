@@ -1,0 +1,27 @@
+'use client';
+
+import type { ReactNode } from 'react';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
+
+interface LibraryModeWrapperProps {
+  children: ReactNode;
+  className?: string;
+}
+
+/**
+ * Publishes `data-mode` on a wrapper div so light/dark tokens (e.g.
+ * `--bed-threshold`) cascade to the home library section. Pass-through only;
+ * mode toggle UI lives in StickyNavbar/Hero and calls `setMode()` directly.
+ *
+ * Hydration: `useReaderPrefs` initialises with `mode: undefined` and only
+ * reads localStorage in `useEffect`, so SSR and first client render both
+ * emit `data-mode="light"`. The attribute updates after mount.
+ */
+export function LibraryModeWrapper({ children, className = 'relative' }: LibraryModeWrapperProps) {
+  const { prefs } = useReaderPrefs();
+  return (
+    <div data-mode={prefs.mode ?? 'light'} className={className}>
+      {children}
+    </div>
+  );
+}
