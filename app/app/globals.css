@@ -125,6 +125,21 @@
   --text-muted:     var(--stone-500);
   --text-rule:      rgba(77, 73, 67, 0.18);  /* hairlines, card borders */
 
+  /* Library card tints — per-category bg color for the shelves. Each
+     tint named for what it evokes; consumed via [data-cat] selector on
+     ShelfCard. See app/lib/library/category-config.ts for the slug map. */
+  --card-letters:        #f5efe1;             /* soft cream parchment */
+  --card-gospel:         #f0e2c2;             /* honey warmth */
+  --card-old-testament:  #e6dec9;             /* weathered stone */
+  --card-wisdom:         #dee8da;             /* sage olive */
+  --card-prophecy:       #eed7a8;             /* burnt amber */
+  --card-people:         #e8ddd1;             /* dusty rose-stone */
+  --card-topical:        #f6f0df;             /* fresh ivory */
+  --card-book-studies:   #ecdcb5;             /* deep parchment */
+  --card-new-testament:  #f0e8d4;             /* morning warmth */
+  --card-word-studies:   #dce4d8;             /* deep sage */
+  --card-ink-bed:        #1d1b16;             /* lead-card variant, both modes */
+
   --bed-toc:    var(--stone-100);           /* TOC chip — one shade darker than page */
   --bed-toc-rule: var(--stone-200);         /* TOC right-border separator */
 
@@ -151,6 +166,20 @@
   --text-secondary: #c4bfb3;                 /* stone-300 for body */
   --text-muted:     #8a8478;                 /* slightly lighter than stone-500 for legibility */
   --text-rule:      rgba(255, 255, 255, 0.14);
+
+  /* Library card tints — dark-mode equivalents. Each tint shifts to a
+     deeper, slightly desaturated form so the cards still read as their
+     category but sit comfortably on the dark warm bed. */
+  --card-letters:        #2c2820;             /* parchment ink */
+  --card-gospel:         #322a1d;             /* honey-deep */
+  --card-old-testament:  #2a2620;             /* stone-deep */
+  --card-wisdom:         #232a23;             /* sage-deep */
+  --card-prophecy:       #34291a;             /* amber-deep */
+  --card-people:         #2c2722;             /* rose-stone-deep */
+  --card-topical:        #2e2a22;             /* ivory-deep */
+  --card-book-studies:   #322816;             /* parchment-deep */
+  --card-new-testament:  #2e2820;             /* warmth-mid-deep */
+  --card-word-studies:   #232825;             /* sage-stone-deep */
 
   --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
   --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */
@@ -685,3 +714,250 @@ body {
 [data-reader-surface] .historical-context {
   transition: background-color 500ms ease, color 500ms ease, border-color 500ms ease;
 }
+
+/* ───── Library shelves (StudyShelf + ShelfCard) ─────
+ * Per-category visual treatment lives in app/lib/library/category-config.ts;
+ * this stylesheet owns the shared structural CSS — track scrolling, card
+ * frame, paper-grain texture, watermark slot, hover state.
+ */
+
+.study-shelf {
+  position: relative;
+  padding: 64px 0 12px;
+}
+.study-shelf-head {
+  padding: 0 56px 24px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 24px;
+}
+.study-shelf-head-label {
+  font-family: var(--font-display);
+  font-style: italic; font-weight: 400;
+  font-size: 1.7rem; color: var(--text-primary);
+  line-height: 1; letter-spacing: -0.005em;
+  font-variation-settings: "opsz" 144;
+  display: flex; align-items: baseline; gap: 18px;
+}
+.study-shelf-head-count {
+  font-family: var(--font-sans); font-style: normal;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--text-muted);
+  font-variation-settings: normal;
+}
+.study-shelf-view-all {
+  font-family: var(--font-display); font-style: italic;
+  font-size: 1.05rem; color: var(--warmth);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(196, 154, 108, 0.45);
+  padding-bottom: 2px;
+}
+.study-shelf-view-all:hover { border-bottom-color: var(--warmth); }
+
+.study-shelf-track-wrap { position: relative; }
+.study-shelf-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 6px 56px 56px;
+  scroll-padding-left: 56px;
+  scroll-behavior: smooth;
+}
+.study-shelf-track::-webkit-scrollbar { height: 0; display: none; }
+.study-shelf-track { scrollbar-width: none; }
+
+/* Right-edge fade — suggests more cards to the right */
+.study-shelf-track-wrap::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 56px;
+  width: 88px;
+  background: linear-gradient(to left, var(--bed-warm) 0%, rgba(235, 227, 212, 0) 100%);
+  pointer-events: none;
+}
+
+/* Hover-revealed chevron arrows; hidden on touch devices via @media */
+.study-shelf-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 24px));
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--card-letters);
+  border: 1px solid rgba(77, 73, 67, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary);
+  box-shadow: 0 6px 18px rgba(20, 18, 14, 0.10);
+  opacity: 0;
+  transition: opacity 0.25s ease, background 0.2s ease, color 0.2s ease, transform 0.25s ease;
+  pointer-events: none;
+  z-index: 3;
+}
+.study-shelf:hover .study-shelf-arrow,
+.study-shelf:focus-within .study-shelf-arrow {
+  opacity: 1;
+  pointer-events: auto;
+}
+.study-shelf-arrow:hover {
+  background: var(--stone-900);
+  color: var(--stone-50);
+  border-color: var(--stone-900);
+}
+.study-shelf-arrow.left { left: 14px; }
+.study-shelf-arrow.right { right: 14px; }
+@media (pointer: coarse) {
+  .study-shelf-arrow { display: none; }
+}
+
+/* ───── ShelfCard ───── */
+.shelf-card {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  border: 1px solid rgba(77, 73, 67, 0.10);
+  border-radius: 2px;
+  padding: 36px 28px 26px;
+  position: relative;
+  min-height: 380px;
+  display: flex; flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+  text-decoration: none;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 1px 0 rgba(20, 18, 14, 0.04),
+    0 4px 12px rgba(20, 18, 14, 0.05);
+}
+.shelf-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 0 rgba(20, 18, 14, 0.04),
+    0 18px 40px rgba(20, 18, 14, 0.14);
+}
+
+/* Paper-grain overlay */
+.shelf-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(20, 18, 14, 0.05) 0.5px, transparent 1.2px),
+    radial-gradient(circle at 72% 38%, rgba(20, 18, 14, 0.04) 0.4px, transparent 1px),
+    radial-gradient(circle at 38% 78%, rgba(20, 18, 14, 0.04) 0.4px, transparent 1px),
+    radial-gradient(circle at 88% 84%, rgba(20, 18, 14, 0.05) 0.5px, transparent 1.2px),
+    radial-gradient(circle at 54% 12%, rgba(20, 18, 14, 0.03) 0.4px, transparent 1px);
+  background-size: 110px 110px, 170px 170px, 140px 140px, 200px 200px, 130px 130px;
+  pointer-events: none;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+/* Watermark slot — applied via inline style backgroundImage from category-config */
+.shelf-card[data-watermark="true"]::after {
+  content: '';
+  position: absolute;
+  right: -18px; bottom: -22px;
+  width: 130px; height: 130px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: var(--shelf-card-watermark, none);
+  opacity: 0.11;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.shelf-card[data-watermark="true"]:hover::after {
+  opacity: 0.18;
+  transform: translate(-2px, -2px);
+}
+
+/* Lead variant: ink bed, warmth-flipped watermark */
+.shelf-card-lead {
+  border-color: var(--card-ink-bed);
+}
+.shelf-card-lead::before {
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.06) 0.4px, transparent 1px),
+    radial-gradient(circle at 72% 38%, rgba(255, 255, 255, 0.05) 0.4px, transparent 1px),
+    radial-gradient(circle at 38% 78%, rgba(255, 255, 255, 0.05) 0.4px, transparent 1px),
+    radial-gradient(circle at 88% 84%, rgba(255, 255, 255, 0.06) 0.4px, transparent 1px);
+  background-size: 110px 110px, 170px 170px, 140px 140px, 200px 200px;
+  mix-blend-mode: screen;
+}
+.shelf-card-lead[data-watermark="true"]::after {
+  filter: hue-rotate(-12deg) saturate(0.8) brightness(2.6);
+  opacity: 0.18;
+}
+
+/* All card content sits above the ::before grain */
+.shelf-card > * { position: relative; z-index: 1; }
+
+.shelf-card-corner {
+  position: absolute; top: 18px; right: 18px;
+  width: 18px; height: 18px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  opacity: 0.5;
+  transition: opacity 0.35s ease, width 0.35s ease, height 0.35s ease;
+  z-index: 1;
+}
+.shelf-card:hover .shelf-card-corner {
+  opacity: 0.95;
+  width: 24px; height: 24px;
+}
+
+.shelf-card-cat {
+  font-family: var(--font-sans); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.shelf-card-cat-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+  flex: 0 0 5px;
+}
+
+.shelf-card-title {
+  font-family: var(--font-display); font-style: italic; font-weight: 400;
+  font-size: 1.65rem; line-height: 1.06;
+  margin: 0 0 14px;
+  letter-spacing: -0.005em;
+  font-variation-settings: "opsz" 144;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.shelf-card-reference {
+  font-family: var(--font-body); font-style: italic;
+  font-size: 0.95rem; line-height: 1.5;
+  opacity: 0.78;
+  margin: 0 0 18px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.shelf-card-meta {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--text-rule);
+  font-family: var(--font-sans); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+
+/* Mobile shelf adjustments */
+@media (max-width: 768px) {
+  .study-shelf { padding: 40px 0 8px; }
+  .study-shelf-head { padding: 0 24px 16px; }
+  .study-shelf-track { padding: 6px 24px 40px; }
+  .study-shelf-track-wrap::after { width: 48px; }
+  .shelf-card { flex: 0 0 280px; min-height: 340px; padding: 28px 22px 22px; }
+  .shelf-card-title { font-size: 1.45rem; }
+}
+
