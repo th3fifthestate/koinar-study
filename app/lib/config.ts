@@ -58,6 +58,12 @@ export const config = {
     bucketName: env.R2_BUCKET_NAME,
     publicUrl: env.R2_PUBLIC_URL,
   },
+  r2Data: {
+    accountId: env.R2_DATA_ACCOUNT_ID,
+    accessKeyId: env.R2_DATA_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_DATA_SECRET_ACCESS_KEY,
+    bucketName: env.R2_DATA_BUCKET,
+  },
   db: {
     app: env.DATABASE_PATH,
     bibleDir: env.BIBLE_DB_PATH,

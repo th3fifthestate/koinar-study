@@ -73,12 +73,20 @@ const envSchema = z.object({
   // Image generation
   FLUX_API_KEY: z.string().default(""),
 
-  // Cloudflare R2
+  // Cloudflare R2 — image bucket
   R2_ACCOUNT_ID: z.string().default(""),
   R2_ACCESS_KEY_ID: z.string().default(""),
   R2_SECRET_ACCESS_KEY: z.string().default(""),
   R2_BUCKET_NAME: z.string().default("koinar-images"),
   R2_PUBLIC_URL: z.string().default("images.koinar.app"),
+
+  // Cloudflare R2 — data bucket (Bible DBs, large infrastructure assets that
+  // change rarely). Separate credentials so an image-bucket leak doesn't
+  // grant access to the data bucket.
+  R2_DATA_ACCOUNT_ID: z.string().default(""),
+  R2_DATA_ACCESS_KEY_ID: z.string().default(""),
+  R2_DATA_SECRET_ACCESS_KEY: z.string().default(""),
+  R2_DATA_BUCKET: z.string().default("koinar-data"),
 
   // Encryption
   ENCRYPTION_KEY: z.string().default(""),
