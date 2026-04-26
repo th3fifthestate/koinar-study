@@ -3,115 +3,147 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { FavoriteButton } from '@/components/library/favorite-button';
 import type { StudyListItem } from '@/lib/db/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface StudyCardProps {
   study: StudyListItem;
-  isFavorited: boolean;
   index: number;
-  isLoggedIn: boolean;
-  variant?: 'default' | 'lead';
 }
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  'old-testament': 'from-[var(--sage-300)]/20 to-[var(--stone-200)]/30',
-  'new-testament': 'from-[var(--sage-500)]/15 to-[var(--stone-200)]/20',
-  'topical': 'from-[var(--warmth)]/15 to-[var(--stone-200)]/20',
-  'people': 'from-[var(--stone-300)]/20 to-[var(--sage-300)]/15',
-  'word-studies': 'from-[var(--sage-700)]/10 to-[var(--stone-300)]/20',
-  'book-studies': 'from-[var(--stone-200)]/30 to-[var(--sage-300)]/20',
+const FORMAT_LABEL: Record<StudyListItem['format_type'], string> = {
+  quick: 'Quick',
+  standard: 'Standard',
+  comprehensive: 'Deep',
 };
 
-export function StudyCard({ study, isFavorited, index, isLoggedIn, variant = 'default' }: StudyCardProps) {
+export function StudyCard({ study, index }: StudyCardProps) {
   const prefersReducedMotion = useReducedMotion();
-  const gradientClass =
-    CATEGORY_GRADIENTS[study.category_slug ?? ''] ?? 'from-[var(--stone-200)]/30 to-[var(--sage-300)]/15';
-  const isLead = variant === 'lead';
+  const numLabel = String(index + 1).padStart(2, '0');
+  const categoryLine = study.category_name ?? 'Uncategorized';
+  const formatLabel = FORMAT_LABEL[study.format_type] ?? 'Standard';
+  const footerLeft = `${formatLabel} · ${study.translation_used}`;
 
   return (
     <motion.div
       initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: index * 0.05 }}
-      className={isLead ? 'xl:col-span-2' : ''}
+      className="study-card-cell"
     >
-      <Link href={`/study/${study.slug}`} className="block group">
-        <div className={`flex ${isLead ? 'flex-col md:flex-row gap-8 md:gap-10 p-8 md:p-10' : 'gap-5 p-7'} border border-transparent bg-[var(--stone-50)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:border-[var(--stone-200)] hover:bg-[var(--surface-study-card-hover)] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(44,41,36,0.06)]`}>
-          {/* Text side */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex items-center gap-2.5 mb-3.5">
-              <div className={`h-px bg-[var(--sage-500)] ${isLead ? 'w-10' : 'w-6'} transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${isLead ? 'group-hover:w-16' : 'group-hover:w-10'}`} />
-              <span className={`uppercase tracking-[0.25em] text-[var(--sage-500)] ${isLead ? 'text-[10px]' : 'text-[9px]'}`}>
-                {isLead ? 'Featured Study · ' : ''}{study.category_name ?? 'Uncategorized'}
-              </span>
-            </div>
+      <Link
+        href={`/study/${study.slug}`}
+        className="group study-card-link block relative cursor-pointer hover:bg-[rgba(247,246,243,0.28)]"
+        style={{
+          padding: '38px 28px 32px',
+          minHeight: '320px',
+          display: 'flex',
+          flexDirection: 'column',
+          transition: 'background 0.3s ease',
+        }}
+      >
+        {/* Number indicator */}
+        <span
+          className="font-sans"
+          style={{
+            position: 'absolute',
+            top: '38px',
+            right: '28px',
+            fontSize: '10px',
+            letterSpacing: '0.16em',
+            color: 'var(--stone-500)',
+          }}
+        >
+          No. {numLabel}
+        </span>
 
-            <h3 className={`font-display font-normal leading-[1.15] text-[var(--stone-900)] mb-3 line-clamp-3 ${isLead ? 'text-[34px] md:text-[40px] italic' : 'text-[21px] leading-[1.25] line-clamp-2 mb-2.5'}`}>
-              {study.title}
-            </h3>
+        {/* Category line with hairline rule */}
+        <div
+          className="font-sans"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            color: 'var(--reader-accent-deep)',
+            marginBottom: '14px',
+          }}
+        >
+          <span>{categoryLine}</span>
+          <span
+            aria-hidden="true"
+            style={{
+              flex: '0 0 28px',
+              height: '1px',
+              background: 'var(--reader-accent)',
+              opacity: 0.65,
+            }}
+          />
+        </div>
 
-            <p className={`leading-relaxed text-[var(--stone-300)] flex-1 transition-colors duration-500 group-hover:text-[var(--stone-700)] ${isLead ? 'text-base line-clamp-4 max-w-prose' : 'text-[13px] line-clamp-3'}`}>
-              {study.summary}
-            </p>
+        {/* Title */}
+        <h3
+          className="font-display"
+          style={{
+            fontStyle: 'italic',
+            fontWeight: 400,
+            fontSize: '1.85rem',
+            lineHeight: 1.05,
+            color: 'var(--stone-900)',
+            letterSpacing: '-0.005em',
+            fontVariationSettings: '"opsz" 96',
+            margin: '6px 0 18px',
+          }}
+        >
+          {study.title}
+        </h3>
 
-            <div className="flex items-center gap-3 mt-3">
-              <FavoriteButton
-                studyId={study.id}
-                initialFavorited={isFavorited}
-                initialCount={study.favorite_count}
-                isLoggedIn={isLoggedIn}
-              />
-              <span className="text-[11px] text-[var(--stone-300)]">
-                {study.translation_used}
-              </span>
-              {study.author_display_name && (
-                <span className="text-[11px] text-[var(--stone-300)]">
-                  {study.author_display_name}
-                </span>
-              )}
-            </div>
+        {/* Excerpt */}
+        <div
+          className="font-body"
+          style={{
+            fontStyle: 'italic',
+            fontSize: '0.95rem',
+            lineHeight: 1.55,
+            color: 'var(--stone-700)',
+            borderLeft: '1px solid var(--reader-accent)',
+            paddingLeft: '14px',
+            opacity: 0.92,
+            marginBottom: '22px',
+            flex: 1,
+          }}
+        >
+          {study.summary ?? ''}
+        </div>
 
-            <div className="flex items-center gap-2.5 mt-3.5">
-              <div className="w-[30px] h-[30px] rounded-full border border-[var(--stone-200)] flex items-center justify-center text-[var(--stone-700)] text-[11px] transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:bg-[var(--stone-900)] group-hover:text-[var(--stone-50)] group-hover:border-[var(--stone-900)]">
-                <ArrowUpRight className="h-3 w-3" />
-              </div>
-              <span className="text-[9px] uppercase tracking-[0.18em] text-[var(--stone-300)] opacity-0 -translate-x-2 transition-all duration-400 group-hover:opacity-100 group-hover:translate-x-0">
-                Read
-              </span>
-            </div>
-          </div>
-
-          {/* Image side */}
-          <div className={`${isLead ? 'w-full md:w-[52%]' : 'w-[150px]'} shrink-0 relative`}>
-            <div className="absolute -inset-1.5 border border-transparent transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:border-[var(--stone-900)]/[0.06]" />
-
-            <div className={`w-full ${isLead ? 'h-[260px] md:h-[380px]' : 'h-[190px]'} overflow-hidden relative rounded-[2px]`}>
-              {study.featured_image_url ? (
-                <img
-                  src={study.featured_image_url}
-                  alt=""
-                  className="w-full h-full object-cover saturate-[0.85] transition-all duration-800 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:saturate-100"
-                  loading="lazy"
-                />
-              ) : (
-                <div className={`w-full h-full bg-gradient-to-br ${gradientClass}`} />
-              )}
-
-              <div className="absolute inset-0 shadow-[inset_0_0_30px_10px_rgba(247,246,243,0.25)] pointer-events-none" />
-
-              <div className="absolute top-1.5 left-1.5 w-3 h-px bg-white/60 origin-left scale-x-0 opacity-0 transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 [transition-delay:50ms]" />
-              <div className="absolute top-1.5 left-1.5 w-px h-3 bg-white/60 origin-top scale-y-0 opacity-0 transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100 group-hover:opacity-100 [transition-delay:100ms]" />
-              <div className="absolute bottom-1.5 right-1.5 w-3 h-px bg-white/60 origin-right scale-x-0 opacity-0 transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 [transition-delay:150ms]" />
-              <div className="absolute bottom-1.5 right-1.5 w-px h-3 bg-white/60 origin-bottom scale-y-0 opacity-0 transition-all duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100 group-hover:opacity-100 [transition-delay:200ms]" />
-            </div>
-
-            <span className="absolute -bottom-4 right-0 font-mono text-[10px] text-[var(--stone-300)] opacity-30 transition-all duration-500 group-hover:opacity-80">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-          </div>
+        {/* Footer */}
+        <div
+          className="font-sans"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            paddingTop: '14px',
+            borderTop: '1px solid rgba(77, 73, 67, 0.14)',
+            fontSize: '9px',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'var(--stone-500)',
+          }}
+        >
+          <span>{footerLeft}</span>
+          <span
+            aria-hidden="true"
+            className="study-card-arrow inline-block transition-[transform,color] duration-200 group-hover:translate-x-[4px] group-hover:text-[var(--reader-accent-deep)]"
+            style={{
+              color: 'var(--stone-700)',
+            }}
+          >
+            →
+          </span>
         </div>
       </Link>
     </motion.div>
@@ -120,20 +152,25 @@ export function StudyCard({ study, isFavorited, index, isLoggedIn, variant = 'de
 
 export function StudyCardSkeleton() {
   return (
-    <div className="flex gap-5 p-7">
-      <div className="flex-1 space-y-3">
-        <Skeleton className="h-2 w-24" />
-        <Skeleton className="h-6 w-48" />
-        <Skeleton className="h-6 w-36" />
+    <div
+      style={{
+        padding: '38px 28px 32px',
+        minHeight: '320px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Skeleton className="h-2 w-32 mb-4" />
+      <Skeleton className="h-7 w-4/5 mb-2" />
+      <Skeleton className="h-7 w-3/5 mb-5" />
+      <div className="flex-1 space-y-2">
         <Skeleton className="h-3 w-full" />
-        <Skeleton className="h-3 w-4/5" />
-        <Skeleton className="h-3 w-3/5" />
-        <div className="flex gap-3 mt-4">
-          <Skeleton className="h-3 w-12" />
-          <Skeleton className="h-3 w-8" />
-        </div>
+        <Skeleton className="h-3 w-5/6" />
+        <Skeleton className="h-3 w-2/3" />
       </div>
-      <Skeleton className="w-[150px] h-[190px] shrink-0 rounded-[2px]" />
+      <div className="pt-4 mt-4 border-t border-[rgba(77,73,67,0.14)]">
+        <Skeleton className="h-2 w-24" />
+      </div>
     </div>
   );
 }

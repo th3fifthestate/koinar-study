@@ -2,15 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { StudyCard } from '@/components/library/study-card';
 import type { StudyListItem } from '@/lib/db/types';
-
-interface InterruptionCard {
-  index: number;
-  component: React.ReactNode;
-}
 
 interface StudyGridProps {
   initialStudies: StudyListItem[];
@@ -19,7 +13,6 @@ interface StudyGridProps {
   currentPage: number;
   limit: number;
   isLoggedIn: boolean;
-  interruptionCards?: InterruptionCard[];
 }
 
 function NoResults({ hasFilters }: { hasFilters: boolean }) {
@@ -27,12 +20,10 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
   if (hasFilters) {
     return (
       <div className="py-24 text-center">
-        <p
-          className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3"
-        >
+        <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
           <em>Nothing answers that refine.</em>
         </p>
-        <p className="font-body text-[1rem] text-[var(--stone-300)] mb-6">
+        <p className="font-body text-[1rem] text-[var(--stone-700)] mb-6">
           Clear a filter or widen the search.
         </p>
         <a
@@ -46,7 +37,7 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
   }
   return (
     <div className="py-24 text-center">
-      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
         <em>No studies found.</em>
       </p>
     </div>
@@ -56,10 +47,10 @@ function NoResults({ hasFilters }: { hasFilters: boolean }) {
 function NoFavorites() {
   return (
     <div className="py-24 text-center">
-      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-700)] mb-3">
+      <p className="font-display font-normal text-[1.75rem] text-[var(--stone-900)] mb-3">
         <em>No favorites yet.</em>
       </p>
-      <p className="font-body text-[1rem] text-[var(--stone-300)] mb-6">
+      <p className="font-body text-[1rem] text-[var(--stone-700)] mb-6">
         Tap the heart on any reading to save it here.
       </p>
       <Link
@@ -75,16 +66,13 @@ function NoFavorites() {
 export function StudyGrid({
   initialStudies,
   totalCount,
-  userFavoriteIds,
+  userFavoriteIds: _userFavoriteIds,
   currentPage,
   limit,
-  isLoggedIn,
-  interruptionCards = [],
+  isLoggedIn: _isLoggedIn,
 }: StudyGridProps) {
-  const prefersReducedMotion = useReducedMotion();
   const searchParams = useSearchParams();
   const [studies] = useState(initialStudies);
-  const [favoriteIds] = useState(() => new Set(userFavoriteIds));
 
   const hasFilters =
     !!searchParams.get('q') ||
@@ -93,73 +81,83 @@ export function StudyGrid({
     (searchParams.get('sort') !== null && searchParams.get('sort') !== 'newest');
   const favoritesActive = searchParams.get('favorites') === 'true';
 
-  const leadIndex = !hasFilters && !favoritesActive && currentPage === 1 ? 0 : -1;
-
-  if (studies.length === 0) {
-    if (favoritesActive) return <NoFavorites />;
-    return <NoResults hasFilters={hasFilters || favoritesActive} />;
-  }
-
-  // Build the merged cell sequence (studies + interruption cards at their indices)
-  const interruptionMap = new Map(interruptionCards.map((c) => [c.index, c.component]));
-  const totalCells = studies.length + interruptionCards.length;
-  const cells: Array<
-    | { type: 'study'; study: StudyListItem; studyIndex: number }
-    | { type: 'interruption'; key: number; component: React.ReactNode }
-  > = [];
-  let studyIdx = 0;
-  for (let i = 0; i < totalCells; i++) {
-    const interruption = interruptionMap.get(i);
-    if (interruption != null) {
-      cells.push({ type: 'interruption', key: i, component: interruption });
-    } else if (studyIdx < studies.length) {
-      cells.push({ type: 'study', study: studies[studyIdx], studyIndex: studyIdx });
-      studyIdx++;
-    }
-  }
+  const showEmpty = studies.length === 0;
 
   return (
-    <div aria-live="polite" aria-label="Study library results">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {cells.map((cell, cellIndex) => {
-          if (cell.type === 'interruption') {
-            return (
-              <motion.div
-                key={`interruption-${cell.key}`}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: Math.min(cellIndex * 0.05, 0.3) }}
-              >
-                {cell.component}
-              </motion.div>
-            );
-          }
+    <section
+      className="study-grid-bed relative"
+      style={{
+        background: 'var(--bed-warm)',
+        padding: '80px 56px 110px',
+      }}
+    >
+      {/* Faint olive-dot pattern overlay */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 20px 20px, var(--reader-accent-deep) 0.4px, transparent 0.6px)',
+          backgroundSize: '80px 80px',
+          opacity: 0.06,
+        }}
+      />
 
-          const isLead = cell.studyIndex === leadIndex;
-          return (
-            <StudyCard
-              key={cell.study.id}
-              study={cell.study}
-              isFavorited={favoriteIds.has(cell.study.id)}
-              index={cell.studyIndex}
-              isLoggedIn={isLoggedIn}
-              variant={isLead ? 'lead' : 'default'}
-            />
-          );
-        })}
+      <div className="relative" aria-live="polite" aria-label="Study library results">
+        {showEmpty ? (
+          favoritesActive ? (
+            <NoFavorites />
+          ) : (
+            <NoResults hasFilters={hasFilters || favoritesActive} />
+          )
+        ) : (
+          <>
+            <div
+              className="study-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+              style={{
+                gap: 0,
+                borderTop: '1px solid rgba(77, 73, 67, 0.18)',
+              }}
+            >
+              {studies.map((study, idx) => (
+                <StudyCard key={study.id} study={study} index={idx} />
+              ))}
+            </div>
+
+            {studies.length < totalCount && studies.length >= limit && (
+              <div className="text-center mt-[60px]">
+                <a
+                  href={`/?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), page: String(currentPage + 1) }).toString()}`}
+                  className="font-display font-normal italic text-[1.25rem] text-[var(--warmth)] hover:text-[var(--stone-900)] transition-colors"
+                >
+                  Continue the library →
+                </a>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
-      {/* At 11 studies, pagination never triggers. Skeleton placeholder kept for future growth. */}
-      {studies.length < totalCount && studies.length >= limit && (
-        <div className="text-center mt-16">
-          <a
-            href={`/?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), page: String(currentPage + 1) }).toString()}`}
-            className="font-display font-normal italic text-[1.25rem] text-[var(--warmth)] hover:text-[var(--stone-700)] transition-colors"
-          >
-            Continue the library →
-          </a>
-        </div>
-      )}
-    </div>
+      {/* Grid cell borders. Each cell sets its own border-right + border-bottom; we
+          suppress border-right on the last column at each breakpoint via :nth-child. */}
+      <style>{`
+        .study-grid > .study-card-cell {
+          border-right: 1px solid rgba(77, 73, 67, 0.14);
+          border-bottom: 1px solid rgba(77, 73, 67, 0.18);
+        }
+        /* Mobile (1 col) — no border-right on any */
+        @media (max-width: 767px) {
+          .study-grid > .study-card-cell { border-right: none; }
+        }
+        /* Tablet (2 cols) — drop border-right on every 2nd */
+        @media (min-width: 768px) and (max-width: 1279px) {
+          .study-grid > .study-card-cell:nth-child(2n) { border-right: none; }
+        }
+        /* Desktop (3 cols) — drop border-right on every 3rd */
+        @media (min-width: 1280px) {
+          .study-grid > .study-card-cell:nth-child(3n) { border-right: none; }
+        }
+      `}</style>
+    </section>
   );
 }
