@@ -6,40 +6,77 @@ interface EditorialAsideProps {
 
 export function EditorialAside({ quote }: EditorialAsideProps) {
   return (
-    <section
-      className="py-24 md:py-32 px-6 bg-[var(--stone-50)] dark:bg-[var(--stone-900)]"
-      aria-label="Editorial aside"
-    >
-      <div className="mx-auto max-w-[720px] flex flex-col items-center text-center">
-        {/* Top sage divider */}
-        <div className="w-[60%] h-px bg-[var(--sage-300)] mb-12" aria-hidden="true" />
-
-        {/* Quote */}
-        <blockquote>
-          <p
-            className="font-display font-normal leading-[1.35] text-[var(--stone-700)] dark:text-[var(--stone-100)] mb-6"
-            style={{ fontSize: 'clamp(1.375rem, 3vw, 2rem)' }}
-          >
-            <em>&#8220;{quote.body}&#8221;</em>
-          </p>
-          <footer>
-            <cite
-              className="font-body text-[0.875rem] uppercase tracking-[0.18em] not-italic"
-              style={{ color: 'var(--warmth)' }}
-            >
-              {quote.attribution}
-            </cite>
-          </footer>
-        </blockquote>
-
-        {/* Bottom sage divider */}
-        <div className="w-[60%] h-px bg-[var(--sage-300)] mt-12 mb-10" aria-hidden="true" />
-
-        {/* Subline */}
-        <p className="font-body text-[1rem] leading-relaxed text-[var(--stone-300)] italic">
-          The library grows slowly. Read what the hour suggests.
-        </p>
-      </div>
-    </section>
+    <>
+      <style>{`
+        .colloquy {
+          background: var(--bed-sage);
+          padding: 110px 56px;
+          text-align: center;
+          position: relative;
+        }
+        .colloquy::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(circle at 20px 20px, var(--reader-accent-deep) 0.4px, transparent 0.6px);
+          background-size: 100px 100px;
+          opacity: 0.05;
+          pointer-events: none;
+        }
+        .colloquy-inner {
+          max-width: 760px;
+          margin: 0 auto;
+          position: relative;
+        }
+        .colloquy-mark {
+          font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+          font-size: 10px;
+          font-weight: 500;
+          letter-spacing: 0.32em;
+          text-transform: uppercase;
+          color: var(--reader-accent-deep);
+          margin-bottom: 32px;
+        }
+        .colloquy-quote {
+          font-family: var(--font-display), 'Bodoni Moda', Georgia, serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+          line-height: 1.25;
+          color: var(--stone-900);
+          margin: 0 0 30px;
+          font-variation-settings: "opsz" 144;
+        }
+        .colloquy-rule {
+          width: 56px;
+          height: 1px;
+          background: var(--warmth);
+          margin: 0 auto 18px;
+          opacity: 0.7;
+        }
+        .colloquy-attr {
+          font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+          font-size: 9px;
+          letter-spacing: 0.32em;
+          text-transform: uppercase;
+          color: var(--warmth);
+          font-style: normal;
+        }
+      `}</style>
+      <section className="colloquy" aria-label="Editorial aside">
+        <div className="colloquy-inner">
+          <div className="colloquy-mark">From the Editor</div>
+          <blockquote>
+            <p className="colloquy-quote">
+              &#8220;{quote.body}&#8221;
+            </p>
+            <div className="colloquy-rule" aria-hidden="true" />
+            <footer>
+              <cite className="colloquy-attr">{quote.attribution}</cite>
+            </footer>
+          </blockquote>
+        </div>
+      </section>
+    </>
   );
 }
