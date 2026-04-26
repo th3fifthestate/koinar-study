@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { List } from 'lucide-react';
 import {
@@ -243,12 +244,32 @@ export function TableOfContents({ headings, activeId }: TableOfContentsProps) {
 
   return (
     <div
-      className="sticky top-0 h-screen w-60 overflow-y-auto border-r px-6 py-8"
+      className="sticky top-0 h-screen w-60 overflow-y-auto border-r px-6 pt-8 pb-8"
       style={{
         backgroundColor: 'var(--bed-toc, var(--stone-100))',
         borderColor: 'var(--bed-toc-rule, var(--stone-200))',
       }}
     >
+      {/* Brand mark — links back to the home library. Sits above the
+          Contents label and adds an editorial masthead feel to the reader
+          gutter. Visible whenever the TOC is in flow; once the user
+          scrolls past the study hero this rail sticks to the top of the
+          viewport, so the wordmark naturally takes the upper-left of the
+          reading surface. */}
+      <Link
+        href="/"
+        aria-label="Koinar — back to library"
+        className="mb-7 block font-display font-medium uppercase text-[var(--stone-900)] dark:text-[var(--stone-50)] hover:text-[var(--reader-accent-deep)] transition-colors"
+        style={{
+          fontSize: '13px',
+          letterSpacing: '0.42em',
+          paddingLeft: 'calc(1.5rem + 0.42em)',
+          fontVariationSettings: '"opsz" 144',
+        }}
+      >
+        Koinar
+      </Link>
+
       <p
         className="mb-4 pl-6 text-[0.65rem] font-medium uppercase tracking-[0.2em]"
         style={{ color: 'var(--stone-500)' }}
