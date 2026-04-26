@@ -115,6 +115,7 @@
   --bed-warm:   #ebe3d4;                    /* warmth-tinted between stone-100 and warmth */
   --bed-sage:   var(--sage-50);             /* sage-tinted */
   --bed-ink:    #1d1b16;                    /* drama-inversion, full dark */
+  --bed-threshold: #f1eee5;                  /* library threshold — between cream and warm */
 
   --bed-toc:    var(--stone-100);           /* TOC chip — one shade darker than page */
   --bed-toc-rule: var(--stone-200);         /* TOC right-border separator */
@@ -135,6 +136,7 @@
   --bed-warm:   #2a241c;                    /* warmth-tinted dark */
   --bed-sage:   #1d231a;                    /* sage-tinted dark */
   --bed-ink:    #1a1814;                    /* default page bg, deep warm dark */
+  --bed-threshold: #28241d;                  /* library threshold — between warm and ink in dark */
 
   --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
   --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */
