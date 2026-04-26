@@ -72,6 +72,22 @@ export function greetingForBucket(bucket: TodBucket, firstName: string | undefin
   }
 }
 
+/**
+ * TOD-varying display lockup for the home hero (caps line + italic line).
+ * Both lines get rendered uppercase via CSS — italic stays italic but is
+ * still text-transformed, per the Four-Seasons-style treatment in v8.
+ */
+export function displayForBucket(bucket: TodBucket): { caps: string; italic: string } {
+  switch (bucket) {
+    case 'dawn':    return { caps: 'A QUIET',  italic: 'beginning' };
+    case 'morning': return { caps: 'GOOD',     italic: 'morning' };
+    case 'midday':  return { caps: 'AN HOUR',  italic: 'set apart' };
+    case 'golden':  return { caps: 'LATE',     italic: 'light' };
+    case 'evening': return { caps: 'AN HOUR',  italic: 'of quiet' };
+    case 'night':   return { caps: 'A LATE',   italic: 'reading' };
+  }
+}
+
 export function eyebrowForDay(day: number, _bucket: TodBucket, now: Date = new Date()): string {
   if (day === 0) return 'A Sunday reading.';
   if (day === 5) return 'Before the weekend.';

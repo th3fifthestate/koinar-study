@@ -1,120 +1,372 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { FeaturedAnchorCard } from '@/components/home/featured-anchor-card';
+import Link from 'next/link';
+import { Pencil, LayoutGrid, Sun, Moon } from 'lucide-react';
 import {
   greetingForBucket,
-  eyebrowForDay,
+  displayForBucket,
   TOD_IMAGES,
 } from '@/lib/home/tod-bucket';
 import { useTodPalette } from '@/lib/home/use-tod-palette';
-import type { StudySummary } from '@/lib/db/types';
-import type { Category } from '@/lib/db/types';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
 
 interface HeroProps {
   username?: string;
   firstName?: string;
-  featuredStudy: StudySummary | null;
-  categories: Category[];
+  displayName?: string;
+  isAdmin?: boolean;
 }
 
-export function Hero({ username: _username, firstName, featuredStudy, categories }: HeroProps) {
-  // Hydrate with Evening to avoid SSR/client mismatch; update on mount to client time.
+/** Day-of-year, 1-indexed, locale-stable (UTC). */
+function getDayOfYear(d: Date): number {
+  const start = Date.UTC(d.getUTCFullYear(), 0, 0);
+  const diff = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - start;
+  return Math.floor(diff / 86_400_000);
+}
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+] as const;
+
+function formatIssueLine(d: Date): string {
+  const dayOfYear = getDayOfYear(d);
+  const month = MONTHS[d.getMonth()];
+  return `Issue No. ${dayOfYear} — ${month} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+/**
+ * Stage 3 hero: two-column composition. Image on the left (TOD-driven),
+ * cream typographic column on the right with greeting, display lockup,
+ * in-hero nav and issue line. The in-hero nav fades when the user scrolls
+ * past 85vh — at the same threshold the StickyNavbar fades in.
+ */
+export function Hero({ username, firstName, displayName, isAdmin = false }: HeroProps) {
   const { bucket, gradientOpacity } = useTodPalette();
-  const [dayOfWeek, setDayOfWeek] = useState(0);
+  const { prefs, setMode } = useReaderPrefs();
+  const isDark = prefs.mode === 'dark';
+
+  const [scrolled, setScrolled] = useState(false);
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    setDayOfWeek(new Date().getDay());
+    setNow(new Date());
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > window.innerHeight * 0.85);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const image = TOD_IMAGES[bucket];
   const greeting = greetingForBucket(bucket, firstName);
-  const eyebrow = eyebrowForDay(dayOfWeek, bucket);
-  const categoryName =
-    featuredStudy?.category_id != null
-      ? (categories.find((c) => c.id === featuredStudy.category_id)?.name ?? null)
-      : null;
+  const display = displayForBucket(bucket);
+
+  // Issue line — render a stable placeholder until mount to avoid SSR/client
+  // mismatch. The placeholder uses non-breaking spaces so the layout doesn't
+  // jump when the real value lands.
+  const issueLine = useMemo(() => (now ? formatIssueLine(now) : ' '), [now]);
+
+  const initials = displayName
+    ? displayName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+    : username?.slice(0, 2).toUpperCase() ?? '';
+
+  const toggleMode = () => setMode(isDark ? 'light' : 'dark');
 
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{ height: '78vh', minHeight: '520px' }}
-      aria-label="Library home hero"
-    >
-      {/* Time-of-day landscape */}
-      <Image
-        src={image.src}
-        alt={image.alt}
-        fill
-        priority
-        className="object-cover motion-safe:[animation:kenBurns_30s_ease-in-out_infinite]"
-        sizes="100vw"
-      />
+    <>
+      {/* Local styles: hover colors + responsive grid + scroll-fade. The cream
+          column hardcodes #f7f6f3 because Hero lives outside LibraryModeWrapper
+          and --bed-cream is only defined under [data-mode]. */}
+      <style>{`
+        .koinar-hero {
+          display: grid;
+          grid-template-columns: 1.35fr 1fr;
+          min-height: 600px;
+          background: #f7f6f3;
+          position: relative;
+        }
+        .koinar-hero-image {
+          position: relative;
+          overflow: hidden;
+        }
+        .koinar-hero-text {
+          background: #f7f6f3;
+          padding: 48px 56px 56px;
+          display: grid;
+          grid-template-rows: auto 1fr auto;
+          position: relative;
+        }
+        .koinar-hero .hero-nav-item {
+          color: var(--stone-900);
+          transition: color 0.2s ease;
+        }
+        .koinar-hero .hero-nav-item:hover {
+          color: var(--reader-accent-deep, var(--sage-700));
+        }
+        .koinar-hero .hero-nav-item svg {
+          color: var(--stone-700);
+          transition: color 0.2s ease;
+        }
+        .koinar-hero .hero-nav-item:hover svg {
+          color: var(--reader-accent-deep, var(--sage-700));
+        }
+        .koinar-hero .hero-mode-toggle {
+          border: 1px solid rgba(77, 73, 67, 0.18);
+          color: var(--stone-700);
+          transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .koinar-hero .hero-mode-toggle:hover {
+          border-color: var(--stone-700);
+          color: var(--stone-900);
+        }
+        @media (max-width: 768px) {
+          .koinar-hero {
+            grid-template-columns: 1fr;
+            grid-template-rows: 50vh auto;
+            min-height: 0;
+          }
+          .koinar-hero-text {
+            padding: 32px 24px 40px;
+          }
+          .koinar-hero-chevron {
+            display: none;
+          }
+        }
+      `}</style>
 
-      {/* Per-bucket bottom gradient (Amendment 5) — rgba stone-900 over bottom 40% */}
-      {gradientOpacity > 0 && (
-        <div
-          className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
-          style={{
-            background: `linear-gradient(to top, rgba(28, 25, 23, ${gradientOpacity}), rgba(28, 25, 23, 0))`,
-          }}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Editorial lockup — bottom-left */}
-      <div className="absolute bottom-0 left-0 right-0 flex flex-col md:flex-row items-end md:items-end justify-between px-6 md:px-12 pb-10 md:pb-12 gap-6 md:gap-0">
-        <div
-          className="flex flex-col gap-3 animate-[fadeRise_500ms_ease-out_200ms_both]"
-          style={{ maxWidth: '520px' }}
-        >
-          {/* Eyebrow */}
-          <p
-            className="text-[0.7rem] uppercase tracking-[0.24em] font-body"
-            style={{ color: 'var(--warmth)' }}
-          >
-            {eyebrow}
-          </p>
-
-          {/* Greeting */}
-          <h1
-            className="font-display font-normal leading-[1.1] text-[var(--stone-50)]"
-            style={{
-              fontSize: 'clamp(2.75rem, 5vw, 5rem)',
-              textShadow: '0 2px 24px rgba(44,41,36,0.5)',
-            }}
-          >
-            <em>{greeting}</em>
-          </h1>
-
-          {/* Pull — featured study title */}
-          {featuredStudy && (
-            <p
-              className="font-display font-normal leading-[1.2] text-[var(--stone-50)]/75 mt-1"
-              style={{ fontSize: 'clamp(1rem, 2vw, 1.5rem)', textShadow: '0 1px 12px rgba(44,41,36,0.4)' }}
-            >
-              <em>{featuredStudy.title}</em>
-            </p>
+      <section className="koinar-hero" aria-label="Library home hero">
+        {/* LEFT: TOD image */}
+        <div className="koinar-hero-image">
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 58vw"
+            className="object-cover motion-safe:[animation:kenBurns_30s_ease-in-out_infinite]"
+          />
+          {gradientOpacity > 0 && (
+            <div
+              className="absolute inset-x-0 bottom-0 h-[40%] pointer-events-none"
+              style={{
+                background: `linear-gradient(to top, rgba(28, 25, 23, ${gradientOpacity}), rgba(28, 25, 23, 0))`,
+              }}
+              aria-hidden="true"
+            />
           )}
         </div>
 
-        {/* Anchor card — bottom-right desktop, below-lockup mobile */}
-        {featuredStudy && (
-          <div className="animate-[fadeRise_400ms_ease-out_450ms_both] w-full md:w-auto">
-            <FeaturedAnchorCard study={featuredStudy} categoryName={categoryName} />
-          </div>
-        )}
-      </div>
+        {/* RIGHT: cream typographic column */}
+        <div className="koinar-hero-text">
+          {/* Greeting eyebrow — top right */}
+          <p
+            className="font-sans text-right"
+            style={{
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.32em',
+              textTransform: 'uppercase',
+              color: 'var(--stone-700)',
+              paddingTop: '6px',
+            }}
+          >
+            {greeting}
+          </p>
 
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-[var(--stone-50)]/40 motion-safe:animate-[drift_2.5s_ease-in-out_infinite] hidden md:flex"
-        aria-hidden="true"
-      >
-        <span className="text-[9px] uppercase tracking-[0.2em]">Scroll</span>
-        <span className="text-base">&#8964;</span>
-      </div>
-    </section>
+          {/* Display lockup — center */}
+          <div
+            className="flex flex-col items-center justify-center text-center"
+            style={{
+              color: 'var(--stone-900)',
+              lineHeight: 0.92,
+              padding: '24px 0',
+            }}
+          >
+            <span
+              className="font-display"
+              style={{
+                fontWeight: 600,
+                fontSize: 'clamp(2.6rem, 5vw, 4.2rem)',
+                letterSpacing: '-0.012em',
+                textTransform: 'uppercase',
+                fontFeatureSettings: '"case" on',
+                fontVariationSettings: '"opsz" 144',
+              }}
+            >
+              {display.caps}
+            </span>
+            <span
+              className="font-display italic"
+              style={{
+                fontWeight: 400,
+                fontSize: 'clamp(2.6rem, 5vw, 4.2rem)',
+                letterSpacing: '-0.005em',
+                textTransform: 'uppercase',
+                fontVariationSettings: '"opsz" 144',
+                marginTop: '-6px',
+              }}
+            >
+              {display.italic}
+            </span>
+          </div>
+
+          {/* Bottom: in-hero nav + issue line */}
+          <div
+            className="flex flex-col items-center"
+            style={{ gap: '28px' }}
+          >
+            <div
+              className="flex items-center justify-center"
+              style={{
+                gap: '28px',
+                opacity: scrolled ? 0 : 1,
+                transform: scrolled ? 'translateY(-8px)' : 'translateY(0)',
+                pointerEvents: scrolled ? 'none' : 'auto',
+                transition: 'opacity 0.35s ease, transform 0.35s ease',
+              }}
+            >
+              <Link
+                href="/generate"
+                className="hero-nav-item flex items-center font-display uppercase"
+                style={{
+                  gap: '8px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  letterSpacing: '0.16em',
+                }}
+              >
+                <Pencil className="h-[14px] w-[14px]" strokeWidth={1.4} />
+                <span>New Study</span>
+              </Link>
+
+              {isAdmin ? (
+                <Link
+                  href="/bench"
+                  className="hero-nav-item flex items-center font-display uppercase"
+                  style={{
+                    gap: '8px',
+                    fontSize: '14px',
+                    fontWeight: 400,
+                    letterSpacing: '0.16em',
+                  }}
+                >
+                  <LayoutGrid className="h-[14px] w-[14px]" strokeWidth={1.4} />
+                  <span>Study Bench</span>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  aria-label="Study Bench — coming soon"
+                  className="hero-nav-item flex items-center font-display uppercase opacity-50 cursor-not-allowed bg-transparent border-0 p-0"
+                  style={{
+                    gap: '8px',
+                    fontSize: '14px',
+                    fontWeight: 400,
+                    letterSpacing: '0.16em',
+                  }}
+                >
+                  <LayoutGrid className="h-[14px] w-[14px]" strokeWidth={1.4} />
+                  <span>Study Bench</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={toggleMode}
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="hero-mode-toggle flex items-center justify-center rounded-full"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                {isDark ? (
+                  <Sun className="h-[14px] w-[14px]" strokeWidth={1.4} />
+                ) : (
+                  <Moon className="h-[14px] w-[14px]" strokeWidth={1.4} />
+                )}
+              </button>
+
+              {username ? (
+                <Link
+                  href="/profile"
+                  aria-label="Profile"
+                  className="flex items-center justify-center rounded-full bg-[var(--sage-500)] text-white font-sans font-medium transition-transform hover:scale-105"
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    fontSize: '11px',
+                    letterSpacing: '0.06em',
+                    border: '1px solid rgba(0,0,0,0.06)',
+                  }}
+                >
+                  {initials}
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hero-nav-item font-display uppercase"
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 400,
+                    letterSpacing: '0.16em',
+                  }}
+                >
+                  Sign In
+                </Link>
+              )}
+            </div>
+
+            <p
+              className="font-sans text-center"
+              style={{
+                fontSize: '9px',
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: 'var(--stone-500)',
+              }}
+            >
+              {issueLine}
+            </p>
+          </div>
+
+          {/* Chevron — absolute bottom-center of the right column */}
+          <svg
+            className="koinar-hero-chevron"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              bottom: '18px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'var(--stone-700)',
+              opacity: 0.6,
+            }}
+          >
+            <path
+              d="M5 8 L10 13 L15 8"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      </section>
+    </>
   );
 }

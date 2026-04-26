@@ -90,9 +90,10 @@ export default async function HomePage({
     <div className="relative min-h-dvh bg-[var(--stone-50)]">
       {/* Zone 1 — Hero */}
       <Hero
+        username={username}
         firstName={firstName}
-        featuredStudy={featuredStudy}
-        categories={categories}
+        displayName={session.displayName ?? username}
+        isAdmin={session.isAdmin === true}
       />
 
       <LibraryModeWrapper>
