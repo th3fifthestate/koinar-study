@@ -1,7 +1,7 @@
 // app/app/page.tsx
 import { getSession } from '@/lib/auth/session';
 import { getStudies, getAllCategories, getUserFavoriteIds, getFeaturedStudies } from '@/lib/db/queries';
-import { CornerNav } from '@/components/layout/corner-nav';
+import { StickyNavbar } from '@/components/home/sticky-navbar';
 import { Hero } from '@/components/home/hero';
 import { LibraryThreshold } from '@/components/home/library-threshold';
 import { RefineBand } from '@/components/home/refine-band';
@@ -88,8 +88,6 @@ export default async function HomePage({
 
   return (
     <div className="relative min-h-dvh bg-[var(--stone-50)]">
-      <CornerNav username={username} displayName={session.displayName ?? username} isAdmin={session.isAdmin === true} />
-
       {/* Zone 1 — Hero */}
       <Hero
         firstName={firstName}
@@ -98,6 +96,12 @@ export default async function HomePage({
       />
 
       <LibraryModeWrapper>
+        <StickyNavbar
+          username={username}
+          displayName={session.displayName ?? username}
+          isAdmin={session.isAdmin === true}
+        />
+
         {/* Zone 2 — Library proper */}
         <section>
           <LibraryThreshold />

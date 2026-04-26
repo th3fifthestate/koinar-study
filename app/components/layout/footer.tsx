@@ -2,24 +2,64 @@
 import Link from 'next/link';
 
 const LINK_CLASS =
-  'text-base text-[var(--stone-50)]/60 hover:text-[var(--stone-50)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--sage-500)] focus-visible:outline-offset-2 rounded';
+  'block font-display text-[1.1rem] font-normal text-[var(--stone-200)] hover:text-[var(--warmth)] transition-colors py-1.5 focus-visible:outline-2 focus-visible:outline-[var(--sage-500)] focus-visible:outline-offset-2 rounded-sm';
+
+const COL_TITLE_CLASS =
+  "font-sans text-[10px] font-medium uppercase tracking-[0.32em] text-[var(--stone-500)] mb-6";
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+function getDayOfYear(date: Date): number {
+  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const diff = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - start;
+  return Math.floor(diff / 86400000);
+}
 
 export function Footer() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const dayOfYear = getDayOfYear(now);
+  const monthDay = `${MONTHS[now.getMonth()]} ${now.getDate()}, ${year}`;
+
   return (
-    <footer className="bg-[var(--stone-900)] text-[var(--stone-50)] px-10 pt-16 pb-10">
-      <div className="mx-auto max-w-[1280px] grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-20">
+    <footer className="bg-[var(--stone-900)] text-[var(--stone-200)] px-14 pt-24 pb-9">
+      <div className="mx-auto max-w-[1280px] mb-16 grid gap-12 md:gap-24 grid-cols-1 md:[grid-template-columns:1.4fr_1fr_1fr]">
         <div>
-          <div className="font-display text-2xl font-medium tracking-wide mb-3">KOINAR</div>
-          <p className="text-base leading-relaxed text-[var(--stone-50)]/35 max-w-[280px]">
+          <div
+            className="font-display font-medium uppercase text-[var(--stone-50)] mb-[18px]"
+            style={{
+              fontSize: '22px',
+              letterSpacing: '0.42em',
+              paddingLeft: '0.42em',
+              fontVariationSettings: '"opsz" 144',
+            }}
+          >
+            KOINAR
+          </div>
+          <p
+            className="font-display italic font-normal text-[var(--stone-300)] m-0"
+            style={{ fontSize: '1.1rem', lineHeight: 1.55, maxWidth: '280px' }}
+          >
             A quiet fellowship reading Scripture together.
           </p>
         </div>
 
         <nav aria-label="Explore">
-          <h4 className="text-[10px] uppercase tracking-[0.25em] text-[var(--stone-50)]/35 mb-5">
-            Explore
-          </h4>
-          <ul className="space-y-3">
+          <h4 className={COL_TITLE_CLASS}>Explore</h4>
+          <ul>
             <li>
               <Link href="/about" className={LINK_CLASS}>
                 About Koinar
@@ -44,10 +84,8 @@ export function Footer() {
         </nav>
 
         <nav aria-label="Account">
-          <h4 className="text-[10px] uppercase tracking-[0.25em] text-[var(--stone-50)]/35 mb-5">
-            Account
-          </h4>
-          <ul className="space-y-3">
+          <h4 className={COL_TITLE_CLASS}>Account</h4>
+          <ul>
             <li>
               <Link href="/settings" className={LINK_CLASS}>
                 Settings
@@ -67,9 +105,16 @@ export function Footer() {
         </nav>
       </div>
 
-      <div className="mx-auto max-w-[1280px] mt-12 pt-8 border-t border-[var(--stone-50)]/[0.08]">
-        <span className="text-xs text-[var(--stone-50)]/20">
-          &copy; {new Date().getFullYear()} Koinar. Read with others.
+      <div
+        className="mx-auto max-w-[1280px] flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center pt-6 font-sans text-[10px] uppercase text-[var(--stone-500)]"
+        style={{
+          letterSpacing: '0.24em',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        <span>&copy; {year} Koinar</span>
+        <span>
+          Issue No. {dayOfYear} &mdash; {monthDay}
         </span>
       </div>
     </footer>
