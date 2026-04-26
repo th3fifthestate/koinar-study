@@ -180,6 +180,7 @@
   --card-book-studies:   #322816;             /* parchment-deep */
   --card-new-testament:  #2e2820;             /* warmth-mid-deep */
   --card-word-studies:   #232825;             /* sage-stone-deep */
+  --card-ink-bed:        #1d1b16;             /* lead-card variant — same in both modes */
 
   --bed-toc:    #221f1a;                    /* TOC chip — slightly elevated dark */
   --bed-toc-rule: var(--stone-800);         /* TOC right-border separator */
