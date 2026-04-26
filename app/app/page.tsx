@@ -4,6 +4,7 @@ import { getStudies, getUserFavoriteIds, getFeaturedStudies } from '@/lib/db/que
 import { StickyNavbar } from '@/components/home/sticky-navbar';
 import { Hero } from '@/components/home/hero';
 import { LibraryThreshold } from '@/components/home/library-threshold';
+import { FeaturedStudy } from '@/components/home/featured-study';
 import { StudyGrid } from '@/components/library/study-grid';
 import { GenerateInvitationCard } from '@/components/home/generate-invitation-card';
 import { EditorialAside } from '@/components/home/editorial-aside';
@@ -104,6 +105,8 @@ export default async function HomePage({
         {/* Zone 2 — Library proper */}
         <section>
           <LibraryThreshold />
+
+          <FeaturedStudy study={featuredStudy} />
 
           <div
             className="border-b border-[var(--stone-200)] dark:border-[var(--stone-700)] relative"
