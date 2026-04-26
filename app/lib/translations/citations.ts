@@ -78,14 +78,14 @@ export const CITATIONS: Record<TranslationId, Citation> = {
   },
   NASB: {
     short:
-      "NASB® © 1960, 1971, 1972, 1973, 1975, 1977, 1995 The Lockman Foundation. All rights reserved.",
+      "NASB® © 1960, 1962, 1963, 1968, 1971, 1972, 1973, 1975, 1977, 1995 The Lockman Foundation. All rights reserved.",
     full:
       "Scriptures quotations marked (NASB) © are taken from the New American " +
-      "Standard Bible®, NASB® ©, Copyright 1960, 1971, 1972, 1973, 1975, 1977, 1995 " +
-      "by The Lockman Foundation. Used by permission. All rights reserved. The NASB " +
-      "text may not be quoted in any publication made available to the public by a " +
-      "Creative Commons license. The NASB may not be translated into any other " +
-      "language. Website: https://www.lockman.org",
+      "Standard Bible®, NASB® ©, Copyright 1960, 1962, 1963, 1968, 1971, 1972, 1973, " +
+      "1975, 1977, 1995 by The Lockman Foundation. Used by permission. All rights " +
+      "reserved. The NASB text may not be quoted in any publication made available " +
+      "to the public by a Creative Commons license. The NASB may not be translated " +
+      "into any other language. Website: https://www.lockman.org",
     publisherLink: { label: "lockman.org", url: "https://www.lockman.org" },
   },
   // TODO(brief-13): ESV citation pending Crossway application outcome. Only

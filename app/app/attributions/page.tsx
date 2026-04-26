@@ -29,7 +29,7 @@ const API_ROUTING: Array<{
     id: "NLT",
     name: "NLT — New Living Translation",
     blurb:
-      "Served via API.Bible. Responses are cached per the DHCP-lease policy (7-day lease, up to ~500 verses per translation, hourly renewal of leases past 75% of their window).",
+      "Served via API.Bible. Cached on a 7-day rolling window — up to ~500 verses per translation, with entries refreshed hourly once they pass 75% of their lifetime.",
   },
   {
     id: "NIV",
@@ -41,7 +41,7 @@ const API_ROUTING: Array<{
     id: "NASB",
     name: "NASB — New American Standard Bible (1995)",
     blurb:
-      "Served via API.Bible. Cached under the same DHCP-lease policy as NLT, with a slightly higher storage cap (~1,000 verses).",
+      "Served via API.Bible. Same 7-day rolling cache as NLT, with a higher storage cap (~1,000 verses).",
   },
 ];
 
