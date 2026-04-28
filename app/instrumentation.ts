@@ -11,6 +11,18 @@ export async function register() {
     // BIBLE_DB_PATH; if any are missing, download from the R2 data bucket.
     // Cached on the persistent volume so subsequent boots are instant.
     await ensureBibleDbsPresent();
+
+    // FUMS flush + translation-cache renewal run as in-process cron jobs
+    // (Railway volumes are single-service, so a separate cron service can't
+    // reach app.db). See lib/translations/cron-scheduler.ts for rationale.
+    // Skip during `next build` — instrumentation runs in build, but we only
+    // want timers in the long-lived runtime process.
+    if (process.env.NEXT_PHASE !== "phase-production-build") {
+      const { startCronScheduler } = await import(
+        "@/lib/translations/cron-scheduler"
+      );
+      startCronScheduler();
+    }
   }
 }
 
