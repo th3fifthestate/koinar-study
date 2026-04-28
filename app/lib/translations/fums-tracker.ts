@@ -49,7 +49,14 @@ export interface FumsEventInput {
 }
 
 function serializeSurface(surface: DisplaySurface): string {
-  return surface.kind === 'reader' ? 'reader' : `bench:${surface.boardId}`;
+  switch (surface.kind) {
+    case 'reader':
+      return 'reader';
+    case 'bench':
+      return `bench:${surface.boardId}`;
+    case 'export':
+      return `export:${surface.studyId}`;
+  }
 }
 
 export function recordFumsEvent(ev: FumsEventInput): void {

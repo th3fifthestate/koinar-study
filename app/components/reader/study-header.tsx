@@ -7,6 +7,7 @@ import { FavoriteButton } from '@/components/library/favorite-button';
 import { EntityToggle } from './entity-toggle';
 import { BranchMapIndicator } from './branch-map-indicator';
 import { ReaderSettingsPopover } from './reader-settings-popover';
+import { ExportDialog } from './export-dialog';
 import type { TranslationAvailability } from '@/lib/translations/registry';
 
 type FontSize = 'small' | 'medium' | 'large';
@@ -28,6 +29,8 @@ interface StudyHeaderProps {
   currentTranslation: string;
   onTranslationSelect: (id: string) => Promise<void>;
   translating: boolean;
+  /** Read on demand by the export dialog; closes over the latest swap state. */
+  getDisplayContent: () => string;
 }
 
 /**
@@ -58,6 +61,7 @@ export function StudyHeader({
   currentTranslation,
   onTranslationSelect,
   translating,
+  getDisplayContent,
 }: StudyHeaderProps) {
   const [idle, setIdle] = useState(false);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -110,6 +114,12 @@ export function StudyHeader({
         <Share2 className="h-3.5 w-3.5" />
         <span>Share</span>
       </button>
+
+      <ExportDialog
+        studyId={studyId}
+        currentTranslation={currentTranslation}
+        getDisplayContent={getDisplayContent}
+      />
 
       <BranchMapIndicator onOpenMap={onOpenMap} />
       <EntityToggle
