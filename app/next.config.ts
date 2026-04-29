@@ -44,8 +44,10 @@ const nextConfig: NextConfig = {
   // Remove the "X-Powered-By: Next.js" header — no need to advertise the framework
   poweredByHeader: false,
 
-  // Native Node modules that cannot be bundled by webpack
-  serverExternalPackages: ["better-sqlite3", "argon2", "sharp"],
+  // Native Node modules that cannot be bundled by webpack. pdfkit ships
+  // AFM files for its built-in fonts and reads them via __dirname at
+  // runtime; bundling rewrites those paths and the file reads fail.
+  serverExternalPackages: ["better-sqlite3", "argon2", "sharp", "pdfkit"],
 
   images: {
     remotePatterns: [
