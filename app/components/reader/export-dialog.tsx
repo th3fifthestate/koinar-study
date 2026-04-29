@@ -90,7 +90,7 @@ export function ExportDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className="flex items-center gap-1.5 text-[11px] text-[var(--stone-300)] transition-colors hover:text-[var(--sage-500)]"
+        className="flex items-center gap-1.5 text-[11px] text-[var(--stone-500)] transition-colors hover:text-[var(--sage-500)]"
         aria-label="Export study"
       >
         <Download className="h-3.5 w-3.5" />

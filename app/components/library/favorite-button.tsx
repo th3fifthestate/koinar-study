@@ -61,7 +61,7 @@ export function FavoriteButton({
       onClick={handleToggle}
       whileTap={{ scale: 1.3 }}
       transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-      className="flex items-center gap-1.5 text-[11px] text-[var(--stone-300)] hover:text-[var(--destructive)] transition-colors"
+      className="flex items-center gap-1.5 text-[11px] text-[var(--stone-500)] hover:text-[var(--destructive)] transition-colors"
       aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
       disabled={pending}
     >
