@@ -25,8 +25,14 @@
 // Hebrew (Greek is covered by Noto Sans Regular). Mountain icons (⛰ U+26F0
 // or ⛰️ with VS-16) on a line trigger the mountain-annotation block type.
 
-const HEBREW_RANGE = /[֐-׿יִ-ﭏ]/;
-const GREEK_RANGE = /[Ͱ-Ͽἀ-῿]/;
+// Use Unicode script properties — written as literal ranges, the upper end of
+// the Hebrew Presentation Forms range silently swallowed the en-dash (U+2013)
+// because `יִ` in the original literal was a 2-codepoint sequence (yod +
+// hiriq) that the engine reads as `[U+05D9, U+05B4-U+FB4F]`. That made every
+// scripture reference like "Matthew 4:18–20" trigger the Hebrew font fallback
+// and render as tofu.
+const HEBREW_RANGE = /\p{Script=Hebrew}/u;
+const GREEK_RANGE = /\p{Script=Greek}/u;
 const MOUNTAIN_RANGE = /⛰/;
 const STRONGS_PATTERN = /[HG]\d{1,5}/;
 
@@ -59,8 +65,17 @@ export interface InlineSegment {
   bold?: boolean;
   italic?: boolean;
   code?: boolean;
-  /** Contains Hebrew or Greek characters — renderer switches font runs. */
+  /**
+   * Contains Hebrew or Greek characters. Kept for backwards compatibility
+   * — new code should branch on `hebrew` / `greek` directly since they map
+   * to different font fallbacks (Hebrew needs the dedicated Hebrew font;
+   * Greek lives natively in Noto Sans).
+   */
   greekHebrew?: boolean;
+  /** Contains characters in the Hebrew script. */
+  hebrew?: boolean;
+  /** Contains characters in the Greek script. */
+  greek?: boolean;
   /** Strong's number lookup tag (e.g. "H430", "G26"). */
   strongs?: string;
   /** Line carries the mountain icon (treated as a leading marker). */
@@ -255,10 +270,12 @@ export function parseInline(text: string): InlineSegment[] {
 }
 
 function enrichScriptDetection(seg: InlineSegment): void {
-  if (HEBREW_RANGE.test(seg.text) || GREEK_RANGE.test(seg.text)) {
-    seg.greekHebrew = true;
-  }
-  const strongs = STRONGS_PATTERN.exec(seg.text);
+  const hasHebrew = HEBREW_RANGE.test(seg.text);
+  const hasGreek = GREEK_RANGE.test(seg.text);
+  if (hasHebrew) seg.hebrew = true;
+  if (hasGreek) seg.greek = true;
+  if (hasHebrew || hasGreek) seg.greekHebrew = true;
+  const strongs = seg.text.match(STRONGS_PATTERN);
   if (strongs) {
     seg.strongs = strongs[0];
   }

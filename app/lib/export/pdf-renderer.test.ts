@@ -35,7 +35,13 @@ describe("renderStudyToPdf", () => {
     const parsed = parseStudyMarkdown(SAMPLE);
     const buf = await renderStudyToPdf(parsed, {
       translation: "BSB",
-      study: { id: 1, title: parsed.title, generatedAt: "2026-04-28" },
+      study: {
+        id: 1,
+        title: parsed.title,
+        generatedAt: "2026-04-28",
+        formatType: "standard",
+        byline: "Test Author",
+      },
     });
     expect(Buffer.isBuffer(buf)).toBe(true);
     // PDF magic bytes — every PDF starts with "%PDF-".
@@ -47,7 +53,13 @@ describe("renderStudyToPdf", () => {
     const parsed = parseStudyMarkdown(SAMPLE);
     const buf = await renderStudyToPdf(parsed, {
       translation: "NLT",
-      study: { id: 1, title: parsed.title, generatedAt: "2026-04-28" },
+      study: {
+        id: 1,
+        title: parsed.title,
+        generatedAt: "2026-04-28",
+        formatType: "standard",
+        byline: "Test Author",
+      },
     });
     // PDFKit emits text as compressed streams by default — we can't grep the
     // raw buffer reliably for the citation. The smoke test asserts the

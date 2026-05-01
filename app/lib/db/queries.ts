@@ -792,17 +792,50 @@ export function getStudyFavoriteCount(studyId: number): number {
   return row.count;
 }
 
-/** Fetch minimal study fields needed by the translate route. */
+/** Fetch minimal study fields needed by the translate + export routes. */
 export function getStudyForTranslate(
   studyId: number,
-): { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number } | null {
+): {
+  id: number;
+  slug: string;
+  title: string;
+  format_type: string;
+  original_content: string | null;
+  current_translation: string;
+  created_by: number;
+  is_public: number;
+  author_display_name: string | null;
+  author_username: string;
+} | null {
   return (
     (getDb()
       .prepare(
-        `SELECT id, original_content, current_translation, created_by, is_public FROM studies WHERE id = ?`,
+        // Author display matches the reader: admin-authored studies surface
+        // as "Koinar Team" (mirrors the listStudies / getStudyDetail
+        // queries above). Without this, the PDF export's byline would
+        // disagree with the hero shown in the reader.
+        `SELECT s.id, s.slug, s.title, s.format_type, s.original_content,
+                s.current_translation, s.created_by, s.is_public,
+                CASE WHEN u.is_admin = 1 THEN 'Koinar Team' ELSE u.display_name END
+                  AS author_display_name,
+                u.username AS author_username
+           FROM studies s
+           JOIN users u ON u.id = s.created_by
+          WHERE s.id = ?`,
       )
       .get(studyId) as
-      | { id: number; original_content: string | null; current_translation: string; created_by: number; is_public: number }
+      | {
+          id: number;
+          slug: string;
+          title: string;
+          format_type: string;
+          original_content: string | null;
+          current_translation: string;
+          created_by: number;
+          is_public: number;
+          author_display_name: string | null;
+          author_username: string;
+        }
       | undefined) ?? null
   );
 }

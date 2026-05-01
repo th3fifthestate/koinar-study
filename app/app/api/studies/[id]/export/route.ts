@@ -116,6 +116,8 @@ export async function POST(
         id: studyId,
         title: ast.title,
         generatedAt: new Date().toISOString(),
+        formatType: study.format_type,
+        byline: study.author_display_name ?? study.author_username,
       },
     });
   } catch (err) {
@@ -154,6 +156,7 @@ export async function POST(
     });
   }
 
+  const downloadFilename = makeDownloadFilename(study.slug, translation, "pdf");
   let upload;
   try {
     upload = await putExport({
@@ -162,7 +165,7 @@ export async function POST(
       translation,
       format: "pdf",
       buffer: pdfBuffer,
-      filename: makeDownloadFilename(study.id, translation, "pdf"),
+      filename: downloadFilename,
     });
   } catch (err) {
     logger.error(
@@ -186,7 +189,7 @@ export async function POST(
     {
       url: upload.url,
       expiresAt: upload.expiresAt,
-      filename: makeDownloadFilename(study.id, translation, "pdf"),
+      filename: downloadFilename,
     },
     { status: 200 },
   );
@@ -204,9 +207,12 @@ function countVerseQuotesInMarkdown(md: string): number {
 }
 
 function makeDownloadFilename(
-  studyId: number,
+  studySlug: string,
   translation: string,
   format: "pdf",
 ): string {
-  return `koinar-study-${studyId}-${translation}.${format}`;
+  // The slug is already URL/filename-safe (kebab-case, ASCII). Belt-and-suspenders
+  // sanitization in case a legacy row has anything unexpected.
+  const safeSlug = studySlug.replace(/[^a-z0-9-]+/gi, "-").replace(/^-+|-+$/g, "");
+  return `${safeSlug}-${translation}.${format}`;
 }
