@@ -10,7 +10,7 @@
     },
     {
       "name": "koinar-dev",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "/Users/davidgeorge/.nvm/versions/node/v22.22.2/bin/npm",
       "runtimeArgs": ["run", "dev"],
       "cwd": "/Users/davidgeorge/Desktop/study-app/app",
       "port": 3001
