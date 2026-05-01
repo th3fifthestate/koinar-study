@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { List } from 'lucide-react';
 import {
   Sheet,
@@ -79,6 +79,34 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
+interface HeadingGroup {
+  h2: HeadingItem;
+  children: HeadingItem[];
+}
+
+/**
+ * Group headings so each H2 owns the H3/H4 entries that follow it. The
+ * dot-spine and active-state tracking only fire on H2 rows; sub-headings
+ * render as a nested list (clickable, but no rail dot or active highlight).
+ */
+function groupHeadings(headings: HeadingItem[]): HeadingGroup[] {
+  const groups: HeadingGroup[] = [];
+  let current: HeadingGroup | null = null;
+  for (const h of headings) {
+    if (h.level <= 2) {
+      current = { h2: h, children: [] };
+      groups.push(current);
+    } else if (current) {
+      current.children.push(h);
+    } else {
+      // H3/H4 before any H2 — surface as its own top-level row.
+      current = { h2: h, children: [] };
+      groups.push(current);
+    }
+  }
+  return groups;
+}
+
 function DotSpineList({
   headings,
   activeId,
@@ -88,44 +116,52 @@ function DotSpineList({
   const scrollToHeading = useHeadingScroll();
   const reducedMotion = useReducedMotion();
 
+  const groups = useMemo(() => groupHeadings(headings), [headings]);
+
   const ulRef = useRef<HTMLUListElement>(null);
   const [activeOffset, setActiveOffset] = useState(0);
   const [hasPositioned, setHasPositioned] = useState(false);
 
-  // Compute glider position whenever activeId or headings change
+  // Compute glider position whenever activeId or groups change. The <li>
+  // is positioned (so its offsetTop is relative to the <ul>), while its
+  // child <button> reports offsetTop:0 inside that <li>. Center the
+  // glider on the button row at the top of the <li>, ignoring the nested
+  // sub-list height that the <li> wraps.
+  const measureActiveOffset = useCallback((): number | null => {
+    if (!ulRef.current || !activeId) return null;
+    const items = ulRef.current.querySelectorAll<HTMLLIElement>(':scope > li');
+    const activeIndex = groups.findIndex((g) => g.h2.id === activeId);
+    if (activeIndex === -1) return null;
+    const li = items[activeIndex];
+    if (!li) return null;
+    const button = li.querySelector<HTMLButtonElement>(':scope > button');
+    if (!button) return null;
+    return li.offsetTop + button.offsetHeight / 2 - GLIDER_SIZE / 2;
+  }, [activeId, groups]);
+
   useEffect(() => {
-    if (disableGlider || !activeId || !ulRef.current) return;
-    const items = ulRef.current.querySelectorAll('li');
-    const activeIndex = headings.findIndex((h) => h.id === activeId);
-    if (activeIndex === -1) return;
-    const item = items[activeIndex];
-    if (!item) return;
-    const offset = item.offsetTop + item.offsetHeight / 2 - GLIDER_SIZE / 2;
+    if (disableGlider) return;
+    const offset = measureActiveOffset();
+    if (offset === null) return;
     if (!hasPositioned) {
-      // First position: jump without transition, then fade in
       setActiveOffset(offset);
       requestAnimationFrame(() => setHasPositioned(true));
     } else {
       setActiveOffset(offset);
     }
-  }, [activeId, headings, hasPositioned, disableGlider]);
+  }, [measureActiveOffset, disableGlider, hasPositioned]);
 
-  // Recompute on resize (e.g. font size change)
+  // Recompute on resize (e.g. font size change, sub-list height shifts)
   useEffect(() => {
     if (disableGlider || !ulRef.current) return;
     const el = ulRef.current;
     const observer = new ResizeObserver(() => {
-      if (!activeId) return;
-      const items = el.querySelectorAll('li');
-      const activeIndex = headings.findIndex((h) => h.id === activeId);
-      if (activeIndex === -1) return;
-      const item = items[activeIndex];
-      if (!item) return;
-      setActiveOffset(item.offsetTop + item.offsetHeight / 2 - GLIDER_SIZE / 2);
+      const offset = measureActiveOffset();
+      if (offset !== null) setActiveOffset(offset);
     });
     observer.observe(el);
     return () => observer.disconnect();
-  }, [activeId, headings, disableGlider]);
+  }, [measureActiveOffset, disableGlider]);
 
   // Glider transition: fade-in only on first mount, then transform-only
   const gliderTransition = reducedMotion
@@ -136,7 +172,7 @@ function DotSpineList({
 
   return (
     <nav aria-label="Table of contents" className="relative">
-      {/* Spine rail */}
+      {/* Spine rail — sized to the H2 column only; sub-lists indent past it. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-[5px] top-2 bottom-2 w-px"
@@ -144,20 +180,17 @@ function DotSpineList({
       />
 
       <ul ref={ulRef} className="relative space-y-2">
-        {headings.map((h) => {
-          const isActive = h.id === activeId;
-          const isSub = h.level >= 3;
-          const dotSize = isSub ? 5 : 7;
-          // Dots center on the spine (which sits at left 5px). A size-7 dot
-          // needs -1px to align; a size-5 dot needs +0px.
-          const dotOffset = isSub ? 3 : 2;
+        {groups.map(({ h2, children }) => {
+          const isActive = h2.id === activeId;
+          const dotSize = 7;
+          const dotOffset = 2;
 
           return (
-            <li key={h.id} className="group/item relative">
+            <li key={h2.id} className="group/item relative">
               <button
                 type="button"
                 onClick={() => {
-                  scrollToHeading(h.id, h.text);
+                  scrollToHeading(h2.id, h2.text);
                   onItemClick?.();
                 }}
                 className="relative flex w-full cursor-pointer items-center gap-3 pl-6 pr-2 py-1 text-left text-sm transition-all duration-300 ease-out hover:opacity-100"
@@ -167,9 +200,9 @@ function DotSpineList({
                     : 'var(--stone-500)',
                 }}
               >
-                {/* Rail marker dot — hollow, always visible at low opacity.
-                    When glider is active: hide the marker under the glider.
-                    When glider is disabled (mobile): use the old filled-dot behavior. */}
+                {/* Rail marker dot. With the glider the marker is hollow
+                    (the glider sits on top); with disableGlider (mobile)
+                    we fall back to the filled-dot active state. */}
                 <span
                   aria-hidden="true"
                   data-toc-active={disableGlider && isActive ? 'true' : undefined}
@@ -200,15 +233,37 @@ function DotSpineList({
                   }}
                 />
 
-                {/* Label — always visible, weight+color shift on active */}
                 <span
                   className={`truncate transition-all duration-300 ease-out ${
                     isActive ? 'font-medium' : ''
-                  } ${isSub ? 'text-[0.78rem]' : ''}`}
+                  }`}
                 >
-                  {h.text}
+                  {h2.text}
                 </span>
               </button>
+
+              {children.length > 0 && (
+                <ul className="ml-6 mt-1 space-y-0.5">
+                  {children.map((sub) => {
+                    const indent = sub.level >= 4 ? 'pl-3' : '';
+                    return (
+                      <li key={sub.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            scrollToHeading(sub.id, sub.text);
+                            onItemClick?.();
+                          }}
+                          className={`block w-full cursor-pointer truncate py-0.5 pr-2 text-left text-[0.78rem] leading-snug transition-colors duration-200 ease-out hover:text-[var(--stone-700)] ${indent}`}
+                          style={{ color: 'var(--stone-500)' }}
+                        >
+                          {sub.text}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </li>
           );
         })}

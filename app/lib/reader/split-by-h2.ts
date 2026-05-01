@@ -1,6 +1,7 @@
 // app/lib/reader/split-by-h2.ts
 
 import type { BedVariant } from '@/components/reader/bed';
+import { slugifyHeading } from './slugify-heading';
 
 export interface MarkdownSection {
   /** Section title (e.g., "Summary", "The Calling of a Sinful Man (Luke 5:1–11)"). */
@@ -30,14 +31,6 @@ function classify(heading: string): MarkdownSection['key'] {
   return 'body';
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/\s*\([^)]*\)\s*/g, ' ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
 /**
  * Split markdown into sections at H2 (`## …`) boundaries. Anything before
  * the first H2 (typically the H1 title and json-metadata fence) is dropped
@@ -54,7 +47,7 @@ export function splitByH2(markdown: string): MarkdownSection[] {
       if (current) {
         sections.push({
           heading: current.heading,
-          slug: slugify(current.heading),
+          slug: slugifyHeading(current.heading),
           markdown: current.lines.join('\n'),
           key: classify(current.heading),
         });
@@ -67,7 +60,7 @@ export function splitByH2(markdown: string): MarkdownSection[] {
   if (current) {
     sections.push({
       heading: current.heading,
-      slug: slugify(current.heading),
+      slug: slugifyHeading(current.heading),
       markdown: current.lines.join('\n'),
       key: classify(current.heading),
     });

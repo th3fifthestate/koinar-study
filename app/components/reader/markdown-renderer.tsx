@@ -73,9 +73,19 @@ function stripLeadingMountain(children: ReactNode): ReactNode {
 
 function createSlugify(prefix?: string) {
   const counters = new Map<string, number>();
+  // Cache keyed by the heading node's source-offset so that repeated calls
+  // for the same heading (under StrictMode dev double-render or async
+  // MarkdownHooks re-renders) return the same id and don't inflate the
+  // duplicate counter. Without this cache the persisted slugRef would push
+  // every H3 to a `-1`, `-2`, `-3` suffix as the page hydrates, which
+  // breaks `getElementById` lookups from the TOC.
+  const cache = new Map<number, string>();
   const pfx = prefix ? `${prefix}--` : '';
   return {
-    slugify(children: ReactNode): string {
+    slugify(children: ReactNode, offset?: number): string {
+      if (offset !== undefined && cache.has(offset)) {
+        return cache.get(offset)!;
+      }
       const text = extractTextContent(children);
       const base = text
         .toLowerCase()
@@ -85,10 +95,13 @@ function createSlugify(prefix?: string) {
       const count = counters.get(base) ?? 0;
       counters.set(base, count + 1);
       const suffixed = count === 0 ? base : `${base}-${count}`;
-      return `${pfx}${suffixed}`;
+      const id = `${pfx}${suffixed}`;
+      if (offset !== undefined) cache.set(offset, id);
+      return id;
     },
     reset() {
       counters.clear();
+      cache.clear();
     },
   };
 }
@@ -249,12 +262,19 @@ export function MarkdownRenderer({ content, images, fontSize, idPrefix }: Markdo
 
   const components = useMemo(() => {
     const { slugify } = slugRef.current;
-    // Type helper for react-markdown component props
+    // Type helper for react-markdown component props. `node` carries
+    // remark/mdast position info — `position.start.offset` keys the
+    // slugify cache so a heading rendered multiple times always produces
+    // the same id.
     type MdProps = { children?: ReactNode; node?: unknown; [key: string]: unknown };
+    const offsetOf = (node: unknown): number | undefined => {
+      const pos = (node as { position?: { start?: { offset?: number } } } | undefined)?.position;
+      return pos?.start?.offset;
+    };
 
     return {
       h1: ({ children, node, ...props }: MdProps) => {
-        const id = slugify(children);
+        const id = slugify(children, offsetOf(node));
         return (
           <h1 id={id} className="scroll-mt-24 font-display text-4xl font-normal mt-12 mb-6" {...props}>
             {children}
@@ -268,7 +288,7 @@ export function MarkdownRenderer({ content, images, fontSize, idPrefix }: Markdo
         // collisions on the same target. Without idPrefix (standalone use)
         // the H2 self-anchors via slugify. The H3/H4 counter map only tracks
         // H3/H4 slugs, so skipping the H2 doesn't disturb sibling counters.
-        const id = idPrefix ? undefined : slugify(children);
+        const id = idPrefix ? undefined : slugify(children, offsetOf(node));
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
         historicalContextSectionRef.current = /historical\s*context/i.test(text);
@@ -284,7 +304,7 @@ export function MarkdownRenderer({ content, images, fontSize, idPrefix }: Markdo
         );
       },
       h3: ({ children, node, ...props }: MdProps) => {
-        const id = slugify(children);
+        const id = slugify(children, offsetOf(node));
         const text = extractTextContent(children);
         crossRefSectionRef.current = /cross.?ref/i.test(text);
         historicalContextSectionRef.current = /historical\s*context/i.test(text);
@@ -305,7 +325,7 @@ export function MarkdownRenderer({ content, images, fontSize, idPrefix }: Markdo
         );
       },
       h4: ({ children, node, ...props }: MdProps) => {
-        const id = slugify(children);
+        const id = slugify(children, offsetOf(node));
         return (
           <h4 id={id} className="scroll-mt-24 font-display text-xl font-medium mt-6 mb-2" {...props}>
             {children}

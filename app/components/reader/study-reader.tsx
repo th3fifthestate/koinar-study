@@ -27,6 +27,7 @@ import { ReaderSurface } from './reader-surface';
 import { VerificationPanel } from './verification-panel';
 import { Bed } from './bed';
 import { splitByH2, bedForSection } from '@/lib/reader/split-by-h2';
+import { slugifyHeading } from '@/lib/reader/slugify-heading';
 import type { TranslationAvailability } from '@/lib/translations/registry';
 import { SWAP_FAILURE_HINT, type SwapFailureReason } from '@/lib/translations/swap-failure';
 
@@ -139,13 +140,13 @@ function extractHeadings(markdown: string): HeadingItem[] {
   while ((m = pattern.exec(markdown)) !== null) {
     const level = m[1].length;
     const text = m[2].trim();
-    const base = text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
 
     let id: string;
     if (level === 2) {
+      // H2 anchor must match the Bed wrapper's id (produced by
+      // splitByH2's slugifyHeading, which strips parens). Using the same
+      // helper here keeps the TOC IntersectionObserver in sync with DOM.
+      const base = slugifyHeading(text);
       const count = topLevelCounts.get(base) ?? 0;
       topLevelCounts.set(base, count + 1);
       const suffixed = count === 0 ? base : `${base}-${count}`;
@@ -153,6 +154,11 @@ function extractHeadings(markdown: string): HeadingItem[] {
       sectionCounts.clear();
       id = suffixed;
     } else {
+      // H3/H4 base mirrors createSlugify in markdown-renderer.
+      const base = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
       const count = sectionCounts.get(base) ?? 0;
       sectionCounts.set(base, count + 1);
       const suffixed = count === 0 ? base : `${base}-${count}`;
@@ -240,7 +246,14 @@ export function StudyReader({
   }, [currentTranslation, study.id]);
 
   const headings = useMemo(() => extractHeadings(initialContent), [initialContent]);
-  const headingIds = useMemo(() => headings.map((h) => h.id), [headings]);
+  // Only H1/H2 ids feed the active-heading tracker. Sub-headings stay
+  // clickable in the TOC but don't drive the spine dot — the wrapping
+  // <Bed><section> for an H2 has a tall bounding box that would otherwise
+  // dominate the IntersectionObserver and prevent any H3 from ever winning.
+  const headingIds = useMemo(
+    () => headings.filter((h) => h.level <= 2).map((h) => h.id),
+    [headings],
+  );
 
   useReadingProgress(study.slug);
 
@@ -359,6 +372,7 @@ function StudyReaderContent({
   const sections = useMemo(() => splitByH2(displayContent), [displayContent]);
 
   return (
+    <>
     <ReaderSurface>
       <ReadingProgress />
 
@@ -523,9 +537,6 @@ function StudyReaderContent({
         </main>
       </div>
 
-      {/* Mobile TOC */}
-      <MobileTocButton headings={headings} activeId={activeId} />
-
       {/* Entity Context Drawer */}
       <EntityDrawer studyTitle={study.title} />
 
@@ -536,5 +547,13 @@ function StudyReaderContent({
         studyTitle={study.title}
       />
     </ReaderSurface>
+
+    {/* Mobile TOC — sibling of ReaderSurface so its position:fixed
+        anchors to the viewport. ReaderSurface's koinar-reader-enter
+        animation leaves an identity transform that would otherwise
+        make ReaderSurface the containing block for fixed descendants
+        (same trap that necessitated portaling EntityDrawer). */}
+    <MobileTocButton headings={headings} activeId={activeId} />
+    </>
   );
 }
