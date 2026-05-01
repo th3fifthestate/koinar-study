@@ -3,6 +3,7 @@
 import { createContext, useContext, useMemo, useRef, type ReactNode, type ComponentType } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import type { StudyImage } from '@/lib/db/types';
 import { ScriptureBlock } from './scripture-block';
 import { HistoricalContext } from './historical-context';
@@ -497,6 +498,7 @@ export function MarkdownRenderer({ content, images, fontSize, idPrefix }: Markdo
           <MarkdownHooks
             key={`md-${i}`}
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeSanitize]}
             components={components}
           >
             {section.content ?? ''}

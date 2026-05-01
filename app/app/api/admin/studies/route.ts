@@ -27,6 +27,11 @@ export async function GET(request: NextRequest) {
 
   const db = getDb();
 
+  // SAFE: only static condition fragments are concatenated below; ALL
+  // user-supplied values bind via `?` placeholders. Do NOT interpolate
+  // column names, sort directions, LIMIT/OFFSET values, or any user input
+  // into this template — anything beyond a fixed condition string is a
+  // SQL-injection footgun.
   const conditions: string[] = [];
   const queryParams: (string | number)[] = [];
 

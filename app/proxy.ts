@@ -12,19 +12,31 @@ const PUBLIC_PATHS = new Set([
   "/privacy",
   "/terms",
   "/attributions",
+  "/contact",
   "/api/auth/register",
   "/api/auth/register-welcome",
   "/api/auth/login",
   "/api/auth/login/verify",
+  // Forgot/reset password flows must be reachable when logged out — that's
+  // the whole point. Each endpoint enforces its own rate limit and token
+  // claim atomicity; see the route handlers.
+  "/api/auth/forgot-password",
+  "/api/auth/reset-password",
   "/api/auth/me",
   "/api/health",
+  "/api/contact",
   "/api/waitlist/submit",
+  "/api/waitlist/notify",
 ]);
 
 function isPublicPath(pathname: string): boolean {
   if (PUBLIC_PATHS.has(pathname)) return true;
   if (pathname.startsWith("/join/")) return true;
   if (pathname.startsWith("/welcome/")) return true;
+  // Password-reset email links: /reset/<token>. The page is server-rendered
+  // and pre-validates the token before showing the form; allowing logged-out
+  // access is required for the flow to function.
+  if (pathname.startsWith("/reset/")) return true;
   if (pathname.startsWith("/api/join/")) return true;
   if (pathname.startsWith("/api/verses")) return true;
   if (pathname.startsWith("/study/")) return true;
@@ -65,16 +77,31 @@ export async function proxy(request: NextRequest) {
 
   if (isPublicPath(pathname)) return response;
 
+  // For API requests (or any non-GET — POST/PUT/DELETE shouldn't be redirected
+  // because following a 307 turns it back into the same verb against an HTML
+  // page), return JSON status codes so fetch() callers branch correctly.
+  // Page navigations still get the friendly redirect to /.
+  const isApiOrMutation =
+    pathname.startsWith("/api/") || request.method !== "GET";
+
   if (!session.userId) {
-    // Logged-out user hitting protected route → landing page
+    if (isApiOrMutation) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   if (!session.isApproved && !pathname.startsWith("/pending") && !pathname.startsWith("/api/auth/logout")) {
+    if (isApiOrMutation) {
+      return NextResponse.json({ error: "Account pending approval" }, { status: 403 });
+    }
     return NextResponse.redirect(new URL("/pending", request.url));
   }
 
   if (pathname.startsWith("/admin") && !session.isAdmin) {
+    if (isApiOrMutation) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     return NextResponse.redirect(new URL("/", request.url));
   }
 

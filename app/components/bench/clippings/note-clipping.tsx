@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeSanitize from 'rehype-sanitize'
 
 interface NoteSourceRef {
   type: 'note'
@@ -71,7 +72,7 @@ export function NoteClipping({ clippingId, sourceRef }: NoteClippingProps) {
     >
       {value ? (
         <div className="text-[12px] prose prose-sm max-w-none leading-relaxed">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{value}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>{value}</ReactMarkdown>
         </div>
       ) : (
         <p className="text-muted-foreground italic text-[12px]">Double-click to add a note…</p>

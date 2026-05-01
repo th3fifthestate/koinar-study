@@ -136,8 +136,9 @@ export async function POST(request: NextRequest) {
     const session = await getSession();
     await session.destroy();
 
-    console.info(
-      `[security] password reset completed for userId=${user.id}`
+    logger.info(
+      { route: "/api/auth/reset-password", event: "password_reset_completed", userId: user.id },
+      "Password reset completed"
     );
 
     return NextResponse.json({ success: true });

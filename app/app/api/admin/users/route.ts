@@ -25,6 +25,10 @@ export async function GET(request: NextRequest) {
 
   const db = getDb();
 
+  // SAFE: whereClause is a fixed string literal selected by a boolean.
+  // ALL user-supplied values bind via `?` placeholders in `.all(...bindParams)`.
+  // Do NOT interpolate column names, sort directions, or any user input into
+  // this template — anything beyond a static literal is a SQL-injection footgun.
   const whereClause = search ? `WHERE u.username LIKE ? OR u.email LIKE ?` : '';
   const bindParams = search ? [`%${search}%`, `%${search}%`] : [];
 

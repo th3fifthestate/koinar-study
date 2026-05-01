@@ -1,11 +1,9 @@
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/-/g, ' ')           // treat hyphens as word separators before stripping
-    .replace(/[^a-z0-9\s]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-}
+// Re-export the canonical reader slug so bench section lookups produce the
+// same slug the reader uses for the same heading. Without this, a heading
+// like "Self-control" yields different slugs in the two paths and the bench
+// section-pull silently misses.
+export { slugifyHeading as slugify } from '@/lib/reader/slugify-heading'
+import { slugifyHeading } from '@/lib/reader/slugify-heading'
 
 export function extractSection(markdown: string, headingSlug: string): string | null {
   const lines = markdown.split('\n')
@@ -19,7 +17,7 @@ export function extractSection(markdown: string, headingSlug: string): string | 
 
     if (match) {
       if (inSection && h2) break // next h2 closes the section
-      if (slugify(match[1]) === headingSlug) {
+      if (slugifyHeading(match[1]) === headingSlug) {
         inSection = true
       }
     }

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 import { SAMPLE_STUDY_MARKDOWN } from '@/lib/data/sample-study';
 
 interface SampleStudyEmbedProps {
@@ -25,6 +26,7 @@ export function SampleStudyEmbed({ markdown, onScroll }: SampleStudyEmbedProps) 
     >
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <ReactMarkdown
+          rehypePlugins={[rehypeSanitize]}
           components={{
             blockquote: ({ children }) => (
               <blockquote className="border-l-4 border-[var(--sage-300)] bg-[var(--secondary)]/50 py-3 px-4 rounded-r-lg not-italic font-serif">

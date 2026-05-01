@@ -125,8 +125,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.info(
-      `[security] password reset requested for userId=${user.id}`
+    logger.info(
+      { route: "/api/auth/forgot-password", event: "password_reset_requested", userId: user.id },
+      "Password reset email queued"
     );
     return NextResponse.json(OK);
   } catch (err) {

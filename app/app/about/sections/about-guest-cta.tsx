@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AboutAuth } from "../../components/about-auth";
 
 export function AboutGuestCta() {
@@ -45,13 +46,12 @@ export function AboutGuestCta() {
 
         <p className="reveal reveal-d3 font-body text-[0.75rem] font-normal text-[rgba(247,246,243,0.25)] mt-12">
           Questions?{" "}
-          {/* TODO(brief-19): swap to <Link href="/contact"> once /contact ships */}
-          <a
-            href="mailto:hello@koinar.app"
+          <Link
+            href="/contact"
             className="text-[rgba(247,246,243,0.35)] no-underline border-b border-[rgba(247,246,243,0.15)] transition-all duration-250 ease-out hover:text-[rgba(247,246,243,0.6)] hover:border-[rgba(247,246,243,0.3)]"
           >
-            hello@koinar.app
-          </a>
+            Get in touch
+          </Link>
         </p>
       </div>
     </section>

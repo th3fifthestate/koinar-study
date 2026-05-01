@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/middleware";
 import { uploadImageToR2, convertToWebP } from "@/lib/images/r2";
+import {
+  isValidImageMagic,
+  MAX_IMAGE_BYTES,
+  MAX_IMAGE_BASE64_CHARS,
+} from "@/lib/images/validate";
 import { getDb } from "@/lib/db/connection";
 import { z } from "zod";
 import { randomUUID } from "crypto";
@@ -14,7 +19,7 @@ const isMutationLimited = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const seasonalSchema = z.object({
   season: z.enum(["spring", "summer", "autumn", "winter"]),
-  imageBase64: z.string().min(1),
+  imageBase64: z.string().min(1).max(MAX_IMAGE_BASE64_CHARS),
   fluxPrompt: z.string().min(1),
   style: z.string(),
   fluxTaskId: z.string().optional(),
@@ -48,6 +53,18 @@ export async function POST(request: NextRequest) {
 
   try {
     const rawBuffer = Buffer.from(data.imageBase64, "base64");
+    if (rawBuffer.length > MAX_IMAGE_BYTES) {
+      return NextResponse.json(
+        { error: "Image too large" },
+        { status: 413 }
+      );
+    }
+    if (!isValidImageMagic(rawBuffer)) {
+      return NextResponse.json(
+        { error: "Invalid image format. Expected JPEG, PNG, WebP, or GIF." },
+        { status: 400 }
+      );
+    }
     const { buffer: webpBuffer } = await convertToWebP(rawBuffer);
 
     const imageUuid = randomUUID();

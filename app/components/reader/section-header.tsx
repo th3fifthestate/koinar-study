@@ -1,6 +1,4 @@
 // app/components/reader/section-header.tsx
-'use client';
-
 import { type ReactNode } from 'react';
 
 interface SectionHeaderProps {

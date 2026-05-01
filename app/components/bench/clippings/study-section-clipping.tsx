@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ExternalLink } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeSanitize from 'rehype-sanitize'
 import type { BenchClippingSourceRef } from '@/lib/db/types'
 
 type StudySectionRef = Extract<BenchClippingSourceRef, { type: 'study-section' }>
@@ -83,7 +84,7 @@ export function StudySectionClipping({ sourceRef }: StudySectionClippingProps) {
           </div>
         ) : data?.content ? (
           <div className="prose prose-sm prose-stone max-w-none text-xs leading-relaxed">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>{data.content}</ReactMarkdown>
           </div>
         ) : (
           <p className="text-[13px] text-muted-foreground italic pt-2">Section not found.</p>

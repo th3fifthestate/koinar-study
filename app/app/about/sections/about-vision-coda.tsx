@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export function AboutVisionCoda() {
   return (
     <section
@@ -49,13 +51,12 @@ export function AboutVisionCoda() {
             hello@koinar.app
           </a>
           {" \u00b7 "}
-          {/* TODO(brief-19): swap to <Link href="/contact"> once /contact ships */}
-          <a
-            href="mailto:hello@koinar.app"
+          <Link
+            href="/contact"
             className="text-[rgba(247,246,243,0.5)] no-underline border-b border-[rgba(247,246,243,0.2)] transition-all duration-250 ease-out hover:text-[rgba(247,246,243,0.75)] hover:border-[rgba(247,246,243,0.4)]"
           >
             Contribute feedback
-          </a>
+          </Link>
         </p>
       </div>
     </section>

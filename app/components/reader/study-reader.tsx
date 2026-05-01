@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
 import { ReaderSurface } from './reader-surface';
+import { formatDate } from '@/lib/utils/format';
 import { VerificationPanel } from './verification-panel';
 import { Bed } from './bed';
 import { splitByH2, bedForSection } from '@/lib/reader/split-by-h2';
@@ -77,18 +78,6 @@ function countCitedVerses(markdown: string): number {
 
 function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-}
-
-function formatDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  } catch {
-    return iso;
-  }
 }
 
 /**

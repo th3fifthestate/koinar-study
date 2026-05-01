@@ -1,11 +1,13 @@
 import { Resend } from "resend";
+import { env } from "@/lib/env";
+import { createRateLimiter, getClientIp } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 function getAudienceId(): string {
-  const id = process.env.RESEND_AUDIENCE_ID;
-  if (!id && process.env.NODE_ENV === "production") {
+  const id = env.RESEND_AUDIENCE_ID;
+  if (!id && env.NODE_ENV === "production") {
     throw new Error("RESEND_AUDIENCE_ID is required in production");
   }
   return id ?? "";
@@ -19,48 +21,7 @@ const MAX_BODY_SIZE = 1024; // 1KB
 // Method gating is handled by Next.js itself — only the POST export is
 // reachable. Non-POST verbs return 405 with no handler invocation.
 
-// In-memory rate limiter (IP-based, 5 requests per minute)
-// Note: state is lost on container restart — Cloudflare WAF provides persistent layer
-const rateLimit = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60_000;
-const RATE_LIMIT_MAX = 5;
-// Prevent unbounded Map growth under sustained attack
-const RATE_LIMIT_MAX_ENTRIES = 10_000;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-
-  // Evict expired entries if map is getting large
-  if (rateLimit.size > RATE_LIMIT_MAX_ENTRIES) {
-    for (const [key, entry] of rateLimit) {
-      if (now > entry.resetTime) rateLimit.delete(key);
-    }
-  }
-
-  const entry = rateLimit.get(ip);
-  if (!entry || now > entry.resetTime) {
-    rateLimit.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-/**
- * Extract the real client IP.
- * Priority: cf-connecting-ip (Cloudflare) > x-forwarded-for (proxy) > "unknown"
- */
-function getClientIp(request: Request): string {
-  // Cloudflare sets this to the true client IP — most reliable behind CF
-  const cfIp = request.headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp.trim();
-
-  // Fallback: first entry in x-forwarded-for chain
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() ?? "unknown";
-
-  return "unknown";
-}
+const isRateLimited = createRateLimiter({ windowMs: 60_000, max: 5 });
 
 export async function POST(request: Request) {
   // Rate limit by IP

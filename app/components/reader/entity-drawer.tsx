@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ResizablePane, useResizablePaneWidth } from './resizable-pane';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -311,7 +312,7 @@ function DrawerEntityContent({
         <TabsContent value="summary" className="mt-3">
           {detail.summary ? (
             <div className="prose-entity font-body text-sm leading-relaxed text-foreground/90">
-              <MarkdownHooks remarkPlugins={[remarkGfm]}>
+              <MarkdownHooks remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
                 {detail.summary}
               </MarkdownHooks>
             </div>
@@ -322,7 +323,7 @@ function DrawerEntityContent({
         <TabsContent value="full_profile" className="mt-3">
           {detail.full_profile ? (
             <div className="prose-entity font-body text-sm leading-relaxed text-foreground/90">
-              <MarkdownHooks remarkPlugins={[remarkGfm]}>
+              <MarkdownHooks remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
                 {detail.full_profile}
               </MarkdownHooks>
             </div>

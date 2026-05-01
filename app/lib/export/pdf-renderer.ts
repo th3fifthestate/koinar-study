@@ -22,6 +22,7 @@ import {
   TRANSLATIONS,
   type TranslationId,
 } from "@/lib/translations/registry";
+import { formatDate } from "@/lib/utils/format";
 import type {
   Block,
   InlineSegment,
@@ -1205,12 +1206,3 @@ function inlinesToPlainText(inlines: InlineSegment[]): string {
   return inlines.map((s) => s.text).join("");
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}

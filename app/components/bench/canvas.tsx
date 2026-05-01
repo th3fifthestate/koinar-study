@@ -15,7 +15,8 @@ import { KeyboardCheatSheet } from './onboarding/keyboard-cheat-sheet'
 import { FirstConnectionAura } from './onboarding/first-connection-aura'
 import { useBenchKeyboardShortcuts } from '@/lib/hooks/use-bench-keyboard-shortcuts'
 import { useCanvasVisibility } from '@/lib/hooks/use-canvas-visibility'
-import type { BenchBoard, BenchClipping } from '@/lib/db/types'
+import type { BenchBoard, BenchClipping, BenchClippingSourceRef } from '@/lib/db/types'
+import { parseSourceRef } from '@/lib/bench/source-ref'
 
 interface BenchCanvasProps {
   board: BenchBoard
@@ -128,10 +129,11 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
       if (!selectedClippingId) return
       const src = clippings.find(c => c.id === selectedClippingId)
       if (!src) return
+      const parsed = parseSourceRef(src.source_ref)
+      if (!parsed) return
       void addClipping({
         clipping_type: src.clipping_type,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        source_ref: JSON.parse(src.source_ref) as any,
+        source_ref: parsed,
         x: src.x + 24,
         y: src.y + 24,
       })
@@ -263,10 +265,12 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
       try {
         const payload = JSON.parse(raw) as {
           clipping_type: BenchClipping['clipping_type']
-          source_ref: unknown
+          source_ref: BenchClippingSourceRef
           recent_clip_id?: string
         }
-        // Guard-drop: check per-board license caps before adding
+        if (!payload.source_ref || typeof payload.source_ref !== 'object') return
+        // Guard-drop: check per-board license caps before adding. Read
+        // optional translation fields off the union without widening the type.
         const ref = payload.source_ref as Record<string, unknown>
         const guard = guardDrop(
           {
@@ -286,8 +290,7 @@ export function BenchCanvas({ board, hasDrawnFirstConnection }: BenchCanvasProps
         const worldY = (e.clientY - rect.top - camera.y) / camera.zoom
         void addClipping({
           clipping_type: payload.clipping_type,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          source_ref: payload.source_ref as any,
+          source_ref: payload.source_ref,
           x: worldX,
           y: worldY,
         })
