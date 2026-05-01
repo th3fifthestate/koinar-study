@@ -20,10 +20,25 @@ async function main(): Promise<void> {
 
   const row = getDb()
     .prepare(
-      `SELECT id, title, content_markdown FROM studies WHERE id = ?`,
+      // Mirror getStudyForTranslate's admin → "Koinar Team" CASE so the
+      // probed PDF's byline matches what the reader/export would show.
+      `SELECT s.id, s.title, s.content_markdown, s.format_type,
+              CASE WHEN u.is_admin = 1 THEN 'Koinar Team' ELSE u.display_name END
+                AS author_display_name,
+              u.username AS author_username
+         FROM studies s
+         JOIN users u ON u.id = s.created_by
+        WHERE s.id = ?`,
     )
     .get(studyId) as
-    | { id: number; title: string; content_markdown: string }
+    | {
+        id: number;
+        title: string;
+        content_markdown: string;
+        format_type: string;
+        author_display_name: string | null;
+        author_username: string;
+      }
     | undefined;
   if (!row) {
     console.error(`[probe-export] study id ${studyId} not found`);
@@ -48,7 +63,13 @@ async function main(): Promise<void> {
   const tRender = Date.now();
   const pdf = await renderStudyToPdf(ast, {
     translation,
-    study: { id: row.id, title: row.title, generatedAt: new Date().toISOString() },
+    study: {
+      id: row.id,
+      title: row.title,
+      generatedAt: new Date().toISOString(),
+      formatType: row.format_type,
+      byline: row.author_display_name ?? row.author_username,
+    },
   });
   console.log("[probe-export] rendered", {
     renderMs: Date.now() - tRender,
