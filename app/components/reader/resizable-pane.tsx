@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -101,6 +102,16 @@ export function ResizablePane({
 }: ResizablePaneProps) {
   const mobile = useIsMobile();
   const [dragging, setDragging] = React.useState(false);
+  // Portal mount gate: document.body doesn't exist during SSR. We render
+  // nothing on the server (the drawer is invisible until opened anyway),
+  // then portal once mounted on the client. Portaling escapes any reader-
+  // surface ancestor that might create a `position: fixed` containing block
+  // (e.g. a transformed parent), which would otherwise pin the drawer to
+  // the document instead of the viewport.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   // SSR-safe constant initial value. The useEffect below syncs to the actual
   // viewport on first client render. Initializing from window.innerWidth here
   // would cause a hydration mismatch between the SSR HTML (960) and the first
@@ -182,8 +193,11 @@ export function ResizablePane({
     handle.addEventListener('pointerdown', onDown);
     return () => handle.removeEventListener('pointerdown', onDown);
     // width intentionally captured per-pointerdown via startW; no need to re-bind.
+    // `mounted` is in deps because the first render returns null (portal gate),
+    // so handleRef.current is null on the initial effect run. We need this
+    // effect to re-run after `mounted` flips to true and the handle is attached.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mobile, onWidthChange]);
+  }, [mobile, onWidthChange, mounted]);
 
   // Double-click handle: snap to default width.
   const onHandleDoubleClick = React.useCallback(() => {
@@ -211,7 +225,9 @@ export function ResizablePane({
   // Width is forced to viewport on mobile (overlay style).
   const appliedWidth = mobile ? '100%' : `${width}px`;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       ref={paneRef}
       role="complementary"
@@ -258,6 +274,7 @@ export function ResizablePane({
         />
       </div>
       {children}
-    </div>
+    </div>,
+    document.body
   );
 }

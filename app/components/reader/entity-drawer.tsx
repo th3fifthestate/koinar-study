@@ -12,6 +12,7 @@ import {
   ChevronRight, ChevronDown, ChevronUp, ExternalLink, X,
 } from 'lucide-react';
 import { useEntityLayer } from './entity-layer-context';
+import { useReaderPrefs } from '@/lib/reader/use-reader-prefs';
 import type { EntityDetail, EntityCitation, EntityVerseRef } from '@/lib/db/types';
 
 const TYPE_ICONS = {
@@ -132,8 +133,11 @@ function SourcesSection({ citations }: { citations: EntityCitation[] }) {
       </button>
       {expanded && (
         <ul className="mt-2 space-y-1.5 pl-5">
-          {citations.map((c) => (
-            <li key={c.id} className="text-xs text-muted-foreground">
+          {citations.map((c, idx) => (
+            <li
+              key={`${c.source_name}|${c.source_ref ?? ''}|${c.source_url ?? ''}|${idx}`}
+              className="text-xs text-muted-foreground"
+            >
               <span className="font-medium">{c.source_name}</span>
               {c.source_ref && <span> — {c.source_ref}</span>}
               {c.source_url && (
@@ -173,7 +177,7 @@ function VerseRefsSection({ verseRefs }: { verseRefs: EntityVerseRef[] }) {
           }`;
           return (
             <span
-              key={ref.id}
+              key={`${ref.book}-${ref.chapter}-${ref.verse_start}-${ref.verse_end ?? ''}`}
               className="rounded-full bg-[var(--stone-100)] px-2.5 py-0.5 text-xs text-muted-foreground dark:bg-[var(--stone-900)]"
             >
               {label}
@@ -346,7 +350,7 @@ function DrawerEntityContent({
               const label = rel.displayed_label ?? rel.relationship_label;
               return (
                 <RelatedEntityCard
-                  key={rel.id}
+                  key={`${rel.from_entity_id}-${rel.to_entity_id}-${rel.relationship_type}`}
                   name={rel.related_entity_name}
                   disambiguation={rel.related_entity_disambiguation_note}
                   entityType={rel.related_entity_type}
@@ -374,6 +378,8 @@ function DrawerEntityContent({
 export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
   const { drawerOpen, entityStack, closeDrawer, navigateBack, entityMap } =
     useEntityLayer();
+  const { prefs } = useReaderPrefs();
+  const mode = prefs.mode ?? 'light';
 
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [prevStackLength, setPrevStackLength] = useState(0);
@@ -404,6 +410,10 @@ export function EntityDrawer({ studyTitle }: { studyTitle: string }) {
       onWidthChange={setWidth}
       stackLevel={60}
       ariaLabel="Entity Details"
+      // Drawer is portaled to <body>, escaping the reader-surface `dark`
+      // class. Mirror it here so Tailwind `dark:` variants and `.dark`
+      // CSS variables (--popover, --stone-*, etc.) resolve correctly.
+      className={mode === 'dark' ? 'dark' : ''}
     >
       {/* Breadcrumbs + close */}
       <div className="flex items-center gap-2 border-b border-[var(--stone-200)] px-5 py-3 dark:border-[var(--stone-700)]">
