@@ -1,6 +1,6 @@
 // app/lib/db/schema.ts
 
-export const SCHEMA_VERSION = 19;
+export const SCHEMA_VERSION = 20;
 
 export const CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS users (
@@ -395,18 +395,6 @@ CREATE TABLE IF NOT EXISTS study_entity_annotations (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE IF NOT EXISTS saved_branch_maps (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  study_id INTEGER NOT NULL REFERENCES studies(id) ON DELETE CASCADE,
-  name TEXT,
-  nodes TEXT NOT NULL,
-  edges TEXT NOT NULL,
-  layout TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
 CREATE VIRTUAL TABLE IF NOT EXISTS entities_fts USING fts5(
   canonical_name,
   aliases,
@@ -588,8 +576,6 @@ CREATE INDEX IF NOT EXISTS idx_entity_rels_to ON entity_relationships(to_entity_
 CREATE INDEX IF NOT EXISTS idx_entity_rels_type ON entity_relationships(relationship_type);
 CREATE INDEX IF NOT EXISTS idx_study_entity_annot_study ON study_entity_annotations(study_id);
 CREATE INDEX IF NOT EXISTS idx_study_entity_annot_entity ON study_entity_annotations(entity_id);
-CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_user ON saved_branch_maps(user_id);
-CREATE INDEX IF NOT EXISTS idx_saved_branch_maps_study ON saved_branch_maps(study_id, user_id);
 CREATE INDEX IF NOT EXISTS idx_cross_refs_from ON cross_refs(from_book, from_chapter, from_verse);
 CREATE INDEX IF NOT EXISTS idx_cross_refs_to ON cross_refs(to_book, to_chapter, to_verse_start);
 CREATE INDEX IF NOT EXISTS idx_lexicon_language ON lexicon_entries(language);

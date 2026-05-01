@@ -428,8 +428,9 @@ function runMigration(database: Database.Database): void {
     //     /api/study/generate going forward).
     //   - study_gift_codes.format_locked CHECK constraint widens identically.
     //
-    // Foreign key safety: studies is referenced by 7 child tables (study_tags, favorites,
-    // annotations, study_images, study_entity_annotations, saved_branch_maps, invite_codes).
+    // Foreign key safety: studies is referenced by 6 child tables (study_tags, favorites,
+    // annotations, study_images, study_entity_annotations, invite_codes). (Historically
+    // saved_branch_maps was also a child table; it was dropped in v20.)
     // We use `PRAGMA defer_foreign_keys = ON` so FK validation happens at COMMIT (after
     // the rename restores the 'studies' name); intermediate states with the table dropped
     // are tolerated. SQLite resolves FKs by table NAME, so renaming studies_new -> studies
@@ -548,6 +549,15 @@ function runMigration(database: Database.Database): void {
 
       database.prepare('DROP TABLE study_gift_codes').run();
       database.prepare('ALTER TABLE study_gift_codes_new RENAME TO study_gift_codes').run();
+    }
+
+    // v19 → v20: Branch Map feature removed.
+    //   The reader's "branch map" overlay (a saved entity-graph view per user
+    //   per study) was retired. Drop saved_branch_maps so existing
+    //   deployments don't carry orphaned rows forward; SQLite drops the
+    //   associated indexes (idx_saved_branch_maps_user / _study) automatically.
+    if (currentVersion >= 1 && currentVersion < 20) {
+      database.prepare('DROP TABLE IF EXISTS saved_branch_maps').run();
     }
 
     // CREATE_INDEXES runs after all migration blocks so column additions (ALTER TABLE)

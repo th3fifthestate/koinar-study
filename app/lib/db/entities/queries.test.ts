@@ -5,7 +5,6 @@ import type {
   EntityCitation,
   EntityRelationship,
   StudyEntityAnnotation,
-  SavedBranchMap,
 } from '../types';
 
 vi.mock('@/lib/db/connection', () => ({
@@ -26,14 +25,11 @@ import {
   getEntityDensityForBook,
   getAmbiguousRefsForBook,
   countEntitiesByType,
-  getSavedBranchMaps,
   upsertEntity,
   insertVerseRefs,
   insertCitations,
   insertRelationship,
   insertStudyAnnotations,
-  saveBranchMap,
-  deleteBranchMap,
   deleteAnnotationsForStudy,
   updateEntityContent,
   updateVerseRefAfterDisambiguation,
@@ -378,22 +374,6 @@ describe('Entity Queries — READ', () => {
     });
   });
 
-  // ── getSavedBranchMaps ───────────────────────────────────────────────────
-
-  describe('getSavedBranchMaps', () => {
-    it('returns maps for a user and study', () => {
-      const maps: SavedBranchMap[] = [
-        {
-          id: 1, user_id: 1, study_id: 1, name: 'My Map',
-          nodes: '["A"]', edges: '["1"]', layout: null,
-          created_at: '2026-01-01', updated_at: '2026-01-01',
-        },
-      ];
-      createMockDb({ 'saved_branch_maps': { all: maps } });
-
-      expect(getSavedBranchMaps(1, 1)).toEqual(maps);
-    });
-  });
 });
 
 // ─── WRITE Operations ────────────────────────────────────────────────────────
@@ -514,50 +494,6 @@ describe('Entity Queries — WRITE', () => {
       ]);
 
       expect(mockDb.transaction).toHaveBeenCalled();
-    });
-  });
-
-  // ── saveBranchMap ────────────────────────────────────────────────────────
-
-  describe('saveBranchMap', () => {
-    it('throws if nodes or edges are missing', () => {
-      createMockDb();
-      expect(() =>
-        saveBranchMap({
-          user_id: 1, study_id: 1, name: 'test',
-          nodes: '', edges: '["1"]', layout: null,
-        })
-      ).toThrow('nodes and edges are required');
-    });
-
-    it('returns lastInsertRowid on success', () => {
-      createMockDb({
-        'INSERT INTO saved_branch_maps': { run: { changes: 1, lastInsertRowid: 42 } },
-      });
-
-      const id = saveBranchMap({
-        user_id: 1, study_id: 1, name: 'test',
-        nodes: '["A"]', edges: '["1"]', layout: null,
-      });
-      expect(id).toBe(42);
-    });
-  });
-
-  // ── deleteBranchMap ──────────────────────────────────────────────────────
-
-  describe('deleteBranchMap', () => {
-    it('returns true when a row is deleted', () => {
-      createMockDb({
-        'DELETE FROM saved_branch_maps': { run: { changes: 1, lastInsertRowid: 0 } },
-      });
-      expect(deleteBranchMap(1, 1)).toBe(true);
-    });
-
-    it('returns false when no row matches', () => {
-      createMockDb({
-        'DELETE FROM saved_branch_maps': { run: { changes: 0, lastInsertRowid: 0 } },
-      });
-      expect(deleteBranchMap(999, 1)).toBe(false);
     });
   });
 

@@ -338,18 +338,6 @@ export interface StudyEntityAnnotation {
   created_at: string;
 }
 
-export interface SavedBranchMap {
-  id: number;
-  user_id: number;
-  study_id: number;
-  name: string | null;
-  nodes: string;   // JSON array of entity IDs
-  edges: string;   // JSON array of relationship IDs
-  layout: string | null;  // JSON of node positions
-  created_at: string;
-  updated_at: string;
-}
-
 /** Entity with parsed JSON fields and all related data loaded */
 export interface EntityDetail extends Omit<Entity, 'aliases' | 'geographic_context'> {
   aliases: string[];

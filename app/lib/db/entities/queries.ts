@@ -5,7 +5,6 @@ import type {
   EntityRelationship,
   EntityDetail,
   StudyEntityAnnotation,
-  SavedBranchMap,
 } from '../types';
 import { getDb } from '../connection';
 import { labelForSide } from '../../entities/relationship-direction';
@@ -279,13 +278,6 @@ export function deleteVerseRef(id: number): void {
   db.prepare('DELETE FROM entity_verse_refs WHERE id = ?').run(id);
 }
 
-export function getSavedBranchMaps(userId: number, studyId: number): SavedBranchMap[] {
-  const db = getDb();
-  return db
-    .prepare('SELECT * FROM saved_branch_maps WHERE user_id = ? AND study_id = ? ORDER BY created_at DESC')
-    .all(userId, studyId) as SavedBranchMap[];
-}
-
 export function countEntitiesByType(): { type: string; count: number }[] {
   const db = getDb();
   return db
@@ -398,27 +390,6 @@ export function insertStudyAnnotations(
   })();
 }
 
-export function saveBranchMap(
-  map: Omit<SavedBranchMap, 'id' | 'created_at' | 'updated_at'>
-): number {
-  if (!map.nodes || !map.edges) throw new Error('saveBranchMap: nodes and edges are required');
-  const db = getDb();
-  const result = db
-    .prepare(
-      `INSERT INTO saved_branch_maps (user_id, study_id, name, nodes, edges, layout)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    )
-    .run(map.user_id, map.study_id, map.name ?? null, map.nodes, map.edges, map.layout ?? null);
-  return result.lastInsertRowid as number;
-}
-
-export function deleteBranchMap(mapId: number, userId: number): boolean {
-  const db = getDb();
-  const result = db
-    .prepare('DELETE FROM saved_branch_maps WHERE id = ? AND user_id = ?')
-    .run(mapId, userId);
-  return result.changes === 1;
-}
 
 export function deleteAnnotationsForStudy(studyId: number): void {
   const db = getDb();

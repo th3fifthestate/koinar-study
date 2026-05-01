@@ -19,7 +19,6 @@ import { AnnotationPopover } from './annotation-popover';
 import { AnnotationNotes } from './annotation-notes';
 import { EntityLayerProvider, useEntityLayer } from './entity-layer-context';
 import { EntityDrawer } from './entity-drawer';
-import { BranchMapOverlay } from './branch-map-overlay';
 import { toast } from 'sonner';
 import { CopyGuard } from './CopyGuard';
 import { CitationFooter } from './CitationFooter';
@@ -335,7 +334,6 @@ function StudyReaderContent({
 }) {
   const { showAnnotations, setShowAnnotations } = useEntityLayer();
   const activeId = useActiveHeading(headingIds);
-  const [branchMapOpen, setBranchMapOpen] = useState(false);
 
   // Annotation system — all readers are authenticated
   const contentRef = useRef<HTMLDivElement>(null);
@@ -400,7 +398,6 @@ function StudyReaderContent({
                 showEntityAnnotations={showAnnotations}
                 onEntityAnnotationsToggle={setShowAnnotations}
                 entityAnnotationCount={entityAnnotationCount}
-                onOpenMap={() => setBranchMapOpen(true)}
                 translations={translations}
                 currentTranslation={currentTranslation}
                 onTranslationSelect={onTranslationSelect}
@@ -539,13 +536,6 @@ function StudyReaderContent({
 
       {/* Entity Context Drawer */}
       <EntityDrawer studyTitle={study.title} />
-
-      {/* Branch Map Overlay */}
-      <BranchMapOverlay
-        open={branchMapOpen}
-        onClose={() => setBranchMapOpen(false)}
-        studyTitle={study.title}
-      />
     </ReaderSurface>
 
     {/* Mobile TOC — sibling of ReaderSurface so its position:fixed

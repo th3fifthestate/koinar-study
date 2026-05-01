@@ -5,7 +5,6 @@ import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { FavoriteButton } from '@/components/library/favorite-button';
 import { EntityToggle } from './entity-toggle';
-import { BranchMapIndicator } from './branch-map-indicator';
 import { ReaderSettingsPopover } from './reader-settings-popover';
 import { ExportDialog } from './export-dialog';
 import type { TranslationAvailability } from '@/lib/translations/registry';
@@ -24,7 +23,6 @@ interface StudyHeaderProps {
   showEntityAnnotations: boolean;
   onEntityAnnotationsToggle: (enabled: boolean) => void;
   entityAnnotationCount: number;
-  onOpenMap: () => void;
   translations: TranslationAvailability[];
   currentTranslation: string;
   onTranslationSelect: (id: string) => Promise<void>;
@@ -35,7 +33,7 @@ interface StudyHeaderProps {
 
 /**
  * Inline chrome cluster for the reader. Renders only the action buttons
- * (Save / Share / Branch Map / Context toggle / Reader Settings) — the
+ * (Save / Share / Export / Context toggle / Reader Settings) — the
  * editorial hero (`StudyHero`) owns the title, summary, byline, and
  * badges. Designed to sit at the bottom of the hero band.
  *
@@ -56,7 +54,6 @@ export function StudyHeader({
   showEntityAnnotations,
   onEntityAnnotationsToggle,
   entityAnnotationCount,
-  onOpenMap,
   translations,
   currentTranslation,
   onTranslationSelect,
@@ -121,7 +118,6 @@ export function StudyHeader({
         getDisplayContent={getDisplayContent}
       />
 
-      <BranchMapIndicator onOpenMap={onOpenMap} />
       <EntityToggle
         enabled={showEntityAnnotations}
         onToggle={onEntityAnnotationsToggle}
